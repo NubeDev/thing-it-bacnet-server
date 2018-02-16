@@ -81,8 +81,9 @@ gulp.task('watch:build:test', [ 'tslint:test', 'build:test' ], () => {
 });
 
 gulp.task('watch:build:code', [ 'tslint:code', 'build:code' ], () => {
+    gulp.start('start');
     gulp.watch([ `${folderSrc}/**/*.ts`, '!./node_modules/**/*', `!${folderSrc}/**/*.spec.ts` ], () => {
-        runSequence('tslint:code', 'build:code');
+        runSequence('tslint:code', 'build:code', 'start');
     });
 });
 
@@ -91,5 +92,5 @@ let node;
 
 gulp.task('start', () => {
     if (node) node.kill();
-    node = spawn('node', ['../dist/index.js'], { stdio: 'inherit' });
+    node = spawn('node', [`${folderApp}/index.js`], { stdio: 'inherit' });
 });
