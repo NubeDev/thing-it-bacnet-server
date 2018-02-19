@@ -1,1 +1,2 @@
-export { BACNET_PROPERTY_KEYS } from './property.enum';
+export * from './property.enum';
+export * from './type.enum';
