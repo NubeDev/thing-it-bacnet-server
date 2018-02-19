@@ -38,7 +38,7 @@ export class BACnetReaderUtil {
     }
 
     /**
-     * writeUInt32BE - writes 4 bytes to the interanal buffer.
+     * writeUInt32BE - writes 4 bytes (integer) to the interanal buffer.
      *
      * @param  {number} value - data
      * @return {void}
@@ -48,26 +48,13 @@ export class BACnetReaderUtil {
     }
 
     /**
-     * writeIntBySize - writes N bytes to the interanal buffer.
+     * writeFloatBE - writes 4 bytes (real) to the interanal buffer.
      *
      * @param  {number} value - data
-     * @param  {number} size - number of bytes
      * @return {void}
      */
-    public writeIntBySize (value: number, size: number): void {
-        switch (size) {
-            case 4:
-                this.writeUInt32BE(value);
-                break;
-            case 2:
-                this.writeUInt16BE(value);
-                break;
-            case 1:
-                this.writeUInt8(value);
-                break;
-            default:
-                throw new ApiError(`BACnetReaderUtil - writeIntBySizte: Size ${size} is not supported!`);
-        }
+    public writeFloatBE (value: number): void {
+        this.buffer.writeFloatBE(value, this.offset.inc(4));
     }
 
     /**
@@ -119,7 +106,20 @@ export class BACnetReaderUtil {
         // Context Number - Context tag - Param Length (bytes)
         this.writeTag(tagContext, 1, paramSize);
 
-        this.writeIntBySize(paramName, paramSize);
+        // Write param by the param length
+        switch (paramSize) {
+            case 4:
+                this.writeUInt32BE(paramName);
+                break;
+            case 2:
+                this.writeUInt16BE(paramName);
+                break;
+            case 1:
+                this.writeUInt8(paramName);
+                break;
+            default:
+                throw new ApiError(`BACnetReaderUtil - writeIntBySizte: Size ${paramSize} is not supported!`);
+        }
     }
 
     /**
@@ -140,8 +140,17 @@ export class BACnetReaderUtil {
         // DataType - Application tag - DataTypeSize
         this.writeTag(dataType, 0, dataTypeSize);
 
-        // Write value with "dataTypeSize" size
-        this.writeIntBySize(paramValue, dataTypeSize);
+        // Write value by the "dataType"
+        switch (dataType) {
+            case BACNET_PROP_TYPES.real:
+                this.writeFloatBE(paramValue)
+                break;
+            case BACNET_PROP_TYPES.unsignedInt:
+            case BACNET_PROP_TYPES.enumerated:
+            default:
+                this.writeUInt8(paramValue);
+                break;
+        }
 
         // Context Number - Context tag - "Closing" Tag
         this.writeTag(tagContext, 1, 7);
