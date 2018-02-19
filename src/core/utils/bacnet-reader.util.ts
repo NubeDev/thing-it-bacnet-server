@@ -130,6 +130,23 @@ export class BACnetReaderUtil {
     }
 
     /**
+     * readValue - stub
+     */
+    public readValue (): Map<string, any> {
+        const paramMap: Map<string, any> = new Map();
+
+        const openTag = this.readTag();
+
+        const valueTag = this.readTag();
+
+        const valueType = valueTag.get('number');
+
+        const closeTag = this.readTag();
+
+        return paramMap;
+    }
+
+    /**
      * readTag - reads the BACnet tag from the internal buffer and returns map with:
      * - number = tag number (number)
      * - class = tag class (number)
