@@ -4,29 +4,34 @@ import { ApiError } from '../errors';
 
 import { BACNET_PROPERTY_KEYS } from '../enums';
 
+import { OffsetUtil } from '../utils';
+
 export class BACnetReaderUtil {
-    private buffer: Buffer;
     private offset: any;
 
-    public readUInt8 (buffer: Buffer, offset: any) {
-        return buffer.readUInt8(offset.inc());
+    constructor (private buffer: Buffer) {
+        this.offset = new OffsetUtil(0);
     }
 
-    public readUInt16BE (buffer: Buffer, offset: any) {
-        return buffer.readUInt16BE(offset.inc(2));
+    public readUInt8 () {
+        return this.buffer.readUInt8(this.offset.inc());
     }
 
-    public readUInt32BE (buffer: Buffer, offset: any) {
-        return buffer.readUInt32BE(offset.inc(4));
+    public readUInt16BE () {
+        return this.buffer.readUInt16BE(this.offset.inc(2));
     }
 
-    public readObjectIdentifier (buffer: Buffer, offset: any): Map<string, any> {
+    public readUInt32BE () {
+        return this.buffer.readUInt32BE(this.offset.inc(4));
+    }
+
+    public readObjectIdentifier (): Map<string, any> {
         const objMap: Map<string, any> = new Map();
 
-        const tag = this.readTag(buffer, offset);
+        const tag = this.readTag();
         objMap.set('tag', tag);
 
-        const objIdentifier = buffer.readUInt32BE(offset.inc(4));
+        const objIdentifier = this.readUInt32BE();
 
         const objType = (objIdentifier >> 22) & 0x03FF;
         objMap.set('type', objType);
@@ -37,20 +42,20 @@ export class BACnetReaderUtil {
         return objMap;
     }
 
-    public readParam (buffer: Buffer, offset: any): Map<string, any> {
+    public readParam (): Map<string, any> {
         const paramMap: Map<string, any> = new Map();
 
-        const tag = this.readTag(buffer, offset);
+        const tag = this.readTag();
         paramMap.set('tag', tag);
 
         let param;
         const len: number = tag.get('value');
         if (len === 1) {
-            param = buffer.readUInt8(offset.up());
+            param = this.readUInt8();
         } else if (len === 2) {
-            param = buffer.readUInt16BE(offset.up(2));
+            param = this.readUInt16BE();
         } else if (len === 4) {
-            param = buffer.readUInt32BE(offset.up(4));
+            param = this.readUInt32BE();
         }
 
         paramMap.set('value', param);
@@ -58,8 +63,8 @@ export class BACnetReaderUtil {
         return paramMap;
     }
 
-    public readProperty (buffer: Buffer, offset: any): Map<string, any> {
-        const propMap: Map<string, any> = this.readParam(buffer, offset);
+    public readProperty (): Map<string, any> {
+        const propMap: Map<string, any> = this.readParam();
 
         const propValue: number = propMap.get('value');
         const propName: string = BACNET_PROPERTY_KEYS[propValue];
@@ -68,22 +73,22 @@ export class BACnetReaderUtil {
         return propMap;
     }
 
-    public readListOfParams (buffer: Buffer, offset: any): Map<string, any> {
+    public readListOfParams (): Map<string, any> {
         const paramMap: Map<string, any> = new Map();
 
-        const openTag = this.readTag(buffer, offset);
+        const openTag = this.readTag();
 
-        const property = this.readProperty(buffer, offset);
+        const property = this.readProperty();
 
-        const closeTag = this.readTag(buffer, offset);
+        const closeTag = this.readTag();
 
         return paramMap;
     }
 
-    public readTag (buffer: Buffer, offset: any): Map<string, number> {
+    public readTag (): Map<string, number> {
         const typeMap: Map<string, number> = new Map();
 
-        const tag = buffer.readUInt8(offset.inc());
+        const tag = this.buffer.readUInt8(this.offset.inc());
 
         const tagNumber = tag >> 4;
         typeMap.set('number', tagNumber);
