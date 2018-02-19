@@ -7,24 +7,48 @@ import { BACNET_PROPERTY_KEYS } from '../enums';
 import { OffsetUtil } from '../utils';
 
 export class BACnetReaderUtil {
-    private offset: any;
+    public offset: any;
 
     constructor (private buffer: Buffer) {
         this.offset = new OffsetUtil(0);
     }
 
-    public readUInt8 () {
+    /**
+     * readUInt8 - reads the 1 byte from the internal buffer.
+     *
+     * @return {number}
+     */
+    public readUInt8 (): number {
         return this.buffer.readUInt8(this.offset.inc());
     }
 
-    public readUInt16BE () {
+    /**
+     * readUInt16BE - reads the 2 bytes from the internal buffer.
+     *
+     * @return {number}
+     */
+    public readUInt16BE (): number {
         return this.buffer.readUInt16BE(this.offset.inc(2));
     }
 
-    public readUInt32BE () {
+    /**
+     * readObjectIdentifier - reads the 4 bytes from the internal buffer.
+     *
+     * @return {number}
+     */
+    public readUInt32BE (): number {
         return this.buffer.readUInt32BE(this.offset.inc(4));
     }
 
+    /**
+     * readObjectIdentifier - reads the BACnet object identifier from the internal
+     * buffer and returns map with:
+     * - tag = param tag (tag map)
+     * - type = object type (number)
+     * - instance = object instance (number)
+     *
+     * @return {Map<string, any>}
+     */
     public readObjectIdentifier (): Map<string, any> {
         const objMap: Map<string, any> = new Map();
 
@@ -42,6 +66,14 @@ export class BACnetReaderUtil {
         return objMap;
     }
 
+    /**
+     * readParam - reads the BACnet param from the internal buffer and returns
+     * map with:
+     * - tag = param tag (tag map)
+     * - value = param value (number)
+     *
+     * @return {Map<string, any>}
+     */
     public readParam (): Map<string, any> {
         const paramMap: Map<string, any> = new Map();
 
@@ -63,6 +95,15 @@ export class BACnetReaderUtil {
         return paramMap;
     }
 
+    /**
+     * readProperty - reads the BACnet property from the internal buffer and
+     * returns map with:
+     * - tag = param tag (tag map)
+     * - value = param value (number)
+     * - name = param name (string)
+     *
+     * @return {Map<string, any>}
+     */
     public readProperty (): Map<string, any> {
         const propMap: Map<string, any> = this.readParam();
 
@@ -73,6 +114,9 @@ export class BACnetReaderUtil {
         return propMap;
     }
 
+    /**
+     * readListOfParams - stub
+     */
     public readListOfParams (): Map<string, any> {
         const paramMap: Map<string, any> = new Map();
 
@@ -85,10 +129,18 @@ export class BACnetReaderUtil {
         return paramMap;
     }
 
+    /**
+     * readTag - reads the BACnet tag from the internal buffer and returns map with:
+     * - number = tag number (number)
+     * - class = tag class (number)
+     * - value = tag value (number)
+     *
+     * @return {Map<string, number>}
+     */
     public readTag (): Map<string, number> {
         const typeMap: Map<string, number> = new Map();
 
-        const tag = this.buffer.readUInt8(this.offset.inc());
+        const tag = this.readUInt8();
 
         const tagNumber = tag >> 4;
         typeMap.set('number', tagNumber);
