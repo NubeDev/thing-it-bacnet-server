@@ -116,4 +116,46 @@ describe('ConverterUtil', () => {
             expect(buffer[5]).to.equal(0x00);
         });
     });
+
+    describe('writeTag', () => {
+        let bacnetWriterUtil: BACnetWriterUtil;
+        beforeEach(() => {
+            bacnetWriterUtil = new BACnetWriterUtil();
+        });
+
+        it('should set tag 2/0/2', () => {
+            bacnetWriterUtil.writeTag(2, 0, 2);
+            const buffer = bacnetWriterUtil.getBuffer();
+            expect(buffer[0]).to.equal(0x22);
+        });
+        it('should set tag 12/0/4', () => {
+            bacnetWriterUtil.writeTag(12, 0, 4);
+            const buffer = bacnetWriterUtil.getBuffer();
+            expect(buffer[0]).to.equal(0xc4);
+        });
+        it('should set tag 1/1/1', () => {
+            bacnetWriterUtil.writeTag(1, 1, 1);
+            const buffer = bacnetWriterUtil.getBuffer();
+            expect(buffer[0]).to.equal(0x19);
+        });
+        it('should set tag 2/1/4', () => {
+            bacnetWriterUtil.writeTag(2, 1, 4);
+            const buffer = bacnetWriterUtil.getBuffer();
+            expect(buffer[0]).to.equal(0x2c);
+        });
+        it('should set tag 12/0/4 and byte 0x2c', () => {
+            bacnetWriterUtil.writeTag(12, 0, 4);
+            bacnetWriterUtil.writeUInt8(0x2c);
+            const buffer = bacnetWriterUtil.getBuffer();
+            expect(buffer[0]).to.equal(0xc4);
+            expect(buffer[1]).to.equal(0x2c);
+        });
+        it('should set tag 1/1/1 and byte 0x1f', () => {
+            bacnetWriterUtil.writeTag(1, 1, 1);
+            bacnetWriterUtil.writeUInt8(0x1f);
+            const buffer = bacnetWriterUtil.getBuffer();
+            expect(buffer[0]).to.equal(0x19);
+            expect(buffer[1]).to.equal(0x1f);
+        });
+    });
 });
