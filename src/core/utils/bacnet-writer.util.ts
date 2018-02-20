@@ -58,6 +58,20 @@ export class BACnetReaderUtil {
     }
 
     /**
+     * writeString - reads the N bytes from the internal buffer and converts
+     * the result to the string.
+     *
+     * @param  {string} encoding - character encoding
+     * @param  {number} len - lenght of string
+     * @return {string}
+     */
+    public writeString (str: string, encoding: string = 'utf8'): void {
+        const strLen = str.length;
+        const offStart = this.offset.inc(strLen);
+        this.buffer.write(str, offStart, strLen, encoding);
+    }
+
+    /**
      * writeTag - writes BACnet tag to the interanal buffer.
      *
      * @param  {number} tagNumber - tag number/context
