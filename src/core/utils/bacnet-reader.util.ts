@@ -73,17 +73,29 @@ export class BACnetReaderUtil {
      * @return {Map<string, any>}
      */
     public readObjectIdentifier (): Map<string, any> {
-        const objMap: Map<string, any> = new Map();
-
         const tag = this.readTag();
+        const objIdent = this.readUInt32BE();
+
+        const objMap: Map<string, any> =
+            this.decodeObjectIdentifier(objIdent);
         objMap.set('tag', tag);
 
-        const objIdentifier = this.readUInt32BE();
+        return objMap;
+    }
 
-        const objType = (objIdentifier >> 22) & 0x03FF;
+    /**
+     * decodeObjectIdentifier - decodes the Object Identifier and returns the
+     * map with object type and object instance.
+     *
+     * @param  {number} objIdent - 4 bytes of object identifier
+     * @return {Map<string, any>}
+     */
+    public decodeObjectIdentifier (objIdent: number): Map<string, any> {
+        const objMap: Map<string, any> = new Map();
+        const objType = (objIdent >> 22) & 0x03FF;
         objMap.set('type', objType);
 
-        const objInstance = (objIdentifier) & 0x03FFFFF;
+        const objInstance = objIdent & 0x03FFFFF;
         objMap.set('instance', objInstance);
 
         return objMap;
