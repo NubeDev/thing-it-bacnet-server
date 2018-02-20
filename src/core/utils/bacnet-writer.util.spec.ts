@@ -10,7 +10,7 @@ import { BACnetWriterUtil } from './bacnet-writer.util';
 
 /* Interfaces */
 
-describe('ConverterUtil', () => {
+describe('BACnetWriterUtil', () => {
     describe('writeUInt8', () => {
         let bacnetWriterUtil: BACnetWriterUtil;
         beforeEach(() => {
@@ -319,7 +319,7 @@ describe('ConverterUtil', () => {
             bacnetWriterUtil = new BACnetWriterUtil();
         });
 
-        it('should set opening tag, param tag, param value 22.5 and closing tag', () => {
+        it('should set opening tag, param tag, param len, param encod, param value "L02" and closing tag', () => {
             bacnetWriterUtil.writeTypeCharString(1, 'L02');
             const buffer = bacnetWriterUtil.getBuffer();
             expect(buffer[0]).to.equal(0x1e);
@@ -332,7 +332,7 @@ describe('ConverterUtil', () => {
             expect(buffer[7]).to.equal(0x1f);
         });
 
-        it('should set opening tag, param tag, param value 22.5 and closing tag', () => {
+        it('should set opening tag, param tag, param len, param encod, param value "L202" and closing tag', () => {
             bacnetWriterUtil.writeTypeCharString(1, 'L202');
             const buffer = bacnetWriterUtil.getBuffer();
             expect(buffer[0]).to.equal(0x1e);
