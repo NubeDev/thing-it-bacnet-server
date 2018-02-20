@@ -32,12 +32,35 @@ export class BACnetReaderUtil {
     }
 
     /**
-     * readObjectIdentifier - reads the 4 bytes from the internal buffer.
+     * readUInt32BE - reads the 4 bytes (int) from the internal buffer.
      *
      * @return {number}
      */
     public readUInt32BE (): number {
         return this.buffer.readUInt32BE(this.offset.inc(4));
+    }
+
+    /**
+     * readFloatBE - reads the 4 bytes (float) from the internal buffer.
+     *
+     * @return {number}
+     */
+    public readFloatBE (): number {
+        return this.buffer.readFloatBE(this.offset.inc(4));
+    }
+
+    /**
+     * readString - reads the N bytes from the internal buffer and converts
+     * the result to the string.
+     *
+     * @param  {string} encoding - character encoding
+     * @param  {number} len - lenght of string
+     * @return {string}
+     */
+    public readString (encoding: string, len: number): string {
+        const offStart = this.offset.inc(len);
+        const offEnd = this.offset.getVaule();
+        return this.buffer.toString(encoding, offStart, offEnd);
     }
 
     /**
