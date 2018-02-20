@@ -346,4 +346,31 @@ describe('BACnetWriterUtil', () => {
             expect(buffer[8]).to.equal(0x1f);
         });
     });
+
+    describe('writeTypeStatusFlags', () => {
+        let bacnetWriterUtil: BACnetWriterUtil;
+        beforeEach(() => {
+            bacnetWriterUtil = new BACnetWriterUtil();
+        });
+
+        it('should set opening tag, param tag, param mask, status flags 0x90 and closing tag', () => {
+            bacnetWriterUtil.writeTypeStatusFlags(1, true, false, false, true);
+            const buffer = bacnetWriterUtil.getBuffer();
+            expect(buffer[0]).to.equal(0x1e);
+            expect(buffer[1]).to.equal(0x82);
+            expect(buffer[2]).to.equal(0x0F);
+            expect(buffer[3]).to.equal(0x90);
+            expect(buffer[4]).to.equal(0x1f);
+        });
+
+        it('should set opening tag, param tag, param mask, status flags 0x10 and closing tag', () => {
+            bacnetWriterUtil.writeTypeStatusFlags(1, false, false, false, true);
+            const buffer = bacnetWriterUtil.getBuffer();
+            expect(buffer[0]).to.equal(0x1e);
+            expect(buffer[1]).to.equal(0x82);
+            expect(buffer[2]).to.equal(0x0F);
+            expect(buffer[3]).to.equal(0x10);
+            expect(buffer[4]).to.equal(0x1f);
+        });
+    });
 });
