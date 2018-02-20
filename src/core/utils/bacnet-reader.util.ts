@@ -162,6 +162,16 @@ export class BACnetReaderUtil {
         const openTag = this.readTag();
 
         const property = this.readProperty();
+        paramMap.set('property', property);
+
+        const propertyValue = this.readParamValue();
+        paramMap.set('propertyValue', propertyValue);
+
+        const statusFlags = this.readProperty();
+        paramMap.set('statusFlags', statusFlags);
+
+        const statusFlagsValue = this.readParamValue();
+        paramMap.set('statusFlagsValue', statusFlagsValue);
 
         const closeTag = this.readTag();
 
