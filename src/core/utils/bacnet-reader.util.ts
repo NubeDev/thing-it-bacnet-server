@@ -11,7 +11,7 @@ import {
 import { OffsetUtil, TyperUtil } from '../utils';
 
 export class BACnetReaderUtil {
-    public offset: any;
+    public offset: OffsetUtil;
 
     constructor (private buffer: Buffer) {
         this.offset = new OffsetUtil(0);

@@ -10,7 +10,7 @@ import {
 import { OffsetUtil, TyperUtil } from '../utils';
 
 export class BACnetWriterUtil {
-    public offset: any;
+    public offset: OffsetUtil;
     private buffer: Buffer;
 
     constructor () {
