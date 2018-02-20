@@ -104,9 +104,6 @@ export class BACnetWriterUtil {
      */
     public writeObjectIdentifier (
             tagContext: number, objectType: number, objectId: number): void {
-        // Context Number - Context tag - ObjIdent Length (bytes)
-        this.writeTag(tagContext, 1, 4);
-
         // Object Identifier = Object Type 10 bits, Object ID 22 bits
         const objectIdentifier = ((objectType & 0x03FF) << 22)
             | (objectId & 0x03FFFFF);
