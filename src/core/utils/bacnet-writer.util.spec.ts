@@ -236,4 +236,26 @@ describe('ConverterUtil', () => {
             expect(buffer[2]).to.equal(0x00);
         });
     });
+
+    describe('writeTypeBoolean', () => {
+        let bacnetWriterUtil: BACnetWriterUtil;
+        beforeEach(() => {
+            bacnetWriterUtil = new BACnetWriterUtil();
+        });
+
+        it('should set opening tag, param tag with "true" value and closing tag', () => {
+            bacnetWriterUtil.writeTypeBoolean(1, true);
+            const buffer = bacnetWriterUtil.getBuffer();
+            expect(buffer[0]).to.equal(0x1e);
+            expect(buffer[1]).to.equal(0x11);
+            expect(buffer[2]).to.equal(0x1f);
+        });
+        it('should set opening tag, param tag with "false" value and closing tag', () => {
+            bacnetWriterUtil.writeTypeBoolean(2, false);
+            const buffer = bacnetWriterUtil.getBuffer();
+            expect(buffer[0]).to.equal(0x2e);
+            expect(buffer[1]).to.equal(0x10);
+            expect(buffer[2]).to.equal(0x2f);
+        });
+    });
 });
