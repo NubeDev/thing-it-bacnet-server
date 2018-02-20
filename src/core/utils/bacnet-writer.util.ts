@@ -10,7 +10,7 @@ import {
 
 import { OffsetUtil } from '../utils';
 
-export class BACnetReaderUtil {
+export class BACnetWriterUtil {
     public offset: any;
 
     constructor (private buffer: Buffer) {
