@@ -4,6 +4,12 @@ import { ApiError } from '../errors';
 
 export class TyperUtil {
 
+    static setBit (numValue: number, pos: number, bitValue: boolean): number {
+        const byte = 0x01 << pos;
+        const mask = bitValue ? byte : ~byte;
+        return bitValue ? (numValue | mask) : (numValue & mask);
+    }
+
     static getBit (value: number, pos: number): number {
         const bit: number = (value >> pos) & 0x01;
         return bit;
