@@ -12,9 +12,15 @@ import { OffsetUtil } from '../utils';
 
 export class BACnetWriterUtil {
     public offset: any;
+    private buffer: Buffer;
 
-    constructor (private buffer: Buffer) {
+    constructor () {
         this.offset = new OffsetUtil(0);
+        this.buffer = Buffer.alloc(50);
+    }
+
+    public getBuffer () {
+        return this.buffer;
     }
 
     /**
