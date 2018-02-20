@@ -18,3 +18,11 @@ export function getTypeSize (type: BACNET_PROP_TYPES): number {
             return 4;
     }
 }
+
+export function getStringEncode (charSet: number): string {
+    switch (charSet) {
+        case 0:
+        default:
+            return 'utf8';
+    }
+}
