@@ -97,13 +97,11 @@ export class BACnetWriterUtil {
     /**
      * writeObjectIdentifier - writes BACnet object identifier to the interanal buffer.
      *
-     * @param  {number} tagContext - tag context
      * @param  {number} objectType - object type
      * @param  {number} objectId - object id
      * @return {void}
      */
-    public writeObjectIdentifier (
-            tagContext: number, objectType: number, objectId: number): void {
+    public writeObjectIdentifier (objectType: number, objectId: number): void {
         // Object Identifier = Object Type 10 bits, Object ID 22 bits
         const objectIdentifier = ((objectType & 0x03FF) << 22)
             | (objectId & 0x03FFFFF);
