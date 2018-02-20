@@ -5,7 +5,6 @@ import { ApiError } from '../errors';
 import {
     BACNET_PROPERTY_KEYS,
     BACNET_PROP_TYPES,
-    getTypeSize,
 } from '../enums';
 
 import { OffsetUtil, TyperUtil } from '../utils';
@@ -178,13 +177,11 @@ export class BACnetWriterUtil {
      * @return {void}
      */
     public writeTypeUnsignedInt (tagContext: number, paramValue: number): void {
-        const dataTypeSize: number = getTypeSize(BACNET_PROP_TYPES.unsignedInt);
-
         // Context Number - Context tag - "Opening" Tag
         this.writeTag(tagContext, 1, 6);
 
         // DataType - Application tag - DataTypeSize
-        this.writeTag(BACNET_PROP_TYPES.unsignedInt, 0, dataTypeSize);
+        this.writeTag(BACNET_PROP_TYPES.unsignedInt, 0, 1);
 
         this.writeUInt8(paramValue)
 
@@ -200,13 +197,11 @@ export class BACnetWriterUtil {
      * @return {void}
      */
     public writeTypeReal (tagContext: number, paramValue: number): void {
-        const dataTypeSize: number = getTypeSize(BACNET_PROP_TYPES.real);
-
         // Context Number - Context tag - "Opening" Tag
         this.writeTag(tagContext, 1, 6);
 
         // DataType - Application tag - DataTypeSize
-        this.writeTag(BACNET_PROP_TYPES.real, 0, dataTypeSize);
+        this.writeTag(BACNET_PROP_TYPES.real, 0, 4);
 
         this.writeFloatBE(paramValue)
 
@@ -222,8 +217,6 @@ export class BACnetWriterUtil {
      * @return {void}
      */
     public writeTypeCharString (tagContext: number, paramValue: string): void {
-        const dataTypeSize: number = getTypeSize(BACNET_PROP_TYPES.characterString);
-
         // Context Number - Context tag - "Opening" Tag
         this.writeTag(tagContext, 1, 6);
 
@@ -256,8 +249,6 @@ export class BACnetWriterUtil {
      */
     public writeTypeStatusFlags (tagContext: number, inAlarm: boolean,
         fault: boolean, overridden: boolean, outOfService: boolean): void {
-        const dataTypeSize: number = getTypeSize(BACNET_PROP_TYPES.bitString);
-
         // Context Number - Context tag - "Opening" Tag
         this.writeTag(tagContext, 1, 6);
 
@@ -288,12 +279,10 @@ export class BACnetWriterUtil {
      * @return {void}
      */
     public writeTypeEnumerated (tagContext: number, paramValue: number): void {
-        const dataTypeSize: number = getTypeSize(BACNET_PROP_TYPES.enumerated);
-
         // Context Number - Context tag - "Opening" Tag
         this.writeTag(tagContext, 1, 6);
 
-        // DataType - Application tag - 2 bytes
+        // DataType - Application tag - 1 bytes
         this.writeTag(BACNET_PROP_TYPES.enumerated, 0, 1);
 
         // Write status flags
@@ -314,12 +303,10 @@ export class BACnetWriterUtil {
      */
     public writeTypeObjectIdentifier (tagContext: number,
             objectType: number, objectInstance: number): void {
-        const dataTypeSize: number = getTypeSize(BACNET_PROP_TYPES.objectIdentifier);
-
         // Context Number - Context tag - "Opening" Tag
         this.writeTag(tagContext, 1, 6);
 
-        // DataType - Application tag - 2 bytes
+        // DataType - Application tag - 4 bytes
         this.writeTag(BACNET_PROP_TYPES.objectIdentifier, 0, 4);
 
         // Write status flags

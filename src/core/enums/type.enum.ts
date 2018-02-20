@@ -8,17 +8,6 @@ export enum BACNET_PROP_TYPES {
     objectIdentifier = 12,
 }
 
-export function getTypeSize (type: BACNET_PROP_TYPES): number {
-    switch (type) {
-        case BACNET_PROP_TYPES.unsignedInt:
-        case BACNET_PROP_TYPES.enumerated:
-        case BACNET_PROP_TYPES.bitString:
-            return 1;
-        case BACNET_PROP_TYPES.real:
-            return 4;
-    }
-}
-
 export function getStringEncode (charSet: number): string {
     switch (charSet) {
         case 0:
