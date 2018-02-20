@@ -214,4 +214,26 @@ describe('ConverterUtil', () => {
             expect(buffer[4]).to.equal(0x78);
         });
     });
+
+    describe('writeProperty', () => {
+        let bacnetWriterUtil: BACnetWriterUtil;
+        beforeEach(() => {
+            bacnetWriterUtil = new BACnetWriterUtil();
+        });
+
+        it('should set tag 1/1/1 and param 0x08', () => {
+            bacnetWriterUtil.writeProperty(0x08, 1);
+            const buffer = bacnetWriterUtil.getBuffer();
+            expect(buffer[0]).to.equal(0x19);
+            expect(buffer[1]).to.equal(0x08);
+            expect(buffer[2]).to.equal(0x00);
+        });
+        it('should set tag 2/1/1 and param 0x4f', () => {
+            bacnetWriterUtil.writeProperty(0x4f, 2);
+            const buffer = bacnetWriterUtil.getBuffer();
+            expect(buffer[0]).to.equal(0x29);
+            expect(buffer[1]).to.equal(0x4f);
+            expect(buffer[2]).to.equal(0x00);
+        });
+    });
 });
