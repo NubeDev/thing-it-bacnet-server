@@ -2,9 +2,13 @@ import * as _ from 'lodash';
 
 import { ApiError } from '../errors';
 
-import { BACNET_PROPERTY_KEYS } from '../enums';
+import {
+    BACNET_PROPERTY_KEYS,
+    BACNET_PROP_TYPES,
+    getStringEncode,
+} from '../enums';
 
-import { OffsetUtil } from '../utils';
+import { OffsetUtil, TyperUtil } from '../utils';
 
 export class BACnetReaderUtil {
     public offset: any;
@@ -165,20 +169,90 @@ export class BACnetReaderUtil {
     }
 
     /**
-     * readValue - stub
+     * readValue - reads the param value from internal buffer.
+     *
+     * @return {Map<string, any>}
      */
-    public readValue (): Map<string, any> {
-        const paramMap: Map<string, any> = new Map();
+    public readParamValue (): Map<string, any> {
+        const paramValueMap: Map<string, any> = new Map();
 
+        // Context Number - Context tag - "Opening" Tag
         const openTag = this.readTag();
 
-        const valueTag = this.readTag();
+        // Value Type - Application tag - any
+        const paramValueTag = this.readTag();
+        paramValueMap.set('tag', paramValueTag);
 
-        const valueType = valueTag.get('number');
+        const paramValueType: BACNET_PROP_TYPES = paramValueTag.get('number');
 
+        let paramValue: any;
+        switch (paramValueType) {
+            case BACNET_PROP_TYPES.boolean: {
+                paramValue = !!paramValueTag.get('value');
+                break;
+            }
+            case BACNET_PROP_TYPES.unsignedInt: {
+                paramValue = this.readUInt8();
+                break;
+            }
+            case BACNET_PROP_TYPES.real: {
+                paramValue = this.readFloatBE();
+                break;
+            }
+            case BACNET_PROP_TYPES.characterString: {
+                const strLen = this.readUInt8();
+                const charSet = this.readUInt8();
+
+                // Get the character encoding
+                const charEncode = getStringEncode(charSet);
+                paramValueMap.set('encoding', charEncode);
+
+                paramValue = this.readString(charEncode, strLen);
+                break;
+            }
+            case BACNET_PROP_TYPES.bitString: {
+                // Read the bitString as status flag
+                // Unused byte - show the mask of unused bites
+                const unusedBits = this.readUInt8();
+                // Contains the status bits
+                const statusByte = this.readUInt8();
+                const statusMap: Map<string, boolean> = new Map();
+
+                const inAlarm = TyperUtil.getBit(statusByte, 7);
+                statusMap.set('inAlarm', !!inAlarm);
+
+                const fault = TyperUtil.getBit(statusByte, 6);
+                statusMap.set('fault', !!fault);
+
+                const overridden = TyperUtil.getBit(statusByte, 5);
+                statusMap.set('fault', !!overridden);
+
+                const outOfService = TyperUtil.getBit(statusByte, 4);
+                statusMap.set('fault', !!outOfService);
+
+                paramValue = statusMap;
+                break;
+            }
+            case BACNET_PROP_TYPES.enumerated: {
+                paramValue = this.readUInt8();
+                break;
+            }
+            case BACNET_PROP_TYPES.objectIdentifier: {
+                const objIdent = this.readUInt32BE();
+
+                const objMap: Map<string, any> =
+                    this.decodeObjectIdentifier(objIdent);
+
+                paramValue = objMap;
+                break;
+            }
+        }
+        paramValueMap.set('value', paramValue);
+
+        // Context Number - Context tag - "Closing" Tag
         const closeTag = this.readTag();
 
-        return paramMap;
+        return paramValueMap;
     }
 
     /**
