@@ -62,7 +62,7 @@ export class BACnetReaderUtil {
      * @return {string}
      */
     public readString (encoding: string, len: number): string {
-        const offStart = this.offset.inc(len);
+        const offStart = this.offset.inc(len - 1);
         const offEnd = this.offset.getVaule();
         return this.buffer.toString(encoding, offStart, offEnd);
     }
