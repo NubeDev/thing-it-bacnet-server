@@ -2,24 +2,26 @@ import * as _ from 'lodash';
 
 import { OffsetUtil } from '../utils';
 
+import { BACnetReaderUtil } from '../utils/bacnet-reader.util';
+
 export class BLVC {
     public message: Map<string, any>;
 
     constructor () {
     }
 
-    public setDataByBuffer (buf: Buffer) {
-        const offset = new OffsetUtil(0);
+    public setDataFromBuffer (buf: Buffer) {
+        const readerUtil = new BACnetReaderUtil(buf);
 
-        const mType = buf.readUInt8(offset.inc());
+        const mType = readerUtil.readUInt8();
         this.message.set('type', mType);
 
-        const mFunction = buf.readUInt8(offset.inc());
+        const mFunction = readerUtil.readUInt8();
         this.message.set('function', mFunction);
 
-        const mLenght = buf.readUInt16BE(offset.inc(2));
+        const mLenght = readerUtil.readUInt16BE();
         this.message.set('lenght', mLenght);
 
-        return buf.slice(0, offset.getVaule());
+        // return buf.slice(0, offset.getVaule());
     }
 }
