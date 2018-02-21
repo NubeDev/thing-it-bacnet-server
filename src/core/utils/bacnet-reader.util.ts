@@ -18,6 +18,17 @@ export class BACnetReaderUtil {
     }
 
     /**
+     * getRange - returns the part of buffer from "start" to the "end" position.
+     *
+     * @param  {number} start - start position
+     * @param  {number} end - end position
+     * @return {Buffer}
+     */
+    public getRange (start: number, end: number): Buffer {
+        return this.buffer.slice(start, end);
+    }
+
+    /**
      * readUInt8 - reads the 1 byte from the internal buffer.
      *
      * @return {number}
