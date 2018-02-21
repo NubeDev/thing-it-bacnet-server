@@ -397,4 +397,35 @@ describe('BACnetWriterUtil', () => {
             expect(buffer[3]).to.equal(0x5f);
         });
     });
+
+    describe('writeTypeObjectIdentifier', () => {
+        let bacnetWriterUtil: BACnetWriterUtil;
+        beforeEach(() => {
+            bacnetWriterUtil = new BACnetWriterUtil();
+        });
+
+        it('should set opening tag, param tag, object type 8, object instance 9999 and closing tag', () => {
+            bacnetWriterUtil.writeTypeObjectIdentifier(1, 8, 9999);
+            const buffer = bacnetWriterUtil.getBuffer();
+            expect(buffer[0]).to.equal(0x1e);
+            expect(buffer[1]).to.equal(0xc4);
+            expect(buffer[2]).to.equal(0x02);
+            expect(buffer[3]).to.equal(0x00);
+            expect(buffer[4]).to.equal(0x27);
+            expect(buffer[5]).to.equal(0x0f);
+            expect(buffer[6]).to.equal(0x1f);
+        });
+
+        it('should set opening tag, param tag, object type 5, object instance 46 and closing tag', () => {
+            bacnetWriterUtil.writeTypeObjectIdentifier(3, 5, 46);
+            const buffer = bacnetWriterUtil.getBuffer();
+            expect(buffer[0]).to.equal(0x3e);
+            expect(buffer[1]).to.equal(0xc4);
+            expect(buffer[2]).to.equal(0x01);
+            expect(buffer[3]).to.equal(0x40);
+            expect(buffer[4]).to.equal(0x00);
+            expect(buffer[5]).to.equal(0x2e);
+            expect(buffer[6]).to.equal(0x3f);
+        });
+    });
 });
