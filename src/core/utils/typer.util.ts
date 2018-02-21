@@ -15,6 +15,12 @@ export class TyperUtil {
         return bit;
     }
 
+    static getBitRange (value: number, startPos: number, len: number): number {
+        const mask = Math.pow(2, len) - 1;
+        const range = (value >> startPos) & mask;
+        return range;
+    }
+
     static getByte (value: number, pos: number): number {
         const byte: number = (value >> (pos * 8)) & 0x0F;
         return byte;
