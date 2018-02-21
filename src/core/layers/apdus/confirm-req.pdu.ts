@@ -2,6 +2,8 @@ import * as _ from 'lodash';
 
 import { OffsetUtil, TyperUtil, BACnetReaderUtil } from '../../utils';
 
+import { BACNET_CONFIRMED_SERVICE } from '../../enums/service.enum';
+
 export class ConfirmReqPDU {
     constructor () {
     }
@@ -51,13 +53,13 @@ export class ConfirmReqPDU {
 
         let serviceMap;
         switch (serviceChoice) {
-            case 0x05:
+            case BACNET_CONFIRMED_SERVICE.SubscribeCOV:
                 serviceMap = this.getSubscribeCOV(reader);
                 break;
-            case 0x0c:
+            case BACNET_CONFIRMED_SERVICE.ReadProperty:
                 serviceMap = this.getReadProperty(reader);
                 break;
-            case 0x0f:
+            case BACNET_CONFIRMED_SERVICE.WriteProperty:
                 serviceMap = this.getWriteProperty(reader);
                 break;
         }
