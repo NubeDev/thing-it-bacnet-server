@@ -24,7 +24,7 @@ export class BACnetReaderUtil {
      * @param  {number} end - end position
      * @return {Buffer}
      */
-    public getRange (start: number, end: number): Buffer {
+    public getRange (start: number, end?: number): Buffer {
         return this.buffer.slice(start, end);
     }
 
