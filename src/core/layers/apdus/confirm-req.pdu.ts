@@ -49,7 +49,21 @@ export class ConfirmReqPDU {
         const serviceChoice = reader.readUInt8();
         reqMap.set('serviceChoice', serviceChoice);
 
-        return null;
+        let serviceMap;
+        switch (serviceChoice) {
+            case 0x05:
+                serviceMap = this.getSubscribeCOV(reader);
+                break;
+            case 0x0c:
+                serviceMap = this.getReadProperty(reader);
+                break;
+            case 0x0f:
+                serviceMap = this.getWriteProperty(reader);
+                break;
+        }
+        reqMap.set('service', serviceMap);
+
+        return reqMap;
     }
 
     private getReadProperty (reader: BACnetReaderUtil): Map<string, any> {
