@@ -4,24 +4,36 @@ import { OffsetUtil } from '../utils';
 
 import { BACnetReaderUtil } from '../utils/bacnet-reader.util';
 
+import { NPDU } from './npdu.layer';
+
 export class BLVC {
     public message: Map<string, any>;
 
     constructor () {
     }
 
-    public setDataFromBuffer (buf: Buffer) {
+    public getFromBuffer (buf: Buffer): Map<string, any> {
         const readerUtil = new BACnetReaderUtil(buf);
 
+        const BLVCMessage: Map<string, any> = new Map();
+
         const mType = readerUtil.readUInt8();
-        this.message.set('type', mType);
+        BLVCMessage.set('type', mType);
 
         const mFunction = readerUtil.readUInt8();
-        this.message.set('function', mFunction);
+        BLVCMessage.set('function', mFunction);
 
         const mLenght = readerUtil.readUInt16BE();
-        this.message.set('lenght', mLenght);
+        BLVCMessage.set('lenght', mLenght);
 
-        // return buf.slice(0, offset.getVaule());
+        const NPDUstart = readerUtil.offset.getVaule();
+        const NPDUbuffer = readerUtil.getRange(NPDUstart, mLenght);
+
+        const npdu = new NPDU();
+
+        const NPDUMessage: Map<string, any> = npdu.getFromBuffer(buf);
+        BLVCMessage.set('npdu', NPDUMessage);
+
+        return BLVCMessage;
     }
 }
