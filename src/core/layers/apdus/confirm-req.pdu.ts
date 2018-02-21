@@ -81,4 +81,22 @@ export class ConfirmReqPDU {
 
         return serviceMap;
     }
+
+    private getWriteProperty (reader: BACnetReaderUtil): Map<string, any> {
+        const serviceMap: Map<string, any> = new Map();
+
+        const objIdent = reader.readObjectIdentifier();
+        serviceMap.set('objIdent', objIdent);
+
+        const propIdent = reader.readProperty();
+        serviceMap.set('propIdent', propIdent);
+
+        const propValue = reader.readParamValue();
+        serviceMap.set('propValue', propValue);
+
+        const priority = reader.readParam();
+        serviceMap.set('priority', priority);
+
+        return serviceMap;
+    }
 }
