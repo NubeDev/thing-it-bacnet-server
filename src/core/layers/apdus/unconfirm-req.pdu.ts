@@ -6,7 +6,7 @@ export class UnconfirmReqPDU {
     constructor () {
     }
 
-    private getFromBuffer (buf: Buffer): Map<string, any> {
+    public getFromBuffer (buf: Buffer): Map<string, any> {
         const reader = new BACnetReaderUtil(buf);
         const reqMap: Map<string, any> = new Map();
 
