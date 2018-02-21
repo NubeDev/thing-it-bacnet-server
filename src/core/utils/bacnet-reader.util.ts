@@ -88,12 +88,14 @@ export class BACnetReaderUtil {
      * @return {Map<string, any>}
      */
     public readObjectIdentifier (): Map<string, any> {
-        const tag = this.readTag();
-        const objIdent = this.readUInt32BE();
+        const objMap: Map<string, any> = new Map();
 
-        const objMap: Map<string, any> =
-            this.decodeObjectIdentifier(objIdent);
+        const tag = this.readTag();
         objMap.set('tag', tag);
+
+        const objIdent = this.readUInt32BE();
+        const objValue = this.decodeObjectIdentifier(objIdent);
+        objMap.set('value', objValue);
 
         return objMap;
     }
