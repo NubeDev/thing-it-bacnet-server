@@ -56,10 +56,10 @@ export class ConfirmReqPDU {
         const serviceMap: Map<string, any> = new Map();
 
         const objIdent = reader.readObjectIdentifier();
-        serviceMap.set('objectIdentifier', objIdent);
+        serviceMap.set('objIdent', objIdent);
 
         const propIdent = reader.readProperty();
-        serviceMap.set('propertyIdentifier', propIdent);
+        serviceMap.set('propIdent', propIdent);
 
         return serviceMap;
     }
@@ -71,7 +71,7 @@ export class ConfirmReqPDU {
         serviceMap.set('subscriberProcessId', subscriberProcessId);
 
         const objIdent = reader.readObjectIdentifier();
-        serviceMap.set('objectIdentifier', objIdent);
+        serviceMap.set('objIdent', objIdent);
 
         const issConfNotif = reader.readParam();
         serviceMap.set('issConfNotif', issConfNotif);
