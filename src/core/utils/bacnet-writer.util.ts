@@ -23,50 +23,57 @@ export class BACnetWriterUtil {
     }
 
     /**
-     * writeUInt8 - writes 1 byte to the interanal buffer.
+     * increasBufferSize - increases the size of the internal buffer.
+     *
+     * @param  {number} len - new size
+     * @return {void}
+     */
+    private increasBufferSize (size: number): void {
+        const newBuffer = Buffer.alloc(size);
+        this.buffer = Buffer.concat([this.buffer, newBuffer]);
+    }
+
+    /**
+     * writeUInt8 - writes 1 byte to the internal buffer.
      *
      * @param  {number} value - data
      * @return {void}
      */
     public writeUInt8 (value: number): void {
-        const newBuffer = Buffer.alloc(1);
-        this.buffer = Buffer.concat([this.buffer, newBuffer]);
+        this.increasBufferSize(1);
         this.buffer.writeUInt8(value, this.offset.inc());
     }
 
     /**
-     * writeUInt16BE - writes 2 bytes to the interanal buffer.
+     * writeUInt16BE - writes 2 bytes to the internal buffer.
      *
      * @param  {number} value - data
      * @return {void}
      */
     public writeUInt16BE (value: number): void {
-        const newBuffer = Buffer.alloc(2);
-        this.buffer = Buffer.concat([this.buffer, newBuffer]);
+        this.increasBufferSize(2);
         this.buffer.writeUInt16BE(value, this.offset.inc(2));
     }
 
     /**
-     * writeUInt32BE - writes 4 bytes (integer) to the interanal buffer.
+     * writeUInt32BE - writes 4 bytes (integer) to the internal buffer.
      *
      * @param  {number} value - data
      * @return {void}
      */
     public writeUInt32BE (value: number): void {
-        const newBuffer = Buffer.alloc(4);
-        this.buffer = Buffer.concat([this.buffer, newBuffer]);
+        this.increasBufferSize(4);
         this.buffer.writeUInt32BE(value, this.offset.inc(4));
     }
 
     /**
-     * writeFloatBE - writes 4 bytes (real) to the interanal buffer.
+     * writeFloatBE - writes 4 bytes (real) to the internal buffer.
      *
      * @param  {number} value - data
      * @return {void}
      */
     public writeFloatBE (value: number): void {
-        const newBuffer = Buffer.alloc(4);
-        this.buffer = Buffer.concat([this.buffer, newBuffer]);
+        this.increasBufferSize(4);
         this.buffer.writeFloatBE(value, this.offset.inc(4));
     }
 
@@ -81,13 +88,12 @@ export class BACnetWriterUtil {
     public writeString (str: string, encoding: string = 'utf8'): void {
         const strLen = str.length;
         const offStart = this.offset.inc(strLen);
-        const newBuffer = Buffer.alloc(strLen);
-        this.buffer = Buffer.concat([this.buffer, newBuffer]);
+        this.increasBufferSize(strLen);
         this.buffer.write(str, offStart, strLen, encoding);
     }
 
     /**
-     * writeTag - writes BACnet tag to the interanal buffer.
+     * writeTag - writes BACnet tag to the internal buffer.
      *
      * @param  {number} tagNumber - tag number/context
      * @param  {number} tagClass - tag class
@@ -104,7 +110,7 @@ export class BACnetWriterUtil {
     }
 
     /**
-     * writeObjectIdentifier - writes BACnet object identifier to the interanal buffer.
+     * writeObjectIdentifier - writes BACnet object identifier to the internal buffer.
      *
      * @param  {number} objectType - object type
      * @param  {number} objectId - object id
@@ -118,7 +124,7 @@ export class BACnetWriterUtil {
     }
 
     /**
-     * writeParam - writes BACnet param name to the interanal buffer.
+     * writeParam - writes BACnet param name to the internal buffer.
      *
      * @param  {number} paramName - param name
      * @param  {number} tagContext - tag context
@@ -147,7 +153,7 @@ export class BACnetWriterUtil {
     }
 
     /**
-     * writeProperty - writes BACnet param name to the interanal buffer.
+     * writeProperty - writes BACnet param name to the internal buffer.
      *
      * @param  {number} paramName - param name
      * @param  {number} tagContext - tag context
@@ -162,7 +168,7 @@ export class BACnetWriterUtil {
     }
 
     /**
-     * writeTypeBoolean - writes BACnet Boolean value to the interanal buffer.
+     * writeTypeBoolean - writes BACnet Boolean value to the internal buffer.
      *
      * @param  {number} tagContext - tag context
      * @param  {boolean} paramValue - boolean value
@@ -180,7 +186,7 @@ export class BACnetWriterUtil {
     }
 
     /**
-     * writeTypeUnsignedInt - writes BACnet Integer value to the interanal buffer.
+     * writeTypeUnsignedInt - writes BACnet Integer value to the internal buffer.
      *
      * @param  {number} tagContext - tag context
      * @param  {number} paramValue - int number
@@ -200,7 +206,7 @@ export class BACnetWriterUtil {
     }
 
     /**
-     * writeTypeReal - writes BACnet Real value to the interanal buffer.
+     * writeTypeReal - writes BACnet Real value to the internal buffer.
      *
      * @param  {number} tagContext - tag context
      * @param  {number} paramValue - real number
@@ -220,7 +226,7 @@ export class BACnetWriterUtil {
     }
 
     /**
-     * writeTypeStatusFlags - writes BACnet Status Flags value to the interanal buffer.
+     * writeTypeStatusFlags - writes BACnet Status Flags value to the internal buffer.
      *
      * @param  {number} tagContext - tag context
      * @param  {number} paramValue - enumerated value
@@ -248,7 +254,7 @@ export class BACnetWriterUtil {
     }
 
     /**
-     * writeTypeStatusFlags - writes BACnet Status Flags value to the interanal buffer.
+     * writeTypeStatusFlags - writes BACnet Status Flags value to the internal buffer.
      *
      * @param  {number} tagContext - tag context
      * @param  {boolean} inAlarm - in alarm flag
@@ -282,7 +288,7 @@ export class BACnetWriterUtil {
     }
 
     /**
-     * writeTypeEnumerated - writes BACnet Enumerated value to the interanal buffer.
+     * writeTypeEnumerated - writes BACnet Enumerated value to the internal buffer.
      *
      * @param  {number} tagContext - tag context
      * @param  {number} paramValue - enumerated value
@@ -304,7 +310,7 @@ export class BACnetWriterUtil {
 
     /**
      * writeTypeObjectIdentifier - writes BACnet ObjectIdentifier value to the
-     * interanal buffer.
+     * internal buffer.
      *
      * @param  {number} tagContext - tag context
      * @param  {number} objectType - object type
