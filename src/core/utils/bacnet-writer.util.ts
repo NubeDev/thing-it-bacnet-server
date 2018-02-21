@@ -15,7 +15,7 @@ export class BACnetWriterUtil {
 
     constructor () {
         this.offset = new OffsetUtil(0);
-        this.buffer = Buffer.alloc(50);
+        this.buffer = Buffer.alloc(0);
     }
 
     public getBuffer () {
@@ -29,6 +29,8 @@ export class BACnetWriterUtil {
      * @return {void}
      */
     public writeUInt8 (value: number): void {
+        const newBuffer = Buffer.alloc(1);
+        this.buffer = Buffer.concat([this.buffer, newBuffer]);
         this.buffer.writeUInt8(value, this.offset.inc());
     }
 
@@ -39,6 +41,8 @@ export class BACnetWriterUtil {
      * @return {void}
      */
     public writeUInt16BE (value: number): void {
+        const newBuffer = Buffer.alloc(2);
+        this.buffer = Buffer.concat([this.buffer, newBuffer]);
         this.buffer.writeUInt16BE(value, this.offset.inc(2));
     }
 
@@ -49,6 +53,8 @@ export class BACnetWriterUtil {
      * @return {void}
      */
     public writeUInt32BE (value: number): void {
+        const newBuffer = Buffer.alloc(4);
+        this.buffer = Buffer.concat([this.buffer, newBuffer]);
         this.buffer.writeUInt32BE(value, this.offset.inc(4));
     }
 
@@ -59,6 +65,8 @@ export class BACnetWriterUtil {
      * @return {void}
      */
     public writeFloatBE (value: number): void {
+        const newBuffer = Buffer.alloc(4);
+        this.buffer = Buffer.concat([this.buffer, newBuffer]);
         this.buffer.writeFloatBE(value, this.offset.inc(4));
     }
 
@@ -73,6 +81,8 @@ export class BACnetWriterUtil {
     public writeString (str: string, encoding: string = 'utf8'): void {
         const strLen = str.length;
         const offStart = this.offset.inc(strLen);
+        const newBuffer = Buffer.alloc(strLen);
+        this.buffer = Buffer.concat([this.buffer, newBuffer]);
         this.buffer.write(str, offStart, strLen, encoding);
     }
 
