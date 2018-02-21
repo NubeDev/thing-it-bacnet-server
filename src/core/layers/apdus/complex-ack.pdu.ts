@@ -4,7 +4,7 @@ import { OffsetUtil, TyperUtil, BACnetReaderUtil } from '../../utils';
 
 import { BACNET_CONFIRMED_SERVICE } from '../../enums/service.enum';
 
-export class ConfirmReqPDU {
+export class ComplexACKPDU {
     constructor () {
     }
 
