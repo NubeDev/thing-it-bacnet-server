@@ -63,4 +63,22 @@ export class ConfirmReqPDU {
 
         return serviceMap;
     }
+
+    private getSubscribeCOV (reader: BACnetReaderUtil): Map<string, any> {
+        const serviceMap: Map<string, any> = new Map();
+
+        const subscriberProcessId = reader.readParam();
+        serviceMap.set('subscriberProcessId', subscriberProcessId);
+
+        const objIdent = reader.readObjectIdentifier();
+        serviceMap.set('objectIdentifier', objIdent);
+
+        const issConfNotif = reader.readParam();
+        serviceMap.set('issConfNotif', issConfNotif);
+
+        const lifeTime = reader.readParam();
+        serviceMap.set('lifeTime', lifeTime);
+
+        return serviceMap;
+    }
 }
