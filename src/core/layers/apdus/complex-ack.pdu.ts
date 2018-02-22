@@ -1,8 +1,24 @@
 import * as _ from 'lodash';
 
-import { OffsetUtil, TyperUtil, BACnetReaderUtil } from '../../utils';
+import {
+    OffsetUtil,
+    TyperUtil,
+    BACnetReaderUtil,
+    BACnetWriterUtil,
+} from '../../utils';
 
-import { BACNET_CONFIRMED_SERVICE } from '../../enums/service.enum';
+import {
+    BACNET_PROP_TYPES,
+    BACNET_TAG_TYPES,
+    BACNET_CONFIRMED_SERVICE,
+    BACNET_UNCONFIRMED_SERVICE,
+    BACNET_SERVICE_TYPES,
+} from '../../enums';
+
+import {
+    ISimpleACK,
+    IComplexACKReadProperty,
+} from '../../interfaces';
 
 export class ComplexACKPDU {
     constructor () {
@@ -72,5 +88,32 @@ export class ComplexACKPDU {
         serviceMap.set('propValue', propValue);
 
         return serviceMap;
+    }
+
+    /**
+     * writeReadProperty - writes the message for ReadProperty service and
+     * returns the instance of the writer utility.
+     *
+     * @param  {IComplexACKReadProperty} params - ReadProperty params
+     * @return {BACnetWriterUtil}
+     */
+    public writeReadProperty (params: IComplexACKReadProperty): BACnetWriterUtil {
+        const writer = new BACnetWriterUtil();
+
+        // Write Service choice
+        writer.writeUInt8(BACNET_CONFIRMED_SERVICE.ReadProperty);
+
+        // Write Object identifier
+        writer.writeTag(0, BACNET_TAG_TYPES.context, 4);
+        writer.writeObjectIdentifier(params.objType, params.objInst);
+
+        // Write PropertyID
+        writer.writeTag(1, BACNET_TAG_TYPES.context, 1);
+        writer.writeUInt8(params.propId);
+
+        // Write PropertyID
+        writer.writeValue(3, params.propType, params.propValue);
+
+        return writer;
     }
 }
