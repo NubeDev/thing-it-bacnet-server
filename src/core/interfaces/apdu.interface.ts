@@ -4,3 +4,13 @@ export interface IUnconfirmReqIAm {
     objInst: number;
     vendorId: number;
 }
+
+export interface ISimpleACK {
+    invokeId: number;
+}
+
+export interface ISimpleACKSubscribeCOV {
+}
+
+export interface ISimpleACKReadProperty {
+}
