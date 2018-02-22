@@ -13,9 +13,14 @@ export class BACnetWriterUtil {
     public offset: OffsetUtil;
     private buffer: Buffer;
 
-    constructor () {
+    constructor (resultBuf?: Buffer) {
         this.offset = new OffsetUtil(0);
-        this.buffer = Buffer.alloc(0);
+
+        if (!resultBuf) {
+            this.buffer = Buffer.alloc(0);
+            return;
+        }
+        this.buffer = resultBuf;
     }
 
     public getBuffer () {
