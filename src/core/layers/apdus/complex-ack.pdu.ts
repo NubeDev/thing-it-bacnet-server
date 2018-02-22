@@ -16,7 +16,7 @@ import {
 } from '../../enums';
 
 import {
-    ISimpleACK,
+    IComplexACK,
     IComplexACKReadProperty,
 } from '../../interfaces';
 
@@ -88,6 +88,38 @@ export class ComplexACKPDU {
         serviceMap.set('propValue', propValue);
 
         return serviceMap;
+    }
+
+    /**
+     * writeReq - writes the massage for complex ack (header).
+     *
+     * @param  {IComplexACK} params - ComplexACK params
+     * @return {BACnetWriterUtil}
+     */
+    public writeReq (params: IComplexACK): BACnetWriterUtil {
+        const writer = new BACnetWriterUtil();
+
+        // Write service meta
+        // Set service type
+        let mMeta = TyperUtil.setBitRange(0x00,
+            BACNET_SERVICE_TYPES.ComplexACKPDU, 4, 4);
+
+        // Set service SEG flag
+        if (!_.isNil(params.seg)) {
+            mMeta = TyperUtil.setBit(mMeta, 3, params.seg);
+        }
+
+        // Set service MOR flag
+        if (!_.isNil(params.mor)) {
+            mMeta = TyperUtil.setBit(mMeta, 2, params.mor);
+        }
+
+        writer.writeUInt8(mMeta);
+
+        // Write InvokeID
+        writer.writeUInt8(params.invokeId);
+
+        return writer;
     }
 
     /**

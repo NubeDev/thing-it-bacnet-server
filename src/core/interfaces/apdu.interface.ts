@@ -18,6 +18,8 @@ export interface ISimpleACKWriteProperty {
 }
 
 export interface IComplexACK {
+    seg?: boolean;
+    mor?: boolean;
     invokeId: number;
 }
 
