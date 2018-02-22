@@ -250,19 +250,15 @@ describe('BACnetWriterUtil', () => {
             bacnetWriterUtil = new BACnetWriterUtil();
         });
 
-        it('should set opening tag, param tag with "true" value and closing tag', () => {
-            bacnetWriterUtil.writeTypeBoolean(1, true);
+        it('param tag with "true" value', () => {
+            bacnetWriterUtil.writeTypeBoolean({ value: true });
             const buffer = bacnetWriterUtil.getBuffer();
-            expect(buffer[0]).to.equal(0x1e);
-            expect(buffer[1]).to.equal(0x11);
-            expect(buffer[2]).to.equal(0x1f);
+            expect(buffer[0]).to.equal(0x11);
         });
-        it('should set opening tag, param tag with "false" value and closing tag', () => {
-            bacnetWriterUtil.writeTypeBoolean(2, false);
+        it('param tag with "false" value', () => {
+            bacnetWriterUtil.writeTypeBoolean({ value: false });
             const buffer = bacnetWriterUtil.getBuffer();
-            expect(buffer[0]).to.equal(0x2e);
-            expect(buffer[1]).to.equal(0x10);
-            expect(buffer[2]).to.equal(0x2f);
+            expect(buffer[0]).to.equal(0x10);
         });
     });
 
@@ -272,21 +268,17 @@ describe('BACnetWriterUtil', () => {
             bacnetWriterUtil = new BACnetWriterUtil();
         });
 
-        it('should set opening tag, param tag with "true" value and closing tag', () => {
-            bacnetWriterUtil.writeTypeUnsignedInt(1, 0x23);
+        it('param tag with "true" value', () => {
+            bacnetWriterUtil.writeTypeUnsignedInt({ value: 0x23 });
             const buffer = bacnetWriterUtil.getBuffer();
-            expect(buffer[0]).to.equal(0x1e);
-            expect(buffer[1]).to.equal(0x21);
-            expect(buffer[2]).to.equal(0x23);
-            expect(buffer[3]).to.equal(0x1f);
+            expect(buffer[0]).to.equal(0x21);
+            expect(buffer[1]).to.equal(0x23);
         });
-        it('should set opening tag, param tag with "true" value and closing tag', () => {
-            bacnetWriterUtil.writeTypeUnsignedInt(3, 0x34);
+        it('param tag with "true" value', () => {
+            bacnetWriterUtil.writeTypeUnsignedInt({ value: 0x34 });
             const buffer = bacnetWriterUtil.getBuffer();
-            expect(buffer[0]).to.equal(0x3e);
-            expect(buffer[1]).to.equal(0x21);
-            expect(buffer[2]).to.equal(0x34);
-            expect(buffer[3]).to.equal(0x3f);
+            expect(buffer[0]).to.equal(0x21);
+            expect(buffer[1]).to.equal(0x34);
         });
     });
 
@@ -296,27 +288,23 @@ describe('BACnetWriterUtil', () => {
             bacnetWriterUtil = new BACnetWriterUtil();
         });
 
-        it('should set opening tag, param tag, param value 22.5 and closing tag', () => {
-            bacnetWriterUtil.writeTypeReal(1, 22.5);
+        it('param tag, param value 22.5', () => {
+            bacnetWriterUtil.writeTypeReal({ value: 22.5 });
             const buffer = bacnetWriterUtil.getBuffer();
-            expect(buffer[0]).to.equal(0x1e);
-            expect(buffer[1]).to.equal(0x44);
-            expect(buffer[2]).to.equal(0x41);
-            expect(buffer[3]).to.equal(0xb4);
+            expect(buffer[0]).to.equal(0x44);
+            expect(buffer[1]).to.equal(0x41);
+            expect(buffer[2]).to.equal(0xb4);
+            expect(buffer[3]).to.equal(0x00);
             expect(buffer[4]).to.equal(0x00);
-            expect(buffer[5]).to.equal(0x00);
-            expect(buffer[6]).to.equal(0x1f);
         });
-        it('should set opening tag, param tag, param value 25.2 value and closing tag', () => {
-            bacnetWriterUtil.writeTypeReal(3, 25.2);
+        it('param tag, param value 25.2 value', () => {
+            bacnetWriterUtil.writeTypeReal({ value: 25.2 });
             const buffer = bacnetWriterUtil.getBuffer();
-            expect(buffer[0]).to.equal(0x3e);
-            expect(buffer[1]).to.equal(0x44);
-            expect(buffer[2]).to.equal(0x41);
-            expect(buffer[3]).to.equal(0xc9);
-            expect(buffer[4]).to.equal(0x99);
-            expect(buffer[5]).to.equal(0x9a);
-            expect(buffer[6]).to.equal(0x3f);
+            expect(buffer[0]).to.equal(0x44);
+            expect(buffer[1]).to.equal(0x41);
+            expect(buffer[2]).to.equal(0xc9);
+            expect(buffer[3]).to.equal(0x99);
+            expect(buffer[4]).to.equal(0x9a);
         });
     });
 
@@ -326,31 +314,27 @@ describe('BACnetWriterUtil', () => {
             bacnetWriterUtil = new BACnetWriterUtil();
         });
 
-        it('should set opening tag, param tag, param len, param encod, param value "L02" and closing tag', () => {
-            bacnetWriterUtil.writeTypeCharString(1, 'L02');
+        it('param tag, param len, param encod, param value "L02"', () => {
+            bacnetWriterUtil.writeTypeCharString({ value: 'L02' });
             const buffer = bacnetWriterUtil.getBuffer();
-            expect(buffer[0]).to.equal(0x1e);
-            expect(buffer[1]).to.equal(0x75);
-            expect(buffer[2]).to.equal(0x03);
-            expect(buffer[3]).to.equal(0x00);
-            expect(buffer[4]).to.equal(0x4c);
-            expect(buffer[5]).to.equal(0x30);
-            expect(buffer[6]).to.equal(0x32);
-            expect(buffer[7]).to.equal(0x1f);
+            expect(buffer[0]).to.equal(0x75);
+            expect(buffer[1]).to.equal(0x03);
+            expect(buffer[2]).to.equal(0x00);
+            expect(buffer[3]).to.equal(0x4c);
+            expect(buffer[4]).to.equal(0x30);
+            expect(buffer[5]).to.equal(0x32);
         });
 
-        it('should set opening tag, param tag, param len, param encod, param value "L202" and closing tag', () => {
-            bacnetWriterUtil.writeTypeCharString(1, 'L202');
+        it('param tag, param len, param encod, param value "L202"', () => {
+            bacnetWriterUtil.writeTypeCharString({ value: 'L202' });
             const buffer = bacnetWriterUtil.getBuffer();
-            expect(buffer[0]).to.equal(0x1e);
-            expect(buffer[1]).to.equal(0x75);
-            expect(buffer[2]).to.equal(0x04);
-            expect(buffer[3]).to.equal(0x00);
-            expect(buffer[4]).to.equal(0x4c);
-            expect(buffer[5]).to.equal(0x32);
-            expect(buffer[6]).to.equal(0x30);
-            expect(buffer[7]).to.equal(0x32);
-            expect(buffer[8]).to.equal(0x1f);
+            expect(buffer[0]).to.equal(0x75);
+            expect(buffer[1]).to.equal(0x04);
+            expect(buffer[2]).to.equal(0x00);
+            expect(buffer[3]).to.equal(0x4c);
+            expect(buffer[4]).to.equal(0x32);
+            expect(buffer[5]).to.equal(0x30);
+            expect(buffer[6]).to.equal(0x32);
         });
     });
 
@@ -360,24 +344,30 @@ describe('BACnetWriterUtil', () => {
             bacnetWriterUtil = new BACnetWriterUtil();
         });
 
-        it('should set opening tag, param tag, param mask, status flags 0x90 and closing tag', () => {
-            bacnetWriterUtil.writeTypeStatusFlags(1, true, false, false, true);
+        it('param tag, param mask, status flags 0x90', () => {
+            bacnetWriterUtil.writeTypeStatusFlags({
+                inAlarm: true,
+                fault: false,
+                overridden: false,
+                outOfService: true,
+            });
             const buffer = bacnetWriterUtil.getBuffer();
-            expect(buffer[0]).to.equal(0x1e);
-            expect(buffer[1]).to.equal(0x82);
-            expect(buffer[2]).to.equal(0x0F);
-            expect(buffer[3]).to.equal(0x90);
-            expect(buffer[4]).to.equal(0x1f);
+            expect(buffer[0]).to.equal(0x82);
+            expect(buffer[1]).to.equal(0x0F);
+            expect(buffer[2]).to.equal(0x90);
         });
 
-        it('should set opening tag, param tag, param mask, status flags 0x10 and closing tag', () => {
-            bacnetWriterUtil.writeTypeStatusFlags(1, false, false, false, true);
+        it('param tag, param mask, status flags 0x10', () => {
+            bacnetWriterUtil.writeTypeStatusFlags({
+                inAlarm: false,
+                fault: false,
+                overridden: false,
+                outOfService: true,
+            });
             const buffer = bacnetWriterUtil.getBuffer();
-            expect(buffer[0]).to.equal(0x1e);
-            expect(buffer[1]).to.equal(0x82);
-            expect(buffer[2]).to.equal(0x0F);
-            expect(buffer[3]).to.equal(0x10);
-            expect(buffer[4]).to.equal(0x1f);
+            expect(buffer[0]).to.equal(0x82);
+            expect(buffer[1]).to.equal(0x0F);
+            expect(buffer[2]).to.equal(0x10);
         });
     });
 
@@ -387,21 +377,17 @@ describe('BACnetWriterUtil', () => {
             bacnetWriterUtil = new BACnetWriterUtil();
         });
 
-        it('should set opening tag, param tag, value 0x12 and closing tag', () => {
-            bacnetWriterUtil.writeTypeEnumerated(1, 0x12);
+        it('param tag, value 0x12', () => {
+            bacnetWriterUtil.writeTypeEnumerated({ value: 0x12 });
             const buffer = bacnetWriterUtil.getBuffer();
-            expect(buffer[0]).to.equal(0x1e);
-            expect(buffer[1]).to.equal(0x91);
-            expect(buffer[2]).to.equal(0x12);
-            expect(buffer[3]).to.equal(0x1f);
+            expect(buffer[0]).to.equal(0x91);
+            expect(buffer[1]).to.equal(0x12);
         });
-        it('should set opening tag, param tag, value 0x44 and closing tag', () => {
-            bacnetWriterUtil.writeTypeEnumerated(5, 0x44);
+        it('param tag, value 0x44', () => {
+            bacnetWriterUtil.writeTypeEnumerated({ value: 0x44 });
             const buffer = bacnetWriterUtil.getBuffer();
-            expect(buffer[0]).to.equal(0x5e);
-            expect(buffer[1]).to.equal(0x91);
-            expect(buffer[2]).to.equal(0x44);
-            expect(buffer[3]).to.equal(0x5f);
+            expect(buffer[0]).to.equal(0x91);
+            expect(buffer[1]).to.equal(0x44);
         });
     });
 
@@ -411,28 +397,30 @@ describe('BACnetWriterUtil', () => {
             bacnetWriterUtil = new BACnetWriterUtil();
         });
 
-        it('should set opening tag, param tag, object type 8, object instance 9999 and closing tag', () => {
-            bacnetWriterUtil.writeTypeObjectIdentifier(1, 8, 9999);
+        it('param tag, object type 8, object instance 9999', () => {
+            bacnetWriterUtil.writeTypeObjectIdentifier({
+                objType: 8,
+                objInst: 9999,
+            });
             const buffer = bacnetWriterUtil.getBuffer();
-            expect(buffer[0]).to.equal(0x1e);
-            expect(buffer[1]).to.equal(0xc4);
-            expect(buffer[2]).to.equal(0x02);
-            expect(buffer[3]).to.equal(0x00);
-            expect(buffer[4]).to.equal(0x27);
-            expect(buffer[5]).to.equal(0x0f);
-            expect(buffer[6]).to.equal(0x1f);
+            expect(buffer[0]).to.equal(0xc4);
+            expect(buffer[1]).to.equal(0x02);
+            expect(buffer[2]).to.equal(0x00);
+            expect(buffer[3]).to.equal(0x27);
+            expect(buffer[4]).to.equal(0x0f);
         });
 
-        it('should set opening tag, param tag, object type 5, object instance 46 and closing tag', () => {
-            bacnetWriterUtil.writeTypeObjectIdentifier(3, 5, 46);
+        it('param tag, object type 5, object instance 46', () => {
+            bacnetWriterUtil.writeTypeObjectIdentifier({
+                objType: 5,
+                objInst: 46,
+            });
             const buffer = bacnetWriterUtil.getBuffer();
-            expect(buffer[0]).to.equal(0x3e);
-            expect(buffer[1]).to.equal(0xc4);
-            expect(buffer[2]).to.equal(0x01);
-            expect(buffer[3]).to.equal(0x40);
-            expect(buffer[4]).to.equal(0x00);
-            expect(buffer[5]).to.equal(0x2e);
-            expect(buffer[6]).to.equal(0x3f);
+            expect(buffer[0]).to.equal(0xc4);
+            expect(buffer[1]).to.equal(0x01);
+            expect(buffer[2]).to.equal(0x40);
+            expect(buffer[3]).to.equal(0x00);
+            expect(buffer[4]).to.equal(0x2e);
         });
     });
 });

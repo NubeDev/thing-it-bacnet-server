@@ -190,104 +190,68 @@ export class BACnetWriterUtil {
     /**
      * writeTypeBoolean - writes BACnet Boolean value to the internal buffer.
      *
-     * @param  {number} tagContext - tag context
-     * @param  {boolean} paramValue - boolean value
+     * @param  {any} params - object with parameters
      * @return {void}
      */
-    public writeTypeBoolean (tagContext: number, paramValue: boolean): void {
-        // Context Number - Context tag - "Opening" Tag
-        this.writeTag(tagContext, 1, 6);
-
+    public writeTypeBoolean (params: any): void {
         // DataType - Application tag - DataTypeSize
-        this.writeTag(BACNET_PROP_TYPES.boolean, 0, +paramValue);
-
-        // Context Number - Context tag - "Closing" Tag
-        this.writeTag(tagContext, 1, 7);
+        this.writeTag(BACNET_PROP_TYPES.boolean, 0, +params.value);
     }
 
     /**
      * writeTypeUnsignedInt - writes BACnet Integer value to the internal buffer.
      *
-     * @param  {number} tagContext - tag context
-     * @param  {number} paramValue - int number
+     * @param  {any} params - object with parameters
      * @return {void}
      */
-    public writeTypeUnsignedInt (tagContext: number, paramValue: number): void {
-        // Context Number - Context tag - "Opening" Tag
-        this.writeTag(tagContext, 1, 6);
-
+    public writeTypeUnsignedInt (params: any): void {
         // DataType - Application tag - DataTypeSize
         this.writeTag(BACNET_PROP_TYPES.unsignedInt, 0, 1);
 
-        this.writeUInt8(paramValue)
-
-        // Context Number - Context tag - "Closing" Tag
-        this.writeTag(tagContext, 1, 7);
+        this.writeUInt8(params.value)
     }
 
     /**
      * writeTypeReal - writes BACnet Real value to the internal buffer.
      *
-     * @param  {number} tagContext - tag context
-     * @param  {number} paramValue - real number
+     * @param  {any} params - object with parameters
      * @return {void}
      */
-    public writeTypeReal (tagContext: number, paramValue: number): void {
-        // Context Number - Context tag - "Opening" Tag
-        this.writeTag(tagContext, 1, 6);
-
+    public writeTypeReal (params: any): void {
         // DataType - Application tag - DataTypeSize
         this.writeTag(BACNET_PROP_TYPES.real, 0, 4);
 
-        this.writeFloatBE(paramValue)
-
-        // Context Number - Context tag - "Closing" Tag
-        this.writeTag(tagContext, 1, 7);
+        this.writeFloatBE(params.value)
     }
 
     /**
      * writeTypeStatusFlags - writes BACnet Status Flags value to the internal buffer.
      *
-     * @param  {number} tagContext - tag context
-     * @param  {number} paramValue - enumerated value
+     * @param  {any} params - object with parameters
      * @return {void}
      */
-    public writeTypeCharString (tagContext: number, paramValue: string): void {
-        // Context Number - Context tag - "Opening" Tag
-        this.writeTag(tagContext, 1, 6);
-
+    public writeTypeCharString (params: any): void {
         // DataType - Application tag - Extended value (5)
         this.writeTag(BACNET_PROP_TYPES.characterString, 0, 5);
 
         // Write lenght
-        const paramValueLen = paramValue.length;
+        const paramValueLen = params.value.length;
         this.writeUInt8(paramValueLen);
 
         // Write "ansi" / "utf8" encoding
         this.writeUInt8(0x00);
 
         // Write string
-        this.writeString(paramValue);
-
-        // Context Number - Context tag - "Closing" Tag
-        this.writeTag(tagContext, 1, 7);
+        this.writeString(params.value);
     }
 
     /**
      * writeTypeStatusFlags - writes BACnet Status Flags value to the internal buffer.
      *
-     * @param  {number} tagContext - tag context
-     * @param  {boolean} inAlarm - in alarm flag
-     * @param  {boolean} fault - fault flag
-     * @param  {boolean} overridden - overridden flag
-     * @param  {boolean} outOfService - out of service flag
+     * @param  {any} params - object with parameters
      * @return {void}
      */
-    public writeTypeStatusFlags (tagContext: number, inAlarm: boolean,
-        fault: boolean, overridden: boolean, outOfService: boolean): void {
-        // Context Number - Context tag - "Opening" Tag
-        this.writeTag(tagContext, 1, 6);
-
+    public writeTypeStatusFlags (params: any): void {
         // DataType - Application tag - 2 bytes
         this.writeTag(BACNET_PROP_TYPES.bitString, 0, 2);
 
@@ -295,60 +259,41 @@ export class BACnetWriterUtil {
         this.writeUInt8(0x0F);
 
         let statusFlags = 0x00;
-        statusFlags = TyperUtil.setBit(statusFlags, 7, inAlarm);
-        statusFlags = TyperUtil.setBit(statusFlags, 6, fault);
-        statusFlags = TyperUtil.setBit(statusFlags, 5, overridden);
-        statusFlags = TyperUtil.setBit(statusFlags, 4, outOfService);
+        statusFlags = TyperUtil.setBit(statusFlags, 7, params.inAlarm);
+        statusFlags = TyperUtil.setBit(statusFlags, 6, params.fault);
+        statusFlags = TyperUtil.setBit(statusFlags, 5, params.overridden);
+        statusFlags = TyperUtil.setBit(statusFlags, 4, params.outOfService);
 
         // Write status flags
         this.writeUInt8(statusFlags);
-
-        // Context Number - Context tag - "Closing" Tag
-        this.writeTag(tagContext, 1, 7);
     }
 
     /**
      * writeTypeEnumerated - writes BACnet Enumerated value to the internal buffer.
      *
-     * @param  {number} tagContext - tag context
-     * @param  {number} paramValue - enumerated value
+     * @param  {any} params - object with parameters
      * @return {void}
      */
-    public writeTypeEnumerated (tagContext: number, paramValue: number): void {
-        // Context Number - Context tag - "Opening" Tag
-        this.writeTag(tagContext, 1, 6);
-
+    public writeTypeEnumerated (params: any): void {
         // DataType - Application tag - 1 bytes
         this.writeTag(BACNET_PROP_TYPES.enumerated, 0, 1);
 
         // Write status flags
-        this.writeUInt8(paramValue);
-
-        // Context Number - Context tag - "Closing" Tag
-        this.writeTag(tagContext, 1, 7);
+        this.writeUInt8(params.value);
     }
 
     /**
      * writeTypeObjectIdentifier - writes BACnet ObjectIdentifier value to the
      * internal buffer.
      *
-     * @param  {number} tagContext - tag context
-     * @param  {number} objectType - object type
-     * @param  {number} objectInstance - object instance
+     * @param  {any} params - object with parameters
      * @return {void}
      */
-    public writeTypeObjectIdentifier (tagContext: number,
-            objectType: number, objectInstance: number): void {
-        // Context Number - Context tag - "Opening" Tag
-        this.writeTag(tagContext, 1, 6);
-
+    public writeTypeObjectIdentifier (params: any): void {
         // DataType - Application tag - 4 bytes
         this.writeTag(BACNET_PROP_TYPES.objectIdentifier, 0, 4);
 
         // Write status flags
-        this.writeObjectIdentifier(objectType, objectInstance);
-
-        // Context Number - Context tag - "Closing" Tag
-        this.writeTag(tagContext, 1, 7);
+        this.writeObjectIdentifier(params.objType, params.objInst);
     }
 }
