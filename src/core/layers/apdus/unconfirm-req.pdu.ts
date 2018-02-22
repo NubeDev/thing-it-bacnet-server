@@ -13,6 +13,10 @@ import {
     BACNET_UNCONFIRMED_SERVICE,
 } from '../../enums';
 
+import {
+    IUnconfirmReqIAm,
+} from '../../interfaces';
+
 export class UnconfirmReqPDU {
     constructor () {
     }
@@ -66,5 +70,41 @@ export class UnconfirmReqPDU {
         const serviceMap: Map<string, any> = new Map();
 
         return serviceMap;
+    }
+
+    /**
+     * writeIAm - writes the message for iAm service and returns the instance of
+     * the writer utility.
+     *
+     * @param  {IUnconfirmReqIAm} params - iAm params
+     * @return {BACnetWriterUtil}
+     */
+    public writeIAm (params: IUnconfirmReqIAm): BACnetWriterUtil {
+        const writer = new BACnetWriterUtil();
+
+        // Write Service choice
+        writer.writeUInt8(BACNET_UNCONFIRMED_SERVICE.iAm);
+
+        // Write Object identifier
+        writer.writeTag(BACNET_PROP_TYPES.objectIdentifier,
+            BACNET_TAG_TYPES.application, 4);
+        writer.writeObjectIdentifier(params.objType, params.objInst);
+
+        // Write maxAPDUlength (1476 chars)
+        writer.writeTag(BACNET_PROP_TYPES.unsignedInt,
+            BACNET_TAG_TYPES.application, 2);
+        writer.writeUInt16BE(0x05c4);
+
+        // Write Segmentation supported
+        writer.writeTag(BACNET_PROP_TYPES.enumerated,
+            BACNET_TAG_TYPES.application, 1);
+        writer.writeUInt8(0x00);
+
+        // Write Vendor ID
+        writer.writeTag(BACNET_PROP_TYPES.unsignedInt,
+            BACNET_TAG_TYPES.application, 1);
+        writer.writeUInt8(params.vendorId);
+
+        return writer;
     }
 }
