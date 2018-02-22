@@ -4,6 +4,11 @@ export enum BACNET_CONFIRMED_SERVICE {
     WriteProperty = 0x0f,
 }
 
+export enum BACNET_UNCONFIRMED_SERVICE {
+    iAm = 0x00,
+    whoIs = 0x08,
+}
+
 export enum BACNET_SERVICE_TYPES {
     ConfirmedReqPDU = 0x00,
     UnconfirmedReqPDU = 0x01,
