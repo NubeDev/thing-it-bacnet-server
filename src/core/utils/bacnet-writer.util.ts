@@ -136,10 +136,10 @@ export class BACnetWriterUtil {
      * @param  {number} objectId - object id
      * @return {void}
      */
-    public writeObjectIdentifier (objectType: number, objectId: number): void {
+    public writeObjectIdentifier (objectType: number, objectInst: number): void {
         // Object Identifier = Object Type 10 bits, Object ID 22 bits
         const objectIdentifier = ((objectType & 0x03FF) << 22)
-            | (objectId & 0x03FFFFF);
+            | (objectInst & 0x03FFFFF);
         this.writeUInt32BE(objectIdentifier);
     }
 
