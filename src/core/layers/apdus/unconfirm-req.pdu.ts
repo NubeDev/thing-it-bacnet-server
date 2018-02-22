@@ -1,6 +1,17 @@
 import * as _ from 'lodash';
 
-import { OffsetUtil, TyperUtil, BACnetReaderUtil } from '../../utils';
+import {
+    OffsetUtil,
+    TyperUtil,
+    BACnetReaderUtil,
+    BACnetWriterUtil,
+} from '../../utils';
+
+import {
+    BACNET_PROP_TYPES,
+    BACNET_TAG_TYPES,
+    BACNET_UNCONFIRMED_SERVICE,
+} from '../../enums';
 
 export class UnconfirmReqPDU {
     constructor () {
@@ -21,10 +32,10 @@ export class UnconfirmReqPDU {
 
         let serviceMap;
         switch (serviceChoice) {
-            case 0x00:
+            case BACNET_UNCONFIRMED_SERVICE.iAm:
                 serviceMap = this.getIAm(reader);
                 break;
-            case 0x08:
+            case BACNET_UNCONFIRMED_SERVICE.whoIs:
                 serviceMap = this.getWhoIs(reader);
                 break;
         }
