@@ -21,6 +21,23 @@ export class TyperUtil {
         return range;
     }
 
+    /**
+     * setBitRange - sets the value in specific the range of bits.
+     *
+     * @param  {number} bitMap - old value
+     * @param  {number} newValue - new value for range
+     * @param  {number} startPos - start position
+     * @param  {number} len - number of bits
+     * @return {number}
+     */
+    static setBitRange (bitMap: number, newValue: number,
+            startPos: number, len: number): number {
+        const mask = Math.pow(2, len) - 1;
+        const newValueMask = (newValue & mask) << startPos;
+        const bitMapMask = ~(mask << startPos);
+        return (bitMap & bitMapMask) | newValueMask;
+    }
+
     static getByte (value: number, pos: number): number {
         const byte: number = (value >> (pos * 8)) & 0x0F;
         return byte;
