@@ -6,6 +6,17 @@ export interface IUnconfirmReqIAm {
     objInst: number;
     vendorId: number;
 }
+export interface IUnconfirmReqCOVNotification {
+    processId: number;
+    devObjType: number;
+    devObjInst: number;
+    portObjType: number;
+    portObjInst: number;
+    propId: number;
+    propValue: any;
+    propType: BACNET_PROP_TYPES;
+    statusValue: any;
+}
 
 export interface ISimpleACK {
     invokeId: number;

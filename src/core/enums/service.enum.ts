@@ -6,6 +6,7 @@ export enum BACNET_CONFIRMED_SERVICE {
 
 export enum BACNET_UNCONFIRMED_SERVICE {
     iAm = 0x00,
+    covNotification = 0x02,
     whoIs = 0x08,
 }
 
