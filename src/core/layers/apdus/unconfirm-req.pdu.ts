@@ -11,6 +11,7 @@ import {
     BACNET_PROP_TYPES,
     BACNET_TAG_TYPES,
     BACNET_UNCONFIRMED_SERVICE,
+    BACNET_SERVICE_TYPES,
 } from '../../enums';
 
 import {
@@ -70,6 +71,22 @@ export class UnconfirmReqPDU {
         const serviceMap: Map<string, any> = new Map();
 
         return serviceMap;
+    }
+
+    /**
+     * writeReq - writes the massage for unconfirmed request (header).
+     *
+     * @return {BACnetWriterUtil}
+     */
+    public writeReq (): BACnetWriterUtil {
+        const writer = new BACnetWriterUtil();
+
+        // Write Service Type
+        const mMeta = TyperUtil.setBitRange(0x00,
+            BACNET_SERVICE_TYPES.UnconfirmedReqPDU, 4, 4);
+        writer.writeUInt8(mMeta);
+
+        return writer;
     }
 
     /**
