@@ -15,3 +15,8 @@ export enum BACNET_SERVICE_TYPES {
     SimpleACKPDU = 0x02,
     ComplexACKPDU = 0x03,
 }
+
+export enum BACNET_TAG_TYPES {
+    application = 0,
+    context = 1,
+}
