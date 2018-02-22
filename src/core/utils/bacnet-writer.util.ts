@@ -23,6 +23,21 @@ export class BACnetWriterUtil {
         this.buffer = resultBuf;
     }
 
+    /**
+     * concat - concatenates the writers and returns the writer with common buffer.
+     *
+     * @static
+     * @param  {BACnetWriterUtil[]} restsOfWriters - description
+     * @return {type}
+     */
+    static concat (...restsOfWriters: BACnetWriterUtil[]) {
+        const resultBuf = _.reduce(restsOfWriters, (result, writer) => {
+            const bufOfWriter = writer.getBuffer();
+            return Buffer.concat([result, bufOfWriter]);
+        }, Buffer.alloc(0));
+        return new BACnetWriterUtil(resultBuf);
+    }
+
     public getBuffer () {
         return this.buffer;
     }
