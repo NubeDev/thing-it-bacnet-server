@@ -40,15 +40,6 @@ export class ComplexACKPDU {
         const pduMor = TyperUtil.getBit(mMeta, 2);
         reqMap.set('mor', pduMor);
 
-        // --- Read control byte
-        const mControl = reader.readUInt8();
-
-        const maxSegs = TyperUtil.getBitRange(mControl, 4, 3);
-        reqMap.set('maxSegs', maxSegs);
-
-        const maxResp = TyperUtil.getBitRange(mControl, 0, 4);
-        reqMap.set('maxResp', maxResp);
-
         // --- Read InvokeID byte
         const invokeId = reader.readUInt8();
         reqMap.set('invokeId', invokeId);
