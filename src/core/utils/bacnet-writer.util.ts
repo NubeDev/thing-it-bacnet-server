@@ -188,6 +188,46 @@ export class BACnetWriterUtil {
     }
 
     /**
+     * writeValue - writes BACnet property value to the internal buffer.
+     *
+     * @param  {number} tagContext - tag context
+     * @param  {BACNET_PROP_TYPES} valueType - type of property value
+     * @param  {any} params - parama object with value
+     * @return {void}
+     */
+    public writeValue (tagContext: number, propValueType: BACNET_PROP_TYPES, params: any): void {
+        // Context Number - Context tag - "Opening" Tag
+        this.writeTag(tagContext, 1, 6);
+
+        switch (propValueType) {
+            case BACNET_PROP_TYPES.boolean:
+                this.writeTypeBoolean(params);
+                break;
+            case BACNET_PROP_TYPES.unsignedInt:
+                this.writeTypeUnsignedInt(params);
+                break;
+            case BACNET_PROP_TYPES.real:
+                this.writeTypeReal(params);
+                break;
+            case BACNET_PROP_TYPES.characterString:
+                this.writeTypeCharString(params);
+                break;
+            case BACNET_PROP_TYPES.bitString:
+                this.writeTypeStatusFlags(params);
+                break;
+            case BACNET_PROP_TYPES.enumerated:
+                this.writeTypeEnumerated(params);
+                break;
+            case BACNET_PROP_TYPES.objectIdentifier:
+                this.writeTypeObjectIdentifier(params);
+                break;
+        }
+
+        // Context Number - Context tag - "Closing" Tag
+        this.writeTag(tagContext, 1, 7);
+    }
+
+    /**
      * writeTypeBoolean - writes BACnet Boolean value to the internal buffer.
      *
      * @param  {any} params - object with parameters
