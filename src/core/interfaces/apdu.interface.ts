@@ -12,5 +12,5 @@ export interface ISimpleACK {
 export interface ISimpleACKSubscribeCOV {
 }
 
-export interface ISimpleACKReadProperty {
+export interface ISimpleACKWriteProperty {
 }

@@ -18,7 +18,7 @@ import {
 import {
     ISimpleACK,
     ISimpleACKSubscribeCOV,
-    ISimpleACKReadProperty,
+    ISimpleACKWriteProperty,
 } from '../../interfaces';
 
 export class SimpleACKPDU {
@@ -105,17 +105,17 @@ export class SimpleACKPDU {
     }
 
     /**
-     * writeReadPropery - writes the message for ReadProperty service and
+     * writeWriteProperty - writes the message for WriteProperty service and
      * returns the instance of the writer utility.
      *
-     * @param  {ISimpleACKReadProperty} params - ReadProperty params
+     * @param  {ISimpleACKWriteProperty} params - WriteProperty params
      * @return {BACnetWriterUtil}
      */
-    public writeReadPropery (params: ISimpleACKReadProperty): BACnetWriterUtil {
+    public writeWriteProperty (params: ISimpleACKWriteProperty): BACnetWriterUtil {
         const writer = new BACnetWriterUtil();
 
         // Write Service choice
-        writer.writeUInt8(BACNET_CONFIRMED_SERVICE.ReadProperty);
+        writer.writeUInt8(BACNET_CONFIRMED_SERVICE.WriteProperty);
 
         return writer;
     }
