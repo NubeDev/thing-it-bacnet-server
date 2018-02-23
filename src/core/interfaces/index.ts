@@ -1,2 +1,2 @@
-export * from './apdu.interface';
+export * from './bacnet.interface';
 export * from './app.interface';

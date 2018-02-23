@@ -1,10 +1,18 @@
 import * as _ from 'lodash';
 
-import { OffsetUtil, TyperUtil } from '../utils';
-
-import { BACnetReaderUtil } from '../utils/bacnet-reader.util';
+import {
+    OffsetUtil,
+    TyperUtil,
+    BACnetReaderUtil,
+    BACnetWriterUtil,
+} from '../utils';
 
 import { apdu, APDU } from './apdu.layer';
+
+import {
+    INPDULayer,
+    INPDULayerControl,
+} from '../interfaces';
 
 export class NPDU {
     private apdu: APDU;
@@ -93,6 +101,89 @@ export class NPDU {
         NPDUMessage.set('apdu', APDUMessage);
 
         return NPDUMessage;
+    }
+
+    /**
+     * writeNPDULayer - writes the message for NPDU layer and
+     * returns the instance of the writer utility.
+     *
+     * @param  {INPDULayer} params - NPDULayer params
+     * @return {BACnetWriterUtil}
+     */
+    public writeNPDULayer (params: INPDULayer): BACnetWriterUtil {
+        let writer = new BACnetWriterUtil();
+
+        // Write Service choice
+        writer.writeUInt8(params.version);
+
+        const writerControl = this.writeNPDULayerControl(params.control);
+        writer = BACnetWriterUtil.concat(writer, writerControl);
+
+        if (_.get(params, 'control.destSpecifier')) {
+            writer.writeUInt16BE(params.destNetworkAddress);
+
+            const mMacAddressLen = _.get(params, 'destMacAddress', '').length;
+            writer.writeUInt8(mMacAddressLen);
+
+            if (mMacAddressLen) {
+                writer.writeString(params.destMacAddress);
+            }
+        }
+
+        if (_.get(params, 'control.srcSpecifier')) {
+            writer.writeUInt16BE(params.srcNetworkAddress);
+
+            const mMacAddressLen = _.get(params, 'srcMacAddress', '').length;
+            writer.writeUInt8(mMacAddressLen);
+
+            if (mMacAddressLen) {
+                writer.writeString(params.srcMacAddress);
+            }
+        }
+
+        if (_.isNumber(params.hopCount)) {
+            writer.writeUInt8(params.hopCount);
+        }
+
+        return writer;
+    }
+
+    /**
+     * writeNPDULayerControl - writes the message for NPDU layer control byte and
+     * returns the instance of the writer utility.
+     *
+     * @param  {INPDULayerControl} params - NPDULayerControl params
+     * @return {BACnetWriterUtil}
+     */
+    public writeNPDULayerControl (params: INPDULayerControl): BACnetWriterUtil {
+        const writer = new BACnetWriterUtil();
+
+        // Write Service choice
+        let control = 0x00;
+
+        if (params) {
+            control = params.noApduMessageType
+            ? TyperUtil.setBit(control, 7, params.noApduMessageType) : control;
+
+            control = params.destSpecifier
+            ? TyperUtil.setBit(control, 5, params.destSpecifier) : control;
+
+            control = params.srcSpecifier
+            ? TyperUtil.setBit(control, 3, params.srcSpecifier) : control;
+
+            control = params.expectingReply
+            ? TyperUtil.setBit(control, 2, params.expectingReply) : control;
+
+            control = _.isNumber(params.priority1)
+            ? TyperUtil.setBit(control, 1, !!params.priority1) : control;
+
+            control = _.isNumber(params.priority2)
+            ? TyperUtil.setBit(control, 0, !!params.priority2) : control;
+        }
+
+        writer.writeUInt8(control);
+
+        return writer;
     }
 }
 

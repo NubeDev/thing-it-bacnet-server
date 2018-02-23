@@ -1,6 +1,25 @@
 
 import { BACnetPropTypes } from '../enums';
 
+export interface INPDULayer {
+    version: number;
+    control?: INPDULayerControl;
+    destNetworkAddress?: number;
+    destMacAddress?: string;
+    srcNetworkAddress?: number;
+    srcMacAddress?: string;
+    hopCount?: number;
+}
+
+export interface INPDULayerControl {
+    noApduMessageType?: boolean;
+    destSpecifier?: boolean;
+    srcSpecifier?: boolean;
+    expectingReply?: boolean;
+    priority1?: number;
+    priority2?: number;
+}
+
 export interface IUnconfirmReqIAm {
     objType: number;
     objInst: number;
