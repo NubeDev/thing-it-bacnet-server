@@ -89,7 +89,7 @@ export class NPDU {
         const APDUstart = readerUtil.offset.getVaule();
         const APDUbuffer = readerUtil.getRange(APDUstart);
 
-        const APDUMessage: Map<string, any> = this.apdu.getFromBuffer(buf);
+        const APDUMessage: Map<string, any> = this.apdu.getFromBuffer(APDUbuffer);
         NPDUMessage.set('apdu', APDUMessage);
 
         return NPDUMessage;
