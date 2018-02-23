@@ -4,7 +4,7 @@ import { OffsetUtil, TyperUtil, BACnetReaderUtil } from '../utils';
 
 import { ConfirmReqPDU, SimpleACKPDU, UnconfirmReqPDU } from './apdus';
 
-import { BACNET_SERVICE_TYPES } from '../enums';
+import { BACnetServiceTypes } from '../enums';
 
 export class APDU {
     constructor () {
@@ -18,15 +18,15 @@ export class APDU {
 
         let reqInst;
         switch (mType) {
-            case BACNET_SERVICE_TYPES.ConfirmedReqPDU: {
+            case BACnetServiceTypes.ConfirmedReqPDU: {
                 reqInst = new ConfirmReqPDU();
                 break;
             }
-            case BACNET_SERVICE_TYPES.UnconfirmedReqPDU: {
+            case BACnetServiceTypes.UnconfirmedReqPDU: {
                 reqInst = new UnconfirmReqPDU();
                 break;
             }
-            case BACNET_SERVICE_TYPES.ConfirmedReqPDU: {
+            case BACnetServiceTypes.ConfirmedReqPDU: {
                 reqInst = new ConfirmReqPDU();
                 break;
             }

@@ -8,11 +8,11 @@ import {
 } from '../../utils';
 
 import {
-    BACNET_PROP_TYPES,
-    BACNET_TAG_TYPES,
-    BACNET_CONFIRMED_SERVICE,
-    BACNET_UNCONFIRMED_SERVICE,
-    BACNET_SERVICE_TYPES,
+    BACnetPropTypes,
+    BACnetTagTypes,
+    BACnetConfirmedService,
+    BACnetUnconfirmedService,
+    BACnetServiceTypes,
 } from '../../enums';
 
 import {
@@ -57,7 +57,7 @@ export class ComplexACKPDU {
 
         let serviceMap;
         switch (serviceChoice) {
-            case BACNET_CONFIRMED_SERVICE.ReadProperty:
+            case BACnetConfirmedService.ReadProperty:
                 serviceMap = this.getReadProperty(reader);
                 break;
         }
@@ -93,7 +93,7 @@ export class ComplexACKPDU {
         // Write service meta
         // Set service type
         let mMeta = TyperUtil.setBitRange(0x00,
-            BACNET_SERVICE_TYPES.ComplexACKPDU, 4, 4);
+            BACnetServiceTypes.ComplexACKPDU, 4, 4);
 
         // Set service SEG flag
         if (!_.isNil(params.seg)) {
@@ -124,14 +124,14 @@ export class ComplexACKPDU {
         const writer = new BACnetWriterUtil();
 
         // Write Service choice
-        writer.writeUInt8(BACNET_CONFIRMED_SERVICE.ReadProperty);
+        writer.writeUInt8(BACnetConfirmedService.ReadProperty);
 
         // Write Object identifier
-        writer.writeTag(0, BACNET_TAG_TYPES.context, 4);
+        writer.writeTag(0, BACnetTagTypes.context, 4);
         writer.writeObjectIdentifier(params.objType, params.objInst);
 
         // Write PropertyID
-        writer.writeTag(1, BACNET_TAG_TYPES.context, 1);
+        writer.writeTag(1, BACnetTagTypes.context, 1);
         writer.writeUInt8(params.propId);
 
         // Write PropertyID

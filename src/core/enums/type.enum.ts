@@ -1,4 +1,4 @@
-export enum BACNET_PROP_TYPES {
+export enum BACnetPropTypes {
     boolean = 1,
     unsignedInt = 2,
     real = 4,

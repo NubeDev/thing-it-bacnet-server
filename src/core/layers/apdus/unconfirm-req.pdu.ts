@@ -8,12 +8,12 @@ import {
 } from '../../utils';
 
 import {
-    BACNET_PROP_TYPES,
-    BACNET_PROPERTY_KEYS,
-    BACNET_TAG_TYPES,
-    BACNET_CONFIRMED_SERVICE,
-    BACNET_UNCONFIRMED_SERVICE,
-    BACNET_SERVICE_TYPES,
+    BACnetPropTypes,
+    BACnetPropIds,
+    BACnetTagTypes,
+    BACnetConfirmedService,
+    BACnetUnconfirmedService,
+    BACnetServiceTypes,
 } from '../../enums';
 
 import {
@@ -40,10 +40,10 @@ export class UnconfirmReqPDU {
 
         let serviceMap;
         switch (serviceChoice) {
-            case BACNET_UNCONFIRMED_SERVICE.iAm:
+            case BACnetUnconfirmedService.iAm:
                 serviceMap = this.getIAm(reader);
                 break;
-            case BACNET_UNCONFIRMED_SERVICE.whoIs:
+            case BACnetUnconfirmedService.whoIs:
                 serviceMap = this.getWhoIs(reader);
                 break;
         }
@@ -86,7 +86,7 @@ export class UnconfirmReqPDU {
 
         // Write Service Type
         const mMeta = TyperUtil.setBitRange(0x00,
-            BACNET_SERVICE_TYPES.UnconfirmedReqPDU, 4, 4);
+            BACnetServiceTypes.UnconfirmedReqPDU, 4, 4);
         writer.writeUInt8(mMeta);
 
         return writer;
@@ -103,26 +103,26 @@ export class UnconfirmReqPDU {
         const writer = new BACnetWriterUtil();
 
         // Write Service choice
-        writer.writeUInt8(BACNET_UNCONFIRMED_SERVICE.iAm);
+        writer.writeUInt8(BACnetUnconfirmedService.iAm);
 
         // Write Object identifier
-        writer.writeTag(BACNET_PROP_TYPES.objectIdentifier,
-            BACNET_TAG_TYPES.application, 4);
+        writer.writeTag(BACnetPropTypes.objectIdentifier,
+            BACnetTagTypes.application, 4);
         writer.writeObjectIdentifier(params.objType, params.objInst);
 
         // Write maxAPDUlength (1476 chars)
-        writer.writeTag(BACNET_PROP_TYPES.unsignedInt,
-            BACNET_TAG_TYPES.application, 2);
+        writer.writeTag(BACnetPropTypes.unsignedInt,
+            BACnetTagTypes.application, 2);
         writer.writeUInt16BE(0x05c4);
 
         // Write Segmentation supported
-        writer.writeTag(BACNET_PROP_TYPES.enumerated,
-            BACNET_TAG_TYPES.application, 1);
+        writer.writeTag(BACnetPropTypes.enumerated,
+            BACnetTagTypes.application, 1);
         writer.writeUInt8(0x00);
 
         // Write Vendor ID
-        writer.writeTag(BACNET_PROP_TYPES.unsignedInt,
-            BACNET_TAG_TYPES.application, 1);
+        writer.writeTag(BACnetPropTypes.unsignedInt,
+            BACnetTagTypes.application, 1);
         writer.writeUInt8(params.vendorId);
 
         return writer;
@@ -139,42 +139,42 @@ export class UnconfirmReqPDU {
         const writer = new BACnetWriterUtil();
 
         // Write Service choice
-        writer.writeUInt8(BACNET_UNCONFIRMED_SERVICE.covNotification);
+        writer.writeUInt8(BACnetUnconfirmedService.covNotification);
 
         // Write Process Identifier
-        writer.writeTag(0, BACNET_TAG_TYPES.context, 1);
+        writer.writeTag(0, BACnetTagTypes.context, 1);
         const processId = params.processId ? params.processId : 1;
         writer.writeUInt8(processId);
 
         // Write Device Object Identifier
-        writer.writeTag(1, BACNET_TAG_TYPES.context, 4);
+        writer.writeTag(1, BACnetTagTypes.context, 4);
         writer.writeObjectIdentifier(params.devObjType, params.devObjInst);
 
         // Write Port Object Identifier
-        writer.writeTag(2, BACNET_TAG_TYPES.context, 4);
+        writer.writeTag(2, BACnetTagTypes.context, 4);
         writer.writeObjectIdentifier(params.portObjType, params.portObjInst);
 
         // Write timer remaining
-        writer.writeTag(3, BACNET_TAG_TYPES.context, 1);
+        writer.writeTag(3, BACnetTagTypes.context, 1);
         writer.writeUInt8(0x00);
 
         // List of Values
         // Write opening tag for list of values
-        writer.writeTag(4, BACNET_TAG_TYPES.context, 6);
+        writer.writeTag(4, BACnetTagTypes.context, 6);
 
         // Write PropertyID
-        writer.writeTag(0, BACNET_TAG_TYPES.context, 1);
+        writer.writeTag(0, BACnetTagTypes.context, 1);
         writer.writeUInt8(params.propId);
 
         // Write PropertyValue
         writer.writeValue(2, params.propType, params.propValue);
 
         // Write PropertyID of Status flag
-        writer.writeTag(0, BACNET_TAG_TYPES.context, 1);
-        writer.writeUInt8(BACNET_PROPERTY_KEYS.statusFlags);
+        writer.writeTag(0, BACnetTagTypes.context, 1);
+        writer.writeUInt8(BACnetPropIds.statusFlags);
 
         // Write PropertyValue of Status flag
-        writer.writeValue(2, BACNET_PROP_TYPES.bitString, params.statusValue);
+        writer.writeValue(2, BACnetPropTypes.bitString, params.statusValue);
 
         return writer;
     }

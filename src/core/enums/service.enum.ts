@@ -1,23 +1,23 @@
-export enum BACNET_CONFIRMED_SERVICE {
+export enum BACnetConfirmedService {
     SubscribeCOV = 0x05,
     ReadProperty = 0x0c,
     WriteProperty = 0x0f,
 }
 
-export enum BACNET_UNCONFIRMED_SERVICE {
+export enum BACnetUnconfirmedService {
     iAm = 0x00,
     covNotification = 0x02,
     whoIs = 0x08,
 }
 
-export enum BACNET_SERVICE_TYPES {
+export enum BACnetServiceTypes {
     ConfirmedReqPDU = 0x00,
     UnconfirmedReqPDU = 0x01,
     SimpleACKPDU = 0x02,
     ComplexACKPDU = 0x03,
 }
 
-export enum BACNET_TAG_TYPES {
+export enum BACnetTagTypes {
     application = 0,
     context = 1,
 }

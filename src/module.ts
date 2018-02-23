@@ -1,8 +1,8 @@
 
 import {
-    BACNET_PROPERTY_KEYS,
-    BACNET_OBJECT_TYPES,
-    BACNET_PROP_TYPES,
+    BACnetPropIds,
+    BACnetObjTypes,
+    BACnetPropTypes,
 } from './core/enums';
 
 import {
@@ -14,39 +14,39 @@ import {
 export const BACnetModule: IBACnetModule = {
     objects: [
         {
-            objType: BACNET_OBJECT_TYPES.Device,
+            objType: BACnetObjTypes.Device,
             props: [
                 {
-                    propId: BACNET_PROPERTY_KEYS.objectName,
-                    propType: BACNET_PROP_TYPES.characterString,
+                    propId: BACnetPropIds.objectName,
+                    propType: BACnetPropTypes.characterString,
                     propValue: {
                         value: 'KNX-BACnet LOYTEC',
                     },
                 },
                 {
-                    propId: BACNET_PROPERTY_KEYS.description,
-                    propType: BACNET_PROP_TYPES.characterString,
+                    propId: BACnetPropIds.description,
+                    propType: BACnetPropTypes.characterString,
                     propValue: {
                         value: 'KNX-BACnet LOYTEC',
                     },
                 },
                 {
-                    propId: BACNET_PROPERTY_KEYS.vendorName,
-                    propType: BACNET_PROP_TYPES.characterString,
+                    propId: BACnetPropIds.vendorName,
+                    propType: BACnetPropTypes.characterString,
                     propValue: {
                         value: 'LOYTEC electronics GmbH',
                     },
                 },
                 {
-                    propId: BACNET_PROPERTY_KEYS.modelName,
-                    propType: BACNET_PROP_TYPES.characterString,
+                    propId: BACnetPropIds.modelName,
+                    propType: BACnetPropTypes.characterString,
                     propValue: {
                         value: 'LINX-202',
                     },
                 },
                 {
-                    propId: BACNET_PROPERTY_KEYS.applicationSoftwareVersion,
-                    propType: BACNET_PROP_TYPES.characterString,
+                    propId: BACnetPropIds.applicationSoftwareVersion,
+                    propType: BACnetPropTypes.characterString,
                     propValue: {
                         value: 'V6',
                     },
@@ -54,18 +54,18 @@ export const BACnetModule: IBACnetModule = {
             ],
             objects: [
                 {
-                    objType: BACNET_OBJECT_TYPES.BinaryValue,
+                    objType: BACnetObjTypes.BinaryValue,
                     props: [
                         {
-                            propId: BACNET_PROPERTY_KEYS.presentValue,
-                            propType: BACNET_PROP_TYPES.enumerated,
+                            propId: BACnetPropIds.presentValue,
+                            propType: BACnetPropTypes.enumerated,
                             propValue: {
                                 value: 0,
                             },
                         },
                         {
-                            propId: BACNET_PROPERTY_KEYS.statusFlags,
-                            propType: BACNET_PROP_TYPES.bitString,
+                            propId: BACnetPropIds.statusFlags,
+                            propType: BACnetPropTypes.bitString,
                             propValue: {
                                 inAlarm: false,
                                 fault: false,

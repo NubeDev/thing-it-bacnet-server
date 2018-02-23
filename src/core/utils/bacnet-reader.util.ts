@@ -3,8 +3,8 @@ import * as _ from 'lodash';
 import { ApiError } from '../errors';
 
 import {
-    BACNET_PROPERTY_KEYS,
-    BACNET_PROP_TYPES,
+    BACnetPropIds,
+    BACnetPropTypes,
     getStringEncode,
 } from '../enums';
 
@@ -160,7 +160,7 @@ export class BACnetReaderUtil {
         const propMap: Map<string, any> = this.readParam();
 
         const propValue: number = propMap.get('value');
-        const propName: string = BACNET_PROPERTY_KEYS[propValue];
+        const propName: string = BACnetPropIds[propValue];
         propMap.set('name', propName);
 
         return propMap;
@@ -206,23 +206,23 @@ export class BACnetReaderUtil {
         const paramValueTag = this.readTag();
         paramValueMap.set('tag', paramValueTag);
 
-        const paramValueType: BACNET_PROP_TYPES = paramValueTag.get('number');
+        const paramValueType: BACnetPropTypes = paramValueTag.get('number');
 
         let paramValue: any;
         switch (paramValueType) {
-            case BACNET_PROP_TYPES.boolean: {
+            case BACnetPropTypes.boolean: {
                 paramValue = !!paramValueTag.get('value');
                 break;
             }
-            case BACNET_PROP_TYPES.unsignedInt: {
+            case BACnetPropTypes.unsignedInt: {
                 paramValue = this.readUInt8();
                 break;
             }
-            case BACNET_PROP_TYPES.real: {
+            case BACnetPropTypes.real: {
                 paramValue = this.readFloatBE();
                 break;
             }
-            case BACNET_PROP_TYPES.characterString: {
+            case BACnetPropTypes.characterString: {
                 const strLen = this.readUInt8();
                 const charSet = this.readUInt8();
 
@@ -233,7 +233,7 @@ export class BACnetReaderUtil {
                 paramValue = this.readString(charEncode, strLen);
                 break;
             }
-            case BACNET_PROP_TYPES.bitString: {
+            case BACnetPropTypes.bitString: {
                 // Read the bitString as status flag
                 // Unused byte - show the mask of unused bites
                 const unusedBits = this.readUInt8();
@@ -256,11 +256,11 @@ export class BACnetReaderUtil {
                 paramValue = statusMap;
                 break;
             }
-            case BACNET_PROP_TYPES.enumerated: {
+            case BACnetPropTypes.enumerated: {
                 paramValue = this.readUInt8();
                 break;
             }
-            case BACNET_PROP_TYPES.objectIdentifier: {
+            case BACnetPropTypes.objectIdentifier: {
                 const objIdent = this.readUInt32BE();
 
                 const objMap: Map<string, any> =

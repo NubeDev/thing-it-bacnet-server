@@ -1,7 +1,7 @@
 import {
-    BACNET_PROPERTY_KEYS,
-    BACNET_OBJECT_TYPES,
-    BACNET_PROP_TYPES,
+    BACnetPropIds,
+    BACnetObjTypes,
+    BACnetPropTypes,
 } from '../enums';
 
 export interface IBACnetModule {
@@ -9,13 +9,13 @@ export interface IBACnetModule {
 }
 
 export interface IBACnetObject {
-    objType: BACNET_OBJECT_TYPES;
+    objType: BACnetObjTypes;
     props: IBACnetObjectProperty[];
     objects?: IBACnetObject[];
 }
 
 export interface IBACnetObjectProperty {
-    propId: BACNET_PROPERTY_KEYS;
-    propType: BACNET_PROP_TYPES;
+    propId: BACnetPropIds;
+    propType: BACnetPropTypes;
     propValue: any;
 }

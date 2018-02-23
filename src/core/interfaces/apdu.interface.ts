@@ -1,5 +1,5 @@
 
-import { BACNET_PROP_TYPES } from '../enums';
+import { BACnetPropTypes } from '../enums';
 
 export interface IUnconfirmReqIAm {
     objType: number;
@@ -14,7 +14,7 @@ export interface IUnconfirmReqCOVNotification {
     portObjInst: number;
     propId: number;
     propValue: any;
-    propType: BACNET_PROP_TYPES;
+    propType: BACnetPropTypes;
     statusValue: any;
 }
 
@@ -39,5 +39,5 @@ export interface IComplexACKReadProperty {
     objInst: number;
     propId: number;
     propValue: any;
-    propType: BACNET_PROP_TYPES;
+    propType: BACnetPropTypes;
 }

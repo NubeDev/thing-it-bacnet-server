@@ -8,11 +8,11 @@ import {
 } from '../../utils';
 
 import {
-    BACNET_PROP_TYPES,
-    BACNET_TAG_TYPES,
-    BACNET_CONFIRMED_SERVICE,
-    BACNET_UNCONFIRMED_SERVICE,
-    BACNET_SERVICE_TYPES,
+    BACnetPropTypes,
+    BACnetTagTypes,
+    BACnetConfirmedService,
+    BACnetUnconfirmedService,
+    BACnetServiceTypes,
 } from '../../enums';
 
 import {
@@ -44,10 +44,10 @@ export class SimpleACKPDU {
 
         let serviceMap;
         switch (serviceChoice) {
-            case BACNET_CONFIRMED_SERVICE.SubscribeCOV:
+            case BACnetConfirmedService.SubscribeCOV:
                 serviceMap = this.getSubscribeCOV(reader);
                 break;
-            case BACNET_CONFIRMED_SERVICE.WriteProperty:
+            case BACnetConfirmedService.WriteProperty:
                 serviceMap = this.getWriteProperty(reader);
                 break;
         }
@@ -79,7 +79,7 @@ export class SimpleACKPDU {
 
         // Write Service Type
         const mMeta = TyperUtil.setBitRange(0x00,
-            BACNET_SERVICE_TYPES.SimpleACKPDU, 4, 4);
+            BACnetServiceTypes.SimpleACKPDU, 4, 4);
         writer.writeUInt8(mMeta);
 
         // Write InvokeID
@@ -99,7 +99,7 @@ export class SimpleACKPDU {
         const writer = new BACnetWriterUtil();
 
         // Write Service choice
-        writer.writeUInt8(BACNET_CONFIRMED_SERVICE.SubscribeCOV);
+        writer.writeUInt8(BACnetConfirmedService.SubscribeCOV);
 
         return writer;
     }
@@ -115,7 +115,7 @@ export class SimpleACKPDU {
         const writer = new BACnetWriterUtil();
 
         // Write Service choice
-        writer.writeUInt8(BACNET_CONFIRMED_SERVICE.WriteProperty);
+        writer.writeUInt8(BACnetConfirmedService.WriteProperty);
 
         return writer;
     }

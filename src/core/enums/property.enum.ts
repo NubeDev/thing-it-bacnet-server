@@ -1,4 +1,4 @@
-export enum BACNET_PROPERTY_KEYS {
+export enum BACnetPropIds {
     apduSegmentTimeout = 10,
     apduTimeout = 11,
     applicationSoftwareVersion = 12,

@@ -3,8 +3,8 @@ import * as _ from 'lodash';
 import { ApiError } from '../errors';
 
 import {
-    BACNET_PROPERTY_KEYS,
-    BACNET_PROP_TYPES,
+    BACnetPropIds,
+    BACnetPropTypes,
 } from '../enums';
 
 import { OffsetUtil, TyperUtil } from '../utils';
@@ -191,34 +191,34 @@ export class BACnetWriterUtil {
      * writeValue - writes BACnet property value to the internal buffer.
      *
      * @param  {number} tagContext - tag context
-     * @param  {BACNET_PROP_TYPES} valueType - type of property value
+     * @param  {BACnetPropTypes} valueType - type of property value
      * @param  {any} params - parama object with value
      * @return {void}
      */
-    public writeValue (tagContext: number, propValueType: BACNET_PROP_TYPES, params: any): void {
+    public writeValue (tagContext: number, propValueType: BACnetPropTypes, params: any): void {
         // Context Number - Context tag - "Opening" Tag
         this.writeTag(tagContext, 1, 6);
 
         switch (propValueType) {
-            case BACNET_PROP_TYPES.boolean:
+            case BACnetPropTypes.boolean:
                 this.writeTypeBoolean(params);
                 break;
-            case BACNET_PROP_TYPES.unsignedInt:
+            case BACnetPropTypes.unsignedInt:
                 this.writeTypeUnsignedInt(params);
                 break;
-            case BACNET_PROP_TYPES.real:
+            case BACnetPropTypes.real:
                 this.writeTypeReal(params);
                 break;
-            case BACNET_PROP_TYPES.characterString:
+            case BACnetPropTypes.characterString:
                 this.writeTypeCharString(params);
                 break;
-            case BACNET_PROP_TYPES.bitString:
+            case BACnetPropTypes.bitString:
                 this.writeTypeStatusFlags(params);
                 break;
-            case BACNET_PROP_TYPES.enumerated:
+            case BACnetPropTypes.enumerated:
                 this.writeTypeEnumerated(params);
                 break;
-            case BACNET_PROP_TYPES.objectIdentifier:
+            case BACnetPropTypes.objectIdentifier:
                 this.writeTypeObjectIdentifier(params);
                 break;
         }
@@ -235,7 +235,7 @@ export class BACnetWriterUtil {
      */
     public writeTypeBoolean (params: any): void {
         // DataType - Application tag - DataTypeSize
-        this.writeTag(BACNET_PROP_TYPES.boolean, 0, +params.value);
+        this.writeTag(BACnetPropTypes.boolean, 0, +params.value);
     }
 
     /**
@@ -246,7 +246,7 @@ export class BACnetWriterUtil {
      */
     public writeTypeUnsignedInt (params: any): void {
         // DataType - Application tag - DataTypeSize
-        this.writeTag(BACNET_PROP_TYPES.unsignedInt, 0, 1);
+        this.writeTag(BACnetPropTypes.unsignedInt, 0, 1);
 
         this.writeUInt8(params.value)
     }
@@ -259,7 +259,7 @@ export class BACnetWriterUtil {
      */
     public writeTypeReal (params: any): void {
         // DataType - Application tag - DataTypeSize
-        this.writeTag(BACNET_PROP_TYPES.real, 0, 4);
+        this.writeTag(BACnetPropTypes.real, 0, 4);
 
         this.writeFloatBE(params.value)
     }
@@ -272,7 +272,7 @@ export class BACnetWriterUtil {
      */
     public writeTypeCharString (params: any): void {
         // DataType - Application tag - Extended value (5)
-        this.writeTag(BACNET_PROP_TYPES.characterString, 0, 5);
+        this.writeTag(BACnetPropTypes.characterString, 0, 5);
 
         // Write lenght
         const paramValueLen = params.value.length;
@@ -293,7 +293,7 @@ export class BACnetWriterUtil {
      */
     public writeTypeStatusFlags (params: any): void {
         // DataType - Application tag - 2 bytes
-        this.writeTag(BACNET_PROP_TYPES.bitString, 0, 2);
+        this.writeTag(BACnetPropTypes.bitString, 0, 2);
 
         // Write unused bits
         this.writeUInt8(0x0F);
@@ -316,7 +316,7 @@ export class BACnetWriterUtil {
      */
     public writeTypeEnumerated (params: any): void {
         // DataType - Application tag - 1 bytes
-        this.writeTag(BACNET_PROP_TYPES.enumerated, 0, 1);
+        this.writeTag(BACnetPropTypes.enumerated, 0, 1);
 
         // Write status flags
         this.writeUInt8(params.value);
@@ -331,7 +331,7 @@ export class BACnetWriterUtil {
      */
     public writeTypeObjectIdentifier (params: any): void {
         // DataType - Application tag - 4 bytes
-        this.writeTag(BACNET_PROP_TYPES.objectIdentifier, 0, 4);
+        this.writeTag(BACnetPropTypes.objectIdentifier, 0, 4);
 
         // Write status flags
         this.writeObjectIdentifier(params.objType, params.objInst);
