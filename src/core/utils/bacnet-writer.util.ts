@@ -7,7 +7,8 @@ import {
     BACnetPropTypes,
 } from '../enums';
 
-import { OffsetUtil, TyperUtil } from '../utils';
+import { OffsetUtil } from './offset.util';
+import { TyperUtil } from './typer.util';
 
 export class BACnetWriterUtil {
     public offset: OffsetUtil;
