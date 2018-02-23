@@ -5,4 +5,3 @@ import { LoggerConfig } from '../configs';
 winston.configure(LoggerConfig);
 
 export const logger = winston;
-export default logger;
