@@ -12,6 +12,7 @@ import {
 export const BACnetModule: IBACnetModule = {
     device: {
         id: 9999,
+        type: BACnetObjTypes.Device,
         vendorId: 123,
         props: [
             {
