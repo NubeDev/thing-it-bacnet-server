@@ -10,71 +10,69 @@ import {
 } from './core/interfaces';
 
 export const BACnetModule: IBACnetModule = {
-    objects: [
-        {
-            objType: BACnetObjTypes.Device,
-            vendorId: 123,
-            props: [
-                {
-                    propId: BACnetPropIds.objectName,
-                    propType: BACnetPropTypes.characterString,
-                    propValue: {
-                        value: 'KNX-BACnet LOYTEC',
-                    },
+    device: {
+        id: 9999,
+        vendorId: 123,
+        props: [
+            {
+                id: BACnetPropIds.objectName,
+                type: BACnetPropTypes.characterString,
+                values: {
+                    value: 'KNX-BACnet LOYTEC',
                 },
-                {
-                    propId: BACnetPropIds.description,
-                    propType: BACnetPropTypes.characterString,
-                    propValue: {
-                        value: 'KNX-BACnet LOYTEC',
-                    },
+            },
+            {
+                id: BACnetPropIds.description,
+                type: BACnetPropTypes.characterString,
+                values: {
+                    value: 'KNX-BACnet LOYTEC',
                 },
-                {
-                    propId: BACnetPropIds.vendorName,
-                    propType: BACnetPropTypes.characterString,
-                    propValue: {
-                        value: 'LOYTEC electronics GmbH',
-                    },
+            },
+            {
+                id: BACnetPropIds.vendorName,
+                type: BACnetPropTypes.characterString,
+                values: {
+                    value: 'LOYTEC electronics GmbH',
                 },
-                {
-                    propId: BACnetPropIds.modelName,
-                    propType: BACnetPropTypes.characterString,
-                    propValue: {
-                        value: 'LINX-202',
-                    },
+            },
+            {
+                id: BACnetPropIds.modelName,
+                type: BACnetPropTypes.characterString,
+                values: {
+                    value: 'LINX-202',
                 },
-                {
-                    propId: BACnetPropIds.applicationSoftwareVersion,
-                    propType: BACnetPropTypes.characterString,
-                    propValue: {
-                        value: 'V6',
-                    },
+            },
+            {
+                id: BACnetPropIds.applicationSoftwareVersion,
+                type: BACnetPropTypes.characterString,
+                values: {
+                    value: 'V6',
                 },
-            ],
-            objects: [
-                {
-                    objType: BACnetObjTypes.BinaryValue,
-                    props: [
-                        {
-                            propId: BACnetPropIds.presentValue,
-                            propType: BACnetPropTypes.enumerated,
-                            propValue: {
-                                value: 0,
-                            },
+            },
+        ],
+        objects: [
+            {
+                type: BACnetObjTypes.BinaryValue,
+                props: [
+                    {
+                        id: BACnetPropIds.presentValue,
+                        type: BACnetPropTypes.enumerated,
+                        values: {
+                            value: 0,
                         },
-                        {
-                            propId: BACnetPropIds.statusFlags,
-                            propType: BACnetPropTypes.bitString,
-                            propValue: {
-                                inAlarm: false,
-                                fault: false,
-                                overridden: false,
-                                outOfService: false,
-                            },
+                    },
+                    {
+                        id: BACnetPropIds.statusFlags,
+                        type: BACnetPropTypes.bitString,
+                        values: {
+                            inAlarm: false,
+                            fault: false,
+                            overridden: false,
+                            outOfService: false,
                         },
-                    ],
-                },
-            ],
-        },
-    ]
+                    },
+                ],
+            },
+        ],
+    },
 }

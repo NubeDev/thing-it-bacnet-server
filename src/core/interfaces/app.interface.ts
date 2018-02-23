@@ -5,18 +5,23 @@ import {
 } from '../enums';
 
 export interface IBACnetModule {
-    objects: IBACnetObject[];
+    device: IBACnetDevice;
 }
 
-export interface IBACnetObject {
-    objType: BACnetObjTypes;
+export interface IBACnetDevice {
+    id: number;
     vendorId?: number;
     props: IBACnetObjectProperty[];
     objects?: IBACnetObject[];
 }
 
+export interface IBACnetObject {
+    type: BACnetObjTypes;
+    props: IBACnetObjectProperty[];
+}
+
 export interface IBACnetObjectProperty {
-    propId: BACnetPropIds;
-    propType: BACnetPropTypes;
-    propValue: any;
+    id: BACnetPropIds;
+    type: BACnetPropTypes;
+    values: any;
 }
