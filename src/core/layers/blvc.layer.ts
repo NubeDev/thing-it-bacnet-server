@@ -30,7 +30,7 @@ export class BLVC {
         const NPDUstart = readerUtil.offset.getVaule();
         const NPDUbuffer = readerUtil.getRange(NPDUstart, mLenght);
 
-        const NPDUMessage: Map<string, any> = this.npdu.getFromBuffer(buf);
+        const NPDUMessage: Map<string, any> = this.npdu.getFromBuffer(NPDUbuffer);
         BLVCMessage.set('npdu', NPDUMessage);
 
         return BLVCMessage;
