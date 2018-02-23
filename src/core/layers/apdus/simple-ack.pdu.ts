@@ -120,3 +120,5 @@ export class SimpleACKPDU {
         return writer;
     }
 }
+
+export const simpleACKPDU: SimpleACKPDU = new SimpleACKPDU();

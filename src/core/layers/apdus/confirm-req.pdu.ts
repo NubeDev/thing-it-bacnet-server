@@ -116,3 +116,5 @@ export class ConfirmReqPDU {
         return serviceMap;
     }
 }
+
+export const confirmReqPDU: ConfirmReqPDU = new ConfirmReqPDU();

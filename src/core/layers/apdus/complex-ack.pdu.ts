@@ -140,3 +140,5 @@ export class ComplexACKPDU {
         return writer;
     }
 }
+
+export const complexACKPDU: ComplexACKPDU = new ComplexACKPDU();

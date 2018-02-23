@@ -179,3 +179,5 @@ export class UnconfirmReqPDU {
         return writer;
     }
 }
+
+export const unconfirmReqPDU: UnconfirmReqPDU = new UnconfirmReqPDU();

@@ -36,3 +36,5 @@ export class APDU {
         return APDUMessage;
     }
 }
+
+export const apdu: APDU = new APDU();

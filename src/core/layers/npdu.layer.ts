@@ -4,7 +4,7 @@ import { OffsetUtil, TyperUtil } from '../utils';
 
 import { BACnetReaderUtil } from '../utils/bacnet-reader.util';
 
-import { APDU } from './apdu.layer';
+import { apdu } from './apdu.layer';
 
 export class NPDU {
     constructor () {
@@ -82,11 +82,11 @@ export class NPDU {
         const APDUstart = readerUtil.offset.getVaule();
         const APDUbuffer = readerUtil.getRange(APDUstart);
 
-        const apdu = new APDU();
-
         const APDUMessage: Map<string, any> = apdu.getFromBuffer(buf);
         NPDUMessage.set('apdu', APDUMessage);
 
         return NPDUMessage;
     }
 }
+
+export const npdu: NPDU = new NPDU();
