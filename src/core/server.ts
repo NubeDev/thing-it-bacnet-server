@@ -5,6 +5,8 @@ import { IBACnetModule, IBACnetDevice } from './interfaces';
 import { ApiError } from './errors';
 import { logger } from './utils';
 
+import { blvc } from './layers/blvc.layer';
+
 export class Server {
     private className: string = 'Server';
     private port: number;
@@ -36,8 +38,8 @@ export class Server {
             logger.error(`${this.className} - startServer: UDP Error - ${error}`);
         });
 
-        this.app.on('message', () => {
-            ;
+        this.app.on('message', (data) => {
+            const message = blvc.getFromBuffer(data);
         });
 
         this.app.on('listening', () => {
