@@ -62,8 +62,10 @@ export class NPDU {
             const mMacAddressLen = readerUtil.readUInt8();
             NPDUMessage.set('destMacAddressLen', mMacAddressLen);
 
-            const mMacAddress = readerUtil.readString('hex', mMacAddressLen);
-            NPDUMessage.set('destMacAddress', mMacAddress);
+            if (mMacAddressLen) {
+                const mMacAddress = readerUtil.readString('hex', mMacAddressLen);
+                NPDUMessage.set('destMacAddress', mMacAddress);
+            }
         }
 
         if (mControlMap.get('srcSpecifier')) {
@@ -73,8 +75,10 @@ export class NPDU {
             const mMacAddressLen = readerUtil.readUInt8();
             NPDUMessage.set('srcMacAddressLen', mMacAddressLen);
 
-            const mMacAddress = readerUtil.readString('hex', mMacAddressLen);
-            NPDUMessage.set('srcMacAddress', mMacAddress);
+            if (mMacAddressLen) {
+                const mMacAddress = readerUtil.readString('hex', mMacAddressLen);
+                NPDUMessage.set('srcMacAddress', mMacAddress);
+            }
         }
 
         if (mControlMap.get('destSpecifier')) {
