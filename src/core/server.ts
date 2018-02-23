@@ -23,6 +23,7 @@ export class Server {
         this.port = bacnetModule.port;
         this.device = bacnetModule.device;
         this.app = dgram.createSocket('udp4');
+        this.startServer();
     }
 
     /**
