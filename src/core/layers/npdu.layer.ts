@@ -4,10 +4,13 @@ import { OffsetUtil, TyperUtil } from '../utils';
 
 import { BACnetReaderUtil } from '../utils/bacnet-reader.util';
 
-import { apdu } from './apdu.layer';
+import { apdu, APDU } from './apdu.layer';
 
 export class NPDU {
-    constructor () {
+    private apdu: APDU;
+
+    constructor (apduInst: APDU) {
+        this.apdu = apduInst;
     }
 
     private getControlFlags (mControl: number): Map<string, any> {
@@ -82,11 +85,11 @@ export class NPDU {
         const APDUstart = readerUtil.offset.getVaule();
         const APDUbuffer = readerUtil.getRange(APDUstart);
 
-        const APDUMessage: Map<string, any> = apdu.getFromBuffer(buf);
+        const APDUMessage: Map<string, any> = this.apdu.getFromBuffer(buf);
         NPDUMessage.set('apdu', APDUMessage);
 
         return NPDUMessage;
     }
 }
 
-export const npdu: NPDU = new NPDU();
+export const npdu: NPDU = new NPDU(apdu);

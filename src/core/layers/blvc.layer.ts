@@ -4,11 +4,13 @@ import { OffsetUtil } from '../utils';
 
 import { BACnetReaderUtil } from '../utils/bacnet-reader.util';
 
-import { npdu } from './npdu.layer';
+import { npdu, NPDU } from './npdu.layer';
 
 export class BLVC {
+    private npdu: NPDU;
 
-    constructor () {
+    constructor (npduInst: NPDU) {
+        this.npdu = npduInst;
     }
 
     public getFromBuffer (buf: Buffer): Map<string, any> {
@@ -28,11 +30,11 @@ export class BLVC {
         const NPDUstart = readerUtil.offset.getVaule();
         const NPDUbuffer = readerUtil.getRange(NPDUstart, mLenght);
 
-        const NPDUMessage: Map<string, any> = npdu.getFromBuffer(buf);
+        const NPDUMessage: Map<string, any> = this.npdu.getFromBuffer(buf);
         BLVCMessage.set('npdu', NPDUMessage);
 
         return BLVCMessage;
     }
 }
 
-export const blvc: BLVC = new BLVC();
+export const blvc: BLVC = new BLVC(npdu);
