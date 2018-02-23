@@ -10,6 +10,7 @@ export interface IBACnetModule {
 
 export interface IBACnetObject {
     objType: BACnetObjTypes;
+    vendorId?: number;
     props: IBACnetObjectProperty[];
     objects?: IBACnetObject[];
 }

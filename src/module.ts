@@ -7,14 +7,13 @@ import {
 
 import {
     IBACnetModule,
-    IBACnetObject,
-    IBACnetObjectProperty
 } from './core/interfaces';
 
 export const BACnetModule: IBACnetModule = {
     objects: [
         {
             objType: BACnetObjTypes.Device,
+            vendorId: 123,
             props: [
                 {
                     propId: BACnetPropIds.objectName,
