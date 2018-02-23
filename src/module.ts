@@ -10,6 +10,7 @@ import {
 } from './core/interfaces';
 
 export const BACnetModule: IBACnetModule = {
+    port: 1234,
     device: {
         id: 9999,
         type: BACnetObjTypes.Device,

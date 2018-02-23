@@ -5,6 +5,7 @@ import {
 } from '../enums';
 
 export interface IBACnetModule {
+    port: number;
     device: IBACnetDevice;
 }
 
