@@ -25,15 +25,14 @@ export class Server {
         this.app = dgram.createSocket('udp4');
     }
 
-
     /**
      * startServer - starts the server.
      *
      * @return {void}
      */
     public startServer () {
-        this.app.on('error', () => {
-            ;
+        this.app.on('error', (error) => {
+            logger.error(`${this.className} - startServer: UDP Error - ${error}`);
         });
 
         this.app.on('message', () => {
@@ -42,7 +41,7 @@ export class Server {
 
         this.app.on('listening', () => {
             const addrInfo = this.app.address();
-            logger.info(`${this.className} - startServer: UDP Server listening on ${addrInfo.address}:${addrInfo.port}`);
+            logger.info(`${this.className} - startServer: UDP Server listening ${addrInfo.address}:${addrInfo.port}`);
         });
 
         if (!this.port) {
