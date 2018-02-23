@@ -16,22 +16,22 @@ export class NPDU {
     private getControlFlags (mControl: number): Map<string, any> {
         const mControlMap: Map<string, any> = new Map();
 
-        const noApduMessageType = TyperUtil.getBit(mControl, 7);
+        const noApduMessageType = !!TyperUtil.getBit(mControl, 7);
         mControlMap.set('noApduMessageType', noApduMessageType);
 
         const reserved1 = TyperUtil.getBit(mControl, 6);
         mControlMap.set('reserved1', reserved1);
 
-        const destSpecifier = TyperUtil.getBit(mControl, 5);
+        const destSpecifier = !!TyperUtil.getBit(mControl, 5);
         mControlMap.set('destSpecifier', destSpecifier);
 
         const reserved2 = TyperUtil.getBit(mControl, 4);
         mControlMap.set('reserved2', reserved2);
 
-        const srcSpecifier = TyperUtil.getBit(mControl, 3);
+        const srcSpecifier = !!TyperUtil.getBit(mControl, 3);
         mControlMap.set('srcSpecifier', srcSpecifier);
 
-        const expectingReply = TyperUtil.getBit(mControl, 2);
+        const expectingReply = !!TyperUtil.getBit(mControl, 2);
         mControlMap.set('expectingReply', expectingReply);
 
         const priority1 = TyperUtil.getBit(mControl, 1);
