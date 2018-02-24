@@ -28,3 +28,10 @@ export interface IBACnetObjectProperty {
     type: BACnetPropTypes;
     values: any;
 }
+
+export interface IRequestOptions {
+    blvc: Map<string, any>;
+    npdu: Map<string, any>;
+    apdu: Map<string, any>;
+    device: IBACnetDevice;
+}
