@@ -25,6 +25,15 @@ export class BACnetWriterUtil {
     }
 
     /**
+     * size - returns the size of internal buffer.
+     *
+     * @return {number}
+     */
+    get size (): number {
+        return this.buffer.length;
+    }
+
+    /**
      * concat - concatenates the writers and returns the writer with common buffer.
      *
      * @static
