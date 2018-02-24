@@ -1,4 +1,4 @@
-import { Server } from './core/server';
+import { Server } from './core/server.socket';
 
 import { BACnetModule } from './module';
 
