@@ -60,8 +60,8 @@ export class BLVC {
         writer.writeUInt8(params.func);
 
         // Write message size
-        const apduSize = params.apdu.size;
-        const npduSize = params.npdu.size;
+        const apduSize = _.get(params, 'apdu.size', 0);
+        const npduSize = _.get(params, 'npdu.size', 0);
         const blvcSize = writer.size + 2;
         const sumSize = blvcSize + npduSize + apduSize;
         writer.writeUInt16BE(sumSize);
