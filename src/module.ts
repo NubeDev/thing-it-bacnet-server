@@ -54,6 +54,7 @@ export const BACnetModule: IBACnetModule = {
         ],
         objects: [
             {
+                id: 28,
                 type: BACnetObjTypes.BinaryValue,
                 props: [
                     {

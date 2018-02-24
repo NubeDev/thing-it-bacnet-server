@@ -18,6 +18,7 @@ export interface IBACnetDevice {
 }
 
 export interface IBACnetObject {
+    id: number;
     type: BACnetObjTypes;
     props: IBACnetObjectProperty[];
 }
