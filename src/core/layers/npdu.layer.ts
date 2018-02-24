@@ -113,35 +113,43 @@ export class NPDU {
     public writeNPDULayer (params: INPDULayer): BACnetWriterUtil {
         let writer = new BACnetWriterUtil();
 
-        // Write Service choice
+        // Write NPDU version
         writer.writeUInt8(0x01);
 
+        // Write control byte
         const writerControl = this.writeNPDULayerControl(params.control);
         writer = BACnetWriterUtil.concat(writer, writerControl);
 
         if (_.get(params, 'control.destSpecifier')) {
+            // Write destination network address
             writer.writeUInt16BE(params.destNetworkAddress);
 
+            // Write length of destination MAC address
             const mMacAddressLen = _.get(params, 'destMacAddress', '').length;
             writer.writeUInt8(mMacAddressLen);
 
             if (mMacAddressLen) {
+                // Write destination MAC address
                 writer.writeString(params.destMacAddress);
             }
         }
 
         if (_.get(params, 'control.srcSpecifier')) {
+            // Write source network address
             writer.writeUInt16BE(params.srcNetworkAddress);
 
+            // Write length of source MAC address
             const mMacAddressLen = _.get(params, 'srcMacAddress', '').length;
             writer.writeUInt8(mMacAddressLen);
 
             if (mMacAddressLen) {
+                // Write source MAC address
                 writer.writeString(params.srcMacAddress);
             }
         }
 
         if (_.isNumber(params.hopCount)) {
+            // Write hop count
             writer.writeUInt8(params.hopCount);
         }
 
@@ -162,21 +170,27 @@ export class NPDU {
         let control = 0x00;
 
         if (params) {
+            // Set "no APDU Message" flag
             control = params.noApduMessageType
                 ? TyperUtil.setBit(control, 7, params.noApduMessageType) : control;
 
+            // Set "destination specifier" flag
             control = params.destSpecifier
                 ? TyperUtil.setBit(control, 5, params.destSpecifier) : control;
 
+            // Set "source specifier" flag
             control = params.srcSpecifier
                 ? TyperUtil.setBit(control, 3, params.srcSpecifier) : control;
 
+            // Set "expecting reply" flag
             control = params.expectingReply
                 ? TyperUtil.setBit(control, 2, params.expectingReply) : control;
 
+            // Set second priority bit
             control = _.isNumber(params.priority1)
                 ? TyperUtil.setBit(control, 1, !!params.priority1) : control;
 
+            // Set first priority bit
             control = _.isNumber(params.priority2)
                 ? TyperUtil.setBit(control, 0, !!params.priority2) : control;
         }
