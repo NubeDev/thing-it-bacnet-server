@@ -29,6 +29,8 @@ export interface INPDULayerControl {
     priority2?: number;
 }
 
+export interface IUnconfirmReq {
+}
 export interface IUnconfirmReqIAm {
     objType: number;
     objInst: number;

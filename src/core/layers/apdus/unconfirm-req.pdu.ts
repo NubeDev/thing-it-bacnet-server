@@ -17,6 +17,7 @@ import {
 } from '../../enums';
 
 import {
+    IUnconfirmReq,
     IUnconfirmReqIAm,
     IUnconfirmReqCOVNotification
 } from '../../interfaces';
@@ -79,9 +80,10 @@ export class UnconfirmReqPDU {
     /**
      * writeReq - writes the massage for unconfirmed request (header).
      *
+     * @param  {IUnconfirmReq} params - UnconfirmReq params
      * @return {BACnetWriterUtil}
      */
-    public writeReq (): BACnetWriterUtil {
+    public writeReq (params: IUnconfirmReq): BACnetWriterUtil {
         const writer = new BACnetWriterUtil();
 
         // Write Service Type
