@@ -1,10 +1,17 @@
 import * as _ from 'lodash';
 
-import { OffsetUtil } from '../utils';
-
-import { BACnetReaderUtil } from '../utils/bacnet-reader.util';
+import {
+    OffsetUtil,
+    TyperUtil,
+    BACnetReaderUtil,
+    BACnetWriterUtil,
+} from '../utils';
 
 import { npdu, NPDU } from './npdu.layer';
+
+import {
+    IBLVCLayer,
+} from '../interfaces';
 
 export class BLVC {
     private npdu: NPDU;
@@ -34,6 +41,32 @@ export class BLVC {
         BLVCMessage.set('npdu', NPDUMessage);
 
         return BLVCMessage;
+    }
+
+    /**
+     * writeBLVCLayer - writes the message for BLVC layer and
+     * returns the instance of the writer utility.
+     *
+     * @param  {IBLVCLayer} params - BLVC layer params
+     * @return {BACnetWriterUtil}
+     */
+    public writeBLVCLayer (params: IBLVCLayer): BACnetWriterUtil {
+        let writer = new BACnetWriterUtil();
+
+        // Write BLVC type
+        writer.writeUInt8(0x81);
+
+        // Write BLVC function
+        writer.writeUInt8(params.func);
+
+        // Write message size
+        const apduSize = params.apdu.size;
+        const npduSize = params.npdu.size;
+        const blvcSize = writer.size + 2;
+        const sumSize = blvcSize + npduSize + apduSize;
+        writer.writeUInt16BE(sumSize);
+
+        return writer;
     }
 }
 

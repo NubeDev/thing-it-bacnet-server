@@ -1,5 +1,15 @@
 
-import { BACnetPropTypes } from '../enums';
+import {
+    BACnetPropTypes,
+    BLVCFunction,
+} from '../enums';
+import { BACnetWriterUtil } from '../utils';
+
+export interface IBLVCLayer {
+    func: BLVCFunction;
+    npdu: BACnetWriterUtil;
+    apdu: BACnetWriterUtil;
+}
 
 export interface INPDULayer {
     version: number;
