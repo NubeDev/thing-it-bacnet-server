@@ -12,7 +12,6 @@ export interface IBLVCLayer {
 }
 
 export interface INPDULayer {
-    version: number;
     control?: INPDULayerControl;
     destNetworkAddress?: number;
     destMacAddress?: string;

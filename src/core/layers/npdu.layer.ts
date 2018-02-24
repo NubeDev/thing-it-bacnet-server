@@ -114,7 +114,7 @@ export class NPDU {
         let writer = new BACnetWriterUtil();
 
         // Write Service choice
-        writer.writeUInt8(params.version);
+        writer.writeUInt8(0x01);
 
         const writerControl = this.writeNPDULayerControl(params.control);
         writer = BACnetWriterUtil.concat(writer, writerControl);
