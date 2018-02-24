@@ -104,10 +104,10 @@ export class NPDU {
     }
 
     /**
-     * writeNPDULayer - writes the message for NPDU layer and
-     * returns the instance of the writer utility.
+     * writeNPDULayer - writes the message for NPDU layer and returns the instance
+     * of the writer utility.
      *
-     * @param  {INPDULayer} params - NPDULayer params
+     * @param  {INPDULayer} params - NPDU layer params
      * @return {BACnetWriterUtil}
      */
     public writeNPDULayer (params: INPDULayer): BACnetWriterUtil {
@@ -152,7 +152,7 @@ export class NPDU {
      * writeNPDULayerControl - writes the message for NPDU layer control byte and
      * returns the instance of the writer utility.
      *
-     * @param  {INPDULayerControl} params - NPDULayerControl params
+     * @param  {INPDULayerControl} params - NPDU layer control params
      * @return {BACnetWriterUtil}
      */
     public writeNPDULayerControl (params: INPDULayerControl): BACnetWriterUtil {
@@ -163,22 +163,22 @@ export class NPDU {
 
         if (params) {
             control = params.noApduMessageType
-            ? TyperUtil.setBit(control, 7, params.noApduMessageType) : control;
+                ? TyperUtil.setBit(control, 7, params.noApduMessageType) : control;
 
             control = params.destSpecifier
-            ? TyperUtil.setBit(control, 5, params.destSpecifier) : control;
+                ? TyperUtil.setBit(control, 5, params.destSpecifier) : control;
 
             control = params.srcSpecifier
-            ? TyperUtil.setBit(control, 3, params.srcSpecifier) : control;
+                ? TyperUtil.setBit(control, 3, params.srcSpecifier) : control;
 
             control = params.expectingReply
-            ? TyperUtil.setBit(control, 2, params.expectingReply) : control;
+                ? TyperUtil.setBit(control, 2, params.expectingReply) : control;
 
             control = _.isNumber(params.priority1)
-            ? TyperUtil.setBit(control, 1, !!params.priority1) : control;
+                ? TyperUtil.setBit(control, 1, !!params.priority1) : control;
 
             control = _.isNumber(params.priority2)
-            ? TyperUtil.setBit(control, 0, !!params.priority2) : control;
+                ? TyperUtil.setBit(control, 0, !!params.priority2) : control;
         }
 
         writer.writeUInt8(control);
