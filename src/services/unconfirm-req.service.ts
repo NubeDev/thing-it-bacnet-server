@@ -2,10 +2,10 @@ import {
     BACnetServiceTypes,
 } from '../core/enums';
 
-import { IRequestOptions } from '../core/interfaces';
+import { RequestSocket, ResponseSocket } from '../core/sockets';
 
 export class UnconfirmReqService {
-    public whoIs (req: IRequestOptions) {
+    public whoIs (req: RequestSocket, resp: ResponseSocket) {
         return;
     }
 }

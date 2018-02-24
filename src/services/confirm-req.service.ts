@@ -2,18 +2,18 @@ import {
     BACnetServiceTypes,
 } from '../core/enums';
 
-import { IRequestOptions } from '../core/interfaces';
+import { RequestSocket, ResponseSocket } from '../core/sockets';
 
 export class ConfirmReqService {
-    public readProperty (req: IRequestOptions) {
+    public readProperty (req: RequestSocket, resp: ResponseSocket) {
         return;
     }
 
-    public writeProperty (req: IRequestOptions) {
+    public writeProperty (req: RequestSocket, resp: ResponseSocket) {
         return;
     }
 
-    public subscribeCOV (req: IRequestOptions) {
+    public subscribeCOV (req: RequestSocket, resp: ResponseSocket) {
         return;
     }
 }

@@ -2,20 +2,20 @@ import {
     BACnetConfirmedService,
 } from '../core/enums';
 
-import { IRequestOptions } from '../core/interfaces';
+import { confirmReqService } from '../services';
 
-import { confirmReqService } from '../services/confirm-req.service';
+import { RequestSocket, ResponseSocket } from '../core/sockets';
 
-export function ConfirmReqRouter (req: IRequestOptions) {
+export function ConfirmReqRouter (req: RequestSocket, resp: ResponseSocket) {
     const apduMessage = req.apdu;
 
     switch (apduMessage.get('serviceChoice')) {
         case BACnetConfirmedService.ReadProperty:
-            return confirmReqService.readProperty(req);
+            return confirmReqService.readProperty(req, resp);
         case BACnetConfirmedService.WriteProperty:
-            return confirmReqService.writeProperty(req);
+            return confirmReqService.writeProperty(req, resp);
         case BACnetConfirmedService.SubscribeCOV:
-            return confirmReqService.subscribeCOV(req);
+            return confirmReqService.subscribeCOV(req, resp);
     }
     return;
 }
