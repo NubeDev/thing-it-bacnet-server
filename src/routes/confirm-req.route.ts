@@ -2,7 +2,7 @@ import {
     BACnetConfirmedService,
 } from '../core/enums';
 
-import { confirmReqService, simpleACKService } from '../services';
+import { confirmReqService, simpleACKService, complexACKService } from '../services';
 
 import { RequestSocket, ResponseSocket } from '../core/sockets';
 
@@ -11,7 +11,7 @@ export function ConfirmReqRouter (req: RequestSocket, resp: ResponseSocket) {
 
     switch (apduMessage.get('serviceChoice')) {
         case BACnetConfirmedService.ReadProperty:
-            return confirmReqService.readProperty(req, resp);
+            return complexACKService.readProperty(req, resp);
         case BACnetConfirmedService.WriteProperty:
             return confirmReqService.writeProperty(req, resp);
         case BACnetConfirmedService.SubscribeCOV:
