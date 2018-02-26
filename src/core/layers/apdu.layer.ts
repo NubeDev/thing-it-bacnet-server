@@ -2,7 +2,7 @@ import * as _ from 'lodash';
 
 import { OffsetUtil, TyperUtil, BACnetReaderUtil } from '../utils';
 
-import { ConfirmReqPDU, SimpleACKPDU, UnconfirmReqPDU } from './apdus';
+import { ConfirmReqPDU, SimpleACKPDU, UnconfirmReqPDU, ComplexACKPDU } from './apdus';
 
 import { BACnetServiceTypes } from '../enums';
 
@@ -17,7 +17,7 @@ export class APDU {
         const pduType = (mType >> 4) & 0x0F
 
         let reqInst;
-        switch (mType) {
+        switch (pduType) {
             case BACnetServiceTypes.ConfirmedReqPDU: {
                 reqInst = new ConfirmReqPDU();
                 break;
@@ -26,8 +26,12 @@ export class APDU {
                 reqInst = new UnconfirmReqPDU();
                 break;
             }
-            case BACnetServiceTypes.ConfirmedReqPDU: {
-                reqInst = new ConfirmReqPDU();
+            case BACnetServiceTypes.SimpleACKPDU: {
+                reqInst = new SimpleACKPDU();
+                break;
+            }
+            case BACnetServiceTypes.ComplexACKPDU: {
+                reqInst = new ComplexACKPDU();
                 break;
             }
         }
