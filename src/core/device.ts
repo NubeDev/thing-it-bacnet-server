@@ -45,10 +45,10 @@ export class Device {
      */
     public getObject (id: number, type: number): IBACnetObject {
         if (this.device.id === id && this.device.type === type) {
-            return this.device;
+            return _.cloneDeep(this.device);
         }
         const bnObject = _.find(this.device.objects, { 'id': id, 'type': type });
-        return bnObject;
+        return _.cloneDeep(bnObject);
     }
 
     /**
