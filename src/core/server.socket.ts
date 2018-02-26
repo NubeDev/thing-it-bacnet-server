@@ -50,7 +50,11 @@ export class Server {
             // Generate Response instance
             const resp = new ResponseSocket(this.sock, rinfo.port, rinfo.address);
             // Handle request
-            MainRouter(req, resp);
+            try {
+                MainRouter(req, resp);
+            } catch (error) {
+                logger.error(`${this.className} - startServer: Message Error - ${error}`);
+            }
         });
 
         this.sock.on('listening', () => {
