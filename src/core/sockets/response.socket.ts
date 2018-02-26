@@ -25,7 +25,7 @@ export class ResponseSocket {
     public sendBroadcast (message: Buffer, address?: string, port?: number): Bluebird<any> {
         this.app.setBroadcast(true);
         const broadcastAddress = address ? address : '255.255.255.255';
-        const broadcastPort = _.isNumber(port) ? port : 1234;
+        const broadcastPort = _.isNumber(port) ? port : this.port;
 
         return new Bluebird((resolve, reject) => {
             this.app.send(message, 0, message.length,
