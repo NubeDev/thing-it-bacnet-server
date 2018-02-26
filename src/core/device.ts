@@ -1,9 +1,18 @@
 import * as _ from 'lodash';
+import { BehaviorSubject } from 'rxjs';
+
+import {
+    BACnetObjTypes,
+} from './enums';
 
 import { IBACnetDevice, IBACnetObject, IBACnetObjectProperty } from './interfaces';
 
+type ObjSubject = BehaviorSubject<void>;
+type ObjIdent = number;
+
 export class Device {
     private device: IBACnetDevice;
+    private objSubjects: Map<BACnetObjTypes, Map<ObjIdent, ObjSubject>>;
 
     constructor (device: IBACnetDevice) {
         this.initDevice(device);
@@ -15,6 +24,16 @@ export class Device {
 
     public initDevice (device: IBACnetDevice): void {
         this.device = _.cloneDeep(device);
+
+        // Init "Subject" storage for each object
+        this.objSubjects = new Map();
+        _.map(this.device.objects, (obj) => {
+            if (!this.objSubjects.has(obj.type)) {
+                this.objSubjects.set(obj.type, new Map());
+            }
+            const typeMap = this.objSubjects.get(obj.type);
+            typeMap.set(obj.id, new BehaviorSubject(null));
+        });
     }
 
     /**
@@ -30,6 +49,31 @@ export class Device {
         }
         const bnObject = _.find(this.device.objects, { 'id': id, 'type': type });
         return bnObject;
+    }
+
+    /**
+     * subscribe - subscribes to the changing properties of BACnet object.
+     *
+     * @param  {number} id - object identifier
+     * @param  {number} type - object type
+     * @param  {Function} fn - callback
+     * @return {void}
+     */
+    public subscribe (id: number, type: number, fn: () => any): void {
+        const typeMap = this.objSubjects.get(type);
+        typeMap.get(id).subscribe(fn);
+    }
+
+    /**
+     * next - emits "change" event for specific BACnet object.
+     *
+     * @param  {number} id - object identifier
+     * @param  {number} type - object type
+     * @return {void}
+     */
+    public next (id: number, type: number): void {
+        const typeMap = this.objSubjects.get(type);
+        typeMap.get(id).next(null);
     }
 
     /**
