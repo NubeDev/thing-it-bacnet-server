@@ -22,6 +22,8 @@ export class BACnetWriterUtil {
             return;
         }
         this.buffer = resultBuf;
+        const offsetValue = resultBuf.length;
+        this.offset = new OffsetUtil(offsetValue);
     }
 
     /**
