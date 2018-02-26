@@ -212,15 +212,21 @@ export class BACnetReaderUtil {
         let paramValue: any;
         switch (paramValueType) {
             case BACnetPropTypes.boolean: {
-                paramValue = !!paramValueTag.get('value');
+                paramValue = {
+                    value: !!paramValueTag.get('value'),
+                };
                 break;
             }
             case BACnetPropTypes.unsignedInt: {
-                paramValue = this.readUInt8();
+                paramValue = {
+                    value: this.readUInt8(),
+                };
                 break;
             }
             case BACnetPropTypes.real: {
-                paramValue = this.readFloatBE();
+                paramValue = {
+                    value: this.readFloatBE(),
+                };
                 break;
             }
             case BACnetPropTypes.characterString: {
@@ -231,7 +237,10 @@ export class BACnetReaderUtil {
                 const charEncode = getStringEncode(charSet);
                 paramValueMap.set('encoding', charEncode);
 
-                paramValue = this.readString(charEncode, strLen);
+                paramValue = {
+                    encoding: charEncode,
+                    value: this.readString(charEncode, strLen),
+                };
                 break;
             }
             case BACnetPropTypes.bitString: {
@@ -243,22 +252,22 @@ export class BACnetReaderUtil {
                 const statusMap: Map<string, boolean> = new Map();
 
                 const inAlarm = TyperUtil.getBit(statusByte, 7);
-                statusMap.set('inAlarm', !!inAlarm);
-
                 const fault = TyperUtil.getBit(statusByte, 6);
-                statusMap.set('fault', !!fault);
-
                 const overridden = TyperUtil.getBit(statusByte, 5);
-                statusMap.set('fault', !!overridden);
-
                 const outOfService = TyperUtil.getBit(statusByte, 4);
-                statusMap.set('fault', !!outOfService);
 
-                paramValue = statusMap;
+                paramValue = {
+                    inAlarm: !!inAlarm,
+                    fault: !!fault,
+                    overridden: !!overridden,
+                    outOfService: !!outOfService
+                };
                 break;
             }
             case BACnetPropTypes.enumerated: {
-                paramValue = this.readUInt8();
+                paramValue = {
+                    value: this.readUInt8(),
+                };
                 break;
             }
             case BACnetPropTypes.objectIdentifier: {
@@ -267,7 +276,10 @@ export class BACnetReaderUtil {
                 const objMap: Map<string, any> =
                     this.decodeObjectIdentifier(objIdent);
 
-                paramValue = objMap;
+                paramValue = {
+                    type: objMap.get('type'),
+                    instance: objMap.get('instance'),
+                };
                 break;
             }
         }
