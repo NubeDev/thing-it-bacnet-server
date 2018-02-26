@@ -77,6 +77,23 @@ export class Device {
     }
 
     /**
+     * next - emits "change" event for specific BACnet object.
+     *
+     * @param  {number} id - object identifier
+     * @param  {number} type - object type
+     * @return {void}
+     */
+    public setPropertyValue (objId: number, objType: number, propId: number, propValue: any): void {
+        let bnObject: IBACnetObject;
+        if (this.device.id === objId && this.device.type === objType) {
+            bnObject = _.cloneDeep(this.device);
+        }
+        bnObject = _.find(this.device.objects, { 'id': objId, 'type': objType });
+        const prop = _.find(bnObject.props, [ 'id', propId ]);
+        prop.values = propValue;
+    }
+
+    /**
      * getProperty - returns the property from BACnet object.
      *
      * @param  {IBACnetObject} bnObject - BACnet object
