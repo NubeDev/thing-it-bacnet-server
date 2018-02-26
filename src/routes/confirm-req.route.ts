@@ -2,7 +2,7 @@ import {
     BACnetConfirmedService,
 } from '../core/enums';
 
-import { confirmReqService } from '../services';
+import { confirmReqService, simpleACKService } from '../services';
 
 import { RequestSocket, ResponseSocket } from '../core/sockets';
 
@@ -15,7 +15,7 @@ export function ConfirmReqRouter (req: RequestSocket, resp: ResponseSocket) {
         case BACnetConfirmedService.WriteProperty:
             return confirmReqService.writeProperty(req, resp);
         case BACnetConfirmedService.SubscribeCOV:
-            return confirmReqService.subscribeCOV(req, resp);
+            return simpleACKService.subscribeCOV(req, resp);
     }
     return;
 }
