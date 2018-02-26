@@ -20,7 +20,7 @@ export class UnconfirmReqService {
      * @return {type}
      */
     public iAm (req: RequestSocket, resp: ResponseSocket) {
-        const device = req.device;
+        const device = req.device.getDevice();
 
         // Generate APDU writer
         const writerUnconfirmReq = unconfirmReqPDU.writeReq({});

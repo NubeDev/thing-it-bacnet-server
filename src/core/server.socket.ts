@@ -2,7 +2,7 @@ import * as dgram from 'dgram';
 
 import * as _ from 'lodash';
 
-import { IBACnetModule, IBACnetDevice } from './interfaces';
+import { IBACnetModule } from './interfaces';
 
 import { ApiError } from './errors';
 import { logger } from './utils';
@@ -11,10 +11,12 @@ import { RequestSocket, ResponseSocket } from './sockets';
 
 import { MainRouter } from '../routes';
 
+import { Device } from './device';
+
 export class Server {
     private className: string = 'Server';
     private port: number;
-    private device: IBACnetDevice;
+    private device: Device;
     private sock: dgram.Socket;
 
     static bootstrapServer (bacnetModule: IBACnetModule) {
@@ -27,7 +29,7 @@ export class Server {
      */
     constructor (bacnetModule: IBACnetModule) {
         this.port = bacnetModule.port;
-        this.device = bacnetModule.device;
+        this.device = new Device(bacnetModule.device);
         this.sock = dgram.createSocket('udp4');
         this.startServer();
     }
@@ -44,8 +46,7 @@ export class Server {
 
         this.sock.on('message', (msg: Buffer, rinfo: dgram.AddressInfo) => {
             // Generate Request instance
-            const device = _.cloneDeep(this.device);
-            const req = new RequestSocket(msg, device);
+            const req = new RequestSocket(msg, this.device);
             // Generate Response instance
             const resp = new ResponseSocket(this.sock, rinfo.port, rinfo.address);
             // Handle request
