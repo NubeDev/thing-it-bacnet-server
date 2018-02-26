@@ -13,13 +13,13 @@ import { BACnetWriterUtil } from '../core/utils';
 export class UnconfirmReqService {
 
     /**
-     * whoIs - handles the "whoIs" request and sends a "iAm" response.
+     * iAm - handles the "whoIs" request and sends a "iAm" response.
      *
      * @param  {RequestSocket} req - request object (socket)
      * @param  {ResponseSocket} resp - response object (socket)
      * @return {type}
      */
-    public whoIs (req: RequestSocket, resp: ResponseSocket) {
+    public iAm (req: RequestSocket, resp: ResponseSocket) {
         const device = req.device;
 
         // Generate APDU writer

@@ -11,7 +11,7 @@ export function UnconfirmReqRouter (req: RequestSocket, resp: ResponseSocket) {
 
     switch (apduMessage.get('serviceChoice')) {
         case BACnetUnconfirmedService.whoIs:
-            return unconfirmReqService.whoIs(req, resp);
+            return unconfirmReqService.iAm(req, resp);
     }
     return;
 }
