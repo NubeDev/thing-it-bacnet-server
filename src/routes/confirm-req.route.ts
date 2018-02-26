@@ -1,3 +1,5 @@
+import { logger } from '../core/utils';
+
 import {
     BACnetConfirmedService,
 } from '../core/enums';
@@ -8,8 +10,10 @@ import { RequestSocket, ResponseSocket } from '../core/sockets';
 
 export function ConfirmReqRouter (req: RequestSocket, resp: ResponseSocket) {
     const apduMessage = req.apdu;
+    const serviceChoice = apduMessage.get('serviceChoice');
 
-    switch (apduMessage.get('serviceChoice')) {
+    logger.debug(`MainRouter - Request Service: ${BACnetConfirmedService[serviceChoice]}`);
+    switch (serviceChoice) {
         case BACnetConfirmedService.ReadProperty:
             return complexACKService.readProperty(req, resp);
         case BACnetConfirmedService.WriteProperty:
