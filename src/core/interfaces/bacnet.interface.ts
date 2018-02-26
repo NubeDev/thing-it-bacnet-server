@@ -2,8 +2,32 @@
 import {
     BACnetPropTypes,
     BLVCFunction,
+    BACnetPropIds,
+    BACnetObjTypes,
 } from '../enums';
 import { BACnetWriterUtil } from '../utils';
+
+export interface IBACnetModule {
+    port: number;
+    device: IBACnetDevice;
+}
+
+export interface IBACnetDevice extends IBACnetObject {
+    vendorId?: number;
+    objects?: IBACnetObject[];
+}
+
+export interface IBACnetObject {
+    id: number;
+    type: BACnetObjTypes;
+    props: IBACnetObjectProperty[];
+}
+
+export interface IBACnetObjectProperty {
+    id: BACnetPropIds;
+    type: BACnetPropTypes;
+    values: any;
+}
 
 export interface IBLVCLayer {
     func: BLVCFunction;
@@ -38,14 +62,10 @@ export interface IUnconfirmReqIAm {
 }
 export interface IUnconfirmReqCOVNotification {
     processId: number;
-    devObjType: number;
-    devObjInst: number;
-    portObjType: number;
-    portObjInst: number;
-    propId: number;
-    propValue: any;
-    propType: BACnetPropTypes;
-    statusValue: any;
+    device: IBACnetObject;
+    devObject: IBACnetObject;
+    prop: IBACnetObjectProperty;
+    status: IBACnetObjectProperty;
 }
 
 export interface ISimpleACK {
