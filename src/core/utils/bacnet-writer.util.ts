@@ -287,7 +287,7 @@ export class BACnetWriterUtil {
         this.writeTag(BACnetPropTypes.characterString, 0, 5);
 
         // Write lenght
-        const paramValueLen = params.value.length;
+        const paramValueLen = params.value.length + 1;
         this.writeUInt8(paramValueLen);
 
         // Write "ansi" / "utf8" encoding
