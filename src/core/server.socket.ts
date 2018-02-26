@@ -53,7 +53,7 @@ export class Server {
             try {
                 MainRouter(req, resp);
             } catch (error) {
-                logger.error(`${this.className} - startServer: Message Error - ${error}`);
+                logger.error(`App ${error}`);
             }
         });
 
