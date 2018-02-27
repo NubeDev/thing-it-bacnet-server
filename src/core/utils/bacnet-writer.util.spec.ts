@@ -318,7 +318,7 @@ describe('BACnetWriterUtil', () => {
             bacnetWriterUtil.writeTypeCharString({ value: 'L02' });
             const buffer = bacnetWriterUtil.getBuffer();
             expect(buffer[0]).to.equal(0x75);
-            expect(buffer[1]).to.equal(0x03);
+            expect(buffer[1]).to.equal(0x04);
             expect(buffer[2]).to.equal(0x00);
             expect(buffer[3]).to.equal(0x4c);
             expect(buffer[4]).to.equal(0x30);
@@ -329,7 +329,7 @@ describe('BACnetWriterUtil', () => {
             bacnetWriterUtil.writeTypeCharString({ value: 'L202' });
             const buffer = bacnetWriterUtil.getBuffer();
             expect(buffer[0]).to.equal(0x75);
-            expect(buffer[1]).to.equal(0x04);
+            expect(buffer[1]).to.equal(0x05);
             expect(buffer[2]).to.equal(0x00);
             expect(buffer[3]).to.equal(0x4c);
             expect(buffer[4]).to.equal(0x32);
