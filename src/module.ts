@@ -20,35 +20,35 @@ export const BACnetModule: IBACnetModule = {
                 id: BACnetPropIds.objectName,
                 type: BACnetPropTypes.characterString,
                 values: {
-                    value: 'KNX-BACnet LOYTEC',
+                    value: '[thing-it] Test Device Name',
                 },
             },
             {
                 id: BACnetPropIds.description,
                 type: BACnetPropTypes.characterString,
                 values: {
-                    value: 'KNX-BACnet LOYTEC',
+                    value: '[thing-it] Test Device Description',
                 },
             },
             {
                 id: BACnetPropIds.vendorName,
                 type: BACnetPropTypes.characterString,
                 values: {
-                    value: 'LOYTEC electronics GmbH',
+                    value: 'THING TECHNOLOGIES GmbH Test',
                 },
             },
             {
                 id: BACnetPropIds.modelName,
                 type: BACnetPropTypes.characterString,
                 values: {
-                    value: 'LINX-202',
+                    value: '[thing-it] BACnet Test Server',
                 },
             },
             {
                 id: BACnetPropIds.applicationSoftwareVersion,
                 type: BACnetPropTypes.characterString,
                 values: {
-                    value: 'V6',
+                    value: 'V1.0.0',
                 },
             },
         ],
