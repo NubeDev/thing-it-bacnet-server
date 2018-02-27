@@ -17,7 +17,7 @@ export function ConfirmReqRouter (req: RequestSocket, resp: ResponseSocket) {
         case BACnetConfirmedService.ReadProperty:
             return complexACKService.readProperty(req, resp);
         case BACnetConfirmedService.WriteProperty:
-            return confirmReqService.writeProperty(req, resp);
+            return simpleACKService.writeProperty(req, resp);
         case BACnetConfirmedService.SubscribeCOV:
             return simpleACKService.subscribeCOV(req, resp);
     }
