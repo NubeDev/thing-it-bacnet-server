@@ -66,6 +66,7 @@ export class UnconfirmReqService {
     public covNotification (req: RequestSocket, resp: ResponseSocket) {
         const apduService = req.apdu.get('service');
         const subProcessId = apduService.get('subscriberProcessId');
+        const subProcessIdValue = subProcessId.get('value');
 
         // Get object identifier
         const objIdent = apduService.get('objIdent');
@@ -88,7 +89,7 @@ export class UnconfirmReqService {
             devObject: bnObject,
             prop: bnProp,
             status: bnStatus,
-            processId: subProcessId,
+            processId: subProcessIdValue,
         });
         const writerAPDU = BACnetWriterUtil.concat(writerUnconfirmReq, writerCOVNotification);
 
