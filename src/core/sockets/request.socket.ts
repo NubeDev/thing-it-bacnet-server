@@ -14,8 +14,19 @@ export class RequestSocket {
 
     constructor (msg: Buffer, device: Device) {
         this.blvc = blvc.getFromBuffer(msg);
-        this.npdu = this.blvc.get('npdu');
-        this.apdu = this.npdu.get('apdu');
+
+        try {
+            this.npdu = this.blvc.get('npdu');
+        } catch (error) {
+            this.npdu = new Map();
+        }
+
+        try {
+            this.apdu = this.npdu.get('apdu');
+        } catch (error) {
+            this.apdu = new Map();
+        }
+
         this.device = device;
     }
 }
