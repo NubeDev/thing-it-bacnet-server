@@ -308,7 +308,7 @@ export class BACnetWriterUtil {
         this.writeTag(BACnetPropTypes.bitString, 0, 2);
 
         // Write unused bits
-        this.writeUInt8(0x0F);
+        this.writeUInt8(0x04);
 
         let statusFlags = 0x00;
         statusFlags = TyperUtil.setBit(statusFlags, 7, params.inAlarm);
