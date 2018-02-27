@@ -5,6 +5,7 @@ import {
     TyperUtil,
     BACnetReaderUtil,
     BACnetWriterUtil,
+    logger,
 } from '../../utils';
 
 import {
@@ -21,47 +22,50 @@ import {
 } from '../../interfaces';
 
 export class ComplexACKPDU {
-    constructor () {
-    }
+    public className: string = 'ComplexACKPDU';
 
     private getFromBuffer (buf: Buffer): Map<string, any> {
         const reader = new BACnetReaderUtil(buf);
         const reqMap: Map<string, any> = new Map();
 
-        // --- Read meta byte
-        const mMeta = reader.readUInt8();
+        try {
+            // --- Read meta byte
+            const mMeta = reader.readUInt8();
 
-        const pduType = TyperUtil.getBitRange(mMeta, 4, 4);
-        reqMap.set('type', pduType);
+            const pduType = TyperUtil.getBitRange(mMeta, 4, 4);
+            reqMap.set('type', pduType);
 
-        const pduSeg = TyperUtil.getBit(mMeta, 3);
-        reqMap.set('seg', pduSeg);
+            const pduSeg = TyperUtil.getBit(mMeta, 3);
+            reqMap.set('seg', pduSeg);
 
-        const pduMor = TyperUtil.getBit(mMeta, 2);
-        reqMap.set('mor', pduMor);
+            const pduMor = TyperUtil.getBit(mMeta, 2);
+            reqMap.set('mor', pduMor);
 
-        // --- Read InvokeID byte
-        const invokeId = reader.readUInt8();
-        reqMap.set('invokeId', invokeId);
+            // --- Read InvokeID byte
+            const invokeId = reader.readUInt8();
+            reqMap.set('invokeId', invokeId);
 
-        if (pduSeg) {
-            const sequenceNumber = reader.readUInt8();
-            reqMap.set('sequenceNumber', sequenceNumber);
+            if (pduSeg) {
+                const sequenceNumber = reader.readUInt8();
+                reqMap.set('sequenceNumber', sequenceNumber);
 
-            const proposedWindowSize = reader.readUInt8();
-            reqMap.set('proposedWindowSize', proposedWindowSize);
+                const proposedWindowSize = reader.readUInt8();
+                reqMap.set('proposedWindowSize', proposedWindowSize);
+            }
+
+            const serviceChoice = reader.readUInt8();
+            reqMap.set('serviceChoice', serviceChoice);
+
+            let serviceMap;
+            switch (serviceChoice) {
+                case BACnetConfirmedService.ReadProperty:
+                    serviceMap = this.getReadProperty(reader);
+                    break;
+            }
+            reqMap.set('service', serviceMap);
+        } catch (error) {
+            logger.error(`${this.className} - getFromBuffer: Parse - ${error}`);
         }
-
-        const serviceChoice = reader.readUInt8();
-        reqMap.set('serviceChoice', serviceChoice);
-
-        let serviceMap;
-        switch (serviceChoice) {
-            case BACnetConfirmedService.ReadProperty:
-                serviceMap = this.getReadProperty(reader);
-                break;
-        }
-        reqMap.set('service', serviceMap);
 
         return reqMap;
     }
@@ -69,14 +73,18 @@ export class ComplexACKPDU {
     private getReadProperty (reader: BACnetReaderUtil): Map<string, any> {
         const serviceMap: Map<string, any> = new Map();
 
-        const objIdent = reader.readObjectIdentifier();
-        serviceMap.set('objIdent', objIdent);
+        try {
+            const objIdent = reader.readObjectIdentifier();
+            serviceMap.set('objIdent', objIdent);
 
-        const propIdent = reader.readProperty();
-        serviceMap.set('propIdent', propIdent);
+            const propIdent = reader.readProperty();
+            serviceMap.set('propIdent', propIdent);
 
-        const propValue = reader.readParamValue();
-        serviceMap.set('propValue', propValue);
+            const propValue = reader.readParamValue();
+            serviceMap.set('propValue', propValue);
+        } catch (error) {
+            logger.error(`${this.className} - getReadProperty: Parse - ${error}`);
+        }
 
         return serviceMap;
     }

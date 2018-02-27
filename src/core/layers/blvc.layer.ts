@@ -5,6 +5,7 @@ import {
     TyperUtil,
     BACnetReaderUtil,
     BACnetWriterUtil,
+    logger
 } from '../utils';
 
 import { npdu, NPDU } from './npdu.layer';
@@ -14,6 +15,7 @@ import {
 } from '../interfaces';
 
 export class BLVC {
+    public className: string = 'BLVC';
     private npdu: NPDU;
 
     constructor (npduInst: NPDU) {
@@ -25,20 +27,24 @@ export class BLVC {
 
         const BLVCMessage: Map<string, any> = new Map();
 
-        const mType = readerUtil.readUInt8();
-        BLVCMessage.set('type', mType);
+        try {
+            const mType = readerUtil.readUInt8();
+            BLVCMessage.set('type', mType);
 
-        const mFunction = readerUtil.readUInt8();
-        BLVCMessage.set('function', mFunction);
+            const mFunction = readerUtil.readUInt8();
+            BLVCMessage.set('function', mFunction);
 
-        const mLenght = readerUtil.readUInt16BE();
-        BLVCMessage.set('lenght', mLenght);
+            const mLenght = readerUtil.readUInt16BE();
+            BLVCMessage.set('lenght', mLenght);
 
-        const NPDUstart = readerUtil.offset.getVaule();
-        const NPDUbuffer = readerUtil.getRange(NPDUstart, mLenght);
+            const NPDUstart = readerUtil.offset.getVaule();
+            const NPDUbuffer = readerUtil.getRange(NPDUstart, mLenght);
 
-        const NPDUMessage: Map<string, any> = this.npdu.getFromBuffer(NPDUbuffer);
-        BLVCMessage.set('npdu', NPDUMessage);
+            const NPDUMessage: Map<string, any> = this.npdu.getFromBuffer(NPDUbuffer);
+            BLVCMessage.set('npdu', NPDUMessage);
+        } catch (error) {
+            logger.error(`${this.className} - getFromBuffer: Parse - ${error}`);
+        }
 
         return BLVCMessage;
     }

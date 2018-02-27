@@ -5,6 +5,7 @@ import {
     TyperUtil,
     BACnetReaderUtil,
     BACnetWriterUtil,
+    logger,
 } from '../utils';
 
 import { apdu, APDU } from './apdu.layer';
@@ -15,6 +16,7 @@ import {
 } from '../interfaces';
 
 export class NPDU {
+    public className: string = 'NPDU';
     private apdu: APDU;
 
     constructor (apduInst: APDU) {
@@ -56,49 +58,53 @@ export class NPDU {
 
         const NPDUMessage: Map<string, any> = new Map();
 
-        const mVersion = readerUtil.readUInt8();
-        NPDUMessage.set('version', mVersion);
+        try {
+            const mVersion = readerUtil.readUInt8();
+            NPDUMessage.set('version', mVersion);
 
-        const mControl = readerUtil.readUInt8();
-        const mControlMap = this.getControlFlags(mControl);
-        NPDUMessage.set('control', mControlMap);
+            const mControl = readerUtil.readUInt8();
+            const mControlMap = this.getControlFlags(mControl);
+            NPDUMessage.set('control', mControlMap);
 
-        if (mControlMap.get('destSpecifier')) {
-            const mNetworkAddress = readerUtil.readUInt16BE();
-            NPDUMessage.set('destNetworkAddress', mNetworkAddress);
+            if (mControlMap.get('destSpecifier')) {
+                const mNetworkAddress = readerUtil.readUInt16BE();
+                NPDUMessage.set('destNetworkAddress', mNetworkAddress);
 
-            const mMacAddressLen = readerUtil.readUInt8();
-            NPDUMessage.set('destMacAddressLen', mMacAddressLen);
+                const mMacAddressLen = readerUtil.readUInt8();
+                NPDUMessage.set('destMacAddressLen', mMacAddressLen);
 
-            if (mMacAddressLen) {
-                const mMacAddress = readerUtil.readString('hex', mMacAddressLen);
-                NPDUMessage.set('destMacAddress', mMacAddress);
+                if (mMacAddressLen) {
+                    const mMacAddress = readerUtil.readString('hex', mMacAddressLen);
+                    NPDUMessage.set('destMacAddress', mMacAddress);
+                }
             }
-        }
 
-        if (mControlMap.get('srcSpecifier')) {
-            const mNetworkAddress = readerUtil.readUInt16BE();
-            NPDUMessage.set('srcNetworkAddress', mNetworkAddress);
+            if (mControlMap.get('srcSpecifier')) {
+                const mNetworkAddress = readerUtil.readUInt16BE();
+                NPDUMessage.set('srcNetworkAddress', mNetworkAddress);
 
-            const mMacAddressLen = readerUtil.readUInt8();
-            NPDUMessage.set('srcMacAddressLen', mMacAddressLen);
+                const mMacAddressLen = readerUtil.readUInt8();
+                NPDUMessage.set('srcMacAddressLen', mMacAddressLen);
 
-            if (mMacAddressLen) {
-                const mMacAddress = readerUtil.readString('hex', mMacAddressLen);
-                NPDUMessage.set('srcMacAddress', mMacAddress);
+                if (mMacAddressLen) {
+                    const mMacAddress = readerUtil.readString('hex', mMacAddressLen);
+                    NPDUMessage.set('srcMacAddress', mMacAddress);
+                }
             }
+
+            if (mControlMap.get('destSpecifier')) {
+                const mHopCount = readerUtil.readUInt8();
+                NPDUMessage.set('hopCount', mHopCount);
+            }
+
+            const APDUstart = readerUtil.offset.getVaule();
+            const APDUbuffer = readerUtil.getRange(APDUstart);
+
+            const APDUMessage: Map<string, any> = this.apdu.getFromBuffer(APDUbuffer);
+            NPDUMessage.set('apdu', APDUMessage);
+        } catch (error) {
+            logger.error(`${this.className} - getFromBuffer: Parse - ${error}`);
         }
-
-        if (mControlMap.get('destSpecifier')) {
-            const mHopCount = readerUtil.readUInt8();
-            NPDUMessage.set('hopCount', mHopCount);
-        }
-
-        const APDUstart = readerUtil.offset.getVaule();
-        const APDUbuffer = readerUtil.getRange(APDUstart);
-
-        const APDUMessage: Map<string, any> = this.apdu.getFromBuffer(APDUbuffer);
-        NPDUMessage.set('apdu', APDUMessage);
 
         return NPDUMessage;
     }

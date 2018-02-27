@@ -5,6 +5,7 @@ import {
     TyperUtil,
     BACnetReaderUtil,
     BACnetWriterUtil,
+    logger,
 } from '../../utils';
 
 import {
@@ -22,36 +23,39 @@ import {
 } from '../../interfaces';
 
 export class SimpleACKPDU {
-    constructor () {
-    }
+    public className: string = 'SimpleACKPDU';
 
     public getFromBuffer (buf: Buffer): Map<string, any> {
         const reader = new BACnetReaderUtil(buf);
         const reqMap: Map<string, any> = new Map();
 
-        // --- Read meta byte
-        const mMeta = reader.readUInt8();
+        try {
+            // --- Read meta byte
+            const mMeta = reader.readUInt8();
 
-        const pduType = TyperUtil.getBitRange(mMeta, 4, 4);
-        reqMap.set('type', pduType);
+            const pduType = TyperUtil.getBitRange(mMeta, 4, 4);
+            reqMap.set('type', pduType);
 
-        // --- Read InvokeID byte
-        const invokeId = reader.readUInt8();
-        reqMap.set('invokeId', invokeId);
+            // --- Read InvokeID byte
+            const invokeId = reader.readUInt8();
+            reqMap.set('invokeId', invokeId);
 
-        const serviceChoice = reader.readUInt8();
-        reqMap.set('serviceChoice', serviceChoice);
+            const serviceChoice = reader.readUInt8();
+            reqMap.set('serviceChoice', serviceChoice);
 
-        let serviceMap;
-        switch (serviceChoice) {
-            case BACnetConfirmedService.SubscribeCOV:
-                serviceMap = this.getSubscribeCOV(reader);
-                break;
-            case BACnetConfirmedService.WriteProperty:
-                serviceMap = this.getWriteProperty(reader);
-                break;
+            let serviceMap;
+            switch (serviceChoice) {
+                case BACnetConfirmedService.SubscribeCOV:
+                    serviceMap = this.getSubscribeCOV(reader);
+                    break;
+                case BACnetConfirmedService.WriteProperty:
+                    serviceMap = this.getWriteProperty(reader);
+                    break;
+            }
+            reqMap.set('service', serviceMap);
+        } catch (error) {
+            logger.error(`${this.className} - getFromBuffer: Parse - ${error}`);
         }
-        reqMap.set('service', serviceMap);
 
         return reqMap;
     }
