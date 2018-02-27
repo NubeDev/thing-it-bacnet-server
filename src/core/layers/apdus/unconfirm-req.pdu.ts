@@ -176,6 +176,9 @@ export class UnconfirmReqPDU {
         // Write PropertyValue of Status flag
         writer.writeValue(2, params.status.type, params.status.values);
 
+        // Write closing tag for list of values
+        writer.writeTag(4, BACnetTagTypes.context, 7);
+
         return writer;
     }
 }
