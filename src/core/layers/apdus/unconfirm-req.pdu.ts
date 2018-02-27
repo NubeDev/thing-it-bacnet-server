@@ -145,7 +145,7 @@ export class UnconfirmReqPDU {
 
         // Write Process Identifier
         writer.writeTag(0, BACnetTagTypes.context, 1);
-        const processId = params.processId ? params.processId : 1;
+        const processId = _.isNumber(params.processId) ? params.processId : 1;
         writer.writeUInt8(processId);
 
         // Write Device Object Identifier
