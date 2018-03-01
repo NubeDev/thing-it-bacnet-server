@@ -74,4 +74,15 @@ export class UnitNativeBase {
             .filter(Boolean)
             .filter((prop) => prop.id === propId);
     }
+
+    /**
+     * isBACnetObject - returns true if object has compatible id and type.
+     *
+     * @param  {number} objInst - object instance
+     * @param  {number} objType - object type
+     * @return {boolean}
+     */
+    public isBACnetObject (objInst: number, objType: number): boolean {
+        return this.metadata.type === objType && this.metadata.id === objInst;
+    }
 }
