@@ -1,14 +1,21 @@
 
 export interface IBACnetModule {
     port: number;
-    device: IDeviceUnit;
+    device: INativeUnit;
+    units: IUnit;
 }
 
-export interface IDeviceUnit {
+export interface IUnit {
+    name?: string;
+    config: any;
+}
+export interface INativeUnit extends IUnit {
     id: number;
-    vendorId: number;
+    vendorId?: number;
+}
+
+export interface IDeviceUnit extends INativeUnit {
     config: IDeviceUnitConfig;
-    units: IUnit[];
 }
 export interface IDeviceUnitConfig {
     objectNameProp?: IBACnetTypeCharString;
@@ -17,16 +24,10 @@ export interface IDeviceUnitConfig {
     modelNameProp?: IBACnetTypeCharString;
 }
 
-export interface IUnit {
-    name: string;
-    config: any;
-}
-
-export interface IBinaryValueUnit {
+export interface IBinaryValueUnit extends INativeUnit {
     config: IBinaryValueUnitConfig;
 }
 export interface IBinaryValueUnitConfig {
-    id: number;
     presentValue?: IBACnetTypeEnumerated;
     statusFlags?: IBACnetTypeStatusFlags;
 }
