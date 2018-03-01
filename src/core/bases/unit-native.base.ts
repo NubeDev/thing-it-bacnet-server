@@ -6,6 +6,10 @@ import {
 } from '../enums';
 
 import {
+    ApiError,
+} from '../errors';
+
+import {
     IBACnetObject,
     IBACnetObjectProperty,
 } from '../interfaces';
@@ -13,13 +17,19 @@ import {
 import { UnitBase } from './unit.base';
 
 export class UnitNativeBase extends UnitBase {
+    public className: string = 'UnitNativeBase';
     // Unit metadata
     public metadata: IBACnetObject;
     // Unit properties subject
     public sjData: Subject<IBACnetObjectProperty>;
 
-    constructor () {
+    constructor (bnUnit: any) {
         super();
+
+        if (_.isNil(bnUnit.config)) {
+            throw new ApiError(`${this.className} - constructor: Unit config is required!`);
+        }
+
         this.sjData = new Subject();
     }
 
