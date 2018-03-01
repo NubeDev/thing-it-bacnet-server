@@ -14,6 +14,7 @@ export interface IBACnetDevice extends IBACnetObject {
 
 export interface IBACnetObject {
     id: number;
+    vendorId?: number;
     type: BACnetObjTypes;
     props: IBACnetObjectProperty[];
 }
