@@ -71,6 +71,7 @@ export class UnitNativeBase {
      */
     public subscribeProp (propId: BACnetPropIds): Observable<IBACnetObjectProperty> {
         return this.sjData
+            .filter(Boolean)
             .filter((prop) => prop.id === propId);
     }
 }
