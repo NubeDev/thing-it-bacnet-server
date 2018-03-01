@@ -85,4 +85,13 @@ export class UnitNativeBase {
     public isBACnetObject (objInst: number, objType: number): boolean {
         return this.metadata.type === objType && this.metadata.id === objInst;
     }
+
+    /**
+     * getNativeUnits - returns the native BACnet units for current unit.
+     *
+     * @return {UnitNativeBase}
+     */
+    public getNativeUnits (): UnitNativeBase {
+        return this;
+    }
 }
