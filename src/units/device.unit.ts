@@ -105,7 +105,7 @@ export class DeviceUnit extends UnitBase {
      * @param  {BACnetPropIds} propId - property ID
      * @return {Observable<IBACnetObjectProperty>}
      */
-    public subscribeProp (objInst: number, objType: number,
+    public subscribeToUnitProp (objInst: number, objType: number,
             propId: BACnetPropIds): Observable<IBACnetObjectProperty> {
         const unit = this.findUnit(objInst, objType);
         if (!unit) {
