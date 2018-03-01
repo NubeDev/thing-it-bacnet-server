@@ -10,30 +10,17 @@ import {
     IBACnetObjectProperty,
 } from '../interfaces';
 
-export class UnitNativeBase {
+import { UnitBase } from './unit.base';
+
+export class UnitNativeBase extends UnitBase {
     // Unit metadata
     public metadata: IBACnetObject;
     // Unit properties subject
     public sjData: Subject<IBACnetObjectProperty>;
 
     constructor () {
+        super();
         this.sjData = new Subject();
-    }
-
-    public setProps (config: any) {
-        if (_.isNil(config)) {
-            return;
-        }
-
-        const metadataProps = _.cloneDeep(this.metadata.props);
-        _.map(metadataProps, (prop: any) => {
-            const propName = BACnetPropIds[prop.id];
-            const propValueFromConfig = config[propName];
-
-            prop.values = _.isNil(propValueFromConfig)
-                ? prop.values : propValueFromConfig;
-        });
-        this.metadata.props = metadataProps;
     }
 
     /**
