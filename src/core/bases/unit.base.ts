@@ -4,11 +4,13 @@ import {
     BACnetPropIds,
 } from '../enums';
 
-export class UnitBase {
-    public metadata: any;
+import {
+    IBACnetObject,
+} from '../interfaces';
 
-    constructor () {
-    }
+export class UnitBase {
+    // Unit metadata
+    public metadata: IBACnetObject;
 
     public setProps (config: any) {
         if (_.isNil(config)) {
