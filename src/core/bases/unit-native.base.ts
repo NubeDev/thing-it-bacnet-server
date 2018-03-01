@@ -37,13 +37,13 @@ export class UnitNativeBase {
     }
 
     /**
-     * setUnitProperty - sets the value of the unit property by property ID.
+     * setProperty - sets the value of the unit property by property ID.
      *
      * @param  {BACnetPropIds} propId - property ID
      * @param  {any} values - property value
      * @return {void}
      */
-    public setUnitProperty (propId: BACnetPropIds, values: any): void {
+    public setProperty (propId: BACnetPropIds, values: any): void {
         const prop = _.find(this.metadata.props, [ 'id', propId ]);
         prop.values = values;
 
@@ -53,12 +53,12 @@ export class UnitNativeBase {
     }
 
     /**
-     * getUnitProperty - return the clone value of the unit property by property ID.
+     * getProperty - return the clone value of the unit property by property ID.
      *
      * @param  {BACnetPropIds} propId - property ID
-     * @return {any}
+     * @return {IBACnetObjectProperty}
      */
-    public getUnitProperty (propId: BACnetPropIds): any {
+    public getProperty (propId: BACnetPropIds): IBACnetObjectProperty {
         const prop = _.find(this.metadata.props, [ 'id', propId ]);
         return _.cloneDeep(prop);
     }
