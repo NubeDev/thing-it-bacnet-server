@@ -4,20 +4,30 @@ import {
     BACnetPropIds,
 } from '../../../core/enums';
 
+import {
+    ApiError,
+} from '../../../core/errors';
+
+import {
+    IBACnetObject,
+} from '../../../core/interfaces';
+
 import { BinaryValueMetadata } from './binary-value.metadata';
 
-import { UnitBase } from '../../../core/bases/unit.base';
+import { UnitNativeBase } from '../../../core/bases/unit-native.base';
 
-export class BinaryValueUnit extends UnitBase {
-    public metadata: any;
+export class BinaryValueUnit extends UnitNativeBase {
+    public metadata: IBACnetObject;
 
-    constructor (bnModule: any) {
+    constructor (bnUnit: any) {
         super();
         this.metadata = _.cloneDeep(BinaryValueMetadata);
-        this.setProps(bnModule.config);
-    }
 
-    public getBACnetObjects () {
-        return _.cloneDeep(this.metadata);
+        if (_.isNil(bnUnit.id)) {
+            throw new ApiError('BinaryValueUnit - constructor: Unit ID is required!');
+        }
+        this.metadata.id = bnUnit.id;
+
+        this.setProps(bnUnit.config);
     }
 }
