@@ -1,7 +1,12 @@
 
+export interface IBACnetModule {
+    port: number;
+    device: IDeviceUnit;
+}
+
 export interface IDeviceUnit {
     id: number;
-    vendor: number;
+    vendorId: number;
     config: IDeviceUnitConfig;
     units: IUnit[];
 }

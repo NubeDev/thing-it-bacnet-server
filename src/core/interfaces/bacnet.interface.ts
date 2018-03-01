@@ -7,11 +7,6 @@ import {
 } from '../enums';
 import { BACnetWriterUtil } from '../utils';
 
-export interface IBACnetModule {
-    port: number;
-    device: IBACnetDevice;
-}
-
 export interface IBACnetDevice extends IBACnetObject {
     vendorId?: number;
     objects?: IBACnetObject[];
