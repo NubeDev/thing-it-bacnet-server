@@ -1,5 +1,5 @@
 import { BinaryValueUnit } from './binary-value/binary-value.unit';
 
-export const UnitModule = new Map([
+export const NativeModule = new Map([
     [ 'BinaryValue', BinaryValueUnit ],
 ]);

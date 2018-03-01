@@ -2,7 +2,7 @@ import {
     BACnetPropIds,
     BACnetObjTypes,
     BACnetPropTypes,
-} from '../../core/enums';
+} from '../../../core/enums';
 
 export const BinaryValueMetadata = {
     id: 0,
