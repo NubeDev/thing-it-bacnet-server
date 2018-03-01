@@ -4,7 +4,11 @@ import {
     BACnetPropTypes,
 } from '../../../core/enums';
 
-export const BinaryValueMetadata = {
+import {
+    IBACnetObject,
+} from '../../../core/interfaces';
+
+export const BinaryValueMetadata: IBACnetObject = {
     id: 0,
     type: BACnetObjTypes.BinaryValue,
     props: [
