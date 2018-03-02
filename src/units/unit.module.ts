@@ -1,13 +1,12 @@
 import * as _ from 'lodash';
 import { NativeModule } from './native/native.module';
 
-function mergedMaps (maps: any[]) {
+function mergedMaps (maps: Map<string, any>[]) {
     const dataMap = new Map();
 
     _.map(maps, (map) => {
-        for (const [key, value] of map) {
-            dataMap.set(key, value)
-        }
+        map.forEach((value, key) =>
+            dataMap.set(key, value));
     });
 
     return dataMap
