@@ -2,20 +2,22 @@
 export interface IBACnetModule {
     port: number;
     device: INativeUnit;
-    units: IUnit;
+    units: Array<INativeUnit|ICustomUnit>;
 }
 
-export interface IUnit {
-    name?: string;
-    config: any;
-}
-export interface INativeUnit extends IUnit {
+export interface INativeUnit {
     id: number;
+    name?: string;
     vendorId?: number;
+    props?: any;
+}
+export interface ICustomUnit {
+    name?: string;
+    units: INativeUnit[];
 }
 
 export interface IDeviceUnit extends INativeUnit {
-    config: IDeviceUnitConfig;
+    props: IDeviceUnitConfig;
 }
 export interface IDeviceUnitConfig {
     objectNameProp?: IBACnetTypeCharString;
@@ -25,7 +27,7 @@ export interface IDeviceUnitConfig {
 }
 
 export interface IBinaryValueUnit extends INativeUnit {
-    config: IBinaryValueUnitConfig;
+    props: IBinaryValueUnitConfig;
 }
 export interface IBinaryValueUnitConfig {
     presentValue?: IBACnetTypeEnumerated;
