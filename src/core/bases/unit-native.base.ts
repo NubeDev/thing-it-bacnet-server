@@ -123,4 +123,13 @@ export class UnitNativeBase {
     public getNativeUnits (): UnitNativeBase {
         return this;
     }
+
+    /**
+     * getMetadata - returns the BACnet object (metadata) for current unit.
+     *
+     * @return {IBACnetObject}
+     */
+    public getMetadata (): IBACnetObject {
+        return _.cloneDeep(this.metadata);
+    }
 }
