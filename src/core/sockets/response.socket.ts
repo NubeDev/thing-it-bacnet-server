@@ -5,7 +5,7 @@ import { logger } from '../utils';
 import * as Bluebird from 'bluebird';
 
 export class ResponseSocket {
-    public className: string = 'ResponseSocket' ;
+    public className: string = 'ResponseSocket';
 
     constructor (private app: dgram.Socket,
         private port: number,
