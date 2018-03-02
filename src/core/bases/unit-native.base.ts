@@ -15,9 +15,7 @@ import {
     IBACnetObjectProperty,
 } from '../interfaces';
 
-import { UnitBase } from './unit.base';
-
-export class UnitNativeBase extends UnitBase {
+export class UnitNativeBase {
     public className: string = 'UnitNativeBase';
     // Unit metadata
     public metadata: IBACnetObject;
@@ -25,8 +23,6 @@ export class UnitNativeBase extends UnitBase {
     public sjData: Subject<IBACnetObjectProperty>;
 
     constructor (bnUnit: INativeUnit, metadata: IBACnetObject) {
-        super();
-
         if (_.isNil(bnUnit.id)) {
             throw new ApiError(`${this.className} - constructor: Unit ID is required!`);
         }
@@ -35,7 +31,29 @@ export class UnitNativeBase extends UnitBase {
         this.metadata = _.cloneDeep(metadata);
         this.metadata.id = bnUnit.id;
 
-        this.setProps(bnUnit.config);
+        this.setProps(bnUnit.props);
+    }
+
+    /**
+     * setProps - sets the unit properties.
+     *
+     * @param  {any} props - unit properties
+     * @return {void}
+     */
+    public setProps (props: any): void {
+        if (_.isNil(props)) {
+            return;
+        }
+
+        const metadataProps = _.cloneDeep(this.metadata.props);
+        _.map(metadataProps, (prop: any) => {
+            const propName = BACnetPropIds[prop.id];
+            const propValueFromConfig = props[propName];
+
+            prop.values = _.isNil(propValueFromConfig)
+                ? prop.values : propValueFromConfig;
+        });
+        this.metadata.props = metadataProps;
     }
 
     /**
