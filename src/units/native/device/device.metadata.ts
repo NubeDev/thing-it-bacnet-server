@@ -2,10 +2,15 @@ import {
     BACnetPropIds,
     BACnetObjTypes,
     BACnetPropTypes,
-} from '../core/enums';
+} from '../../../core/enums';
 
-export const DeviceMetadata = {
+import {
+    IBACnetObject,
+} from '../../../core/interfaces';
+
+export const DeviceMetadata: IBACnetObject = {
     id: 0,
+    vendorId: 0,
     type: BACnetObjTypes.Device,
     props: [
         {
