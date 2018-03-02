@@ -111,7 +111,24 @@ export class UnitManager {
     }
 
     /**
-     * subscribeProp - subscribes to the changes of specific object property.
+     * subscribeToUnit - subscribes to the changes for all object properties.
+     *
+     * @param  {number} objInst - object instance
+     * @param  {number} objType - object type
+     * @param  {BACnetPropIds} propId - property ID
+     * @return {Observable<IBACnetObjectProperty>}
+     */
+    public subscribeToUnit (objInst: number, objType: number,
+            propId: BACnetPropIds): Observable<IBACnetObjectProperty> {
+        const unit = this.findUnit(objInst, objType);
+        if (!unit) {
+            return null;
+        }
+        return unit.subscribe();
+    }
+
+    /**
+     * subscribeToUnitProp - subscribes to the changes of specific object property.
      *
      * @param  {number} objInst - object instance
      * @param  {number} objType - object type
