@@ -4,15 +4,15 @@ import * as Bluebird from 'bluebird';
 
 import { blvc } from '../layers/blvc.layer';
 
-import { Device } from '../device';
+import { UnitManager } from '../../units/unit.manager';
 
 export class RequestSocket {
     public blvc: Map<string, any>;
     public npdu: Map<string, any>;
     public apdu: Map<string, any>;
-    public device: Device;
+    public unitManager: UnitManager;
 
-    constructor (msg: Buffer, device: Device) {
+    constructor (msg: Buffer, unitManager: UnitManager) {
         this.blvc = blvc.getFromBuffer(msg);
 
         try {
@@ -27,6 +27,6 @@ export class RequestSocket {
             this.apdu = new Map();
         }
 
-        this.device = device;
+        this.unitManager = unitManager;
     }
 }
