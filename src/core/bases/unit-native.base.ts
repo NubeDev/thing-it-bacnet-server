@@ -10,6 +10,7 @@ import {
 } from '../errors';
 
 import {
+    INativeUnit,
     IBACnetObject,
     IBACnetObjectProperty,
 } from '../interfaces';
@@ -23,14 +24,18 @@ export class UnitNativeBase extends UnitBase {
     // Unit properties subject
     public sjData: Subject<IBACnetObjectProperty>;
 
-    constructor (bnUnit: any) {
+    constructor (bnUnit: INativeUnit, metadata: IBACnetObject) {
         super();
 
-        if (_.isNil(bnUnit.config)) {
-            throw new ApiError(`${this.className} - constructor: Unit config is required!`);
+        if (_.isNil(bnUnit.id)) {
+            throw new ApiError(`${this.className} - constructor: Unit ID is required!`);
         }
-
         this.sjData = new Subject();
+
+        this.metadata = _.cloneDeep(metadata);
+        this.metadata.id = bnUnit.id;
+
+        this.setProps(bnUnit.config);
     }
 
     /**
