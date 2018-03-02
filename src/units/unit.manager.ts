@@ -8,6 +8,7 @@ import {
 import {
     IBACnetObjectProperty,
     IBACnetModule,
+    IBACnetObject,
 } from '../core/interfaces';
 
 import { UnitNativeBase } from '../core/bases/unit-native.base';
@@ -18,8 +19,8 @@ import { logger } from '../core/utils';
 
 export class UnitManager {
     public className: string = 'UnitManager';
-    private device: UnitNativeBase;
-    private units: UnitNativeBase[];
+    public device: UnitNativeBase;
+    public units: UnitNativeBase[];
 
     constructor (bnModule: IBACnetModule) {
         this.units = [];
@@ -70,7 +71,7 @@ export class UnitManager {
      * @param  {number} objType - object type
      * @return {UnitNativeBase}
      */
-    private findUnit (objInst: number, objType: number): UnitNativeBase {
+    public findUnit (objInst: number, objType: number): UnitNativeBase {
         return _.find(this.units, (unit) =>
             unit.isBACnetObject(objInst, objType));
     }
