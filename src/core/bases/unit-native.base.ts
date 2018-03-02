@@ -66,6 +66,15 @@ export class UnitNativeBase extends UnitBase {
     }
 
     /**
+     * subscribe - subscribes to the changes for all properties.
+     *
+     * @return {Observable<IBACnetObjectProperty>}
+     */
+    public subscribe (): Observable<IBACnetObjectProperty> {
+        return this.sjData.filter(Boolean);
+    }
+
+    /**
      * subscribeProp - subscribes to the changes of specific property.
      *
      * @param  {BACnetPropIds} propId - property ID
