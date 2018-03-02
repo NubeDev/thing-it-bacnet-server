@@ -22,14 +22,6 @@ export class BinaryValueUnit extends UnitNativeBase {
     public metadata: IBACnetObject;
 
     constructor (bnUnit: IBinaryValueUnit) {
-        super(bnUnit);
-        this.metadata = _.cloneDeep(BinaryValueMetadata);
-
-        if (_.isNil(bnUnit.config.id)) {
-            throw new ApiError(`${this.className} - constructor: Unit ID is required!`);
-        }
-        this.metadata.id = bnUnit.config.id;
-
-        this.setProps(bnUnit.config);
+        super(bnUnit, BinaryValueMetadata);
     }
 }
