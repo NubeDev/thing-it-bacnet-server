@@ -118,8 +118,7 @@ export class UnitManager {
      * @param  {BACnetPropIds} propId - property ID
      * @return {Observable<IBACnetObjectProperty>}
      */
-    public subscribeToUnit (objInst: number, objType: number,
-            propId: BACnetPropIds): Observable<IBACnetObjectProperty> {
+    public subscribeToUnit (objInst: number, objType: number): Observable<IBACnetObjectProperty> {
         const unit = this.findUnit(objInst, objType);
         if (!unit) {
             return null;
