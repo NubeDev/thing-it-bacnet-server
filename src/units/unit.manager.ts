@@ -7,27 +7,41 @@ import {
 
 import {
     IBACnetObjectProperty,
+    IBACnetModule,
 } from '../core/interfaces';
 
-import { UnitBase } from '../core/bases/unit.base';
 import { UnitNativeBase } from '../core/bases/unit-native.base';
-
-import { DeviceMetadata } from './device.metadata';
 
 import { UnitModule } from './unit.module';
 
 import { logger } from '../core/utils';
 
-export class DeviceUnit extends UnitBase {
-    public className: string = 'DeviceUnit';
-    public metadata: any;
+export class UnitManager {
+    public className: string = 'UnitManager';
+    private device: UnitNativeBase;
     private units: UnitNativeBase[];
 
-    constructor (bnModule: any) {
-        super();
-        this.metadata = _.cloneDeep(DeviceMetadata);
-        this.setProps(bnModule.config);
+    constructor (bnModule: IBACnetModule) {
+        this.units = [];
+        this.initDevice(bnModule.device);
         this.initUnits(bnModule.units);
+    }
+
+    /**
+     * initDevice - creates device instance.
+     *
+     * @param  {number} units - object type
+     * @return {void}
+     */
+    public initDevice (device: any): void {
+        try {
+            const DeviceClass = UnitModule.get('Device');
+            const deviceInst: UnitNativeBase = new DeviceClass(device);
+            this.device = deviceInst;
+            this.units = _.concat(this.units, deviceInst);
+        } catch (error) {
+            logger.debug(`${this.className} - initDevice: ${error}`);
+        }
     }
 
     /**
@@ -36,16 +50,15 @@ export class DeviceUnit extends UnitBase {
      * @param  {number} units - object type
      * @return {void}
      */
-    public initUnits (units: any[]): void {
-        this.units = [];
-        _.map(units, (unit) => {
+    public initUnits (units: any): void {
+        _.map(units, (unit: any) => {
             try {
                 const UnitClass = UnitModule.get(unit.name);
                 const unitInst = new UnitClass(unit);
                 const nativeUnits: UnitNativeBase = unitInst.getNativeUnits();
                 this.units = _.concat(this.units, nativeUnits);
             } catch (error) {
-                logger.debug(`${this.className} - initDevice: Unit Class is not found!`);
+                logger.debug(`${this.className} - initUnits: ${error}`);
             }
         });
     }
