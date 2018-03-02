@@ -54,6 +54,7 @@ export class SimpleACKService {
         // Get and send BACnet message
         const msgBACnet = writerBACnet.getBuffer();
         return resp.send(msgBACnet, 'subscribeCOV')
+            .then(() => unconfirmReqService.covNotification(req, resp))
             .then(() => {
                 req.unitManager
                     .subscribeToUnit(objInst, objType)
