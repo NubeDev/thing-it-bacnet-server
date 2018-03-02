@@ -20,7 +20,6 @@ export class ComplexACKService {
      * @return {type}
      */
     public readProperty (req: RequestSocket, resp: ResponseSocket) {
-        const device = req.device.getDevice();
         const invokeId = req.apdu.get('invokeId');
         const apduService = req.apdu.get('service');
 
@@ -34,18 +33,16 @@ export class ComplexACKService {
         const propIdent = apduService.get('propIdent');
         const propIdentValue = propIdent.get('value');
 
-        // Get BACnet object (from module)
-        const bnObject = req.device.getObject(objInst, objType);
         // Get BACnet property (for BACnet object)
-        const bnProp = req.device.getProperty(bnObject, propIdentValue);
+        const bnProp = req.unitManager.getUnitProperty(objInst, objType, propIdentValue);
 
         // Generate APDU writer
         const writerComplexACK = complexACKPDU.writeReq({
             invokeId: invokeId
         });
         const writerReadProperty = complexACKPDU.writeReadProperty({
-            objInst: bnObject.id,
-            objType: bnObject.type,
+            objInst: objInst,
+            objType: objType,
             propId: bnProp.id,
             propType: bnProp.type,
             propValue: bnProp.values,

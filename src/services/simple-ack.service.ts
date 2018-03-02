@@ -31,9 +31,6 @@ export class SimpleACKService {
         const objType = objIdentValue.get('type');
         const objInst = objIdentValue.get('instance');
 
-        // Get BACnet object (from module)
-        const bnObject = req.device.getObject(objInst, objType);
-
         // Generate APDU writer
         const writerSimpleACKPDU = simpleACKPDU.writeReq({
             invokeId: invokeId
@@ -58,9 +55,11 @@ export class SimpleACKService {
         const msgBACnet = writerBACnet.getBuffer();
         return resp.send(msgBACnet)
             .then(() => {
-                req.device.subscribe(bnObject.id, bnObject.type, () => {
-                    unconfirmReqService.covNotification(req, resp);
-                });
+                req.unitManager
+                    .subscribeToUnit(objInst, objType)
+                    .subscribe(() => {
+                        unconfirmReqService.covNotification(req, resp);
+                    });
             });
     }
 
@@ -81,9 +80,6 @@ export class SimpleACKService {
         const objType = objIdentValue.get('type');
         const objInst = objIdentValue.get('instance');
 
-        // Get BACnet object (from module)
-        const bnObject = req.device.getObject(objInst, objType);
-
         // ----- TODO: Set the new property. Check code.
         const propIdent = apduService.get('propIdent');
         const propIdentValue = objIdent.get('value');
@@ -91,10 +87,8 @@ export class SimpleACKService {
         const propValue = apduService.get('propValue');
         const propValueValue = objIdent.get('value');
 
-        req.device.setPropertyValue(bnObject.id, bnObject.type,
+        req.unitManager.setUnitProperty(objInst, objType,
             propIdentValue, propValueValue);
-
-        req.device.next(bnObject.id, bnObject.type);
 
         // Generate APDU writer
         const writerSimpleACKPDU = simpleACKPDU.writeReq({

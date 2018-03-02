@@ -21,14 +21,15 @@ export class UnconfirmReqService {
      * @return {type}
      */
     public iAm (req: RequestSocket, resp: ResponseSocket) {
-        const device = req.device.getDevice();
+        const device = req.unitManager.device;
+        const deviceMetadata = device.getMetadata();
 
         // Generate APDU writer
         const writerUnconfirmReq = unconfirmReqPDU.writeReq({});
         const writerIAm = unconfirmReqPDU.writeIAm({
-            objInst: device.id,
-            objType: device.type,
-            vendorId: device.vendorId,
+            objInst: deviceMetadata.id,
+            objType: deviceMetadata.type,
+            vendorId: deviceMetadata.vendorId,
         });
         const writerAPDU = BACnetWriterUtil.concat(writerUnconfirmReq, writerIAm);
 
@@ -75,18 +76,20 @@ export class UnconfirmReqService {
         const objInst = objIdentValue.get('instance');
 
         // Get BACnet object (from device)
-        const device = req.device.getDevice();
-        const bnObject = req.device.getObject(objInst, objType);
+        const device = req.unitManager.device;
+        const deviceMetadata = device.getMetadata();
+        const unit = req.unitManager.findUnit(objInst, objType);
+        const unitMetadata = unit.getMetadata();
 
         // Get value
-        const bnProp = req.device.getProperty(bnObject, BACnetPropIds.presentValue);
-        const bnStatus = req.device.getProperty(bnObject, BACnetPropIds.statusFlags);
+        const bnProp = unit.getProperty(BACnetPropIds.presentValue);
+        const bnStatus = unit.getProperty(BACnetPropIds.statusFlags);
 
         // Generate APDU writer
         const writerUnconfirmReq = unconfirmReqPDU.writeReq({});
         const writerCOVNotification = unconfirmReqPDU.writeCOVNotification({
-            device: device,
-            devObject: bnObject,
+            device: deviceMetadata,
+            devObject: unitMetadata,
             prop: bnProp,
             status: bnStatus,
             processId: subProcessIdValue,
