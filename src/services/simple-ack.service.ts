@@ -53,7 +53,7 @@ export class SimpleACKService {
 
         // Get and send BACnet message
         const msgBACnet = writerBACnet.getBuffer();
-        return resp.send(msgBACnet)
+        return resp.send(msgBACnet, 'subscribeCOV')
             .then(() => {
                 req.unitManager
                     .subscribeToUnit(objInst, objType)
@@ -112,7 +112,7 @@ export class SimpleACKService {
 
         // Get and send BACnet message
         const msgBACnet = writerBACnet.getBuffer();
-        return resp.send(msgBACnet);
+        return resp.send(msgBACnet, 'writeProperty');
     }
 }
 

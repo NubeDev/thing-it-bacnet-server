@@ -12,34 +12,45 @@ export class ResponseSocket {
         private address: string) {
     }
 
-    public send (message: Buffer): Bluebird<any> {
-        logger.debug(`${this.className} - send (${this.address}:${this.port}): ${message.toString('hex')}`);
+    public send (msg: Buffer, reqMethodName: string): Bluebird<any> {
+        const ucAddress = this.address;
+        const ucPort = this.port;
+
+        this.logSendMethods(ucAddress, ucPort, msg, 'send', reqMethodName);
         return new Bluebird((resolve, reject) => {
-            this.app.send(message, 0, message.length,
-                this.port, this.address, (error, data) => {
-                    if (error) {
-                        return reject(error);
-                    }
-                    resolve(data);
-                });
+            this.app.send(msg, 0, msg.length, ucPort, ucAddress, (error, data) => {
+                if (error) {
+                    return reject(error);
+                }
+                resolve(data);
+            });
         });
     }
 
-    public sendBroadcast (message: Buffer, address?: string, port?: number): Bluebird<any> {
+    public sendBroadcast (msg: Buffer, reqMethodName: string): Bluebird<any> {
         this.app.setBroadcast(true);
-        const broadcastAddress = address ? address : '255.255.255.255';
-        const broadcastPort = _.isNumber(port) ? port : this.port;
+        const bcAddress = '255.255.255.255';
+        const bcPort = this.port;
 
-        logger.debug(`${this.className} - sendBroadcast (${broadcastAddress}:${broadcastPort}): ${message.toString('hex')}`);
+        this.logSendMethods(bcAddress, bcPort, msg, 'sendBroadcast', reqMethodName);
         return new Bluebird((resolve, reject) => {
-            this.app.send(message, 0, message.length,
-                broadcastPort, broadcastAddress, (error, data) => {
-                    this.app.setBroadcast(false);
-                    if (error) {
-                        return reject(error);
-                    }
-                    resolve(data);
-                });
+            this.app.send(msg, 0, msg.length, bcPort, bcAddress, (error, data) => {
+                this.app.setBroadcast(false);
+                if (error) {
+                    return reject(error);
+                }
+                resolve(data);
+            });
         });
+    }
+
+    private logSendMethods (address: string, port: number, msg: Buffer,
+            sendMethodName: string, reqMethodName: string) {
+        try {
+            logger.debug(`${this.className} - ${sendMethodName} (${address}:${port}): ${reqMethodName}`);
+            logger.debug(`${this.className} - ${sendMethodName} (${address}:${port}): ${msg.toString('hex')}`);
+        } catch (error) {
+            logger.error(`${this.className} - ${sendMethodName} (${address}:${port}): ${error}`);
+        }
     }
 }

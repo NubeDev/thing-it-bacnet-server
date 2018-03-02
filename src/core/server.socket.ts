@@ -46,7 +46,6 @@ export class Server {
 
         this.sock.on('message', (msg: Buffer, rinfo: dgram.AddressInfo) => {
             // Generate Request instance
-            console.log(msg);
             const req = new RequestSocket(msg, this.unitManager);
             // Generate Response instance
             const resp = new ResponseSocket(this.sock, rinfo.port, rinfo.address);

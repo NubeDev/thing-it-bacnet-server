@@ -64,7 +64,7 @@ export class ComplexACKService {
 
         // Get and send BACnet message
         const msgBACnet = writerBACnet.getBuffer();
-        return resp.send(msgBACnet);
+        return resp.send(msgBACnet, 'readProperty');
     }
 }
 
