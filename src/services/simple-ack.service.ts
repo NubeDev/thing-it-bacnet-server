@@ -83,10 +83,10 @@ export class SimpleACKService {
 
         // ----- TODO: Set the new property. Check code.
         const propIdent = apduService.get('propIdent');
-        const propIdentValue = objIdent.get('value');
+        const propIdentValue = propIdent.get('value');
 
         const propValue = apduService.get('propValue');
-        const propValueValue = objIdent.get('value');
+        const propValueValue = propValue.get('value');
 
         req.unitManager.setUnitProperty(objInst, objType,
             propIdentValue, propValueValue);
