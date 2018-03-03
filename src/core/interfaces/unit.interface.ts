@@ -8,6 +8,7 @@ export interface IBACnetModule {
 export interface INativeUnit {
     id: number;
     name?: string;
+    alias?: string;
     vendorId?: number;
     props?: any;
 }
