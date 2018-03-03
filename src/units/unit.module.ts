@@ -1,5 +1,6 @@
 import * as _ from 'lodash';
 import { NativeModule } from './native/native.module';
+import { CustomModule } from './custom/custom.module';
 
 function mergedMaps (maps: Map<string, any>[]) {
     const dataMap = new Map();
@@ -13,5 +14,6 @@ function mergedMaps (maps: Map<string, any>[]) {
 }
 
 export const UnitModule = mergedMaps([
-    NativeModule
+    NativeModule,
+    CustomModule,
 ]);
