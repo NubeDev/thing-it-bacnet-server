@@ -11,7 +11,7 @@ import {
     IBACnetObject,
 } from '../core/interfaces';
 
-import { UnitNativeBase } from '../core/bases/unit-native.base';
+import { NativeUnit } from './native/native.unit';
 
 import { UnitModule } from './unit.module';
 
@@ -19,8 +19,8 @@ import { logger } from '../core/utils';
 
 export class UnitManager {
     public className: string = 'UnitManager';
-    public device: UnitNativeBase;
-    public units: UnitNativeBase[];
+    public device: NativeUnit;
+    public units: NativeUnit[];
 
     constructor (bnModule: IBACnetModule) {
         this.units = [];
@@ -37,7 +37,7 @@ export class UnitManager {
     public initDevice (device: any): void {
         try {
             const DeviceClass = UnitModule.get('Device');
-            const deviceInst: UnitNativeBase = new DeviceClass(device);
+            const deviceInst: NativeUnit = new DeviceClass(device);
             this.device = deviceInst;
             this.units = _.concat(this.units, deviceInst);
         } catch (error) {
@@ -56,7 +56,7 @@ export class UnitManager {
             try {
                 const UnitClass = UnitModule.get(unit.name);
                 const unitInst = new UnitClass(unit);
-                const nativeUnits: UnitNativeBase = unitInst.getNativeUnits();
+                const nativeUnits: NativeUnit = unitInst.getNativeUnits();
                 this.units = _.concat(this.units, nativeUnits);
             } catch (error) {
                 logger.debug(`${this.className} - initUnits: ${error}`);
@@ -69,9 +69,9 @@ export class UnitManager {
      *
      * @param  {number} objInst - object instance
      * @param  {number} objType - object type
-     * @return {UnitNativeBase}
+     * @return {NativeUnit}
      */
-    public findUnit (objInst: number, objType: number): UnitNativeBase {
+    public findUnit (objInst: number, objType: number): NativeUnit {
         return _.find(this.units, (unit) =>
             unit.isBACnetObject(objInst, objType));
     }

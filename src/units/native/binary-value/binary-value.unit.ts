@@ -15,9 +15,9 @@ import {
 
 import { BinaryValueMetadata } from './binary-value.metadata';
 
-import { UnitNativeBase } from '../../../core/bases/unit-native.base';
+import { NativeUnit } from '../native.unit';
 
-export class BinaryValueUnit extends UnitNativeBase {
+export class BinaryValueUnit extends NativeUnit {
     public className: string = 'BinaryValueUnit';
     public metadata: IBACnetObject;
 

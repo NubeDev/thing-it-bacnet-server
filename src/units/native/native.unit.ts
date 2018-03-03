@@ -3,19 +3,19 @@ import { Subject, Observable } from 'rxjs';
 
 import {
     BACnetPropIds,
-} from '../enums';
+} from '../../core/enums';
 
 import {
     ApiError,
-} from '../errors';
+} from '../../core/errors';
 
 import {
     INativeUnit,
     IBACnetObject,
     IBACnetObjectProperty,
-} from '../interfaces';
+} from '../../core/interfaces';
 
-export class UnitNativeBase {
+export class NativeUnit {
     public className: string = 'UnitNativeBase';
     // Unit metadata
     public metadata: IBACnetObject;
@@ -120,7 +120,7 @@ export class UnitNativeBase {
      *
      * @return {UnitNativeBase}
      */
-    public getNativeUnits (): UnitNativeBase {
+    public getNativeUnits (): NativeUnit {
         return this;
     }
 

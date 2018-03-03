@@ -15,9 +15,9 @@ import {
 
 import { DeviceMetadata } from './device.metadata';
 
-import { UnitNativeBase } from '../../../core/bases/unit-native.base';
+import { NativeUnit } from '../native.unit';
 
-export class DeviceUnit extends UnitNativeBase {
+export class DeviceUnit extends NativeUnit {
     public className: string = 'BinaryValueUnit';
     public metadata: IBACnetObject;
 
