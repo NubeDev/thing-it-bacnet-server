@@ -41,7 +41,7 @@ export class UnitManager {
             this.device = deviceInst;
             this.units = _.concat(this.units, deviceInst);
         } catch (error) {
-            logger.debug(`${this.className} - initDevice: ${error}`);
+            logger.debug(`${this.className} - initDevice: Device - ${error}`);
         }
     }
 
@@ -59,7 +59,7 @@ export class UnitManager {
                 const nativeUnits: NativeUnit = unitInst.getNativeUnits();
                 this.units = _.concat(this.units, nativeUnits);
             } catch (error) {
-                logger.debug(`${this.className} - initUnits: ${error}`);
+                logger.debug(`${this.className} - initUnits: ${unit.name} - ${error}`);
             }
         });
     }
