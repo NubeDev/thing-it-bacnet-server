@@ -41,7 +41,7 @@ export const BACnetModule: IBACnetModule = {
             units: [
                 {
                     id: 25,
-                    name: 'angle',
+                    alias: 'angle',
                     props: {
                         presentValue: {
                             value: 23,
@@ -54,7 +54,7 @@ export const BACnetModule: IBACnetModule = {
                 },
                 {
                     id: 26,
-                    name: 'height',
+                    alias: 'height',
                     props: {
                         statusFlags: {
                             inAlarm: false,
