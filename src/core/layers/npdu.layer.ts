@@ -23,7 +23,7 @@ export class NPDU {
         this.apdu = apduInst;
     }
 
-    private getControlFlags (mControl: number): Map<string, any> {
+    public getControlFlags (mControl: number): Map<string, any> {
         const mControlMap: Map<string, any> = new Map();
 
         const noApduMessageType = !!TyperUtil.getBit(mControl, 7);
