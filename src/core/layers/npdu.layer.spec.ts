@@ -54,4 +54,82 @@ describe('NPDU', () => {
             expect(spyAPDUGetFromBuffer.args[0][0]).to.deep.equal(slicedBuffer);
         });
     });
+
+    describe('getControlFlags', () => {
+        let npdu: NPDU;
+        let apduMock;
+
+        beforeEach(() => {
+            apduMock = new APDUMock() as any as APDU;
+            npdu = new NPDU(apduMock);
+        });
+
+        it('should return unsetted flags', () => {
+            const control = npdu.getControlFlags(0x00);
+            expect(control.get('noApduMessageType')).to.be.false;
+            expect(control.get('reserved1')).to.equal(0);
+            expect(control.get('destSpecifier')).to.be.false;
+            expect(control.get('reserved2')).to.equal(0);
+            expect(control.get('srcSpecifier')).to.be.false;
+            expect(control.get('expectingReply')).to.be.false;
+            expect(control.get('priority1')).to.equal(0);
+            expect(control.get('priority2')).to.equal(0);
+        });
+
+        it('should return second priority bit', () => {
+            const control = npdu.getControlFlags(0x01);
+            expect(control.get('priority2')).to.equal(1);
+        });
+
+        it('should return first priority bit', () => {
+            const control = npdu.getControlFlags(0x02);
+            expect(control.get('priority1')).to.equal(1);
+        });
+
+        it('should return expecting reply flag', () => {
+            const control = npdu.getControlFlags(0x04);
+            expect(control.get('expectingReply')).to.be.true;
+        });
+
+        it('should return src specifier flag', () => {
+            const control = npdu.getControlFlags(0x08);
+            expect(control.get('srcSpecifier')).to.be.true;
+        });
+
+        it('should return second reserved bit', () => {
+            const control = npdu.getControlFlags(0x10);
+            expect(control.get('reserved2')).to.equal(1);
+        });
+
+        it('should return dest specifier flag', () => {
+            const control = npdu.getControlFlags(0x20);
+            expect(control.get('destSpecifier')).to.be.true;
+        });
+
+        it('should return first reserved bit', () => {
+            const control = npdu.getControlFlags(0x40);
+            expect(control.get('reserved1')).to.equal(1);
+        });
+
+        it('should return no APDU message type flag', () => {
+            const control = npdu.getControlFlags(0x80);
+            expect(control.get('noApduMessageType')).to.be.true;
+        });
+
+        it('should return even bits', () => {
+            const control = npdu.getControlFlags(0xaa);
+            expect(control.get('noApduMessageType')).to.be.true;
+            expect(control.get('destSpecifier')).to.be.true;
+            expect(control.get('srcSpecifier')).to.be.true;
+            expect(control.get('priority1')).to.equal(1);
+        });
+
+        it('should return odd bits', () => {
+            const control = npdu.getControlFlags(0x55);
+            expect(control.get('reserved1')).to.equal(1);
+            expect(control.get('reserved2')).to.equal(1);
+            expect(control.get('expectingReply')).to.be.true;
+            expect(control.get('priority2')).to.equal(1);
+        });
+    });
 });
