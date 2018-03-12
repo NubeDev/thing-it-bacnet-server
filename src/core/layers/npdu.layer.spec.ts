@@ -20,33 +20,86 @@ class APDUMock {
 describe('NPDU', () => {
     describe('getFromBuffer', () => {
         let npdu: NPDU;
-        let buf: Buffer;
         let apduMock;
 
         beforeEach(() => {
-            buf = Buffer.from([0x01, 0x20, 0xff,
-                0xff, 0x00, 0xff, 0x10, 0x00, 0xc4, 0x02, 0x00,
-                0x27, 0x0f, 0x22, 0x05, 0xc4, 0x91, 0x00, 0x21, 0xb2]);
             apduMock = new APDUMock() as any as APDU;
             npdu = new NPDU(apduMock);
         });
 
-        it('should return Map with correct metadata', () => {
+        it('should return metadata without dest mac address', () => {
+            const buf = Buffer.from([0x01, 0x20, 0xff,
+                0xff, 0x00, 0xff, 0x10, 0x00, 0xc4, 0x02, 0x00,
+                0x27, 0x0f, 0x22, 0x05, 0xc4, 0x91, 0x00, 0x21, 0xb2]);
             const newBuf = npdu.getFromBuffer(buf);
             expect(newBuf.get('version')).to.equal(0x01);
             const control = newBuf.get('control');
-            expect(control.get('noApduMessageType')).to.be.false;
-            expect(control.get('reserved1')).to.equal(0);
-            expect(control.get('destSpecifier')).to.be.true;
-            expect(control.get('reserved2')).to.equal(0);
-            expect(control.get('srcSpecifier')).to.be.false;
-            expect(control.get('expectingReply')).to.be.false;
-            expect(control.get('priority1')).to.equal(0);
-            expect(control.get('priority2')).to.equal(0);
+            expect(control.size).to.equal(8);
+            expect(newBuf.get('destNetworkAddress')).to.equal(0xffff);
+            expect(newBuf.get('destMacAddressLen')).to.equal(0x00);
+            expect(newBuf.get('hopCount')).to.equal(255);
+        });
+
+        it('should return metadata with dest mac address', () => {
+            const buf = Buffer.from([0x01, 0x20, 0xff, 0xff, 0x04, 0x01,
+                0x01, 0x01, 0x01, 0xff, 0x10, 0x00, 0xc4, 0x02, 0x00,
+                0x27, 0x0f, 0x22, 0x05, 0xc4, 0x91, 0x00, 0x21, 0xb2]);
+            const newBuf = npdu.getFromBuffer(buf);
+            expect(newBuf.get('version')).to.equal(0x01);
+            const control = newBuf.get('control');
+            expect(control.size).to.equal(8);
+            expect(newBuf.get('destNetworkAddress')).to.equal(0xffff);
+            expect(newBuf.get('destMacAddressLen')).to.equal(0x04);
+            expect(newBuf.get('destMacAddress')).to.equal('01010101');
+            expect(newBuf.get('hopCount')).to.equal(255);
+        });
+
+        it('should return metadata without src mac address', () => {
+            const buf = Buffer.from([0x01, 0x08, 0xff,
+                0xff, 0x00, 0xff, 0x10, 0x00, 0xc4, 0x02, 0x00,
+                0x27, 0x0f, 0x22, 0x05, 0xc4, 0x91, 0x00, 0x21, 0xb2]);
+            const newBuf = npdu.getFromBuffer(buf);
+            expect(newBuf.get('version')).to.equal(0x01);
+            const control = newBuf.get('control');
+            expect(control.size).to.equal(8);
+            expect(newBuf.get('srcNetworkAddress')).to.equal(0xffff);
+            expect(newBuf.get('srcMacAddressLen')).to.equal(0x00);
+        });
+
+        it('should return metadata with src mac address', () => {
+            const buf = Buffer.from([0x01, 0x08, 0xff, 0xff, 0x04, 0x01,
+                0x01, 0x01, 0x01, 0xff, 0x10, 0x00, 0xc4, 0x02, 0x00,
+                0x27, 0x0f, 0x22, 0x05, 0xc4, 0x91, 0x00, 0x21, 0xb2]);
+            const newBuf = npdu.getFromBuffer(buf);
+            expect(newBuf.get('version')).to.equal(0x01);
+            const control = newBuf.get('control');
+            expect(control.size).to.equal(8);
+            expect(newBuf.get('srcNetworkAddress')).to.equal(0xffff);
+            expect(newBuf.get('srcMacAddressLen')).to.equal(0x04);
+            expect(newBuf.get('srcMacAddress')).to.equal('01010101');
+        });
+
+        it('should return metadata with dest and src mac address', () => {
+            const buf = Buffer.from([0x01, 0x28, 0xff, 0xff, 0x04, 0x01,
+                0x01, 0x01, 0x01, 0xff, 0xff, 0x02, 0x05, 0x05, 0xff, 0x10, 0x00, 0xc4, 0x02, 0x00,
+                0x27, 0x0f, 0x22, 0x05, 0xc4, 0x91, 0x00, 0x21, 0xb2]);
+            const newBuf = npdu.getFromBuffer(buf);
+            expect(newBuf.get('version')).to.equal(0x01);
+            const control = newBuf.get('control');
+            expect(control.size).to.equal(8);
+            expect(newBuf.get('destNetworkAddress')).to.equal(0xffff);
+            expect(newBuf.get('destMacAddressLen')).to.equal(0x04);
+            expect(newBuf.get('destMacAddress')).to.equal('01010101');
+            expect(newBuf.get('srcNetworkAddress')).to.equal(0xffff);
+            expect(newBuf.get('srcMacAddressLen')).to.equal(0x02);
+            expect(newBuf.get('srcMacAddress')).to.equal('0505');
             expect(newBuf.get('hopCount')).to.equal(255);
         });
 
         it('should slice the buffer correctly', () => {
+            const buf = Buffer.from([0x01, 0x20, 0xff,
+                0xff, 0x00, 0xff, 0x10, 0x00, 0xc4, 0x02, 0x00,
+                0x27, 0x0f, 0x22, 0x05, 0xc4, 0x91, 0x00, 0x21, 0xb2]);
             let spyAPDUGetFromBuffer = spy(apduMock, 'getFromBuffer');
             const newBuf = npdu.getFromBuffer(buf);
             const slicedBuffer = Buffer.from([0x10, 0x00, 0xc4, 0x02, 0x00,
