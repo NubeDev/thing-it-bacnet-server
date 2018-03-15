@@ -12,13 +12,13 @@ export class CSVRow {
     }
 
     /**
-     * setAlias - sets the alias to the specific cell.
+     * setCellAlias - sets the alias to the specific cell.
      *
      * @param  {number} cellNumber - cell ID
      * @param  {string} cellAlias - cell alias
      * @return {CSVRow}
      */
-    public setAlias (cellNumber: number, cellAlias: string): CSVRow {
+    public setCellAlias (cellNumber: number, cellAlias: string): CSVRow {
         if (this.aliases.has(cellAlias)) {
             throw new ApiError(`CSVRow - setAlias: Alias ${cellAlias} is already exist!`);
         }
@@ -28,13 +28,13 @@ export class CSVRow {
     }
 
     /**
-     * setValue - sets the values in a cell by the cell ID or cell alias.
+     * setCellValue - sets the values in a cell by the cell ID or cell alias.
      *
      * @param  {number|string} cellInst - cell ID of cell alias
      * @param  {number|string} cellValue - new valuse of cell
      * @return {CSVRow}
      */
-    public setValue (cellInst: number|string, cellValue: number|string): CSVRow {
+    public setCellValue (cellInst: number|string, cellValue: number|string): CSVRow {
         let cellNumber: number = _.isString(cellInst)
             ? this.aliases.get(cellInst)
             : cellInst;
@@ -52,12 +52,12 @@ export class CSVRow {
     }
 
     /**
-     * getValue - returns the values by cell ID or cell alias.
+     * getCellValue - returns the values by cell ID or cell alias.
      *
      * @param  {number|string} cellInst - cell ID of cell alias
      * @return {number|string}
      */
-    public getValue (cellInst: number|string): number|string {
+    public getCellValue (cellInst: number|string): number|string {
         let cellNumber: number = _.isString(cellInst)
             ? this.aliases.get(cellInst)
             : cellInst;
