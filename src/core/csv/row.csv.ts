@@ -66,6 +66,15 @@ export class CSVRow {
     }
 
     /**
+     * lenght - returns the lenght of the row.
+     *
+     * @return {number}
+     */
+    public get lenght (): number {
+        return this.cells.length;
+    }
+
+    /**
      * toString - returns the string representation (csv format) of the row.
      *
      * @param  {number} numOfCells - number of cells
