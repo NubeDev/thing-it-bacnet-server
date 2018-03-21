@@ -1,14 +1,26 @@
+import * as Bluebird from 'bluebird';
+
 import {
     BACnetServiceTypes,
     BLVCFunction,
-} from '../core/enums';
+} from '../../core/enums';
 
-import { RequestSocket, ResponseSocket } from '../core/sockets';
+import { complexACKPDU } from '../../core/layers/apdus';
+import { blvc, npdu } from '../../core/layers';
 
-import { complexACKPDU } from '../core/layers/apdus';
-import { blvc, npdu } from '../core/layers';
+import { BACnetWriterUtil } from '../../core/utils';
 
-import { BACnetWriterUtil } from '../core/utils';
+import {
+    IConfirmedReqReadPropertyOptions,
+    IComplexACKLayer,
+    IComplexACKReadPropertyService,
+    IBACnetTypeObjectId,
+    IBACnetTypeUnsignedInt,
+} from '../../core/interfaces';
+
+import { InputSocket, OutputSocket, ServiceSocket } from '../../core/sockets';
+
+import { UnitManager } from '../../units/unit.manager';
 
 export class ComplexACKService {
 
@@ -19,22 +31,25 @@ export class ComplexACKService {
      * @param  {ResponseSocket} resp - response object (socket)
      * @return {type}
      */
-    public readProperty (req: RequestSocket, resp: ResponseSocket) {
-        const invokeId = req.apdu.get('invokeId');
-        const apduService = req.apdu.get('service');
+    public readProperty (
+            inputSoc: InputSocket, outputSoc: OutputSocket, serviceSocket: ServiceSocket) {
+        const apduMessage = inputSoc.apdu as IComplexACKLayer;
+        const invokeId = apduMessage.invokeId;
+        const apduService = apduMessage.service as IComplexACKReadPropertyService;
 
         // Get object identifier
-        const objIdent = apduService.get('objIdent');
-        const objIdentValue = objIdent.get('value');
-        const objType = objIdentValue.get('type');
-        const objInst = objIdentValue.get('instance');
+        const objId = apduService.objId;
+        const objIdPayload = objId.payload as IBACnetTypeObjectId;
+        const objType = objIdPayload.type;
+        const objInst = objIdPayload.instance;
 
         // Get property identifier
-        const propIdent = apduService.get('propIdent');
-        const propIdentValue = propIdent.get('value');
+        const propId = apduService.propId;
+        const propIdPayload = propId.payload as IBACnetTypeUnsignedInt;
 
         // Get BACnet property (for BACnet object)
-        const bnProp = req.unitManager.getUnitProperty(objInst, objType, propIdentValue);
+        const unitManager: UnitManager = serviceSocket.getService('unitManager');
+        const bnProp = unitManager.getUnitProperty(objInst, objType, propIdPayload.value);
 
         // Generate APDU writer
         const writerComplexACK = complexACKPDU.writeReq({
@@ -64,7 +79,9 @@ export class ComplexACKService {
 
         // Get and send BACnet message
         const msgBACnet = writerBACnet.getBuffer();
-        return resp.send(msgBACnet, 'readProperty');
+        outputSoc.send(msgBACnet, 'readProperty');
+
+        return Bluebird.resolve();
     }
 }
 
