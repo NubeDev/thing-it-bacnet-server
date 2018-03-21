@@ -7,6 +7,15 @@ import {
 } from '../enums';
 import { BACnetWriterUtil } from '../utils';
 
+export interface IBACnetObjectIdentifier {
+    type: number;
+    instance: number;
+}
+export interface IBACnetAddressInfo {
+    address: string;
+    port: number;
+}
+
 export interface IBACnetDevice extends IBACnetObject {
     vendorId?: number;
     objects?: IBACnetObject[];
@@ -25,13 +34,13 @@ export interface IBACnetObjectProperty {
     values: any;
 }
 
-export interface IBLVCLayer {
+export interface IBLVCReqLayer {
     func: BLVCFunction;
     npdu: BACnetWriterUtil;
     apdu: BACnetWriterUtil;
 }
 
-export interface INPDULayer {
+export interface INPDUReqLayer {
     control?: INPDULayerControl;
     destNetworkAddress?: number;
     destMacAddress?: string;
@@ -49,7 +58,26 @@ export interface INPDULayerControl {
     priority2?: number;
 }
 
+export interface IConfirmedReq {
+    segAccepted?: boolean;
+    invokeId: number;
+}
+export interface IConfirmedReqReadProperty {
+    objType: number;
+    objInst: number;
+    propId: number;
+    propArrayIndex?: number;
+}
+export interface IConfirmedReqReadPropertyOptions
+    extends IConfirmedReq, IConfirmedReqReadProperty {
+}
+
 export interface IUnconfirmReq {
+}
+export interface IUnconfirmReqWhoIs {
+}
+export interface IUnconfirmReqWhoIsOptions
+    extends IUnconfirmReq, IUnconfirmReqWhoIs {
 }
 export interface IUnconfirmReqIAm {
     objType: number;
