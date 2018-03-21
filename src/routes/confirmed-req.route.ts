@@ -8,7 +8,7 @@ import {
     BACnetConfirmedService,
 } from '../core/enums';
 
-import { confirmReqService, simpleACKService, complexACKService } from '../services';
+import { simpleACKService, complexACKService } from '../services';
 
 import { InputSocket, OutputSocket, ServiceSocket } from '../core/sockets';
 
