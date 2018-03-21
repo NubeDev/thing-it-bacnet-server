@@ -12,6 +12,17 @@ export class CSVRow {
     }
 
     /**
+     * destroy - destroys the internal buffers.
+     *
+     * @return {void}
+     */
+    public destroy (): void {
+        this.aliases.clear();
+        this.aliases = null;
+        this.cells = null;
+    }
+
+    /**
      * setCellAlias - sets the alias to the specific cell.
      *
      * @param  {number} cellNumber - cell ID
@@ -98,8 +109,8 @@ export class CSVRow {
      * @return {string}
      */
     public escapeString (str: string): string {
-        const escapedString = _.replace(str, '"', '""');
-        return /(;|,|\n)/.test(escapedString)
+        const escapedString = _.replace(str, /"/g, '""');
+        return /(;|,|\n|\")/.test(escapedString)
             ? `"${escapedString}"` : escapedString;
     }
 }

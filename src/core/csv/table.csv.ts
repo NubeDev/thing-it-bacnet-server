@@ -12,6 +12,26 @@ export class CSVTable {
     }
 
     /**
+     * destroy - destroys the internal buffers.
+     *
+     * @return {void}
+     */
+    public destroy (): void {
+    }
+
+    /**
+     * clear - clears the array with rows.
+     *
+     * @return {void}
+     */
+    public clear (): void {
+        _.map(this.rows, (row) => {
+            row.destroy();
+        })
+        this.rows = [];
+    }
+
+    /**
      * addRow - creates and returns the instance of CSVRow class.
      *
      * @return {CSVRow}
