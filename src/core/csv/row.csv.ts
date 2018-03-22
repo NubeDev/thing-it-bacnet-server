@@ -94,7 +94,7 @@ export class CSVRow {
      * @param  {string} strRow - string in csv format
      * @return {void}
      */
-    public fromString (strRow: number): void {
+    public fromString (strRow: string): void {
         if (!_.isString(strRow)) {
             throw new ApiError(`CSVRow - fromString: Input string must have string type!`);
         }
