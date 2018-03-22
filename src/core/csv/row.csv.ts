@@ -2,7 +2,7 @@ import * as _ from 'lodash';
 
 import { ApiError } from '../errors';
 
-export const CSVSeparator = ';';
+export const CSVCellSeparator = ';';
 
 export class CSVRow {
     private aliases: Map<string, number>;
@@ -99,7 +99,7 @@ export class CSVRow {
             throw new ApiError(`CSVRow - fromString: Input string must have string type!`);
         }
 
-        const cells = strRow.split(CSVSeparator);
+        const cells = strRow.split(CSVCellSeparator);
 
         const formatedCells = _.map(cells, (cellStr) => {
             const cellNum = parseFloat(cellStr);
@@ -123,7 +123,7 @@ export class CSVRow {
             rowArray[arrIndex] = this.cells[arrIndex];
         }
 
-        return rowArray.join(CSVSeparator);
+        return rowArray.join(CSVCellSeparator);
     }
 
     /**
