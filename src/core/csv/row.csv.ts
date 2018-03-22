@@ -88,10 +88,10 @@ export class CSVRow {
     }
 
     /**
-     * fromString - parses the string (csv format) and creates the array of values
-     * from parsed data..
+     * fromString - parses the "Row" string (csv format) and creates an array
+     * of "value"s from parsed data.
      *
-     * @param  {string} strRow - string in csv format
+     * @param  {string} strRow - string in csv format (row)
      * @return {void}
      */
     public fromString (strRow: string): void {
