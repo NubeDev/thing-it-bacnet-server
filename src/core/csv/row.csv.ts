@@ -2,6 +2,8 @@ import * as _ from 'lodash';
 
 import { ApiError } from '../errors';
 
+export const CSVSeparator = ';';
+
 export class CSVRow {
     private aliases: Map<string, number>;
     private cells: Array<number|string>;
@@ -86,6 +88,28 @@ export class CSVRow {
     }
 
     /**
+     * fromString - parses the string (csv format) and creates the array of values
+     * from parsed data..
+     *
+     * @param  {string} strRow - string in csv format
+     * @return {void}
+     */
+    public fromString (strRow: number): void {
+        if (!_.isString(strRow)) {
+            throw new ApiError(`CSVRow - fromString: Input string must have string type!`);
+        }
+
+        const cells = strRow.split(CSVSeparator);
+
+        const formatedCells = _.map(cells, (cellStr) => {
+            const cellNum = parseFloat(cellStr);
+            return _.isFinite(cellNum) ? cellNum : cellStr;
+        });
+
+        this.cells = formatedCells;
+    }
+
+    /**
      * toString - returns the string representation (csv format) of the row.
      *
      * @param  {number} numOfCells - number of cells
@@ -99,7 +123,7 @@ export class CSVRow {
             rowArray[arrIndex] = this.cells[arrIndex];
         }
 
-        return rowArray.join(';');
+        return rowArray.join(CSVSeparator);
     }
 
     /**
