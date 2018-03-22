@@ -8,9 +8,9 @@ export class CSVRow {
     private aliases: Map<string, number>;
     private cells: Array<number|string>;
 
-    constructor () {
+    constructor (strRow: string = '') {
         this.aliases = new Map();
-        this.cells = [];
+        this.fromString(strRow);
     }
 
     /**
