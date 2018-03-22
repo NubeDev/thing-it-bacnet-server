@@ -4,6 +4,8 @@ import { ApiError } from '../errors';
 
 import { CSVRow } from './row.csv';
 
+const CSVRowSeparator = String.fromCharCode(10);
+
 export class CSVTable {
     private aliases: Map<string, number>;
     private rows: CSVRow[];
@@ -85,6 +87,22 @@ export class CSVTable {
             this.setRowAlias(rowIndex, alias);
         }
         return row;
+    }
+
+    /**
+     * fromString - parses the "Table" string (csv format) and creates an array
+     * of "CSVRow"s from parsed data.
+     *
+     * @param  {string} strTable - string in csv format (table)
+     * @return {void}
+     */
+    public fromString (strTable: string): void {
+        const strRows = strTable.split(CSVRowSeparator);
+
+        _.map(strRows, (strRow) => {
+            const csvRow = new CSVRow(strRow);
+            this.rows.push(csvRow);
+        });
     }
 
     /**
