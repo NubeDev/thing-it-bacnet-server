@@ -65,7 +65,8 @@ export class CSVRow {
     }
 
     /**
-     * getCellValue - returns the values by cell ID or cell alias.
+     * getCellValue - returns the values by cell ID or cell alias. If cell is empty
+     * method will return the empty string value.
      *
      * @param  {number|string} cellInst - cell ID of cell alias
      * @return {number|string}
@@ -75,7 +76,8 @@ export class CSVRow {
             ? this.aliases.get(cellInst)
             : cellInst;
 
-        return this.cells[cellNumber];
+        const cellValue = this.cells[cellNumber];
+        return _.isNil(cellValue) ? '' : cellValue;
     }
 
     /**
