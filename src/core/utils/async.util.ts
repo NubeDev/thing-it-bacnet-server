@@ -13,6 +13,17 @@ export class AsyncUtil {
         });
     }
 
+    static readFile (filePath: string): Bluebird<Buffer> {
+        return new Bluebird((resolve, reject) => {
+            fs.readFile(filePath, (error, data) => {
+                if (error) {
+                    throw new ApiError(`EDEStorageManager - readFile: ${error}`);
+                }
+                resolve(data);
+            });
+        });
+    }
+
     static moveFile (oldPath: string, newPath: string): Bluebird<any> {
         return new Bluebird((resolve, reject) => {
             fs.rename(oldPath, newPath, (error) => {
