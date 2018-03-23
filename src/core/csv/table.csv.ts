@@ -16,6 +16,15 @@ export class CSVTable {
     }
 
     /**
+     * lenght - returns the lenght of the table.
+     *
+     * @return {number}
+     */
+    get lenght (): number {
+        return this.rows.length;
+    }
+
+    /**
      * destroy - destroys the internal buffers.
      *
      * @return {void}
