@@ -6,7 +6,7 @@
 /* Application Config */
 export interface IAppConfig {
     server: IServerConfig;
-    bacnet: IBACnetConfig;
+    bacnet?: IBACnetConfig;
 }
 
 /* BACnet config */
