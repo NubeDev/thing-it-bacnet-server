@@ -10,10 +10,6 @@ import { unconfirmedReqService } from '../services';
 import { mainRouter } from '../routes';
 
 import {
-    EDEStorageManager,
-} from './ede-storage.manager';
-
-import {
     ApiError,
 } from '../core/errors';
 
@@ -29,7 +25,6 @@ import {
 
 export class AppManager {
     private server: Server;
-    private edeStorageManager: EDEStorageManager;
 
     constructor (private appConfig: IAppConfig) {
         this.handleArgs();
@@ -38,23 +33,16 @@ export class AppManager {
     }
 
     public handleArgs () {
-        if (argv.filePath) {
-            if (!path.isAbsolute(argv.filePath)) {
-                throw new ApiError('AppManager - handleArgs: Path must be absolute!');
-            }
-            this.appConfig.ede.file.path = argv.filePath;
+        if (!_.isString(argv.filePath) || !argv.filePath) {
+            throw new ApiError('AppManager - handleArgs: Path to the EDE file is required!');
         }
-
-        if (argv.fileName) {
-            this.appConfig.ede.file.name = argv.fileName;
+        if (!path.isAbsolute(argv.filePath)) {
+            throw new ApiError('AppManager - handleArgs: Path to the EDE file must be absolute!');
         }
+        this.appConfig.bacnet.edeFilePath = argv.filePath;
 
         if (argv.port) {
             this.appConfig.server.port = argv.port;
-        }
-
-        if (argv.timeout) {
-            this.appConfig.ede.file.timeout = +argv.timeout;
         }
 
         if (argv.reqDelay) {
@@ -67,30 +55,11 @@ export class AppManager {
     }
 
     public initServices () {
-        this.edeStorageManager = new EDEStorageManager(this.appConfig.ede);
-        this.server.registerService('edeStorage', this.edeStorageManager);
+        // this.edeStorageManager = new EDEStorageManager(this.appConfig.ede);
+        // this.server.registerService('edeStorage', this.edeStorageManager);
     }
 
     public start () {
-        this.server.startServer()
-            .then((addrInfo: IBACnetAddressInfo) => {
-                // Generate OutputSocket instance
-                const outputSocket = this.server.genOutputSocket(addrInfo);
-                return unconfirmedReqService.whoIs(null, outputSocket);
-            })
-            .then(() => this.startNetworkMonitoring());
-    }
-
-    public startNetworkMonitoring () {
-        logger.info('AppManager - startNetworkMonitoring: Start the monitoring');
-        return AsyncUtil.setTimeout(this.appConfig.ede.file.timeout || 10000)
-            .then(() => {
-                logger.info('AppManager - startNetworkMonitoring: Close the socket connection');
-                this.server.destroy();
-            })
-            .then(() => {
-                logger.info('AppManager - startNetworkMonitoring: Save EDE storage');
-                this.edeStorageManager.saveEDEStorage();
-            });
+        this.server.startServer();
     }
 }
