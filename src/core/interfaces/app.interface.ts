@@ -6,7 +6,6 @@
 /* Application Config */
 export interface IAppConfig {
     server: IServerConfig;
-    ede: IEDEConfig;
     bacnet: IBACnetConfig;
 }
 
@@ -26,19 +25,6 @@ export interface ISequenceConfig {
     thread: number;
     delay: number;
 }
-
-/* EDE config */
-export interface IEDEConfig {
-    header: IEDEHeaderOptions;
-}
-
-export interface IEDEHeaderOptions {
-    projectName: string;
-    versionOfRefFile: number;
-    authorOfLastChange: string;
-    versionOfLayout: number;
-}
-
 
 /**
  * Managers
