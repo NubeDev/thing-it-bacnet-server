@@ -7,22 +7,6 @@ import {
     IBACnetAddressInfo,
 } from './bacnet.interface';
 
-export interface IEDEConfig {
-    file: IEDEFileConfig;
-    header: IEDEHeaderOptions;
-}
-export interface IEDEFileConfig {
-    path: string;
-    name: string;
-    timeout: number;
-}
-export interface IEDEHeaderOptions {
-    projectName: string;
-    versionOfRefFile: number;
-    authorOfLastChange: string;
-    versionOfLayout: number;
-}
-
 export interface IEDEDevice {
     outputSoc: OutputSocket;
 }
