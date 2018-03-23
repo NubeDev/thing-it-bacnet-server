@@ -10,9 +10,9 @@ export class CSVTable {
     private aliases: Map<string, number>;
     private rows: CSVRow[];
 
-    constructor () {
-        this.rows = [];
+    constructor (strTable: string = '') {
         this.aliases = new Map();
+        this.fromString(strTable);
     }
 
     /**
@@ -97,12 +97,22 @@ export class CSVTable {
      * @return {void}
      */
     public fromString (strTable: string): void {
+        if (!_.isString(strTable)) {
+            throw new ApiError(`CSVRow - fromString: Input string must have string type!`);
+        }
+
+        if (!strTable) {
+            this.rows = [];
+            return;
+        }
+
         const strRows = strTable.split(CSVRowSeparator);
 
-        _.map(strRows, (strRow) => {
-            const csvRow = new CSVRow(strRow);
-            this.rows.push(csvRow);
+        const formatedRows = _.map(strRows, (strRow) => {
+            return new CSVRow(strRow);
         });
+
+        this.rows = formatedRows;
     }
 
     /**
