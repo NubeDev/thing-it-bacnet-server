@@ -73,9 +73,9 @@ export class EDEReaderUtil {
      *
      * @return {IEDEUnitProps}
      */
-    public readDataPointRow (): IEDEUnitProps {
+    public readDataPointRow (index: number): IEDEUnitProps {
         const offset = new OffsetUtil(0);
-        const dataPointRow = this.getRowByIndex();
+        const dataPointRow = this.csvTable.getRowByIndex(index);
         // <Device Instance>_<Device Name>_<Object Name>
         const keyname =
             dataPointRow.getCellValue(offset.inc()) as string;
