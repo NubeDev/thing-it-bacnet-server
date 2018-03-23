@@ -21,8 +21,20 @@ export interface IEDEUnit {
     props: IEDEUnitProps;
 }
 export interface IEDEUnitProps {
-    objId: IBACnetObjectIdentifier;
-    deviceId: IBACnetObjectIdentifier;
-    objectName?: IBACnetTypeCharString;
-    description?: IBACnetTypeCharString;
+    keyname: string;
+    deviceInst: number;
+    objName: string;
+    objType: number;
+    objInst: number;
+    description: string;
+    defPresentValue: number;
+    minPresentValue: number;
+    maxPresentValue: number;
+    commandable: string;
+    supportCOV: string;
+    hiLimit: number;
+    liLimit: number;
+    stateTextRef: number;
+    unitCode: number;
+    vendorAddr: string;
 }
