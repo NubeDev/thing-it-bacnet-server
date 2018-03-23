@@ -99,6 +99,11 @@ export class CSVRow {
             throw new ApiError(`CSVRow - fromString: Input string must have string type!`);
         }
 
+        if (!strRow) {
+            this.cells = [];
+            return;
+        }
+
         const cells = strRow.split(CSVCellSeparator);
 
         const formatedCells = _.map(cells, (cellStr) => {
