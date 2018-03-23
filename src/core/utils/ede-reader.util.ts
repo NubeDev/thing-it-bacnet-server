@@ -18,10 +18,8 @@ import {
 
 export class EDEReaderUtil {
     private csvTable: CSVTable;
-    private offset: OffsetUtil;
 
     constructor (fileData: Buffer) {
-        this.offset = new OffsetUtil(0);
         this.fromBuffer(fileData);
     }
 
@@ -37,37 +35,37 @@ export class EDEReaderUtil {
     }
 
     /**
-     * getRowByIndex - returns the next instance of CSVRow class.
-     *
-     * @return {CSVRow}
-     */
-    private getRowByIndex (): CSVRow {
-        const index = this.offset.inc();
-        return this.csvTable.getRowByIndex(index);
-    }
-
-    /**
      * genHeader - generates the EDE header in the CSV format.
      *
      * @param  {IEDEHeaderOptions} opts - EDE header options
      * @return {void}
      */
     public readHeader (): void {
-        const fileType = this.getRowByIndex();
+        const offset = new OffsetUtil(0);
 
-        const projectName = this.getRowByIndex();
+        const fileType =
+            this.csvTable.getRowByIndex(offset.inc());
 
-        const versionOfRefFile = this.getRowByIndex();
+        const projectName =
+            this.csvTable.getRowByIndex(offset.inc());
 
-        const tsOfLastChange = this.getRowByIndex();
+        const versionOfRefFile =
+            this.csvTable.getRowByIndex(offset.inc());
 
-        const authorOfLastChange = this.getRowByIndex();
+        const tsOfLastChange =
+            this.csvTable.getRowByIndex(offset.inc());
 
-        const versionOfLayout = this.getRowByIndex();
+        const authorOfLastChange =
+            this.csvTable.getRowByIndex(offset.inc());
 
-        const hints = this.getRowByIndex();
+        const versionOfLayout =
+            this.csvTable.getRowByIndex(offset.inc());
 
-        const titles = this.getRowByIndex();
+        const hints =
+            this.csvTable.getRowByIndex(offset.inc());
+
+        const titles =
+            this.csvTable.getRowByIndex(offset.inc());
     }
 
     /**
