@@ -69,8 +69,9 @@ export class EDEReaderUtil {
     }
 
     /**
-     * genDataPointRow - creates the CSVRow instance and sets aliases for row cells.
+     * readDataPointRow - reads the unit properties.
      *
+     * @param  {number} index - row index
      * @return {IEDEUnitProps}
      */
     public readDataPointRow (index: number): IEDEUnitProps {
