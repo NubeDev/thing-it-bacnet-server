@@ -3,9 +3,21 @@ import * as _ from 'lodash';
 import { ApiError } from '../errors';
 
 import {
+    IBACnetTypeBoolean,
+    IBACnetTypeUnsignedInt,
+    IBACnetTypeReal,
+    IBACnetTypeBitString,
+    IBACnetTypeCharString,
+    IBACnetTypeEnumerated,
+    IBACnetTypeStatusFlags,
+    IBACnetTypeObjectId,
+} from '../interfaces';
+
+import {
     BACnetPropIds,
     BACnetPropTypes,
     OpertionMaxValue,
+    BACnetTagTypes,
 } from '../enums';
 
 import { OffsetUtil } from './offset.util';
@@ -157,32 +169,21 @@ export class BACnetWriterUtil {
     }
 
     /**
-     * writeParam - writes BACnet param name to the internal buffer.
+     * writeParam - writes BACnet param to the internal buffer.
      *
-     * @param  {number} paramName - param name
-     * @param  {number} tagContext - tag context
-     * @param  {number} paramSize - param size
+     * @param  {number} paramValue - param value
+     * @param  {number} tagNumber - tag number
+     * @param  {BACnetTagTypes} [tagType=BACnetTagTypes.context] - tag type
      * @return {void}
      */
     public writeParam (
-            paramName: number, tagContext: number, paramSize: number = 1): void {
-        // Context Number - Context tag - Param Length (bytes)
-        this.writeTag(tagContext, 1, paramSize);
-
-        // Write param by the param length
-        switch (paramSize) {
-            case 4:
-                this.writeUInt32BE(paramName);
-                break;
-            case 2:
-                this.writeUInt16BE(paramName);
-                break;
-            case 1:
-                this.writeUInt8(paramName);
-                break;
-            default:
-                throw new ApiError(`BACnetReaderUtil - writeIntBySizte: Size ${paramSize} is not supported!`);
-        }
+            paramValue: number, tagNumber: number,
+            tagType: BACnetTagTypes = BACnetTagTypes.context): void {
+        const uIntSize = this.getUIntSize(paramValue);
+        // Tag Number - Tag Type - Param Length (bytes)
+        this.writeTag(tagNumber, tagType, uIntSize);
+        // Write unsigned integer value
+        this.writeUIntValue(paramValue);
     }
 
     /**
@@ -246,7 +247,7 @@ export class BACnetWriterUtil {
      * @param  {any} params - object with parameters
      * @return {void}
      */
-    public writeTypeBoolean (params: any): void {
+    public writeTypeBoolean (params: IBACnetTypeBoolean): void {
         // DataType - Application tag - DataTypeSize
         this.writeTag(BACnetPropTypes.boolean, 0, +params.value);
     }
@@ -254,20 +255,43 @@ export class BACnetWriterUtil {
     /**
      * writeTypeUnsignedInt - writes BACnet Integer value to the internal buffer.
      *
-     * @param  {any} params - object with parameters
+     * @param  {IBACnetTypeUnsignedInt} params - object with parameters
      * @return {void}
      */
-    public writeTypeUnsignedInt (params: any): void {
+    public writeTypeUnsignedInt (param: IBACnetTypeUnsignedInt): void {
+        this.writeParam(param.value, BACnetPropTypes.unsignedInt, 0);
+    }
+
+    /**
+     * writeUIntValue - writes unsigned integer value to the internal buffer.
+     *
+     * @param  {number} uIntValue - unsigned int value
+     * @return {void}
+     */
+    public writeUIntValue (uIntValue: number): void {
         // DataType - Application tag - DataTypeSize
-        if (params.value <= OpertionMaxValue.uInt8) {
-            this.writeTag(BACnetPropTypes.unsignedInt, 0, 1);
-            this.writeUInt8(params.value);
-        } else if (params.value <= OpertionMaxValue.uInt16) {
-            this.writeTag(BACnetPropTypes.unsignedInt, 0, 2);
-            this.writeUInt16BE(params.value);
-        } else if (params.value <= OpertionMaxValue.uInt32) {
-            this.writeTag(BACnetPropTypes.unsignedInt, 0, 4);
-            this.writeUInt32BE(params.value);
+        if (uIntValue <= OpertionMaxValue.uInt8) {
+            this.writeUInt8(uIntValue);
+        } else if (uIntValue <= OpertionMaxValue.uInt16) {
+            this.writeUInt16BE(uIntValue);
+        } else if (uIntValue <= OpertionMaxValue.uInt32) {
+            this.writeUInt32BE(uIntValue);
+        }
+    }
+
+    /**
+     * getUIntSize - returns the size (byte) of the unsigned int value.
+     *
+     * @param  {number} uIntValue - unsigned int value
+     * @return {number}
+     */
+    public getUIntSize (uIntValue: number): number {
+        if (uIntValue <= OpertionMaxValue.uInt8) {
+            return 1;
+        } else if (uIntValue <= OpertionMaxValue.uInt16) {
+            return 2;
+        } else if (uIntValue <= OpertionMaxValue.uInt32) {
+            return 4;
         }
     }
 
