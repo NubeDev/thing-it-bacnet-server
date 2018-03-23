@@ -144,4 +144,24 @@ export class EDEReaderUtil {
             vendorAddr: vendorAddr,
         };
     }
+
+    /**
+     * readDataPointTable - reads all data point rows.
+     *
+     * @return {IEDEUnitProps[]}
+     */
+    public readDataPointTable (): IEDEUnitProps[] {
+        const tableLen = this.csvTable.lenght;
+        const offset = new OffsetUtil(8);
+        const startIndex = offset.getVaule();
+
+        const dataPointRows: IEDEUnitProps[] = [];
+        for (let i = startIndex; i < tableLen; i++) {
+            const dataPointRow = this.readDataPointRow(offset.inc());
+            dataPointRows.push(dataPointRow);
+        }
+
+        return dataPointRows;
+    }
+
 }
