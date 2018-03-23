@@ -18,9 +18,6 @@ export interface IEDEDevice {
     outputSoc: OutputSocket;
 }
 export interface IEDEUnit {
-    props: IEDEUnitProps;
-}
-export interface IEDEUnitProps {
     keyname: string;
     deviceInst: number;
     objName: string;

@@ -7,7 +7,6 @@ import { CSVTable } from '../csv/table.csv';
 import { CSVRow } from '../csv/row.csv';
 
 import {
-    IEDEUnitProps,
     IEDEUnit,
     IBACnetAddressInfo,
 } from '../interfaces';
@@ -72,9 +71,9 @@ export class EDEReaderUtil {
      * readDataPointRow - reads the unit properties.
      *
      * @param  {number} index - row index
-     * @return {IEDEUnitProps}
+     * @return {IEDEUnit}
      */
-    public readDataPointRow (index: number): IEDEUnitProps {
+    public readDataPointRow (index: number): IEDEUnit {
         const offset = new OffsetUtil(0);
         const dataPointRow = this.csvTable.getRowByIndex(index);
         // <Device Instance>_<Device Name>_<Object Name>
@@ -149,14 +148,14 @@ export class EDEReaderUtil {
     /**
      * readDataPointTable - reads all data point rows.
      *
-     * @return {IEDEUnitProps[]}
+     * @return {IEDEUnit[]}
      */
-    public readDataPointTable (): IEDEUnitProps[] {
+    public readDataPointTable (): IEDEUnit[] {
         const tableLen = this.csvTable.lenght;
         const offset = new OffsetUtil(8);
         const startIndex = offset.getVaule();
 
-        const dataPointRows: IEDEUnitProps[] = [];
+        const dataPointRows: IEDEUnit[] = [];
         for (let i = startIndex; i < tableLen; i++) {
             const dataPointRow = this.readDataPointRow(offset.inc());
             dataPointRows.push(dataPointRow);
