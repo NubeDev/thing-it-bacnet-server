@@ -22,16 +22,15 @@ export interface IBACnetDevice extends IBACnetObject {
 }
 
 export interface IBACnetObject {
-    id: number;
-    vendorId?: number;
     type: BACnetObjTypes;
+    instance: number;
     props: IBACnetObjectProperty[];
 }
 
 export interface IBACnetObjectProperty {
     id: BACnetPropIds;
     type: BACnetPropTypes;
-    values: any;
+    payload: any;
 }
 
 export interface IBLVCReqLayer {
