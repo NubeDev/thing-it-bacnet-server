@@ -13,63 +13,63 @@ import {
     INativeUnit,
     IBACnetObject,
     IBACnetObjectProperty,
+    IBACnetTypeObjectId,
+    IBACnetType,
+    IEDEUnit,
 } from '../../core/interfaces';
+
+import { NativeMetadata } from './native.metadata';
 
 export class NativeUnit {
     public className: string = 'UnitNativeBase';
     // Unit metadata
     public metadata: IBACnetObject;
     // Unit properties subject
-    public sjData: Subject<IBACnetObjectProperty>;
+    public sjData: Subject<IBACnetObjectProperty[]>;
 
-    constructor (bnUnit: INativeUnit, metadata: IBACnetObject) {
-        if (_.isNil(bnUnit.id)) {
+    constructor (bnUnit: IEDEUnit, metadata: IBACnetObject) {
+        if (_.isNil(bnUnit.objInst)) {
             throw new ApiError(`${this.className} - constructor: Unit ID is required!`);
         }
         this.sjData = new Subject();
 
-        this.metadata = _.cloneDeep(metadata);
-        this.metadata.id = bnUnit.id;
-
-        this.setProps(bnUnit.props);
+        const nativeMetadata = _.cloneDeep(NativeMetadata);
+        this.metadata = _.merge(nativeMetadata, metadata);
     }
 
     /**
-     * setProps - sets the unit properties.
+     * initUnit - inits the unit using the EDE unit configuration.
      *
-     * @param  {any} props - unit properties
+     * @param  {IEDEUnit} edeUnit - property ID
      * @return {void}
      */
-    public setProps (props: any): void {
-        if (_.isNil(props)) {
-            return;
-        }
+    public initUnit (edeUnit: IEDEUnit): void {
+        this.metadata.instance = edeUnit.objInst;
 
-        const metadataProps = _.cloneDeep(this.metadata.props);
-        _.map(metadataProps, (prop: any) => {
-            const propName = BACnetPropIds[prop.id];
-            const propValueFromConfig = props[propName];
-
-            prop.values = _.isNil(propValueFromConfig)
-                ? prop.values : propValueFromConfig;
+        this.setProperty(BACnetPropIds.objectName, {
+            value: edeUnit.objName,
         });
-        this.metadata.props = metadataProps;
     }
 
     /**
      * setProperty - sets the value of the unit property by property ID.
      *
      * @param  {BACnetPropIds} propId - property ID
-     * @param  {any} values - property value
+     * @param  {IBACnetType} value - property value
      * @return {void}
      */
-    public setProperty (propId: BACnetPropIds, values: any): void {
-        const prop = _.find(this.metadata.props, [ 'id', propId ]);
-        prop.values = values;
+    public setProperty (propId: BACnetPropIds, value: IBACnetType): void {
+        const prop = this.findProperty(propId);
+        prop.payload = value;
 
-        // Emit change of unit
-        const propClone = _.cloneDeep(prop);
-        this.sjData.next(propClone);
+        // Skip notification if criteria are not satisfied
+        const reportedCriteria = this.hasReportedCriteria(propId);
+        if (!reportedCriteria) {
+            return;
+        }
+
+        const reportedProps = this.getReportedProperties();
+        this.sjData.next(reportedProps);
     }
 
     /**
@@ -79,7 +79,7 @@ export class NativeUnit {
      * @return {IBACnetObjectProperty}
      */
     public getProperty (propId: BACnetPropIds): IBACnetObjectProperty {
-        const prop = _.find(this.metadata.props, [ 'id', propId ]);
+        const prop = this.findProperty(propId);
         return _.cloneDeep(prop);
     }
 
@@ -93,35 +93,14 @@ export class NativeUnit {
     }
 
     /**
-     * subscribeProp - subscribes to the changes of specific property.
-     *
-     * @param  {BACnetPropIds} propId - property ID
-     * @return {Observable<IBACnetObjectProperty>}
-     */
-    public subscribeProp (propId: BACnetPropIds): Observable<IBACnetObjectProperty> {
-        return this.sjData
-            .filter(Boolean)
-            .filter((prop) => prop.id === propId);
-    }
-
-    /**
      * isBACnetObject - returns true if object has compatible id and type.
      *
-     * @param  {number} objInst - object instance
-     * @param  {number} objType - object type
+     * @param  {IBACnetTypeObjectId} objId - object identifier
      * @return {boolean}
      */
-    public isBACnetObject (objInst: number, objType: number): boolean {
-        return this.metadata.type === objType && this.metadata.id === objInst;
-    }
-
-    /**
-     * getNativeUnits - returns the native BACnet units for current unit.
-     *
-     * @return {UnitNativeBase}
-     */
-    public getNativeUnits (): NativeUnit {
-        return this;
+    public isBACnetObject (objId: IBACnetTypeObjectId): boolean {
+        return this.metadata.type === objId.type
+            && this.metadata.instance === objId.instance;
     }
 
     /**
@@ -131,5 +110,18 @@ export class NativeUnit {
      */
     public getMetadata (): IBACnetObject {
         return _.cloneDeep(this.metadata);
+    }
+
+    protected hasReportedCriteria (idChangedProp: BACnetPropIds): boolean {
+        return false;
+    }
+
+    protected getReportedProperties (): IBACnetObjectProperty[] {
+        return null;
+    }
+
+    protected findProperty (propId: BACnetPropIds) {
+        const property = _.find(this.metadata.props, [ 'id', propId ]);
+        return property;
     }
 }
