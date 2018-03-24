@@ -88,7 +88,7 @@ export class NativeUnit {
      *
      * @return {Observable<IBACnetObjectProperty>}
      */
-    public subscribe (): Observable<IBACnetObjectProperty> {
+    public subscribe (): Observable<IBACnetObjectProperty[]> {
         return this.sjCOV.filter(Boolean);
     }
 

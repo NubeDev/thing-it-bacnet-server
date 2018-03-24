@@ -85,10 +85,9 @@ export class UnitStorageManager {
     /**
      * setUnitProperty - sets the value of the object property by property ID.
      *
-     * @param  {number} objInst - object instance
-     * @param  {number} objType - object type
+     * @param  {IBACnetTypeObjectId} objId - object identifier
      * @param  {BACnetPropIds} propId - property ID
-     * @param  {any} values - property value
+     * @param  {IBACnetType} value - property value
      * @return {void}
      */
     public setUnitProperty (objId: IBACnetTypeObjectId,
@@ -103,8 +102,7 @@ export class UnitStorageManager {
     /**
      * getUnitProperty - return the clone value of the object property by property ID.
      *
-     * @param  {number} objInst - object instance
-     * @param  {number} objType - object type
+     * @param  {IBACnetTypeObjectId} objId - object identifier
      * @param  {BACnetPropIds} propId - property ID
      * @return {IBACnetObjectProperty}
      */
@@ -120,33 +118,14 @@ export class UnitStorageManager {
     /**
      * subscribeToUnit - subscribes to the changes for all object properties.
      *
-     * @param  {number} objInst - object instance
-     * @param  {number} objType - object type
-     * @param  {BACnetPropIds} propId - property ID
+     * @param  {IBACnetTypeObjectId} objId - object identifier
      * @return {Observable<IBACnetObjectProperty>}
      */
-    public subscribeToUnit (objId: IBACnetTypeObjectId): Observable<IBACnetObjectProperty> {
+    public subscribeToUnit (objId: IBACnetTypeObjectId): Observable<IBACnetObjectProperty[]> {
         const unit = this.getUnit(objId.type, objId.instance);
         if (!unit) {
             return null;
         }
         return unit.subscribe();
-    }
-
-    /**
-     * subscribeToUnitProp - subscribes to the changes of specific object property.
-     *
-     * @param  {number} objInst - object instance
-     * @param  {number} objType - object type
-     * @param  {BACnetPropIds} propId - property ID
-     * @return {Observable<IBACnetObjectProperty>}
-     */
-    public subscribeToUnitProp (objId: IBACnetTypeObjectId,
-            propId: BACnetPropIds): Observable<IBACnetObjectProperty> {
-        const unit = this.getUnit(objId.type, objId.instance);
-        if (!unit) {
-            return null;
-        }
-        return unit.subscribeProp(propId);
     }
 }
