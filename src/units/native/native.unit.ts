@@ -47,6 +47,7 @@ export class NativeUnit {
      */
     public initUnit (edeUnit: IEDEUnit): void {
         this.metadata.instance = edeUnit.objInst;
+        this.metadata.deviceInstance = edeUnit.deviceInst;
 
         this.setProperty(BACnetPropIds.objectName, {
             value: edeUnit.objName,

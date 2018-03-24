@@ -9,6 +9,7 @@ import {
 } from '../../core/interfaces';
 
 export const NativeMetadata: IBACnetObject = {
+    deviceInstance: 0,
     type: 0,
     instance: 0,
     props: [

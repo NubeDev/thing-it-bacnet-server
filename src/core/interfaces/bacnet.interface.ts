@@ -23,6 +23,7 @@ export interface IBACnetDevice extends IBACnetObject {
 }
 
 export interface IBACnetObject {
+    deviceInstance?: number;
     type: BACnetObjTypes;
     instance: number;
     props: IBACnetObjectProperty[];
