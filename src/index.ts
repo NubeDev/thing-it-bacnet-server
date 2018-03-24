@@ -1,5 +1,6 @@
-import { Server } from './core/server.socket';
+import { AppManager } from './managers/app.manager';
 
-import { BACnetModule } from './module';
+import { appConfig } from './module';
 
-Server.bootstrapServer(BACnetModule);
+const appManager = new AppManager(appConfig);
+appManager.start();
