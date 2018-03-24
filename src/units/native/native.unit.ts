@@ -16,6 +16,7 @@ import {
     IBACnetTypeObjectId,
     IBACnetType,
     IEDEUnit,
+    IBACnetPropertyNotification,
 } from '../../core/interfaces';
 
 import { NativeMetadata } from './native.metadata';
@@ -25,7 +26,8 @@ export class NativeUnit {
     // Unit metadata
     public metadata: IBACnetObject;
     // Unit properties subject
-    public sjData: Subject<IBACnetObjectProperty[]>;
+    public sjData: Subject<IBACnetPropertyNotification>;
+    public sjCOV: Subject<IBACnetObjectProperty[]>;
 
     constructor (bnUnit: IEDEUnit, metadata: IBACnetObject) {
         if (_.isNil(bnUnit.objInst)) {
@@ -60,16 +62,13 @@ export class NativeUnit {
      */
     public setProperty (propId: BACnetPropIds, value: IBACnetType): void {
         const prop = this.findProperty(propId);
+        const oldValue = prop.payload;
         prop.payload = value;
-
-        // Skip notification if criteria are not satisfied
-        const reportedCriteria = this.hasReportedCriteria(propId);
-        if (!reportedCriteria) {
-            return;
-        }
-
-        const reportedProps = this.getReportedProperties();
-        this.sjData.next(reportedProps);
+        this.sjData.next({
+            id: propId,
+            oldValue: oldValue,
+            newValue: value,
+        });
     }
 
     /**
@@ -89,7 +88,7 @@ export class NativeUnit {
      * @return {Observable<IBACnetObjectProperty>}
      */
     public subscribe (): Observable<IBACnetObjectProperty> {
-        return this.sjData.filter(Boolean);
+        return this.sjCOV.filter(Boolean);
     }
 
     /**
@@ -112,8 +111,9 @@ export class NativeUnit {
         return _.cloneDeep(this.metadata);
     }
 
-    protected hasReportedCriteria (idChangedProp: BACnetPropIds): boolean {
-        return false;
+    public dipatchCOVNotification () {
+        const reportedProps = this.getReportedProperties();
+        this.sjCOV.next(reportedProps);
     }
 
     protected getReportedProperties (): IBACnetObjectProperty[] {
