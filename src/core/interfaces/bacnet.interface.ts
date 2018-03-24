@@ -4,6 +4,7 @@ import {
     BLVCFunction,
     BACnetPropIds,
     BACnetObjTypes,
+    BACnetTagTypes,
 } from '../enums';
 import { BACnetWriterUtil } from '../utils';
 
@@ -31,6 +32,22 @@ export interface IBACnetObjectProperty {
     id: BACnetPropIds;
     type: BACnetPropTypes;
     payload: any;
+}
+
+export interface IBACnetTag {
+    num: number;
+    type: BACnetTagTypes;
+    value: number;
+}
+export interface IBACnetParam {
+    tag: IBACnetTag;
+    payload: IBACnetType;
+}
+
+export interface IBACnetPropertyNotification {
+    id: BACnetPropIds;
+    oldValue: IBACnetType;
+    newValue: IBACnetType;
 }
 
 export interface IBLVCReqLayer {
@@ -113,4 +130,48 @@ export interface IComplexACKReadProperty {
     propId: number;
     propValue: any;
     propType: BACnetPropTypes;
+}
+
+
+/**
+ * BACnet types
+ */
+export type IBACnetType = IBACnetTypeBoolean | IBACnetTypeUnsignedInt
+    | IBACnetTypeReal | IBACnetTypeEnumerated | IBACnetTypeStatusFlags
+    | IBACnetTypeBitString | IBACnetTypeCharString | IBACnetTypeObjectId;
+
+export interface IBACnetTypeBoolean {
+    value: boolean;
+}
+
+export interface IBACnetTypeUnsignedInt {
+    value: number;
+}
+
+export interface IBACnetTypeReal {
+    value: number;
+}
+
+export interface IBACnetTypeCharString {
+    value: string;
+}
+
+export interface IBACnetTypeBitString {
+    value: number;
+}
+
+export interface IBACnetTypeEnumerated {
+    value: number;
+}
+
+export interface IBACnetTypeObjectId {
+    type: number; // enum
+    instance: number;
+}
+
+export interface IBACnetTypeStatusFlags {
+    inAlarm: boolean,
+    fault: boolean,
+    overridden: boolean,
+    outOfService: boolean,
 }
