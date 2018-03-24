@@ -9,20 +9,20 @@ import {
 } from '../../../core/interfaces';
 
 export const BinaryValueMetadata: IBACnetObject = {
-    id: 0,
     type: BACnetObjTypes.BinaryValue,
+    instance: 0,
     props: [
         {
             id: BACnetPropIds.presentValue,
             type: BACnetPropTypes.enumerated,
-            values: {
+            payload: {
                 value: 0,
             },
         },
         {
             id: BACnetPropIds.statusFlags,
             type: BACnetPropTypes.bitString,
-            values: {
+            payload: {
                 inAlarm: false,
                 fault: false,
                 overridden: false,

@@ -9,42 +9,34 @@ import {
 } from '../../../core/interfaces';
 
 export const DeviceMetadata: IBACnetObject = {
-    id: 0,
-    vendorId: 0,
     type: BACnetObjTypes.Device,
+    instance: 0,
     props: [
         {
-            id: BACnetPropIds.objectName,
+            id: BACnetPropIds.vendorIdentifier,
             type: BACnetPropTypes.characterString,
-            values: {
+            payload: {
                 value: '[thing-it] Test Device Name',
-            },
-        },
-        {
-            id: BACnetPropIds.description,
-            type: BACnetPropTypes.characterString,
-            values: {
-                value: '[thing-it] Test Device Description',
             },
         },
         {
             id: BACnetPropIds.vendorName,
             type: BACnetPropTypes.characterString,
-            values: {
+            payload: {
                 value: 'THING TECHNOLOGIES GmbH Test',
             },
         },
         {
             id: BACnetPropIds.modelName,
             type: BACnetPropTypes.characterString,
-            values: {
+            payload: {
                 value: '[thing-it] BACnet Test Server',
             },
         },
         {
             id: BACnetPropIds.applicationSoftwareVersion,
             type: BACnetPropTypes.characterString,
-            values: {
+            payload: {
                 value: 'V1.0.0',
             },
         },
