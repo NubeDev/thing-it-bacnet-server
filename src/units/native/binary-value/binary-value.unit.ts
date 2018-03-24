@@ -9,8 +9,8 @@ import {
 } from '../../../core/errors';
 
 import {
-    IBinaryValueUnit,
     IBACnetObject,
+    IEDEUnit,
 } from '../../../core/interfaces';
 
 import { BinaryValueMetadata } from './binary-value.metadata';
@@ -21,7 +21,20 @@ export class BinaryValueUnit extends NativeUnit {
     public className: string = 'BinaryValueUnit';
     public metadata: IBACnetObject;
 
-    constructor (bnUnit: IBinaryValueUnit) {
-        super(bnUnit, BinaryValueMetadata);
+    constructor (edeUnit: IEDEUnit) {
+        super(edeUnit, BinaryValueMetadata);
+    }
+
+    public initUnit (edeUnit: IEDEUnit) {
+        super.initUnit(edeUnit);
+
+        this.setProperty(BACnetPropIds.presentValue, {
+            value: edeUnit.defPresentValue,
+        });
+
+        this.sjData
+            .filter((data) => data.id === BACnetPropIds.presentValue)
+            .subscribe(() => {
+            });
     }
 }

@@ -9,8 +9,8 @@ import {
 } from '../../../core/errors';
 
 import {
-    IDeviceUnit,
     IBACnetObject,
+    IEDEUnit,
 } from '../../../core/interfaces';
 
 import { DeviceMetadata } from './device.metadata';
@@ -21,12 +21,11 @@ export class DeviceUnit extends NativeUnit {
     public className: string = 'BinaryValueUnit';
     public metadata: IBACnetObject;
 
-    constructor (bnUnit: IDeviceUnit) {
-        super(bnUnit, DeviceMetadata);
+    constructor (edeUnit: IEDEUnit) {
+        super(edeUnit, DeviceMetadata);
+    }
 
-        if (_.isNil(bnUnit.vendorId)) {
-            throw new ApiError(`${this.className} - constructor: Unit vendor ID is required!`);
-        }
-        this.metadata.vendorId = bnUnit.vendorId;
+    public initUnit (edeUnit: IEDEUnit) {
+        super.initUnit(edeUnit);
     }
 }
