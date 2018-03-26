@@ -191,11 +191,11 @@ export class UnconfirmReqPDU {
 
         // Write Device Object Identifier
         writer.writeTag(1, BACnetTagTypes.context, 4);
-        writer.writeObjectIdentifier(params.device.type, params.device.id);
+        writer.writeObjectIdentifier(params.device.type, params.device.instance);
 
         // Write Object Identifier for device port
         writer.writeTag(2, BACnetTagTypes.context, 4);
-        writer.writeObjectIdentifier(params.devObject.type, params.devObject.id);
+        writer.writeObjectIdentifier(params.devObject.type, params.devObject.instance);
 
         // Write timer remaining
         writer.writeTag(3, BACnetTagTypes.context, 1);
@@ -209,13 +209,13 @@ export class UnconfirmReqPDU {
         writer.writeTag(0, BACnetTagTypes.context, 1);
         writer.writeUInt8(params.prop.id);
         // Write PropertyValue
-        writer.writeValue(2, params.prop.type, params.prop.values);
+        writer.writeValue(2, params.prop.type, params.prop.payload);
 
         // Write PropertyID of Status flag
         writer.writeTag(0, BACnetTagTypes.context, 1);
         writer.writeUInt8(params.status.id);
         // Write PropertyValue of Status flag
-        writer.writeValue(2, params.status.type, params.status.values);
+        writer.writeValue(2, params.status.type, params.status.payload);
 
         // Write closing tag for list of values
         writer.writeTag(4, BACnetTagTypes.context, 7);
