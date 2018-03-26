@@ -23,7 +23,7 @@ import {
 
 import { InputSocket, OutputSocket, ServiceSocket } from '../../core/sockets';
 
-import { UnitManager } from '../../units/unit.manager';
+import { UnitStorageManager } from '../../managers/unit-storage.manager';
 
 export class UnconfirmedReqService {
 
@@ -73,16 +73,17 @@ export class UnconfirmedReqService {
      */
     public iAm (
             inputSoc: InputSocket, outputSoc: OutputSocket, serviceSocket: ServiceSocket) {
-        const unitManager: UnitManager = serviceSocket.getService('unitManager');
-        const device = unitManager.device;
-        const deviceMetadata = device.getMetadata();
+        const unitManager: UnitStorageManager = serviceSocket.getService('unitManager');
+        const device = unitManager.getDevice();
+
+        const objIdProp = device.getProperty(BACnetPropIds.objectIdentifier);
+        const vendorIdProp = device.getProperty(BACnetPropIds.vendorIdentifier);
 
         // Generate APDU writer
         const writerUnconfirmReq = unconfirmReqPDU.writeReq({});
         const writerIAm = unconfirmReqPDU.writeIAm({
-            objInst: deviceMetadata.id,
-            objType: deviceMetadata.type,
-            vendorId: deviceMetadata.vendorId,
+            objId: objIdProp,
+            vendorId: vendorIdProp,
         });
         const writerAPDU = BACnetWriterUtil.concat(writerUnconfirmReq, writerIAm);
 
@@ -133,25 +134,28 @@ export class UnconfirmedReqService {
         const objInst = objIdPayload.instance;
 
         // Get BACnet object (from device)
-        const unitManager: UnitManager = serviceSocket.getService('unitManager');
+        const unitManager: UnitStorageManager = serviceSocket.getService('unitManager');
 
-        const device = unitManager.device;
-        const deviceMetadata = device.getMetadata();
-
-        const unit = unitManager.findUnit(objInst, objType);
-        const unitMetadata = unit.getMetadata();
+        const device = unitManager.getDevice();
+        const devObjId = device.getProperty(BACnetPropIds.objectIdentifier);
+        const devObjIdPayload = devObjId.payload as IBACnetTypeObjectId;
 
         // Get value
-        const bnProp = unit.getProperty(BACnetPropIds.presentValue);
-        const bnStatus = unit.getProperty(BACnetPropIds.statusFlags);
+        const unitObjId = unitManager.getUnitProperty(objIdPayload,
+            BACnetPropIds.objectIdentifier);
+        const unitObjIdPayload = unitObjId.payload as IBACnetTypeObjectId;
+        const unitPresentValue = unitManager.getUnitProperty(objIdPayload,
+            BACnetPropIds.presentValue);
+        const unitStatusFlags = unitManager.getUnitProperty(objIdPayload,
+            BACnetPropIds.statusFlags);
 
         // Generate APDU writer
         const writerUnconfirmReq = unconfirmReqPDU.writeReq({});
         const writerCOVNotification = unconfirmReqPDU.writeCOVNotification({
-            device: deviceMetadata,
-            devObject: unitMetadata,
-            prop: bnProp,
-            status: bnStatus,
+            devObjId: devObjIdPayload,
+            unitObjId: unitObjIdPayload,
+            prop: unitPresentValue,
+            status: unitStatusFlags,
             processId: subProcessIdPayload.value,
         });
         const writerAPDU = BACnetWriterUtil.concat(writerUnconfirmReq, writerCOVNotification);

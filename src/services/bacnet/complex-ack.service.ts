@@ -20,7 +20,7 @@ import {
 
 import { InputSocket, OutputSocket, ServiceSocket } from '../../core/sockets';
 
-import { UnitManager } from '../../units/unit.manager';
+import { UnitStorageManager } from '../../managers/unit-storage.manager';
 
 export class ComplexACKService {
 
@@ -40,27 +40,22 @@ export class ComplexACKService {
         // Get object identifier
         const objId = apduService.objId;
         const objIdPayload = objId.payload as IBACnetTypeObjectId;
-        const objType = objIdPayload.type;
-        const objInst = objIdPayload.instance;
 
         // Get property identifier
         const propId = apduService.propId;
         const propIdPayload = propId.payload as IBACnetTypeUnsignedInt;
 
         // Get BACnet property (for BACnet object)
-        const unitManager: UnitManager = serviceSocket.getService('unitManager');
-        const bnProp = unitManager.getUnitProperty(objInst, objType, propIdPayload.value);
+        const unitManager: UnitStorageManager = serviceSocket.getService('unitManager');
+        const unitProp = unitManager.getUnitProperty(objIdPayload, propIdPayload.value);
 
         // Generate APDU writer
         const writerComplexACK = complexACKPDU.writeReq({
             invokeId: invokeId
         });
         const writerReadProperty = complexACKPDU.writeReadProperty({
-            objInst: objInst,
-            objType: objType,
-            propId: bnProp.id,
-            propType: bnProp.type,
-            propValue: bnProp.values,
+            objId: objIdPayload,
+            unitProp: unitProp,
         });
         const writerAPDU = BACnetWriterUtil.concat(writerComplexACK, writerReadProperty);
 

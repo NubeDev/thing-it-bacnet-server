@@ -20,7 +20,7 @@ import {
 
 import { InputSocket, OutputSocket, ServiceSocket } from '../../core/sockets';
 
-import { UnitManager } from '../../units/unit.manager';
+import { UnitStorageManager } from '../../managers/unit-storage.manager';
 import { unconfirmedReqService } from './unconfirmed-req.service';
 
 export class SimpleACKService {
@@ -36,13 +36,11 @@ export class SimpleACKService {
         const apduMessage = inputSoc.apdu as IConfirmedReqLayer;
         const invokeId = apduMessage.invokeId;
         const apduService = apduMessage.service as IConfirmedReqSubscribeCOVService;
-        const unitManager: UnitManager = serviceSocket.getService('unitManager');
+        const unitManager: UnitStorageManager = serviceSocket.getService('unitManager');
 
         // Get object identifier
         const objId = apduService.objId;
         const objIdPayload = objId.payload as IBACnetTypeObjectId;
-        const objType = objIdPayload.type;
-        const objInst = objIdPayload.instance;
 
         // Generate APDU writer
         const writerSimpleACKPDU = simpleACKPDU.writeReq({
@@ -69,7 +67,7 @@ export class SimpleACKService {
         outputSoc.send(msgBACnet, 'subscribeCOV')
         unconfirmedReqService.covNotification(inputSoc, outputSoc, serviceSocket);
         unitManager
-            .subscribeToUnit(objInst, objType)
+            .subscribeToUnit(objIdPayload)
             .subscribe(() => {
                 unconfirmedReqService.covNotification(inputSoc, outputSoc, serviceSocket);
             });
@@ -91,8 +89,6 @@ export class SimpleACKService {
         // Get object identifier
         const objId = apduService.objId;
         const objIdPayload = objId.payload as IBACnetTypeObjectId;
-        const objType = objIdPayload.type;
-        const objInst = objIdPayload.instance;
 
         // Get property ID
         const propId = apduService.propId;
@@ -102,9 +98,8 @@ export class SimpleACKService {
         const propValues = apduService.propValues;
         const propValuePayload = propValues[0].payload;
 
-        const unitManager: UnitManager = serviceSocket.getService('unitManager');
-        unitManager.setUnitProperty(objInst, objType,
-            propIdPayload.value, propValuePayload);
+        const unitManager: UnitStorageManager = serviceSocket.getService('unitManager');
+        unitManager.setUnitProperty(objIdPayload, propIdPayload.value, propValuePayload);
 
         // Generate APDU writer
         const writerSimpleACKPDU = simpleACKPDU.writeReq({
