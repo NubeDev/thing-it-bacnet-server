@@ -5,27 +5,30 @@ import {
 } from '../../core/enums';
 
 import {
-    IBACnetObject,
+    IBACnetObjectProperty,
 } from '../../core/interfaces';
 
-export const NativeMetadata: IBACnetObject = {
-    deviceInstance: null,
-    type: null,
-    instance: null,
-    props: [
-        {
-            id: BACnetPropIds.objectName,
-            type: BACnetPropTypes.characterString,
-            payload: {
-                value: '[thing-it] Test Device Name',
-            },
+export const NativeMetadata: IBACnetObjectProperty[] = [
+    {
+        id: BACnetPropIds.objectIdentifier,
+        type: BACnetPropTypes.objectIdentifier,
+        payload: {
+            type: null,
+            instance: null,
         },
-        {
-            id: BACnetPropIds.description,
-            type: BACnetPropTypes.characterString,
-            payload: {
-                value: '[thing-it] Test Device Description',
-            },
+    },
+    {
+        id: BACnetPropIds.objectName,
+        type: BACnetPropTypes.characterString,
+        payload: {
+            value: '[thing-it] Test Device Name',
         },
-    ]
-};
+    },
+    {
+        id: BACnetPropIds.description,
+        type: BACnetPropTypes.characterString,
+        payload: {
+            value: '[thing-it] Test Device Description',
+        },
+    },
+];

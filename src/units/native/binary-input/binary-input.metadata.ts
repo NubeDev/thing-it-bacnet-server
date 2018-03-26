@@ -5,12 +5,7 @@ import {
 } from '../../../core/enums';
 
 import {
-    IBACnetObject,
+    IBACnetObjectProperty,
 } from '../../../core/interfaces';
 
-export const BinaryInputMetadata: IBACnetObject = {
-    type: BACnetObjTypes.BinaryInput,
-    instance: 0,
-    props: [
-    ]
-};
+export const BinaryInputMetadata: IBACnetObjectProperty[] = [];

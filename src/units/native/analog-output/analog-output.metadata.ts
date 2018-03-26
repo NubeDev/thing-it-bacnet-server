@@ -5,12 +5,7 @@ import {
 } from '../../../core/enums';
 
 import {
-    IBACnetObject,
+    IBACnetObjectProperty,
 } from '../../../core/interfaces';
 
-export const AnalogOutputMetadata: IBACnetObject = {
-    type: BACnetObjTypes.AnalogOutput,
-    instance: 0,
-    props: [
-    ]
-};
+export const AnalogOutputMetadata: IBACnetObjectProperty[] = [];

@@ -9,7 +9,7 @@ import {
 } from '../../../core/errors';
 
 import {
-    IBACnetObject,
+    IBACnetObjectProperty,
     IEDEUnit,
 } from '../../../core/interfaces';
 
@@ -19,7 +19,7 @@ import { NativeUnit } from '../native.unit';
 
 export class MultiStateInputUnit extends NativeUnit {
     public className: string = 'BinaryValueUnit';
-    public metadata: IBACnetObject;
+    public metadata: IBACnetObjectProperty[];
 
     constructor (edeUnit: IEDEUnit) {
         super(edeUnit, MultiStateInputMetadata);

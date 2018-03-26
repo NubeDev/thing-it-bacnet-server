@@ -5,29 +5,25 @@ import {
 } from '../../../core/enums';
 
 import {
-    IBACnetObject,
+    IBACnetObjectProperty,
 } from '../../../core/interfaces';
 
-export const BinaryValueMetadata: IBACnetObject = {
-    type: BACnetObjTypes.BinaryValue,
-    instance: 0,
-    props: [
-        {
-            id: BACnetPropIds.presentValue,
-            type: BACnetPropTypes.enumerated,
-            payload: {
-                value: 0,
-            },
+export const BinaryValueMetadata: IBACnetObjectProperty[] = [
+    {
+        id: BACnetPropIds.presentValue,
+        type: BACnetPropTypes.enumerated,
+        payload: {
+            value: 0,
         },
-        {
-            id: BACnetPropIds.statusFlags,
-            type: BACnetPropTypes.bitString,
-            payload: {
-                inAlarm: false,
-                fault: false,
-                overridden: false,
-                outOfService: false,
-            },
+    },
+    {
+        id: BACnetPropIds.statusFlags,
+        type: BACnetPropTypes.bitString,
+        payload: {
+            inAlarm: false,
+            fault: false,
+            overridden: false,
+            outOfService: false,
         },
-    ]
-};
+    },
+];

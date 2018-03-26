@@ -5,12 +5,7 @@ import {
 } from '../../../core/enums';
 
 import {
-    IBACnetObject,
+    IBACnetObjectProperty,
 } from '../../../core/interfaces';
 
-export const MultiStateValueMetadata: IBACnetObject = {
-    type: BACnetObjTypes.MultiStateValue,
-    instance: 0,
-    props: [
-    ]
-};
+export const MultiStateValueMetadata: IBACnetObjectProperty[] = [];
