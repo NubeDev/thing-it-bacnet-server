@@ -8,7 +8,7 @@ import {
 import {
     IBACnetType,
     IBACnetParam,
-} from './unit.interface';
+} from './bacnet.interface';
 
 /*
  * BLVC Layer
