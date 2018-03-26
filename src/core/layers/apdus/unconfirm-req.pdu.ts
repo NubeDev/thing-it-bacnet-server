@@ -29,6 +29,8 @@ import {
     IUnconfirmReqIAm,
     IUnconfirmReqCOVNotification,
     IUnconfirmReqWhoIs,
+    IBACnetTypeObjectId,
+    IBACnetTypeUnsignedInt,
 } from '../../interfaces';
 
 export class UnconfirmReqPDU {
@@ -149,9 +151,10 @@ export class UnconfirmReqPDU {
         writer.writeUInt8(BACnetUnconfirmedService.iAm);
 
         // Write Object identifier
+        const objIdPayload = params.objId.payload as IBACnetTypeObjectId;
         writer.writeTag(BACnetPropTypes.objectIdentifier,
             BACnetTagTypes.application, 4);
-        writer.writeObjectIdentifier(params.objType, params.objInst);
+        writer.writeObjectIdentifier(objIdPayload.type, objIdPayload.instance);
 
         // Write maxAPDUlength (1476 chars)
         writer.writeTag(BACnetPropTypes.unsignedInt,
@@ -164,9 +167,10 @@ export class UnconfirmReqPDU {
         writer.writeUInt8(0x00);
 
         // Write Vendor ID
+        const propIdPayload = params.vendorId.payload as IBACnetTypeUnsignedInt;
         writer.writeTag(BACnetPropTypes.unsignedInt,
             BACnetTagTypes.application, 1);
-        writer.writeUInt8(params.vendorId);
+        writer.writeUInt8(propIdPayload.value);
 
         return writer;
     }
@@ -191,11 +195,11 @@ export class UnconfirmReqPDU {
 
         // Write Device Object Identifier
         writer.writeTag(1, BACnetTagTypes.context, 4);
-        writer.writeObjectIdentifier(params.device.type, params.device.instance);
+        writer.writeObjectIdentifier(params.devObjId.type, params.devObjId.instance);
 
         // Write Object Identifier for device port
         writer.writeTag(2, BACnetTagTypes.context, 4);
-        writer.writeObjectIdentifier(params.devObject.type, params.devObject.instance);
+        writer.writeObjectIdentifier(params.unitObjId.type, params.unitObjId.instance);
 
         // Write timer remaining
         writer.writeTag(3, BACnetTagTypes.context, 1);

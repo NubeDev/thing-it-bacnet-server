@@ -97,14 +97,13 @@ export interface IUnconfirmReqWhoIsOptions
     extends IUnconfirmReq, IUnconfirmReqWhoIs {
 }
 export interface IUnconfirmReqIAm {
-    objType: number;
-    objInst: number;
-    vendorId: number;
+    objId: IBACnetObjectProperty;
+    vendorId: IBACnetObjectProperty;
 }
 export interface IUnconfirmReqCOVNotification {
     processId: number;
-    device: IBACnetObject;
-    devObject: IBACnetObject;
+    devObjId: IBACnetTypeObjectId;
+    unitObjId: IBACnetTypeObjectId;
     prop: IBACnetObjectProperty;
     status: IBACnetObjectProperty;
 }
@@ -126,11 +125,8 @@ export interface IComplexACK {
 }
 
 export interface IComplexACKReadProperty {
-    objType: number;
-    objInst: number;
-    propId: number;
-    propValue: any;
-    propType: BACnetPropTypes;
+    objId: IBACnetTypeObjectId;
+    unitProp: IBACnetObjectProperty;
 }
 
 
