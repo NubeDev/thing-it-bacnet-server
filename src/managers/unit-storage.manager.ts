@@ -33,6 +33,7 @@ import {
 export class UnitStorageManager {
     public readonly className: string = 'UnitStorageManager';
     private units: Map<string, NativeUnit>;
+    private device: NativeUnit;
 
     constructor () {
         this.units = new Map();
@@ -45,9 +46,14 @@ export class UnitStorageManager {
      * @return {void}
      */
     public initUnits (units: IEDEUnit[]): void {
+        if (!units.length) {
+            throw new ApiError('UnitStorageManager - initUnits: Unit array is empty!');
+        }
+
         _.map(units, (unit) => {
             const objType = BACnetObjTypes[unit.objType];
             const objId = this.getObjId(unit.objType, unit.objInst);
+
             try {
                 const UnitClass = NativeModule.get(objType);
                 const unitInst: NativeUnit = new UnitClass(unit);
@@ -56,6 +62,10 @@ export class UnitStorageManager {
                 logger.debug(`${this.className} - initUnits: ${objType} - ${objId} - ${error}`);
             }
         });
+
+        const devId = this.getObjId(BACnetObjTypes.Device, units[0].deviceInst);
+        const device = this.units.get(devId);
+        this.device = device;
     }
 
     /**
@@ -68,6 +78,16 @@ export class UnitStorageManager {
      */
     public getObjId (objType: number, objInst: number): string {
         return `${objType}:${objInst}`;
+    }
+
+
+    /**
+     * getDevice - returns the current device.
+     *
+     * @return {NativeUnit}
+     */
+    public getDevice(): NativeUnit {
+        return this.device;
     }
 
     /**
