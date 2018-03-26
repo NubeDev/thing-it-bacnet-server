@@ -21,7 +21,10 @@ import {
 import {
     logger,
     AsyncUtil,
+    EDEReaderUtil,
 } from '../core/utils';
+
+import { UnitStorageManager } from './unit-storage.manager';
 
 export class AppManager {
     private server: Server;
@@ -29,7 +32,6 @@ export class AppManager {
     constructor (private appConfig: IAppConfig) {
         this.handleArgs();
         this.server = new Server(this.appConfig.server, mainRouter);
-        this.initServices();
     }
 
     public handleArgs () {
@@ -54,12 +56,18 @@ export class AppManager {
         }
     }
 
-    public initServices () {
-        // this.edeStorageManager = new EDEStorageManager(this.appConfig.ede);
-        // this.server.registerService('edeStorage', this.edeStorageManager);
-    }
-
     public start () {
-        this.server.startServer();
+        return Bluebird.resolve()
+            .then(() => AsyncUtil.readFile(this.appConfig.bacnet.edeFilePath))
+            .then((fileData) => {
+                const edeReader = new EDEReaderUtil(fileData);
+                const edeDataPoint = edeReader.readDataPointTable();
+
+                const unitStorageManager = new UnitStorageManager();
+                unitStorageManager.initUnits(edeDataPoint);
+
+                this.server.registerService('unitStorage', unitStorageManager);
+            })
+            .then(() => this.server.startServer());
     }
 }
