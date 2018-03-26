@@ -11,6 +11,7 @@ import {
     IBACnetTypeEnumerated,
     IBACnetTypeStatusFlags,
     IBACnetTypeObjectId,
+    IBACnetType,
 } from '../interfaces';
 
 import {
@@ -204,41 +205,41 @@ export class BACnetWriterUtil {
     /**
      * writeValue - writes BACnet property value to the internal buffer.
      *
-     * @param  {number} tagContext - tag context
+     * @param  {number} tagNumber - tag number
      * @param  {BACnetPropTypes} valueType - type of property value
-     * @param  {any} params - parama object with value
+     * @param  {IBACnetType} value - parama object with value
      * @return {void}
      */
-    public writeValue (tagContext: number, propValueType: BACnetPropTypes, params: any): void {
+    public writeValue (tagNumber: number, propValueType: BACnetPropTypes, value: IBACnetType): void {
         // Context Number - Context tag - "Opening" Tag
-        this.writeTag(tagContext, 1, 6);
+        this.writeTag(tagNumber, 1, 6);
 
         switch (propValueType) {
             case BACnetPropTypes.boolean:
-                this.writeTypeBoolean(params);
+                this.writeTypeBoolean(value as IBACnetTypeBoolean);
                 break;
             case BACnetPropTypes.unsignedInt:
-                this.writeTypeUnsignedInt(params);
+                this.writeTypeUnsignedInt(value as IBACnetTypeUnsignedInt);
                 break;
             case BACnetPropTypes.real:
-                this.writeTypeReal(params);
+                this.writeTypeReal(value as IBACnetTypeReal);
                 break;
             case BACnetPropTypes.characterString:
-                this.writeTypeCharString(params);
+                this.writeTypeCharString(value as IBACnetTypeCharString);
                 break;
             case BACnetPropTypes.bitString:
-                this.writeTypeStatusFlags(params);
+                this.writeTypeStatusFlags(value as IBACnetTypeStatusFlags);
                 break;
             case BACnetPropTypes.enumerated:
-                this.writeTypeEnumerated(params);
+                this.writeTypeEnumerated(value as IBACnetTypeEnumerated);
                 break;
             case BACnetPropTypes.objectIdentifier:
-                this.writeTypeObjectIdentifier(params);
+                this.writeTypeObjectIdentifier(value as IBACnetTypeObjectId);
                 break;
         }
 
         // Context Number - Context tag - "Closing" Tag
-        this.writeTag(tagContext, 1, 7);
+        this.writeTag(tagNumber, 1, 7);
     }
 
     /**
@@ -301,7 +302,7 @@ export class BACnetWriterUtil {
      * @param  {any} params - object with parameters
      * @return {void}
      */
-    public writeTypeReal (params: any): void {
+    public writeTypeReal (params: IBACnetTypeReal): void {
         // DataType - Application tag - DataTypeSize
         this.writeTag(BACnetPropTypes.real, 0, 4);
 
@@ -314,7 +315,7 @@ export class BACnetWriterUtil {
      * @param  {any} params - object with parameters
      * @return {void}
      */
-    public writeTypeCharString (params: any): void {
+    public writeTypeCharString (params: IBACnetTypeCharString): void {
         // DataType - Application tag - Extended value (5)
         this.writeTag(BACnetPropTypes.characterString, 0, 5);
 
@@ -335,7 +336,7 @@ export class BACnetWriterUtil {
      * @param  {any} params - object with parameters
      * @return {void}
      */
-    public writeTypeStatusFlags (params: any): void {
+    public writeTypeStatusFlags (params: IBACnetTypeStatusFlags): void {
         // DataType - Application tag - 2 bytes
         this.writeTag(BACnetPropTypes.bitString, 0, 2);
 
@@ -358,7 +359,7 @@ export class BACnetWriterUtil {
      * @param  {any} params - object with parameters
      * @return {void}
      */
-    public writeTypeEnumerated (params: any): void {
+    public writeTypeEnumerated (params: IBACnetTypeEnumerated): void {
         // DataType - Application tag - 1 bytes
         this.writeTag(BACnetPropTypes.enumerated, 0, 1);
 
@@ -373,11 +374,11 @@ export class BACnetWriterUtil {
      * @param  {any} params - object with parameters
      * @return {void}
      */
-    public writeTypeObjectIdentifier (params: any): void {
+    public writeTypeObjectIdentifier (params: IBACnetTypeObjectId): void {
         // DataType - Application tag - 4 bytes
         this.writeTag(BACnetPropTypes.objectIdentifier, 0, 4);
 
         // Write status flags
-        this.writeObjectIdentifier(params.objType, params.objInst);
+        this.writeObjectIdentifier(params.type, params.instance);
     }
 }
