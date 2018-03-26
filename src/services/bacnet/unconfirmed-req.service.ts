@@ -74,8 +74,8 @@ export class UnconfirmedReqService {
     public iAm (
             inputSoc: InputSocket, outputSoc: OutputSocket, serviceSocket: ServiceSocket) {
         const unitManager: UnitStorageManager = serviceSocket.getService('unitManager');
-        const device = unitManager.getDevice();
 
+        const device = unitManager.getDevice();
         const objIdProp = device.getProperty(BACnetPropIds.objectIdentifier);
         const vendorIdProp = device.getProperty(BACnetPropIds.vendorIdentifier);
 
@@ -130,8 +130,6 @@ export class UnconfirmedReqService {
         // Get object identifier
         const objId = apduService.objId;
         const objIdPayload = objId.payload as IBACnetTypeObjectId;
-        const objType = objIdPayload.type;
-        const objInst = objIdPayload.instance;
 
         // Get BACnet object (from device)
         const unitManager: UnitStorageManager = serviceSocket.getService('unitManager');
@@ -140,12 +138,14 @@ export class UnconfirmedReqService {
         const devObjId = device.getProperty(BACnetPropIds.objectIdentifier);
         const devObjIdPayload = devObjId.payload as IBACnetTypeObjectId;
 
-        // Get value
+        // Get unit properties
         const unitObjId = unitManager.getUnitProperty(objIdPayload,
             BACnetPropIds.objectIdentifier);
         const unitObjIdPayload = unitObjId.payload as IBACnetTypeObjectId;
+
         const unitPresentValue = unitManager.getUnitProperty(objIdPayload,
             BACnetPropIds.presentValue);
+
         const unitStatusFlags = unitManager.getUnitProperty(objIdPayload,
             BACnetPropIds.statusFlags);
 
