@@ -32,7 +32,7 @@ export interface IBACnetObject {
 export interface IBACnetObjectProperty {
     id: BACnetPropIds;
     type: BACnetPropTypes;
-    payload: any;
+    payload: IBACnetType;
 }
 
 export interface IBACnetTag {
