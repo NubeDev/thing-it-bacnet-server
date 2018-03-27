@@ -20,8 +20,15 @@ import {
 
 import { NativeMetadata } from './native.metadata';
 
+import {
+    logger,
+} from '../../core/utils';
+
 export class NativeUnit {
     public readonly className: string = 'NativeUnit';
+    // For logging
+    protected objType: number;
+    protected objInst: number;
     // Unit metadata
     public metadata: IBACnetObjectProperty[];
     // Unit properties subject
@@ -37,8 +44,6 @@ export class NativeUnit {
 
         const nativeMetadata = _.cloneDeep(NativeMetadata);
         this.metadata = _.concat(nativeMetadata, metadata);
-
-        this.initUnit(edeUnit);
     }
 
     /**
@@ -48,6 +53,9 @@ export class NativeUnit {
      * @return {void}
      */
     public initUnit (edeUnit: IEDEUnit): void {
+        this.objType = edeUnit.objType;
+        this.objInst = edeUnit.objInst
+
         this.setProperty(BACnetPropIds.objectIdentifier, {
             type: edeUnit.objType,
             instance: edeUnit.objInst,
@@ -62,6 +70,8 @@ export class NativeUnit {
                 value: edeUnit.description,
             });
         }
+
+        logger.debug(`${this.getLogHeader()} - metadata: ${JSON.stringify(this.metadata)}`);
     }
 
     /**
@@ -80,6 +90,8 @@ export class NativeUnit {
             oldValue: oldValue,
             newValue: value,
         });
+
+        logger.debug(`${this.getLogHeader()} - setProperty (${BACnetPropIds[propId]}): ${JSON.stringify(prop)}`);
     }
 
     /**
@@ -90,6 +102,8 @@ export class NativeUnit {
      */
     public getProperty (propId: BACnetPropIds): IBACnetObjectProperty {
         const prop = this.findProperty(propId);
+
+        logger.debug(`${this.getLogHeader()} - getProperty (${BACnetPropIds[propId]}): ${JSON.stringify(prop)}`);
         return _.cloneDeep(prop);
     }
 
@@ -115,17 +129,43 @@ export class NativeUnit {
             && unitIdPayload.instance === objId.instance;
     }
 
-    public dipatchCOVNotification () {
+    /**
+     * dipatchCOVNotification - dispatchs the "COV Notification" event.
+     *
+     * @return {void}
+     */
+    public dipatchCOVNotification (): void {
         const reportedProps = this.getReportedProperties();
         this.sjCOV.next(reportedProps);
     }
 
+    /**
+     * getReportedProperties - returns the reported properties for COV notification.
+     *
+     * @return {IBACnetObjectProperty[]}
+     */
     protected getReportedProperties (): IBACnetObjectProperty[] {
         return null;
     }
 
+    /**
+     * findProperty - finds the property in the current unit and returns the
+     * finded unit property.
+     *
+     * @param  {BACnetPropIds} propId - property ID
+     * @return {IBACnetObjectProperty}
+     */
     protected findProperty (propId: BACnetPropIds): IBACnetObjectProperty {
         const property = _.find(this.metadata, [ 'id', propId ]);
         return property;
+    }
+
+    /**
+     * getLogHeader - returns the header for log messages.
+     *
+     * @return {string}
+     */
+    protected getLogHeader (): string {
+        return `${this.className} (${this.objType}:${this.objInst})`;
     }
 }
