@@ -1,3 +1,4 @@
+import { NoopUnit } from './noop/noop.unit';
 import { DeviceUnit } from './device/device.unit';
 
 import { BinaryInputUnit } from './binary-input/binary-input.unit';
@@ -13,6 +14,7 @@ import { MultiStateOutputUnit } from './multi-state-output/multi-state-output.un
 import { MultiStateValueUnit } from './multi-state-value/multi-state-value.unit';
 
 export const NativeModule: Map<string, any> = new Map<string, any>([
+    [ 'Noop', NoopUnit ],
     [ 'Device', DeviceUnit ],
 
     [ 'BinaryInput', BinaryInputUnit ],
