@@ -55,12 +55,16 @@ export class UnitStorageManager {
             const objId = this.getObjId(unit.objType, unit.objInst);
 
             try {
-                const UnitClass = NativeModule.get(objType);
+                let UnitClass = NativeModule.get(objType);
+                if (!UnitClass) {
+                    logger.debug(`${this.className} - initUnits: ${objType} (${objId}) - Use "Noop" stub unit`);
+                    UnitClass = NativeModule.get('Noop');
+                }
                 const unitInst: NativeUnit = new UnitClass(unit);
                 unitInst.initUnit(unit);
                 this.units.set(objId, unitInst);
             } catch (error) {
-                logger.debug(`${this.className} - initUnits: ${objType} - ${objId} - ${error}`);
+                logger.debug(`${this.className} - initUnits: ${objType} (${objId})`, error);
             }
         });
 
