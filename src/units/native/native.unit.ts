@@ -33,6 +33,7 @@ export class NativeUnit {
             throw new ApiError(`${this.className} - constructor: Unit ID is required!`);
         }
         this.sjData = new Subject();
+        this.sjCOV = new Subject();
 
         const nativeMetadata = _.cloneDeep(NativeMetadata);
         this.metadata = _.concat(nativeMetadata, metadata);
