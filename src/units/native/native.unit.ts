@@ -28,14 +28,16 @@ export class NativeUnit {
     public sjData: Subject<IBACnetPropertyNotification>;
     public sjCOV: Subject<IBACnetObjectProperty[]>;
 
-    constructor (bnUnit: IEDEUnit, metadata: IBACnetObjectProperty[]) {
-        if (_.isNil(bnUnit.objInst)) {
+    constructor (edeUnit: IEDEUnit, metadata: IBACnetObjectProperty[]) {
+        if (_.isNil(edeUnit.objInst)) {
             throw new ApiError(`${this.className} - constructor: Unit ID is required!`);
         }
         this.sjData = new Subject();
 
         const nativeMetadata = _.cloneDeep(NativeMetadata);
         this.metadata = _.concat(nativeMetadata, metadata);
+
+        this.initUnit(edeUnit);
     }
 
     /**
