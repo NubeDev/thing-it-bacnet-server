@@ -10,4 +10,7 @@ export const appConfig: IAppConfig = {
             delay: 20,
         },
     },
+    bacnet: {
+        edeFilePath: '',
+    }
 }
