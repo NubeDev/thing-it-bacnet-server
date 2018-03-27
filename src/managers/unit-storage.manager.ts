@@ -57,6 +57,7 @@ export class UnitStorageManager {
             try {
                 const UnitClass = NativeModule.get(objType);
                 const unitInst: NativeUnit = new UnitClass(unit);
+                unitInst.initUnit(unit);
                 this.units.set(objId, unitInst);
             } catch (error) {
                 logger.debug(`${this.className} - initUnits: ${objType} - ${objId} - ${error}`);
