@@ -46,8 +46,8 @@ export class ComplexACKService {
         const propIdPayload = propId.payload as IBACnetTypeUnsignedInt;
 
         // Get BACnet property (for BACnet object)
-        const unitManager: UnitStorageManager = serviceSocket.getService('unitManager');
-        const unitProp = unitManager.getUnitProperty(objIdPayload, propIdPayload.value);
+        const unitStorage: UnitStorageManager = serviceSocket.getService('unitStorage');
+        const unitProp = unitStorage.getUnitProperty(objIdPayload, propIdPayload.value);
 
         // Generate APDU writer
         const writerComplexACK = complexACKPDU.writeReq({

@@ -73,9 +73,9 @@ export class UnconfirmedReqService {
      */
     public iAm (
             inputSoc: InputSocket, outputSoc: OutputSocket, serviceSocket: ServiceSocket) {
-        const unitManager: UnitStorageManager = serviceSocket.getService('unitManager');
+        const unitStorage: UnitStorageManager = serviceSocket.getService('unitStorage');
 
-        const device = unitManager.getDevice();
+        const device = unitStorage.getDevice();
         const objIdProp = device.getProperty(BACnetPropIds.objectIdentifier);
         const vendorIdProp = device.getProperty(BACnetPropIds.vendorIdentifier);
 
@@ -132,21 +132,21 @@ export class UnconfirmedReqService {
         const objIdPayload = objId.payload as IBACnetTypeObjectId;
 
         // Get BACnet object (from device)
-        const unitManager: UnitStorageManager = serviceSocket.getService('unitManager');
+        const unitStorage: UnitStorageManager = serviceSocket.getService('unitStorage');
 
-        const device = unitManager.getDevice();
+        const device = unitStorage.getDevice();
         const devObjId = device.getProperty(BACnetPropIds.objectIdentifier);
         const devObjIdPayload = devObjId.payload as IBACnetTypeObjectId;
 
         // Get unit properties
-        const unitObjId = unitManager.getUnitProperty(objIdPayload,
+        const unitObjId = unitStorage.getUnitProperty(objIdPayload,
             BACnetPropIds.objectIdentifier);
         const unitObjIdPayload = unitObjId.payload as IBACnetTypeObjectId;
 
-        const unitPresentValue = unitManager.getUnitProperty(objIdPayload,
+        const unitPresentValue = unitStorage.getUnitProperty(objIdPayload,
             BACnetPropIds.presentValue);
 
-        const unitStatusFlags = unitManager.getUnitProperty(objIdPayload,
+        const unitStatusFlags = unitStorage.getUnitProperty(objIdPayload,
             BACnetPropIds.statusFlags);
 
         // Generate APDU writer

@@ -36,7 +36,7 @@ export class SimpleACKService {
         const apduMessage = inputSoc.apdu as IConfirmedReqLayer;
         const invokeId = apduMessage.invokeId;
         const apduService = apduMessage.service as IConfirmedReqSubscribeCOVService;
-        const unitManager: UnitStorageManager = serviceSocket.getService('unitManager');
+        const unitStorage: UnitStorageManager = serviceSocket.getService('unitStorage');
 
         // Get object identifier
         const objId = apduService.objId;
@@ -66,7 +66,7 @@ export class SimpleACKService {
         const msgBACnet = writerBACnet.getBuffer();
         outputSoc.send(msgBACnet, 'subscribeCOV')
         unconfirmedReqService.covNotification(inputSoc, outputSoc, serviceSocket);
-        unitManager
+        unitStorage
             .subscribeToUnit(objIdPayload)
             .subscribe(() => {
                 unconfirmedReqService.covNotification(inputSoc, outputSoc, serviceSocket);
@@ -98,8 +98,8 @@ export class SimpleACKService {
         const propValues = apduService.propValues;
         const propValuePayload = propValues[0].payload;
 
-        const unitManager: UnitStorageManager = serviceSocket.getService('unitManager');
-        unitManager.setUnitProperty(objIdPayload, propIdPayload.value, propValuePayload);
+        const unitStorage: UnitStorageManager = serviceSocket.getService('unitStorage');
+        unitStorage.setUnitProperty(objIdPayload, propIdPayload.value, propValuePayload);
 
         // Generate APDU writer
         const writerSimpleACKPDU = simpleACKPDU.writeReq({
