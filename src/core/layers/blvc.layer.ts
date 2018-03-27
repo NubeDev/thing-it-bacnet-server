@@ -17,7 +17,7 @@ import {
 } from '../interfaces';
 
 export class BLVC {
-    public className: string = 'BLVC';
+    public readonly className: string = 'BLVC';
     private npdu: NPDU;
 
     constructor (npduInst: NPDU) {

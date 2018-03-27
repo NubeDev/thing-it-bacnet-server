@@ -30,7 +30,7 @@ import {
 } from '../../enums';
 
 export class ConfirmReqPDU {
-    public className: string = 'ConfirmReqPDU';
+    public readonly className: string = 'ConfirmReqPDU';
 
     public getFromBuffer (buf: Buffer): IConfirmedReqLayer {
         const reader = new BACnetReaderUtil(buf);

@@ -34,7 +34,7 @@ import {
 } from '../../interfaces';
 
 export class UnconfirmReqPDU {
-    public className: string = 'UnconfirmReqPDU';
+    public readonly className: string = 'UnconfirmReqPDU';
 
     public getFromBuffer (buf: Buffer): IUnconfirmedReqLayer {
         const reader = new BACnetReaderUtil(buf);

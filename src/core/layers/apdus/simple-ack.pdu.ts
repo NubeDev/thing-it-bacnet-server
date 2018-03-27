@@ -30,7 +30,7 @@ import {
 } from '../../interfaces';
 
 export class SimpleACKPDU {
-    public className: string = 'SimpleACKPDU';
+    public readonly className: string = 'SimpleACKPDU';
 
     public getFromBuffer (buf: Buffer): ISimpleACKLayer {
         const reader = new BACnetReaderUtil(buf);

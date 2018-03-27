@@ -21,7 +21,7 @@ import {
 import { NativeMetadata } from './native.metadata';
 
 export class NativeUnit {
-    public className: string = 'UnitNativeBase';
+    public readonly className: string = 'NativeUnit';
     // Unit metadata
     public metadata: IBACnetObjectProperty[];
     // Unit properties subject

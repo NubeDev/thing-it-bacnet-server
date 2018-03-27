@@ -21,7 +21,7 @@ import {
 } from '../interfaces';
 
 export class APDU {
-    public className: string = 'APDU';
+    public readonly className: string = 'APDU';
 
     public getFromBuffer (buf: Buffer): IAPDULayer {
         const reader = new BACnetReaderUtil(buf);

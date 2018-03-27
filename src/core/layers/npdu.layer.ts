@@ -22,7 +22,7 @@ import {
 } from '../interfaces';
 
 export class NPDU {
-    public className: string = 'NPDU';
+    public readonly className: string = 'NPDU';
     private apdu: APDU;
 
     constructor (apduInst: APDU) {

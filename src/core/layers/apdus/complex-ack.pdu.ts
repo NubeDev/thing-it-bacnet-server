@@ -26,7 +26,7 @@ import {
 } from '../../interfaces';
 
 export class ComplexACKPDU {
-    public className: string = 'ComplexACKPDU';
+    public readonly className: string = 'ComplexACKPDU';
 
     private getFromBuffer (buf: Buffer): IComplexACKLayer {
         const reader = new BACnetReaderUtil(buf);

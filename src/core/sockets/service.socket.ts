@@ -5,7 +5,7 @@ import * as Bluebird from 'bluebird';
 import { logger } from '../utils';
 
 export class ServiceSocket {
-    public className: string = 'ServiceSocket';
+    public readonly className: string = 'ServiceSocket';
     private services: Map<string, any>;
 
     constructor () {

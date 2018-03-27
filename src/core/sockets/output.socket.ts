@@ -9,7 +9,7 @@ import { logger } from '../utils';
 import { IBACnetAddressInfo, ISequenceFlow } from '../interfaces';
 
 export class OutputSocket {
-    public className: string = 'OutputSocket';
+    public readonly className: string = 'OutputSocket';
 
     constructor (private app: dgram.Socket,
         private rinfo: IBACnetAddressInfo,

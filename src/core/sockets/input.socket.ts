@@ -9,7 +9,7 @@ import { logger } from '../utils';
 import { IBLVCLayer, INPDULayer, IAPDULayer } from '../interfaces';
 
 export class InputSocket {
-    public className: string = 'InputSocket';
+    public readonly className: string = 'InputSocket';
     public blvc: IBLVCLayer;
     public npdu: INPDULayer;
     public apdu: IAPDULayer;
