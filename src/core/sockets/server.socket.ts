@@ -68,7 +68,7 @@ export class Server {
             try {
                 this.mainRouter(inputSoc, outputSoc, this.serviceSocket);
             } catch (error) {
-                logger.error(`App ${error}`);
+                logger.error(`Server - router:`, error);
             }
         });
 
