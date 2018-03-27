@@ -18,7 +18,7 @@ import { BinaryOutputMetadata } from './binary-output.metadata';
 import { NativeUnit } from '../native.unit';
 
 export class BinaryOutputUnit extends NativeUnit {
-    public className: string = 'BinaryValueUnit';
+    public readonly className: string = 'BinaryOutputUnit';
     public metadata: IBACnetObjectProperty[];
 
     constructor (edeUnit: IEDEUnit) {

@@ -18,7 +18,7 @@ import { MultiStateOutputMetadata } from './multi-state-output.metadata';
 import { NativeUnit } from '../native.unit';
 
 export class MultiStateOutputUnit extends NativeUnit {
-    public className: string = 'BinaryValueUnit';
+    public readonly className: string = 'MultiStateOutputUnit';
     public metadata: IBACnetObjectProperty[];
 
     constructor (edeUnit: IEDEUnit) {

@@ -18,7 +18,7 @@ import { AnalogInputMetadata } from './analog-input.metadata';
 import { NativeUnit } from '../native.unit';
 
 export class AnalogInputUnit extends NativeUnit {
-    public className: string = 'BinaryValueUnit';
+    public readonly className: string = 'AnalogInputUnit';
     public metadata: IBACnetObjectProperty[];
 
     constructor (edeUnit: IEDEUnit) {
