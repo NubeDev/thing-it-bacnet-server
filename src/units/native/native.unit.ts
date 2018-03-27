@@ -56,6 +56,12 @@ export class NativeUnit {
         this.setProperty(BACnetPropIds.objectName, {
             value: edeUnit.objName,
         });
+
+        if (edeUnit.description) {
+            this.setProperty(BACnetPropIds.description, {
+                value: edeUnit.description,
+            });
+        }
     }
 
     /**
