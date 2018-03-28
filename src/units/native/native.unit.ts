@@ -165,6 +165,18 @@ export class NativeUnit {
     }
 
     /**
+     * isProperty - returns the function which checks the id of property from
+     * notification subject.
+     *
+     * @param  {BACnetPropIds} propId - property ID
+     * @return {Function}
+     */
+    protected isProperty (propId: BACnetPropIds):
+            (propNotif: IBACnetPropertyNotification) => boolean {
+        return (propNotif) => propNotif.id === propId;
+    }
+
+    /**
      * getLogHeader - returns the header for log messages.
      *
      * @return {string}
