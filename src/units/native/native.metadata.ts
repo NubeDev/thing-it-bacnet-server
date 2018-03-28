@@ -25,6 +25,13 @@ export const NativeMetadata: IBACnetObjectProperty[] = [
         },
     },
     {
+        id: BACnetPropIds.objectType,
+        type: BACnetPropTypes.enumerated,
+        payload: {
+            value: null,
+        },
+    },
+    {
         id: BACnetPropIds.description,
         type: BACnetPropTypes.characterString,
         payload: {
