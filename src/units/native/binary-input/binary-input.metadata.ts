@@ -32,4 +32,14 @@ export const BinaryInputMetadata: IBACnetObjectProperty[] = [
             value: BACnetPolarity.Normal,
         },
     },
+    {
+        id: BACnetPropIds.statusFlags,
+        type: BACnetPropTypes.bitString,
+        payload: {
+            inAlarm: false,
+            fault: false,
+            overridden: false,
+            outOfService: false,
+        },
+    },
 ];
