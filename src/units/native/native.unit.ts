@@ -85,10 +85,17 @@ export class NativeUnit {
      * @param  {IBACnetType} value - property value
      * @return {void}
      */
-    public setProperty (propId: BACnetPropIds, value: IBACnetType): void {
+    public setProperty (propId: BACnetPropIds, value: IBACnetType,
+            isWritable: boolean = true): void {
         const prop = this.findProperty(propId);
+
+        if (!(isWritable || prop.writable)) {
+            return;
+        }
+
         const oldValue = prop.payload;
         prop.payload = value;
+
         this.sjData.next({
             id: propId,
             oldValue: oldValue,
