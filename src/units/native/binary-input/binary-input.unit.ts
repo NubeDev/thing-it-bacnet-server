@@ -3,6 +3,7 @@ import * as _ from 'lodash';
 import {
     BACnetPropIds,
     BACnetBinaryPV,
+    BACnetEventState,
 } from '../../../core/enums';
 
 import {
@@ -34,6 +35,10 @@ export class BinaryInputUnit extends NativeUnit {
         super.initUnit(edeUnit);
 
         this.sjData
+            .filter(this.isProperty(BACnetPropIds.eventState))
+            .subscribe((notif) => this.shEventState(notif));
+
+        this.sjData
             .filter(this.isProperty(BACnetPropIds.outOfService))
             .subscribe((notif) => this.shOutOfService(notif));
 
@@ -48,6 +53,31 @@ export class BinaryInputUnit extends NativeUnit {
         this.sjData
             .filter(this.isProperty(BACnetPropIds.statusFlags))
             .subscribe((notif) => this.shStatusFlags(notif));
+    }
+
+    /**
+     * shEventState - handles the changes of 'Event State' property.
+     * Method changes the "shEventState" field in "statusFlags" BACnet property.
+     *
+     * @param  {IBACnetPropertyNotification} notif - notification object for eventState
+     * @return {void}
+     */
+    private shEventState (notif: IBACnetPropertyNotification): void {
+        const statusFlags = this.findProperty(BACnetPropIds.statusFlags);
+        const statusFlagsPayload = statusFlags.payload as IBACnetTypeStatusFlags;
+
+        const eventStatePayload = notif.newValue as IBACnetTypeEnumerated;
+        const newInAlarm = eventStatePayload.value !== BACnetEventState.Normal;
+
+        if (statusFlagsPayload.inAlarm === newInAlarm) {
+            return;
+        }
+
+        const newStatusFlags: IBACnetTypeStatusFlags = _.assign({}, statusFlagsPayload, {
+            inAlarm: newInAlarm,
+        });
+
+        this.setProperty(BACnetPropIds.statusFlags, newStatusFlags);
     }
 
     /**
