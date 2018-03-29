@@ -33,6 +33,7 @@ export interface IBACnetObjectProperty {
     id: BACnetPropIds;
     type: BACnetPropTypes;
     payload: IBACnetType;
+    writable?: boolean;
 }
 
 export interface IBACnetTag {
