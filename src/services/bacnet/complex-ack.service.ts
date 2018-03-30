@@ -16,6 +16,7 @@ import {
     IComplexACKReadPropertyService,
     IBACnetTypeObjectId,
     IBACnetTypeUnsignedInt,
+    IServiceComplexACKReadProperty,
 } from '../../core/interfaces';
 
 import { InputSocket, OutputSocket, ServiceSocket } from '../../core/sockets';
@@ -23,40 +24,19 @@ import { InputSocket, OutputSocket, ServiceSocket } from '../../core/sockets';
 import { UnitStorageManager } from '../../managers/unit-storage.manager';
 
 export class ComplexACKService {
+    private readonly className: string = 'ComplexACK';
 
     /**
-     * readProperty - handles the "readProperty" confirmed request.
+     * readProperty - sends the "readProperty" complex ack request.
      *
-     * @param  {RequestSocket} req - request object (socket)
-     * @param  {ResponseSocket} resp - response object (socket)
+     * @param  {IServiceComplexACKReadProperty} opts - request options
+     * @param  {OutputSocket} outputSoc - output socket
      * @return {type}
      */
-    public readProperty (
-            inputSoc: InputSocket, outputSoc: OutputSocket, serviceSocket: ServiceSocket) {
-        const apduMessage = inputSoc.apdu as IComplexACKLayer;
-        const invokeId = apduMessage.invokeId;
-        const apduService = apduMessage.service as IComplexACKReadPropertyService;
-
-        // Get object identifier
-        const objId = apduService.objId;
-        const objIdPayload = objId.payload as IBACnetTypeObjectId;
-
-        // Get property identifier
-        const propId = apduService.propId;
-        const propIdPayload = propId.payload as IBACnetTypeUnsignedInt;
-
-        // Get BACnet property (for BACnet object)
-        const unitStorage: UnitStorageManager = serviceSocket.getService('unitStorage');
-        const unitProp = unitStorage.getUnitProperty(objIdPayload, propIdPayload.value);
-
+    public readProperty (opts: IServiceComplexACKReadProperty, outputSoc: OutputSocket) {
         // Generate APDU writer
-        const writerComplexACK = complexACKPDU.writeReq({
-            invokeId: invokeId
-        });
-        const writerReadProperty = complexACKPDU.writeReadProperty({
-            objId: objIdPayload,
-            unitProp: unitProp,
-        });
+        const writerComplexACK = complexACKPDU.writeReq(opts);
+        const writerReadProperty = complexACKPDU.writeReadProperty(opts);
         const writerAPDU = BACnetWriterUtil.concat(writerComplexACK, writerReadProperty);
 
         // Generate NPDU writer
@@ -74,7 +54,7 @@ export class ComplexACKService {
 
         // Get and send BACnet message
         const msgBACnet = writerBACnet.getBuffer();
-        outputSoc.send(msgBACnet, 'readProperty');
+        outputSoc.send(msgBACnet, `${this.className} - readProperty`);
 
         return Bluebird.resolve();
     }

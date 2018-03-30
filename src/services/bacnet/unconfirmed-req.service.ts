@@ -18,26 +18,29 @@ import {
     IConfirmedReqWritePropertyService,
     IBACnetTypeObjectId,
     IBACnetTypeUnsignedInt,
+    IServiceUnconfirmReqCOVNotification,
+    IServiceUnconfirmReqWhoIs,
+    IServiceUnconfirmReqIAm,
 } from '../../core/interfaces';
-
 
 import { InputSocket, OutputSocket, ServiceSocket } from '../../core/sockets';
 
 import { UnitStorageManager } from '../../managers/unit-storage.manager';
 
 export class UnconfirmedReqService {
+    private readonly className: string = 'UnconfirmedReq';
 
     /**
      * whoIs - sends the "whoIs" request.
      *
-     * @param  {IUnconfirmReqWhoIsOptions} opts - request options
-     * @param  {OutputSocket} output - output socket
+     * @param  {IServiceUnconfirmReqWhoIs} opts - request options
+     * @param  {OutputSocket} outputSoc - output socket
      * @return {type}
      */
-    public whoIs (opts: IUnconfirmReqWhoIsOptions, output: OutputSocket) {
+    public whoIs (opts: IServiceUnconfirmReqWhoIs, outputSoc: OutputSocket) {
         // Generate APDU writer
-        const writerUnconfirmReq = unconfirmReqPDU.writeReq({});
-        const writerWhoIs = unconfirmReqPDU.writeWhoIs({});
+        const writerUnconfirmReq = unconfirmReqPDU.writeReq(opts);
+        const writerWhoIs = unconfirmReqPDU.writeWhoIs(opts);
         const writerAPDU = BACnetWriterUtil.concat(writerUnconfirmReq, writerWhoIs);
 
         // Generate NPDU writer
@@ -61,30 +64,20 @@ export class UnconfirmedReqService {
 
         // Get and send BACnet message
         const msgBACnet = writerBACnet.getBuffer();
-        return output.sendBroadcast(msgBACnet, 'whoIs');
+        return outputSoc.sendBroadcast(msgBACnet, `${this.className} - whoIs`);
     }
 
     /**
-     * iAm - handles the "whoIs" request and sends a "iAm" response.
+     * iAm - sends the "iAm" unconfirmed request.
      *
-     * @param  {RequestSocket} req - request object (socket)
-     * @param  {ResponseSocket} resp - response object (socket)
+     * @param  {IServiceUnconfirmReqIAm} opts - request options
+     * @param  {OutputSocket} outputSoc - output socket
      * @return {type}
      */
-    public iAm (
-            inputSoc: InputSocket, outputSoc: OutputSocket, serviceSocket: ServiceSocket) {
-        const unitStorage: UnitStorageManager = serviceSocket.getService('unitStorage');
-
-        const device = unitStorage.getDevice();
-        const objIdProp = device.getProperty(BACnetPropIds.objectIdentifier);
-        const vendorIdProp = device.getProperty(BACnetPropIds.vendorIdentifier);
-
+    public iAm (opts: IServiceUnconfirmReqIAm, outputSoc: OutputSocket) {
         // Generate APDU writer
-        const writerUnconfirmReq = unconfirmReqPDU.writeReq({});
-        const writerIAm = unconfirmReqPDU.writeIAm({
-            objId: objIdProp,
-            vendorId: vendorIdProp,
-        });
+        const writerUnconfirmReq = unconfirmReqPDU.writeReq(opts);
+        const writerIAm = unconfirmReqPDU.writeIAm(opts);
         const writerAPDU = BACnetWriterUtil.concat(writerUnconfirmReq, writerIAm);
 
         // Generate NPDU writer
@@ -108,56 +101,20 @@ export class UnconfirmedReqService {
 
         // Get and send BACnet message
         const msgBACnet = writerBACnet.getBuffer();
-        return outputSoc.sendBroadcast(msgBACnet, 'iAm');
+        return outputSoc.sendBroadcast(msgBACnet, `${this.className} - iAm`);
     }
 
     /**
-     * covNotification - handles the "COV notification" unconfirmed request.
+     * covNotification - sends the "COV notification" unconfirmed request.
      *
      * @param  {RequestSocket} req - request object (socket)
      * @param  {ResponseSocket} resp - response object (socket)
      * @return {type}
      */
-    public covNotification (
-            inputSoc: InputSocket, outputSoc: OutputSocket, serviceSocket: ServiceSocket) {
-        const apduMessage = inputSoc.apdu as IConfirmedReqLayer;
-        const invokeId = apduMessage.invokeId;
-        const apduService = apduMessage.service as IConfirmedReqSubscribeCOVService;
-
-        const subProcessId = apduService.subscriberProcessId;
-        const subProcessIdPayload = subProcessId.payload as IBACnetTypeUnsignedInt;
-
-        // Get object identifier
-        const objId = apduService.objId;
-        const objIdPayload = objId.payload as IBACnetTypeObjectId;
-
-        // Get BACnet object (from device)
-        const unitStorage: UnitStorageManager = serviceSocket.getService('unitStorage');
-
-        const device = unitStorage.getDevice();
-        const devObjId = device.getProperty(BACnetPropIds.objectIdentifier);
-        const devObjIdPayload = devObjId.payload as IBACnetTypeObjectId;
-
-        // Get unit properties
-        const unitObjId = unitStorage.getUnitProperty(objIdPayload,
-            BACnetPropIds.objectIdentifier);
-        const unitObjIdPayload = unitObjId.payload as IBACnetTypeObjectId;
-
-        const unitPresentValue = unitStorage.getUnitProperty(objIdPayload,
-            BACnetPropIds.presentValue);
-
-        const unitStatusFlags = unitStorage.getUnitProperty(objIdPayload,
-            BACnetPropIds.statusFlags);
-
+    public covNotification (opts: IServiceUnconfirmReqCOVNotification, outputSoc: OutputSocket) {
         // Generate APDU writer
-        const writerUnconfirmReq = unconfirmReqPDU.writeReq({});
-        const writerCOVNotification = unconfirmReqPDU.writeCOVNotification({
-            devObjId: devObjIdPayload,
-            unitObjId: unitObjIdPayload,
-            prop: unitPresentValue,
-            status: unitStatusFlags,
-            processId: subProcessIdPayload.value,
-        });
+        const writerUnconfirmReq = unconfirmReqPDU.writeReq(opts);
+        const writerCOVNotification = unconfirmReqPDU.writeCOVNotification(opts);
         const writerAPDU = BACnetWriterUtil.concat(writerUnconfirmReq, writerCOVNotification);
 
         // Generate NPDU writer
@@ -175,7 +132,7 @@ export class UnconfirmedReqService {
 
         // Get and send BACnet message
         const msgBACnet = writerBACnet.getBuffer();
-        return outputSoc.send(msgBACnet, 'covNotification');
+        outputSoc.send(msgBACnet, `${this.className} - covNotification`);
     }
 }
 

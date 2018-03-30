@@ -3,6 +3,7 @@ import * as Bluebird from 'bluebird';
 import {
     BACnetServiceTypes,
     BLVCFunction,
+    BACnetPropIds,
 } from '../../core/enums';
 
 import { complexACKPDU, simpleACKPDU } from '../../core/layers/apdus';
@@ -16,6 +17,10 @@ import {
     IConfirmedReqWritePropertyService,
     IBACnetTypeObjectId,
     IBACnetTypeUnsignedInt,
+    IUnconfirmReqCOVNotification,
+
+    IServiceSimpleACKSubscribeCOV,
+    IServiceSimpleACKWriteProperty,
 } from '../../core/interfaces';
 
 import { InputSocket, OutputSocket, ServiceSocket } from '../../core/sockets';
@@ -24,29 +29,20 @@ import { UnitStorageManager } from '../../managers/unit-storage.manager';
 import { unconfirmedReqService } from './unconfirmed-req.service';
 
 export class SimpleACKService {
+    private readonly className: string = 'SimpleACK';
+
     /**
-     * subscribeCOV - handles the "subscribeCOV" confirmed request.
+     * subscribeCOV - sends the "subscribeCOV" simple ack request.
      *
-     * @param  {RequestSocket} req - request object (socket)
-     * @param  {ResponseSocket} resp - response object (socket)
+     * @param  {IServiceSimpleACKSubscribeCOV} opts - request options
+     * @param  {OutputSocket} outputSoc - output socket
      * @return {type}
      */
     public subscribeCOV (
-            inputSoc: InputSocket, outputSoc: OutputSocket, serviceSocket: ServiceSocket) {
-        const apduMessage = inputSoc.apdu as IConfirmedReqLayer;
-        const invokeId = apduMessage.invokeId;
-        const apduService = apduMessage.service as IConfirmedReqSubscribeCOVService;
-        const unitStorage: UnitStorageManager = serviceSocket.getService('unitStorage');
-
-        // Get object identifier
-        const objId = apduService.objId;
-        const objIdPayload = objId.payload as IBACnetTypeObjectId;
-
+            opts: IServiceSimpleACKSubscribeCOV, outputSoc: OutputSocket) {
         // Generate APDU writer
-        const writerSimpleACKPDU = simpleACKPDU.writeReq({
-            invokeId: invokeId
-        });
-        const writerSubscribeCOV = simpleACKPDU.writeSubscribeCOV({});
+        const writerSimpleACKPDU = simpleACKPDU.writeReq(opts);
+        const writerSubscribeCOV = simpleACKPDU.writeSubscribeCOV(opts);
         const writerAPDU = BACnetWriterUtil.concat(writerSimpleACKPDU, writerSubscribeCOV);
 
         // Generate NPDU writer
@@ -64,48 +60,21 @@ export class SimpleACKService {
 
         // Get and send BACnet message
         const msgBACnet = writerBACnet.getBuffer();
-        outputSoc.send(msgBACnet, 'subscribeCOV')
-        unconfirmedReqService.covNotification(inputSoc, outputSoc, serviceSocket);
-        unitStorage
-            .subscribeToUnit(objIdPayload)
-            .subscribe(() => {
-                unconfirmedReqService.covNotification(inputSoc, outputSoc, serviceSocket);
-            });
+        outputSoc.send(msgBACnet, `${this.className} - subscribeCOV`);
     }
 
     /**
-     * writeProperty - handles the "writeProperty" confirmed request.
+     * writeProperty - sends the "writeProperty" simple ack request.
      *
-     * @param  {RequestSocket} req - request object (socket)
-     * @param  {ResponseSocket} resp - response object (socket)
+     * @param  {IServiceSimpleACKWriteProperty} opts - request options
+     * @param  {OutputSocket} outputSoc - output socket
      * @return {type}
      */
     public writeProperty (
-            inputSoc: InputSocket, outputSoc: OutputSocket, serviceSocket: ServiceSocket) {
-        const apduMessage = inputSoc.apdu as IConfirmedReqLayer;
-        const invokeId = apduMessage.invokeId;
-        const apduService = apduMessage.service as IConfirmedReqWritePropertyService;
-
-        // Get object identifier
-        const objId = apduService.objId;
-        const objIdPayload = objId.payload as IBACnetTypeObjectId;
-
-        // Get property ID
-        const propId = apduService.propId;
-        const propIdPayload = propId.payload as IBACnetTypeUnsignedInt;
-
-        // Get property value
-        const propValues = apduService.propValues;
-        const propValuePayload = propValues[0].payload;
-
-        const unitStorage: UnitStorageManager = serviceSocket.getService('unitStorage');
-        unitStorage.setUnitProperty(objIdPayload, propIdPayload.value, propValuePayload);
-
+            opts: IServiceSimpleACKWriteProperty, outputSoc: OutputSocket) {
         // Generate APDU writer
-        const writerSimpleACKPDU = simpleACKPDU.writeReq({
-            invokeId: invokeId,
-        });
-        const writerSubscribeCOV = simpleACKPDU.writeWriteProperty({});
+        const writerSimpleACKPDU = simpleACKPDU.writeReq(opts);
+        const writerSubscribeCOV = simpleACKPDU.writeWriteProperty(opts);
         const writerAPDU = BACnetWriterUtil.concat(writerSimpleACKPDU, writerSubscribeCOV);
 
         // Generate NPDU writer
@@ -123,7 +92,7 @@ export class SimpleACKService {
 
         // Get and send BACnet message
         const msgBACnet = writerBACnet.getBuffer();
-        return outputSoc.send(msgBACnet, 'writeProperty');
+        return outputSoc.send(msgBACnet, `${this.className} - writeProperty`);
     }
 }
 
