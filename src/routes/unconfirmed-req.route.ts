@@ -8,7 +8,7 @@ import {
     BACnetUnconfirmedService,
 } from '../core/enums';
 
-import { unconfirmedReqService } from '../services';
+import { unitUnconfirmedReqService } from '../services';
 
 import { InputSocket, OutputSocket, ServiceSocket } from '../core/sockets';
 
@@ -20,7 +20,7 @@ export function UnconfirmedReqRouter (
     logger.debug(`MainRouter - Request Service: ${BACnetUnconfirmedService[serviceChoice]}`);
     switch (serviceChoice) {
         case BACnetUnconfirmedService.whoIs:
-            return unconfirmedReqService.iAm(inputSoc, outputSoc, serviceSocket);
+            return unitUnconfirmedReqService.whoIs(inputSoc, outputSoc, serviceSocket);
     }
     return;
 }

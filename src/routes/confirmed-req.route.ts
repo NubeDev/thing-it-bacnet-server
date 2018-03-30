@@ -8,7 +8,7 @@ import {
     BACnetConfirmedService,
 } from '../core/enums';
 
-import { simpleACKService, complexACKService } from '../services';
+import { unitConfirmedReqService } from '../services';
 
 import { InputSocket, OutputSocket, ServiceSocket } from '../core/sockets';
 
@@ -20,11 +20,11 @@ export function ConfirmedReqRouter (
     logger.debug(`MainRouter - Request Service: ${BACnetConfirmedService[serviceChoice]}`);
     switch (serviceChoice) {
         case BACnetConfirmedService.ReadProperty:
-            return complexACKService.readProperty(inputSoc, outputSoc, serviceSocket);
+            return unitConfirmedReqService.readProperty(inputSoc, outputSoc, serviceSocket);
         case BACnetConfirmedService.WriteProperty:
-            return simpleACKService.writeProperty(inputSoc, outputSoc, serviceSocket);
+            return unitConfirmedReqService.writeProperty(inputSoc, outputSoc, serviceSocket);
         case BACnetConfirmedService.SubscribeCOV:
-            return simpleACKService.subscribeCOV(inputSoc, outputSoc, serviceSocket);
+            return unitConfirmedReqService.subscribeCOV(inputSoc, outputSoc, serviceSocket);
     }
     return;
 }
