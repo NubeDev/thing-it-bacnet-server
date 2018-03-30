@@ -81,8 +81,7 @@ export interface IConfirmedReq {
     invokeId: number;
 }
 export interface IConfirmedReqReadProperty {
-    objType: number;
-    objInst: number;
+    unitObjId: IBACnetTypeObjectId;
     propId: number;
     propArrayIndex?: number;
 }
@@ -102,11 +101,10 @@ export interface IUnconfirmReqIAm {
     vendorId: IBACnetObjectProperty;
 }
 export interface IUnconfirmReqCOVNotification {
-    processId: number;
+    processId: IBACnetTypeUnsignedInt;
     devObjId: IBACnetTypeObjectId;
     unitObjId: IBACnetTypeObjectId;
-    prop: IBACnetObjectProperty;
-    status: IBACnetObjectProperty;
+    reportedProps: IBACnetObjectProperty[];
 }
 
 export interface ISimpleACK {
@@ -126,10 +124,9 @@ export interface IComplexACK {
 }
 
 export interface IComplexACKReadProperty {
-    objId: IBACnetTypeObjectId;
+    unitObjId: IBACnetTypeObjectId;
     unitProp: IBACnetObjectProperty;
 }
-
 
 /**
  * BACnet types

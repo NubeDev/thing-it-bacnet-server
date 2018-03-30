@@ -209,17 +209,12 @@ export class UnconfirmReqPDU {
         // Write opening tag for list of values
         writer.writeTag(4, BACnetTagTypes.context, 6);
 
-        // Write PropertyID
-        writer.writeTag(0, BACnetTagTypes.context, 1);
-        writer.writeUInt8(params.prop.id);
-        // Write PropertyValue
-        writer.writeValue(2, params.prop.type, params.prop.payload);
-
-        // Write PropertyID of Status flag
-        writer.writeTag(0, BACnetTagTypes.context, 1);
-        writer.writeUInt8(params.status.id);
-        // Write PropertyValue of Status flag
-        writer.writeValue(2, params.status.type, params.status.payload);
+        _.map(params.reportedProps, (reportedProp) => {
+            // Write PropertyID
+            writer.writeParam(reportedProp.id, 0);
+            // Write PropertyValue
+            writer.writeValue(2, reportedProp.type, reportedProp.payload);
+        });
 
         // Write closing tag for list of values
         writer.writeTag(4, BACnetTagTypes.context, 7);
