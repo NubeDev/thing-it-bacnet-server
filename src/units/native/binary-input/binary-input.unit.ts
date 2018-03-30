@@ -176,7 +176,21 @@ export class BinaryInputUnit extends NativeUnit {
      * @return {void}
      */
     private shStatusFlags (notif: IBACnetPropertyNotification): void {
-        this.dipatchCOVNotification();
+        const statusFlagsPayload = notif.newValue as IBACnetTypeStatusFlags;
+        const overridden = statusFlagsPayload.fault
+            || statusFlagsPayload.outOfService
+            || statusFlagsPayload.inAlarm;
+
+        if (!!overridden === statusFlagsPayload.overridden) {
+            this.dipatchCOVNotification();
+            return;
+        }
+
+        const newStatusFlags: IBACnetTypeStatusFlags = _.assign({}, statusFlagsPayload, {
+            overridden: !!overridden,
+        });
+
+        this.setProperty(BACnetPropIds.statusFlags, newStatusFlags);
     }
 
     /**
