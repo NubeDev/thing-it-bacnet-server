@@ -40,6 +40,8 @@ export class BinaryInputUnit extends NativeUnit {
                     return this.shEventState(notif);
                 case BACnetPropIds.outOfService:
                     return this.shOutOfService(notif);
+                case BACnetPropIds.reliability:
+                    return this.shOutOfService(notif);
                 case BACnetPropIds.polarity:
                     return this.shPolarity(notif);
                 case BACnetPropIds.presentValue:
@@ -90,6 +92,26 @@ export class BinaryInputUnit extends NativeUnit {
 
         const newStatusFlags: IBACnetTypeStatusFlags = _.assign({}, statusFlagsPayload, {
             outOfService: !!outOfServicePayload.value,
+        });
+
+        this.setProperty(BACnetPropIds.statusFlags, newStatusFlags);
+    }
+
+    /**
+     * shReliability - handles the changes of 'Reliability' property.
+     * Method changes the "fault" field in "statusFlags" BACnet property.
+     *
+     * @param  {IBACnetPropertyNotification} notif - notification object for reliability
+     * @return {void}
+     */
+    private shReliability (notif: IBACnetPropertyNotification): void {
+        const statusFlags = this.findProperty(BACnetPropIds.statusFlags);
+        const statusFlagsPayload = statusFlags.payload as IBACnetTypeStatusFlags;
+
+        const reliabilityPayload = notif.newValue as IBACnetTypeBoolean;
+
+        const newStatusFlags: IBACnetTypeStatusFlags = _.assign({}, statusFlagsPayload, {
+            fault: !!reliabilityPayload.value,
         });
 
         this.setProperty(BACnetPropIds.statusFlags, newStatusFlags);
