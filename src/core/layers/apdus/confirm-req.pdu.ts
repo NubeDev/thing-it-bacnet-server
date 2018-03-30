@@ -212,7 +212,7 @@ export class ConfirmReqPDU {
 
         // Write Object identifier
         writer.writeTag(0, BACnetTagTypes.context, 4);
-        writer.writeObjectIdentifier(params.unitObjId.type, params.unitObjId.type);
+        writer.writeObjectIdentifier(params.unitObjId);
 
         // Write Property ID
         writer.writeParam(params.propId, 1);

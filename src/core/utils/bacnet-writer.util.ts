@@ -162,10 +162,10 @@ export class BACnetWriterUtil {
      * @param  {number} objectId - object id
      * @return {void}
      */
-    public writeObjectIdentifier (objectType: number, objectInst: number): void {
+    public writeObjectIdentifier (objId: IBACnetTypeObjectId): void {
         // Object Identifier = Object Type 10 bits, Object ID 22 bits
-        const objectIdentifier = ((objectType & 0x03FF) << 22)
-            | (objectInst & 0x03FFFFF);
+        const objectIdentifier = ((objId.type & 0x03FF) << 22)
+            | (objId.instance & 0x03FFFFF);
         this.writeUInt32BE(objectIdentifier);
     }
 
@@ -379,6 +379,6 @@ export class BACnetWriterUtil {
         this.writeTag(BACnetPropTypes.objectIdentifier, 0, 4);
 
         // Write status flags
-        this.writeObjectIdentifier(params.type, params.instance);
+        this.writeObjectIdentifier(params);
     }
 }

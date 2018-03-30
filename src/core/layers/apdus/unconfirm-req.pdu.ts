@@ -154,7 +154,7 @@ export class UnconfirmReqPDU {
         const objIdPayload = params.objId.payload as IBACnetTypeObjectId;
         writer.writeTag(BACnetPropTypes.objectIdentifier,
             BACnetTagTypes.application, 4);
-        writer.writeObjectIdentifier(objIdPayload.type, objIdPayload.instance);
+        writer.writeObjectIdentifier(objIdPayload);
 
         // Write maxAPDUlength (1476 chars)
         writer.writeTag(BACnetPropTypes.unsignedInt,
@@ -195,11 +195,11 @@ export class UnconfirmReqPDU {
 
         // Write Device Object Identifier
         writer.writeTag(1, BACnetTagTypes.context, 4);
-        writer.writeObjectIdentifier(params.devObjId.type, params.devObjId.instance);
+        writer.writeObjectIdentifier(params.devObjId);
 
         // Write Object Identifier for device port
         writer.writeTag(2, BACnetTagTypes.context, 4);
-        writer.writeObjectIdentifier(params.unitObjId.type, params.unitObjId.instance);
+        writer.writeObjectIdentifier(params.unitObjId);
 
         // Write timer remaining
         writer.writeTag(3, BACnetTagTypes.context, 1);

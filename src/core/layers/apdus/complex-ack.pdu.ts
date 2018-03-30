@@ -159,7 +159,7 @@ export class ComplexACKPDU {
 
         // Write Object identifier
         writer.writeTag(0, BACnetTagTypes.context, 4);
-        writer.writeObjectIdentifier(params.unitObjId.type, params.unitObjId.instance);
+        writer.writeObjectIdentifier(params.unitObjId);
 
         // Write PropertyID
         writer.writeParam(params.unitProp.id, 1);
