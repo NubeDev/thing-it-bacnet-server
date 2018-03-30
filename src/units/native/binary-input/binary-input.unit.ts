@@ -41,7 +41,7 @@ export class BinaryInputUnit extends NativeUnit {
                 case BACnetPropIds.outOfService:
                     return this.shOutOfService(notif);
                 case BACnetPropIds.reliability:
-                    return this.shOutOfService(notif);
+                    return this.shReliability(notif);
                 case BACnetPropIds.polarity:
                     return this.shPolarity(notif);
                 case BACnetPropIds.presentValue:
