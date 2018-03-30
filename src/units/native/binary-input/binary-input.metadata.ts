@@ -5,6 +5,7 @@ import {
     BACnetBinaryPV,
     BACnetPolarity,
     BACnetEventState,
+    BACnetReliability,
 } from '../../../core/enums';
 
 import {
@@ -38,6 +39,13 @@ export const BinaryInputMetadata: IBACnetObjectProperty[] = [
         type: BACnetPropTypes.enumerated,
         payload: {
             value: BACnetEventState.Normal,
+        },
+    },
+    {
+        id: BACnetPropIds.reliability,
+        type: BACnetPropTypes.enumerated,
+        payload: {
+            value: BACnetReliability.NoFaultDetected,
         },
     },
     {
