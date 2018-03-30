@@ -121,7 +121,7 @@ export class UnitStorageManager {
         if (!unit) {
             return;
         }
-        unit.setProperty(propId, value);
+        unit.setProperty(propId, value, false);
     }
 
     /**
