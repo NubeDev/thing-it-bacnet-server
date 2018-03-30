@@ -189,9 +189,8 @@ export class UnconfirmReqPDU {
         writer.writeUInt8(BACnetUnconfirmedService.covNotification);
 
         // Write Process Identifier
-        writer.writeTag(0, BACnetTagTypes.context, 1);
         const processId = _.isNumber(params.processId) ? params.processId : 1;
-        writer.writeUInt8(processId);
+        writer.writeParam(processId, 0);
 
         // Write Device Object Identifier
         writer.writeTag(1, BACnetTagTypes.context, 4);
@@ -202,8 +201,7 @@ export class UnconfirmReqPDU {
         writer.writeObjectIdentifier(params.unitObjId);
 
         // Write timer remaining
-        writer.writeTag(3, BACnetTagTypes.context, 1);
-        writer.writeUInt8(0x00);
+        writer.writeParam(0x00, 3);
 
         // List of Values
         // Write opening tag for list of values
