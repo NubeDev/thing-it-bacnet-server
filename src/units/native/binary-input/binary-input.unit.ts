@@ -34,25 +34,20 @@ export class BinaryInputUnit extends NativeUnit {
     public initUnit (edeUnit: IEDEUnit) {
         super.initUnit(edeUnit);
 
-        this.sjData
-            .filter(this.isProperty(BACnetPropIds.eventState))
-            .subscribe((notif) => this.shEventState(notif));
-
-        this.sjData
-            .filter(this.isProperty(BACnetPropIds.outOfService))
-            .subscribe((notif) => this.shOutOfService(notif));
-
-        this.sjData
-            .filter(this.isProperty(BACnetPropIds.polarity))
-            .subscribe((notif) => this.shPolarity(notif));
-
-        this.sjData
-            .filter(this.isProperty(BACnetPropIds.presentValue))
-            .subscribe((notif) => this.shPresentValue(notif));
-
-        this.sjData
-            .filter(this.isProperty(BACnetPropIds.statusFlags))
-            .subscribe((notif) => this.shStatusFlags(notif));
+        this.sjData.subscribe((notif) => {
+            switch (notif.id) {
+                case BACnetPropIds.eventState:
+                    return this.shEventState(notif);
+                case BACnetPropIds.outOfService:
+                    return this.shOutOfService(notif);
+                case BACnetPropIds.polarity:
+                    return this.shPolarity(notif);
+                case BACnetPropIds.presentValue:
+                    return this.shPresentValue(notif);
+                case BACnetPropIds.statusFlags:
+                    return this.shStatusFlags(notif);
+            }
+        });
     }
 
     /**
