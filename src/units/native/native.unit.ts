@@ -1,5 +1,5 @@
 import * as _ from 'lodash';
-import { Subject, Observable } from 'rxjs';
+import { Subject, BehaviorSubject, Observable } from 'rxjs';
 
 import {
     BACnetPropIds,
@@ -33,14 +33,14 @@ export class NativeUnit {
     public metadata: IBACnetObjectProperty[];
     // Unit properties subject
     public sjData: Subject<IBACnetPropertyNotification>;
-    public sjCOV: Subject<IBACnetObjectProperty[]>;
+    public sjCOV: BehaviorSubject<IBACnetObjectProperty[]>;
 
     constructor (edeUnit: IEDEUnit, metadata: IBACnetObjectProperty[]) {
         if (_.isNil(edeUnit.objInst)) {
             throw new ApiError(`${this.className} - constructor: Unit ID is required!`);
         }
         this.sjData = new Subject();
-        this.sjCOV = new Subject();
+        this.sjCOV = new BehaviorSubject(null);
 
         const nativeMetadata = _.cloneDeep(NativeMetadata);
         this.metadata = _.concat(nativeMetadata, metadata);
@@ -74,6 +74,9 @@ export class NativeUnit {
                 value: edeUnit.description,
             });
         }
+
+        const reportedProps = this.getReportedProperties();
+        this.sjCOV.next(reportedProps);
 
         logger.debug(`${this.getLogHeader()} - metadata: ${JSON.stringify(this.metadata)}`);
     }

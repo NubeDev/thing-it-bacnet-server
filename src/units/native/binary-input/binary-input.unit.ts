@@ -50,6 +50,9 @@ export class BinaryInputUnit extends NativeUnit {
                     return this.shStatusFlags(notif);
             }
         });
+
+        const reportedProps = this.getReportedProperties();
+        this.sjCOV.next(reportedProps);
     }
 
     /**
