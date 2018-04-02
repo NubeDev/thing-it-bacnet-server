@@ -30,20 +30,25 @@ export class NativeUnit {
     protected objType: number;
     protected objInst: number;
     // Unit metadata
-    public metadata: IBACnetObjectProperty[];
+    public metadata: Map<BACnetPropIds, IBACnetObjectProperty>;
     // Unit properties subject
     public sjData: Subject<IBACnetPropertyNotification>;
     public sjCOV: BehaviorSubject<IBACnetObjectProperty[]>;
 
-    constructor (edeUnit: IEDEUnit, metadata: IBACnetObjectProperty[]) {
+    constructor (edeUnit: IEDEUnit, unitMetadata: IBACnetObjectProperty[]) {
         if (_.isNil(edeUnit.objInst)) {
             throw new ApiError(`${this.className} - constructor: Unit ID is required!`);
         }
         this.sjData = new Subject();
         this.sjCOV = new BehaviorSubject(null);
 
-        const nativeMetadata = _.cloneDeep(NativeMetadata);
-        this.metadata = _.concat(nativeMetadata, metadata);
+        this.metadata = new Map();
+        _.map(NativeMetadata, (prop) => {
+            this.metadata.set(prop.id, prop);
+        });
+        _.map(unitMetadata, (prop) => {
+            this.metadata.set(prop.id, prop);
+        });
     }
 
     /**
@@ -115,7 +120,7 @@ export class NativeUnit {
      * @return {IBACnetObjectProperty}
      */
     public getProperty (propId: BACnetPropIds): IBACnetObjectProperty {
-        const prop = this.findProperty(propId);
+        const prop = this.metadata.get(propId);
 
         logger.debug(`${this.getLogHeader()} - getProperty (${BACnetPropIds[propId]}): ${JSON.stringify(prop)}`);
         return _.cloneDeep(prop);
@@ -137,7 +142,7 @@ export class NativeUnit {
      * @return {boolean}
      */
     public isBACnetObject (objId: IBACnetTypeObjectId): boolean {
-        const unitId = this.findProperty(BACnetPropIds.objectIdentifier);
+        const unitId = this.getProperty(BACnetPropIds.objectIdentifier);
         const unitIdPayload = unitId.payload as IBACnetTypeObjectId;
         return unitIdPayload.type === objId.type
             && unitIdPayload.instance === objId.instance;
@@ -160,18 +165,6 @@ export class NativeUnit {
      */
     protected getReportedProperties (): IBACnetObjectProperty[] {
         return null;
-    }
-
-    /**
-     * findProperty - finds the property in the current unit and returns the
-     * finded unit property.
-     *
-     * @param  {BACnetPropIds} propId - property ID
-     * @return {IBACnetObjectProperty}
-     */
-    protected findProperty (propId: BACnetPropIds): IBACnetObjectProperty {
-        const property = _.find(this.metadata, [ 'id', propId ]);
-        return property;
     }
 
     /**
