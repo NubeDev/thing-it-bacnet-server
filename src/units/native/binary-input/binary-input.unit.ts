@@ -15,7 +15,6 @@ import {
     IBACnetTypeBoolean,
     IBACnetTypeEnumerated,
     IBACnetTypeStatusFlags,
-    IBACnetPropertyNotification,
     IEDEUnit,
 } from '../../../core/interfaces';
 
@@ -25,7 +24,6 @@ import { NativeUnit } from '../native.unit';
 
 export class BinaryInputUnit extends NativeUnit {
     public readonly className: string = 'BinaryInputUnit';
-    public metadata: IBACnetObjectProperty[];
 
     constructor (edeUnit: IEDEUnit) {
         super(edeUnit, BinaryInputMetadata);
@@ -37,14 +35,18 @@ export class BinaryInputUnit extends NativeUnit {
         this.sjData.subscribe((notif) => {
             switch (notif.id) {
                 case BACnetPropIds.eventState:
+                    this.updateProperty(notif);
                     return this.shEventState(notif);
                 case BACnetPropIds.outOfService:
+                    this.updateProperty(notif);
                     return this.shOutOfService(notif);
                 case BACnetPropIds.reliability:
+                    this.updateProperty(notif);
                     return this.shReliability(notif);
                 case BACnetPropIds.polarity:
                     return this.shPolarity(notif);
                 case BACnetPropIds.presentValue:
+                    this.updateProperty(notif);
                     return this.shPresentValue(notif);
                 case BACnetPropIds.statusFlags:
                     return this.shStatusFlags(notif);
@@ -59,14 +61,14 @@ export class BinaryInputUnit extends NativeUnit {
      * shEventState - handles the changes of 'Event State' property.
      * Method changes the "shEventState" field in "statusFlags" BACnet property.
      *
-     * @param  {IBACnetPropertyNotification} notif - notification object for eventState
+     * @param  {IBACnetObjectProperty} notif - notification object for eventState
      * @return {void}
      */
-    private shEventState (notif: IBACnetPropertyNotification): void {
-        const statusFlags = this.findProperty(BACnetPropIds.statusFlags);
+    private shEventState (notif: IBACnetObjectProperty): void {
+        const statusFlags = this.getProperty(BACnetPropIds.statusFlags);
         const statusFlagsPayload = statusFlags.payload as IBACnetTypeStatusFlags;
 
-        const eventStatePayload = notif.newValue as IBACnetTypeEnumerated;
+        const eventStatePayload = notif.payload as IBACnetTypeEnumerated;
         const newInAlarm = eventStatePayload.value !== BACnetEventState.Normal;
 
         if (statusFlagsPayload.inAlarm === newInAlarm) {
@@ -87,14 +89,14 @@ export class BinaryInputUnit extends NativeUnit {
      * shOutOfService - handles the changes of 'Out of Service' property.
      * Method changes the "outOfService" field in "statusFlags" BACnet property.
      *
-     * @param  {IBACnetPropertyNotification} notif - notification object for outOfService
+     * @param  {IBACnetObjectProperty} notif - notification object for outOfService
      * @return {void}
      */
-    private shOutOfService (notif: IBACnetPropertyNotification): void {
-        const statusFlags = this.findProperty(BACnetPropIds.statusFlags);
+    private shOutOfService (notif: IBACnetObjectProperty): void {
+        const statusFlags = this.getProperty(BACnetPropIds.statusFlags);
         const statusFlagsPayload = statusFlags.payload as IBACnetTypeStatusFlags;
 
-        const outOfServicePayload = notif.newValue as IBACnetTypeBoolean;
+        const outOfServicePayload = notif.payload as IBACnetTypeBoolean;
 
         const newStatusFlags: IBACnetTypeStatusFlags = _.assign({}, statusFlagsPayload, {
             outOfService: !!outOfServicePayload.value,
@@ -110,14 +112,14 @@ export class BinaryInputUnit extends NativeUnit {
      * shReliability - handles the changes of 'Reliability' property.
      * Method changes the "fault" field in "statusFlags" BACnet property.
      *
-     * @param  {IBACnetPropertyNotification} notif - notification object for reliability
+     * @param  {IBACnetObjectProperty} notif - notification object for reliability
      * @return {void}
      */
-    private shReliability (notif: IBACnetPropertyNotification): void {
-        const statusFlags = this.findProperty(BACnetPropIds.statusFlags);
+    private shReliability (notif: IBACnetObjectProperty): void {
+        const statusFlags = this.getProperty(BACnetPropIds.statusFlags);
         const statusFlagsPayload = statusFlags.payload as IBACnetTypeStatusFlags;
 
-        const reliabilityPayload = notif.newValue as IBACnetTypeBoolean;
+        const reliabilityPayload = notif.payload as IBACnetTypeBoolean;
 
         const newStatusFlags: IBACnetTypeStatusFlags = _.assign({}, statusFlagsPayload, {
             fault: !!reliabilityPayload.value,
@@ -134,25 +136,28 @@ export class BinaryInputUnit extends NativeUnit {
      * Method checks the "outOfService" BACnet property and if it equals "FALSE"
      * then method will change the "presentValue" BACnet property.
      *
-     * @param  {IBACnetPropertyNotification} notif - notification object for Polarity
+     * @param  {IBACnetObjectProperty} notif - notification object for Polarity
      * @return {void}
      */
-    private shPolarity (notif: IBACnetPropertyNotification): void {
-        const outOfService = this.findProperty(BACnetPropIds.outOfService);
+    private shPolarity (notif: IBACnetObjectProperty): void {
+        const outOfService = this.getProperty(BACnetPropIds.outOfService);
         const outOfServicePayload = outOfService.payload as IBACnetTypeBoolean;
 
         if (outOfServicePayload.value) {
             return;
         }
 
-        const oldValue = notif.oldValue as IBACnetTypeEnumerated;
-        const newValue = notif.newValue as IBACnetTypeEnumerated;
+        const polarity = this.getProperty(BACnetPropIds.polarity);
+        const polarityPayload = outOfService.payload as IBACnetTypeEnumerated;
+        const newValue = notif.payload as IBACnetTypeEnumerated;
 
-        if (oldValue.value === newValue.value) {
+        if (polarityPayload.value === newValue.value) {
             return;
         }
 
-        const presentValue = this.findProperty(BACnetPropIds.presentValue);
+        this.updateProperty(polarity);
+
+        const presentValue = this.getProperty(BACnetPropIds.presentValue);
         const presentValuePayload = presentValue.payload as IBACnetTypeEnumerated;
 
         let newPresentValue: IBACnetTypeEnumerated;
@@ -177,21 +182,21 @@ export class BinaryInputUnit extends NativeUnit {
     /**
      * shPresentValue - handles the changes of 'Present Value' property.
      *
-     * @param  {IBACnetPropertyNotification} notif - notification object for presentValue
+     * @param  {IBACnetObjectProperty} notif - notification object for presentValue
      * @return {void}
      */
-    private shPresentValue (notif: IBACnetPropertyNotification): void {
+    private shPresentValue (notif: IBACnetObjectProperty): void {
         this.dipatchCOVNotification();
     }
 
     /**
      * shStatusFlags - handles the changes of 'Status Flags' property.
      *
-     * @param  {IBACnetPropertyNotification} notif - notification object for statusFlags
+     * @param  {IBACnetObjectProperty} notif - notification object for statusFlags
      * @return {void}
      */
-    private shStatusFlags (notif: IBACnetPropertyNotification): void {
-        const statusFlagsPayload = notif.newValue as IBACnetTypeStatusFlags;
+    private shStatusFlags (notif: IBACnetObjectProperty): void {
+        const statusFlagsPayload = notif.payload as IBACnetTypeStatusFlags;
         const overridden = statusFlagsPayload.fault
             || statusFlagsPayload.outOfService
             || statusFlagsPayload.inAlarm;
