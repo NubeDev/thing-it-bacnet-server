@@ -77,7 +77,10 @@ export class BinaryInputUnit extends NativeUnit {
             inAlarm: newInAlarm,
         });
 
-        this.setProperty(BACnetPropIds.statusFlags, newStatusFlags);
+        this.setProperty({
+            id: BACnetPropIds.statusFlags,
+            payload: newStatusFlags,
+        });
     }
 
     /**
@@ -97,7 +100,10 @@ export class BinaryInputUnit extends NativeUnit {
             outOfService: !!outOfServicePayload.value,
         });
 
-        this.setProperty(BACnetPropIds.statusFlags, newStatusFlags);
+        this.setProperty({
+            id: BACnetPropIds.statusFlags,
+            payload: newStatusFlags,
+        });
     }
 
     /**
@@ -117,7 +123,10 @@ export class BinaryInputUnit extends NativeUnit {
             fault: !!reliabilityPayload.value,
         });
 
-        this.setProperty(BACnetPropIds.statusFlags, newStatusFlags);
+        this.setProperty({
+            id: BACnetPropIds.statusFlags,
+            payload: newStatusFlags,
+        });
     }
 
     /**
@@ -159,7 +168,10 @@ export class BinaryInputUnit extends NativeUnit {
                 break;
         }
 
-        this.setProperty(BACnetPropIds.presentValue, newPresentValue);
+        this.setProperty({
+            id: BACnetPropIds.presentValue,
+            payload: newPresentValue,
+        });
     }
 
     /**
@@ -193,7 +205,10 @@ export class BinaryInputUnit extends NativeUnit {
             overridden: !!overridden,
         });
 
-        this.setProperty(BACnetPropIds.statusFlags, newStatusFlags);
+        this.updateProperty({
+            id: BACnetPropIds.statusFlags,
+            payload: newStatusFlags,
+        });
     }
 
     /**
