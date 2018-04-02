@@ -32,7 +32,7 @@ export class NativeUnit {
     // Unit metadata
     public metadata: Map<BACnetPropIds, IBACnetObjectProperty>;
     // Unit properties subject
-    public sjData: Subject<IBACnetPropertyNotification>;
+    public sjData: Subject<IBACnetObjectProperty>;
     public sjCOV: BehaviorSubject<IBACnetObjectProperty[]>;
 
     constructor (edeUnit: IEDEUnit, unitMetadata: IBACnetObjectProperty[]) {
@@ -61,22 +61,34 @@ export class NativeUnit {
         this.objType = edeUnit.objType;
         this.objInst = edeUnit.objInst
 
-        this.setProperty(BACnetPropIds.objectIdentifier, {
-            type: edeUnit.objType,
-            instance: edeUnit.objInst,
+        this.setProperty({
+            id: BACnetPropIds.objectIdentifier,
+            payload: {
+                type: edeUnit.objType,
+                instance: edeUnit.objInst,
+            },
         });
 
-        this.setProperty(BACnetPropIds.objectName, {
-            value: edeUnit.objName,
+        this.setProperty({
+            id: BACnetPropIds.objectName,
+            payload: {
+                value: edeUnit.objName,
+            },
         });
 
-        this.setProperty(BACnetPropIds.objectType, {
-            value: edeUnit.objType,
+        this.setProperty({
+            id: BACnetPropIds.objectType,
+            payload: {
+                value: edeUnit.objType,
+            },
         });
 
         if (edeUnit.description) {
-            this.setProperty(BACnetPropIds.description, {
-                value: edeUnit.description,
+            this.setProperty({
+                id: BACnetPropIds.description,
+                payload: {
+                    value: edeUnit.description,
+                },
             });
         }
 
@@ -93,24 +105,31 @@ export class NativeUnit {
      * @param  {IBACnetType} value - property value
      * @return {void}
      */
-    public setProperty (propId: BACnetPropIds, value: IBACnetType,
+    public setProperty (newProp: IBACnetObjectProperty,
             isWritable: boolean = true): void {
-        const prop = this.findProperty(propId);
+        const oldProp = this.getProperty(newProp.id);
 
-        if (!(isWritable || prop.writable)) {
+        if (!isWritable && !oldProp.writable) {
             return;
         }
 
-        const oldValue = prop.payload;
-        prop.payload = value;
+        this.sjData.next(newProp);
+    }
 
-        this.sjData.next({
-            id: propId,
-            oldValue: oldValue,
-            newValue: value,
-        });
+    /**
+     * setProperty - sets the value of the unit property by property ID.
+     *
+     * @param  {BACnetPropIds} propId - property ID
+     * @param  {IBACnetType} value - property value
+     * @return {void}
+     */
+    public updateProperty (newProp: IBACnetObjectProperty): void {
+        const oldProp = this.getProperty(newProp.id);
 
-        logger.debug(`${this.getLogHeader()} - setProperty (${BACnetPropIds[propId]}): ${JSON.stringify(prop)}`);
+        oldProp.payload = newProp.payload;
+
+        logger.debug(`${this.getLogHeader()} - updateProperty (${BACnetPropIds[newProp.id]}):`
+            + `${JSON.stringify(newProp)}`);
     }
 
     /**
