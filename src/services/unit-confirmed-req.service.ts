@@ -142,10 +142,20 @@ export class UnitConfirmedReqService {
         const propValues = apduService.propValues;
         const propValuePayload = propValues[0].payload;
 
+        // Get priority of the property
+        let priorityValue: number;
+        try {
+            const priority = apduService.priority;
+            const priorityPayload = priority.payload as IBACnetTypeUnsignedInt;
+            priorityValue = priorityPayload.value;
+        } catch (error) {
+        }
+
         const unitStorage: UnitStorageManager = serviceSocket.getService('unitStorage');
         unitStorage.setUnitProperty(objIdPayload, {
             id: propIdPayload.value,
             payload: propValuePayload,
+            priority: priorityValue,
         });
 
         simpleACKService.writeProperty({
