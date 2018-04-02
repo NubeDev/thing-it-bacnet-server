@@ -116,12 +116,12 @@ export class UnitStorageManager {
      * @return {void}
      */
     public setUnitProperty (objId: IBACnetTypeObjectId,
-            propId: BACnetPropIds, value: IBACnetType): void {
+            prop: IBACnetObjectProperty): void {
         const unit = this.getUnit(objId.type, objId.instance);
         if (!unit) {
             return;
         }
-        unit.setProperty(propId, value, false);
+        unit.setProperty(prop, false);
     }
 
     /**

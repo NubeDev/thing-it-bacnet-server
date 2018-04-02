@@ -143,7 +143,10 @@ export class UnitConfirmedReqService {
         const propValuePayload = propValues[0].payload;
 
         const unitStorage: UnitStorageManager = serviceSocket.getService('unitStorage');
-        unitStorage.setUnitProperty(objIdPayload, propIdPayload.value, propValuePayload);
+        unitStorage.setUnitProperty(objIdPayload, {
+            id: propIdPayload.value,
+            payload: propValuePayload,
+        });
 
         simpleACKService.writeProperty({
             invokeId: invokeId,
