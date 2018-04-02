@@ -99,7 +99,7 @@ export interface IConfirmedReqWritePropertyService {
     objId: IBACnetParam;
     propId: IBACnetParam;
     propValues: IBACnetParam[];
-    priority: number;
+    priority: IBACnetParam;
 }
 
 /*
