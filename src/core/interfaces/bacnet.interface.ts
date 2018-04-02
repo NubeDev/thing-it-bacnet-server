@@ -31,8 +31,8 @@ export interface IBACnetObject {
 
 export interface IBACnetObjectProperty {
     id: BACnetPropIds;
-    type: BACnetPropTypes;
     payload: IBACnetType;
+    type?: BACnetPropTypes;
     writable?: boolean;
 }
 
