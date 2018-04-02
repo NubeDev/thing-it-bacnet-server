@@ -34,6 +34,7 @@ export interface IBACnetObjectProperty {
     payload: IBACnetType;
     type?: BACnetPropTypes;
     writable?: boolean;
+    priority?: number;
 }
 
 export interface IBACnetTag {
