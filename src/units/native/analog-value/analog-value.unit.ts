@@ -19,7 +19,6 @@ import { NativeUnit } from '../native.unit';
 
 export class AnalogValueUnit extends NativeUnit {
     public readonly className: string = 'AnalogValueUnit';
-    public metadata: IBACnetObjectProperty[];
 
     constructor (edeUnit: IEDEUnit) {
         super(edeUnit, AnalogValueMetadata);

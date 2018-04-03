@@ -19,7 +19,6 @@ import { NativeUnit } from '../native.unit';
 
 export class MultiStateOutputUnit extends NativeUnit {
     public readonly className: string = 'MultiStateOutputUnit';
-    public metadata: IBACnetObjectProperty[];
 
     constructor (edeUnit: IEDEUnit) {
         super(edeUnit, MultiStateOutputMetadata);

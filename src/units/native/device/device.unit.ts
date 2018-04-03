@@ -19,7 +19,6 @@ import { NativeUnit } from '../native.unit';
 
 export class DeviceUnit extends NativeUnit {
     public readonly className: string = 'DeviceUnit';
-    public metadata: IBACnetObjectProperty[];
 
     constructor (edeUnit: IEDEUnit) {
         super(edeUnit, DeviceMetadata);

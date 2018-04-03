@@ -19,7 +19,6 @@ import { NativeUnit } from '../native.unit';
 
 export class BinaryValueUnit extends NativeUnit {
     public readonly className: string = 'BinaryValueUnit';
-    public metadata: IBACnetObjectProperty[];
 
     constructor (edeUnit: IEDEUnit) {
         super(edeUnit, BinaryValueMetadata);
@@ -27,14 +26,5 @@ export class BinaryValueUnit extends NativeUnit {
 
     public initUnit (edeUnit: IEDEUnit) {
         super.initUnit(edeUnit);
-
-        this.setProperty(BACnetPropIds.presentValue, {
-            value: edeUnit.defPresentValue,
-        });
-
-        this.sjData
-            .filter((data) => data.id === BACnetPropIds.presentValue)
-            .subscribe(() => {
-            });
     }
 }

@@ -19,7 +19,6 @@ import { NativeUnit } from '../native.unit';
 
 export class NoopUnit extends NativeUnit {
     public readonly className: string = 'NoopUnit';
-    public metadata: IBACnetObjectProperty[];
 
     constructor (edeUnit: IEDEUnit) {
         super(edeUnit, NoopMetadata);

@@ -19,7 +19,6 @@ import { NativeUnit } from '../native.unit';
 
 export class AnalogInputUnit extends NativeUnit {
     public readonly className: string = 'AnalogInputUnit';
-    public metadata: IBACnetObjectProperty[];
 
     constructor (edeUnit: IEDEUnit) {
         super(edeUnit, AnalogInputMetadata);
