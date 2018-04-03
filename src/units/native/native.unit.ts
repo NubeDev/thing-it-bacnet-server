@@ -114,9 +114,10 @@ export class NativeUnit {
             return;
         }
 
-        this.sjData.next(newProp);
         logger.debug(`${this.getLogHeader()} - setProperty (${BACnetPropIds[newProp.id]}):`
             + `${JSON.stringify(newProp)}`);
+
+        this.sjData.next(newProp);
     }
 
     /**
