@@ -8,4 +8,12 @@ import {
     IBACnetObjectProperty,
 } from '../../../core/interfaces';
 
-export const BinaryOutputMetadata: IBACnetObjectProperty[] = [];
+export const BinaryOutputMetadata: IBACnetObjectProperty[] = [
+    {
+        id: BACnetPropIds.objectType,
+        type: BACnetPropTypes.enumerated,
+        payload: {
+            value: BACnetObjTypes.BinaryOutput,
+        },
+    },
+];

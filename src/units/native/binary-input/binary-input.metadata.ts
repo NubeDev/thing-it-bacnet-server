@@ -14,6 +14,13 @@ import {
 
 export const BinaryInputMetadata: IBACnetObjectProperty[] = [
     {
+        id: BACnetPropIds.objectType,
+        type: BACnetPropTypes.enumerated,
+        payload: {
+            value: BACnetObjTypes.BinaryInput,
+        },
+    },
+    {
         id: BACnetPropIds.outOfService,
         type: BACnetPropTypes.boolean,
         payload: {

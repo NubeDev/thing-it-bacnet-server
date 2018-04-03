@@ -96,7 +96,7 @@ export class NativeUnit {
         const reportedProps = this.getReportedProperties();
         this.sjCOV.next(reportedProps);
 
-        logger.debug(`${this.getLogHeader()} - metadata: ${JSON.stringify(this.metadata)}`);
+        logger.debug(`${this.getLogHeader()} - metadata:`, this.metadata);
     }
 
     /**
@@ -115,6 +115,8 @@ export class NativeUnit {
         }
 
         this.sjData.next(newProp);
+        logger.debug(`${this.getLogHeader()} - setProperty (${BACnetPropIds[newProp.id]}):`
+            + `${JSON.stringify(newProp)}`);
     }
 
     /**

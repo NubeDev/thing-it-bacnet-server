@@ -10,6 +10,13 @@ import {
 
 export const DeviceMetadata: IBACnetObjectProperty[] = [
     {
+        id: BACnetPropIds.objectType,
+        type: BACnetPropTypes.enumerated,
+        payload: {
+            value: BACnetObjTypes.Device,
+        },
+    },
+    {
         id: BACnetPropIds.vendorIdentifier,
         type: BACnetPropTypes.characterString,
         payload: {

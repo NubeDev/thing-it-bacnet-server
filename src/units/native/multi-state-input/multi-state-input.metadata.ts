@@ -8,4 +8,12 @@ import {
     IBACnetObjectProperty,
 } from '../../../core/interfaces';
 
-export const MultiStateInputMetadata: IBACnetObjectProperty[] = [];
+export const MultiStateInputMetadata: IBACnetObjectProperty[] = [
+    {
+        id: BACnetPropIds.objectType,
+        type: BACnetPropTypes.enumerated,
+        payload: {
+            value: BACnetObjTypes.MultiStateInput,
+        },
+    },
+];
