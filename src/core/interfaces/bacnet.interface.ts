@@ -134,7 +134,10 @@ export interface IComplexACKReadProperty {
  */
 export type IBACnetType = IBACnetTypeBoolean | IBACnetTypeUnsignedInt
     | IBACnetTypeReal | IBACnetTypeEnumerated | IBACnetTypeStatusFlags
-    | IBACnetTypeBitString | IBACnetTypeCharString | IBACnetTypeObjectId;
+    | IBACnetTypeBitString | IBACnetTypeCharString | IBACnetTypeObjectId
+    | IBACnetTypeBoolean[] | IBACnetTypeUnsignedInt[] | IBACnetTypeReal[]
+    | IBACnetTypeEnumerated[] | IBACnetTypeStatusFlags[] | IBACnetTypeBitString[]
+    | IBACnetTypeCharString[] | IBACnetTypeObjectId[];
 
 export interface IBACnetTypeBoolean {
     value: boolean;
