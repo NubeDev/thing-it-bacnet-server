@@ -62,6 +62,10 @@ export class NativeUnit {
         this.objType = edeUnit.objType;
         this.objInst = edeUnit.objInst
 
+        this.sjData.subscribe((notif) => {
+            this.sjHandler(notif);
+        });
+
         this.setProperty({
             id: BACnetPropIds.objectIdentifier,
             payload: {
@@ -97,6 +101,19 @@ export class NativeUnit {
         this.sjCOV.next(reportedProps);
 
         logger.debug(`${this.getLogHeader()} - metadata:`, this.metadata);
+    }
+
+    /**
+     * sjHandler - handles the changes of properties.
+     *
+     * @param  {IBACnetObjectProperty} notif - notification object
+     * @return {void}
+     */
+    public sjHandler (notif: IBACnetObjectProperty): void {
+        switch (notif.id) {
+            default:
+                return this.updateProperty(notif);
+        }
     }
 
     /**

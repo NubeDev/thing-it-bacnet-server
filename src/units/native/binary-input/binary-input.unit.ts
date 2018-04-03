@@ -32,29 +32,37 @@ export class BinaryInputUnit extends NativeUnit {
     public initUnit (edeUnit: IEDEUnit) {
         super.initUnit(edeUnit);
 
-        this.sjData.subscribe((notif) => {
-            switch (notif.id) {
-                case BACnetPropIds.eventState:
-                    this.updateProperty(notif);
-                    return this.shEventState(notif);
-                case BACnetPropIds.outOfService:
-                    this.updateProperty(notif);
-                    return this.shOutOfService(notif);
-                case BACnetPropIds.reliability:
-                    this.updateProperty(notif);
-                    return this.shReliability(notif);
-                case BACnetPropIds.polarity:
-                    return this.shPolarity(notif);
-                case BACnetPropIds.presentValue:
-                    this.updateProperty(notif);
-                    return this.shPresentValue(notif);
-                case BACnetPropIds.statusFlags:
-                    return this.shStatusFlags(notif);
-            }
-        });
-
         const reportedProps = this.getReportedProperties();
         this.sjCOV.next(reportedProps);
+    }
+
+    /**
+     * sjHandler - handles the changes of properties.
+     *
+     * @param  {IBACnetObjectProperty} notif - notification object
+     * @return {void}
+     */
+    public sjHandler (notif: IBACnetObjectProperty): void {
+        switch (notif.id) {
+            case BACnetPropIds.eventState:
+                this.updateProperty(notif);
+                return this.shEventState(notif);
+            case BACnetPropIds.outOfService:
+                this.updateProperty(notif);
+                return this.shOutOfService(notif);
+            case BACnetPropIds.reliability:
+                this.updateProperty(notif);
+                return this.shReliability(notif);
+            case BACnetPropIds.polarity:
+                return this.shPolarity(notif);
+            case BACnetPropIds.presentValue:
+                this.updateProperty(notif);
+                return this.shPresentValue(notif);
+            case BACnetPropIds.statusFlags:
+                return this.shStatusFlags(notif);
+            default:
+                return this.updateProperty(notif);
+        }
     }
 
     /**
