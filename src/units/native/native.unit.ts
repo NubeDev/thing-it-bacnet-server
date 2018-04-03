@@ -132,6 +132,8 @@ export class NativeUnit {
 
         oldProp.payload = newProp.payload;
 
+        this.metadata.set(newProp.id, oldProp);
+
         logger.debug(`${this.getLogHeader()} - updateProperty (${BACnetPropIds[newProp.id]}):`
             + `${JSON.stringify(newProp)}`);
     }
