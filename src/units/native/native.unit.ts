@@ -97,8 +97,7 @@ export class NativeUnit {
             });
         }
 
-        const reportedProps = this.getReportedProperties();
-        this.sjCOV.next(reportedProps);
+        this.dispatchCOVNotification();
 
         logger.debug(`${this.getLogHeader()} - metadata:`, this.metadata);
     }
@@ -229,11 +228,11 @@ export class NativeUnit {
     }
 
     /**
-     * dipatchCOVNotification - dispatchs the "COV Notification" event.
+     * dispatchCOVNotification - dispatchs the "COV Notification" event.
      *
      * @return {void}
      */
-    public dipatchCOVNotification (): void {
+    public dispatchCOVNotification (): void {
         const reportedProps = this.getReportedProperties();
         this.sjCOV.next(reportedProps);
     }

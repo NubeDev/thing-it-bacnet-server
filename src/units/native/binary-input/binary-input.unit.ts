@@ -32,8 +32,7 @@ export class BinaryInputUnit extends NativeUnit {
     public initUnit (edeUnit: IEDEUnit) {
         super.initUnit(edeUnit);
 
-        const reportedProps = this.getReportedProperties();
-        this.sjCOV.next(reportedProps);
+        this.dispatchCOVNotification();
     }
 
     /**
@@ -194,7 +193,7 @@ export class BinaryInputUnit extends NativeUnit {
      * @return {void}
      */
     private shPresentValue (notif: IBACnetObjectProperty): void {
-        this.dipatchCOVNotification();
+        this.dispatchCOVNotification();
     }
 
     /**
@@ -210,7 +209,7 @@ export class BinaryInputUnit extends NativeUnit {
             || statusFlagsPayload.inAlarm;
 
         if (!!overridden === statusFlagsPayload.overridden) {
-            this.dipatchCOVNotification();
+            this.dispatchCOVNotification();
             return;
         }
 
