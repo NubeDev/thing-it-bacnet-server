@@ -141,7 +141,12 @@ export class NativeUnit {
     public getProperty (propId: BACnetPropIds): IBACnetObjectProperty {
         const prop = this.metadata.get(propId);
 
-        logger.debug(`${this.getLogHeader()} - getProperty (${BACnetPropIds[propId]}): ${JSON.stringify(prop)}`);
+        if (_.isNil(prop)) {
+            logger.debug(`${this.getLogHeader()} - getProperty (${BACnetPropIds[propId]}): Empty`);
+            return null;
+        }
+        logger.debug(`${this.getLogHeader()} - getProperty (${BACnetPropIds[propId]}):`
+            + `${JSON.stringify(prop)}`);
         return _.cloneDeep(prop);
     }
 
