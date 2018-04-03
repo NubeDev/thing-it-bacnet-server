@@ -13,6 +13,7 @@ import {
     INativeUnit,
     IBACnetObjectProperty,
     IBACnetTypeObjectId,
+    IBACnetTypeUnsignedInt,
     IBACnetType,
     IEDEUnit,
     IBACnetPropertyNotification,
@@ -148,6 +149,39 @@ export class NativeUnit {
         logger.debug(`${this.getLogHeader()} - getProperty (${BACnetPropIds[propId]}):`
             + `${JSON.stringify(prop)}`);
         return _.cloneDeep(prop);
+    }
+
+    /**
+     * getCommandablePropertyValue - return the value of the commandable property.
+     *
+     * @return {IBACnetType}
+     */
+    public getCommandablePropertyValue (): IBACnetType {
+        const priorityArray = this.metadata.get(BACnetPropIds.priorityArray);
+        const priorityArrayPayload = priorityArray.payload as IBACnetType[];
+
+        let priorityArrayValue: IBACnetType, i: number;
+        for (i = 0; i < priorityArrayPayload.length; i++) {
+            if (_.isNull((<any>priorityArrayPayload[i]).value)) {
+                continue;
+            }
+            priorityArrayValue = priorityArrayPayload[i];
+            break;
+        }
+
+        const priorityIndex: IBACnetType = i === priorityArrayPayload.length
+            ? { value: null } : { value: i };
+        this.setProperty({
+            id: BACnetPropIds.currentCommandPriority,
+            payload: priorityIndex,
+        });
+
+        if (_.isNil(priorityArrayValue)) {
+            const relinquishDefault = this.metadata.get(BACnetPropIds.relinquishDefault);
+            const relinquishDefaultPayload = relinquishDefault.payload as IBACnetType;
+            return relinquishDefaultPayload;
+        }
+        return priorityArrayValue;
     }
 
     /**
