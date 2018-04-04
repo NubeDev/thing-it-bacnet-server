@@ -167,10 +167,10 @@ export class BinaryInputUnit extends NativeUnit {
         const polarityProp = this.getProperty(BACnetPropIds.polarity);
         const polarity = polarityProp.payload as BACnetTypes.BACnetEnumerated;
         const polarityValue = polarity.getValue();
-        const newValue = notif.payload as BACnetTypes.BACnetEnumerated;
-        const newValueValue = polarity.getValue();
+        const newPolarity = notif.payload as BACnetTypes.BACnetEnumerated;
+        const newPolarityValue = polarity.getValue();
 
-        if (polarityValue === newValueValue) {
+        if (polarityValue === newPolarityValue) {
             return;
         }
 
