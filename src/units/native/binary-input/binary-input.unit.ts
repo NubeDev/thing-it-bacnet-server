@@ -12,8 +12,6 @@ import {
 
 import {
     IBACnetObjectProperty,
-    IBACnetTypeBoolean,
-    IBACnetTypeEnumerated,
     IBACnetTypeStatusFlags,
     IEDEUnit,
 } from '../../../core/interfaces';
@@ -21,6 +19,8 @@ import {
 import { BinaryInputMetadata } from './binary-input.metadata';
 
 import { NativeUnit } from '../native.unit';
+
+import * as BACnetTypes from '../../../core/utils/types';
 
 export class BinaryInputUnit extends NativeUnit {
     public readonly className: string = 'BinaryInputUnit';
@@ -72,19 +72,22 @@ export class BinaryInputUnit extends NativeUnit {
      * @return {void}
      */
     private shEventState (notif: IBACnetObjectProperty): void {
-        const statusFlags = this.getProperty(BACnetPropIds.statusFlags);
-        const statusFlagsPayload = statusFlags.payload as IBACnetTypeStatusFlags;
+        const statusFlagsProp = this.getProperty(BACnetPropIds.statusFlags);
+        const statusFlags = statusFlagsProp.payload as BACnetTypes.BACnetStatusFlags;
+        const statusFlagsValue = statusFlags.getValue();
 
-        const eventStatePayload = notif.payload as IBACnetTypeEnumerated;
-        const newInAlarm = eventStatePayload.value !== BACnetEventState.Normal;
+        const eventState = notif.payload as BACnetTypes.BACnetEnumerated;
+        const eventStateValue = eventState.getValue();
+        const newInAlarm = eventStateValue !== BACnetEventState.Normal;
 
-        if (statusFlagsPayload.inAlarm === newInAlarm) {
+        if (statusFlagsValue.inAlarm === newInAlarm) {
             return;
         }
 
-        const newStatusFlags: IBACnetTypeStatusFlags = _.assign({}, statusFlagsPayload, {
+        const newStatusFlagsValue: IBACnetTypeStatusFlags = _.assign({}, statusFlagsValue, {
             inAlarm: newInAlarm,
         });
+        const newStatusFlags = new BACnetTypes.BACnetStatusFlags(newStatusFlagsValue);
 
         this.setProperty({
             id: BACnetPropIds.statusFlags,
@@ -100,14 +103,17 @@ export class BinaryInputUnit extends NativeUnit {
      * @return {void}
      */
     private shOutOfService (notif: IBACnetObjectProperty): void {
-        const statusFlags = this.getProperty(BACnetPropIds.statusFlags);
-        const statusFlagsPayload = statusFlags.payload as IBACnetTypeStatusFlags;
+        const statusFlagsProp = this.getProperty(BACnetPropIds.statusFlags);
+        const statusFlags = statusFlagsProp.payload as BACnetTypes.BACnetStatusFlags;
+        const statusFlagsValue = statusFlags.getValue();
 
-        const outOfServicePayload = notif.payload as IBACnetTypeBoolean;
+        const outOfService = notif.payload as BACnetTypes.BACnetBoolean;
+        const outOfServiceValue = outOfService.getValue();
 
-        const newStatusFlags: IBACnetTypeStatusFlags = _.assign({}, statusFlagsPayload, {
-            outOfService: !!outOfServicePayload.value,
+        const newStatusFlagsValue: IBACnetTypeStatusFlags = _.assign({}, statusFlagsValue, {
+            outOfService: !!outOfServiceValue,
         });
+        const newStatusFlags = new BACnetTypes.BACnetStatusFlags(newStatusFlagsValue);
 
         this.setProperty({
             id: BACnetPropIds.statusFlags,
@@ -123,14 +129,17 @@ export class BinaryInputUnit extends NativeUnit {
      * @return {void}
      */
     private shReliability (notif: IBACnetObjectProperty): void {
-        const statusFlags = this.getProperty(BACnetPropIds.statusFlags);
-        const statusFlagsPayload = statusFlags.payload as IBACnetTypeStatusFlags;
+        const statusFlagsProp = this.getProperty(BACnetPropIds.statusFlags);
+        const statusFlags = statusFlagsProp.payload as BACnetTypes.BACnetStatusFlags;
+        const statusFlagsValue = statusFlags.getValue();
 
-        const reliabilityPayload = notif.payload as IBACnetTypeBoolean;
+        const reliability = notif.payload as BACnetTypes.BACnetEnumerated;
+        const reliabilityValue = reliability.getValue();
 
-        const newStatusFlags: IBACnetTypeStatusFlags = _.assign({}, statusFlagsPayload, {
-            fault: !!reliabilityPayload.value,
+        const newStatusFlagsValue: IBACnetTypeStatusFlags = _.assign({}, statusFlagsValue, {
+            fault: !!reliabilityValue,
         });
+        const newStatusFlags = new BACnetTypes.BACnetStatusFlags(newStatusFlagsValue);
 
         this.setProperty({
             id: BACnetPropIds.statusFlags,
@@ -147,36 +156,40 @@ export class BinaryInputUnit extends NativeUnit {
      * @return {void}
      */
     private shPolarity (notif: IBACnetObjectProperty): void {
-        const outOfService = this.getProperty(BACnetPropIds.outOfService);
-        const outOfServicePayload = outOfService.payload as IBACnetTypeBoolean;
+        const outOfServiceProp = this.getProperty(BACnetPropIds.outOfService);
+        const outOfService = outOfServiceProp.payload as BACnetTypes.BACnetBoolean;
+        const outOfServiceValue = outOfService.getValue();
 
-        if (outOfServicePayload.value) {
+        if (outOfServiceValue) {
             return;
         }
 
-        const polarity = this.getProperty(BACnetPropIds.polarity);
-        const polarityPayload = outOfService.payload as IBACnetTypeEnumerated;
-        const newValue = notif.payload as IBACnetTypeEnumerated;
+        const polarityProp = this.getProperty(BACnetPropIds.polarity);
+        const polarity = polarityProp.payload as BACnetTypes.BACnetEnumerated;
+        const polarityValue = polarity.getValue();
+        const newValue = notif.payload as BACnetTypes.BACnetEnumerated;
+        const newValueValue = polarity.getValue();
 
-        if (polarityPayload.value === newValue.value) {
+        if (polarityValue === newValueValue) {
             return;
         }
 
-        this.updateProperty(polarity);
+        this.updateProperty(notif);
 
-        const presentValue = this.getProperty(BACnetPropIds.presentValue);
-        const presentValuePayload = presentValue.payload as IBACnetTypeEnumerated;
+        const presentValueProp = this.getProperty(BACnetPropIds.presentValue);
+        const presentValue = presentValueProp.payload as BACnetTypes.BACnetEnumerated;
+        const presentValueValue = presentValue.getValue();
 
-        let newPresentValue: IBACnetTypeEnumerated;
-        switch (presentValuePayload.value) {
+        let newPresentValue: BACnetTypes.BACnetEnumerated;
+        switch (presentValueValue) {
             case BACnetBinaryPV.Active:
-                newPresentValue = { value: BACnetBinaryPV.Inactive };
+                newPresentValue = new BACnetTypes.BACnetEnumerated(BACnetBinaryPV.Inactive);
                 break;
             case BACnetBinaryPV.Inactive:
-                newPresentValue = { value: BACnetBinaryPV.Active };
+                newPresentValue = new BACnetTypes.BACnetEnumerated(BACnetBinaryPV.Active);
                 break;
             default:
-                newPresentValue = { value: BACnetBinaryPV.Inactive };
+                newPresentValue = new BACnetTypes.BACnetEnumerated(BACnetBinaryPV.Inactive);
                 break;
         }
 
@@ -203,21 +216,25 @@ export class BinaryInputUnit extends NativeUnit {
      * @return {void}
      */
     private shStatusFlags (notif: IBACnetObjectProperty): void {
-        const statusFlagsPayload = notif.payload as IBACnetTypeStatusFlags;
-        const overridden = statusFlagsPayload.fault
-            || statusFlagsPayload.outOfService
-            || statusFlagsPayload.inAlarm;
+        const statusFlagsProp = this.getProperty(BACnetPropIds.statusFlags);
+        const statusFlags = statusFlagsProp.payload as BACnetTypes.BACnetStatusFlags;
+        const statusFlagsValue = statusFlags.getValue();
 
-        if (!!overridden === statusFlagsPayload.overridden) {
+        const overridden = statusFlagsValue.fault
+            || statusFlagsValue.outOfService
+            || statusFlagsValue.inAlarm;
+
+        if (!!overridden === statusFlagsValue.overridden) {
             this.dispatchCOVNotification();
             return;
         }
 
-        const newStatusFlags: IBACnetTypeStatusFlags = _.assign({}, statusFlagsPayload, {
+        const newStatusFlagsValue: IBACnetTypeStatusFlags = _.assign({}, statusFlagsValue, {
             overridden: !!overridden,
         });
+        const newStatusFlags = new BACnetTypes.BACnetStatusFlags(newStatusFlagsValue);
 
-        this.updateProperty({
+        this.setProperty({
             id: BACnetPropIds.statusFlags,
             payload: newStatusFlags,
         });
