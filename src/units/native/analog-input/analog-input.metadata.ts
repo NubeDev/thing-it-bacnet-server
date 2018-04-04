@@ -8,12 +8,11 @@ import {
     IBACnetObjectProperty,
 } from '../../../core/interfaces';
 
+import * as BACnetTypes from '../../../core/utils/types';
+
 export const AnalogInputMetadata: IBACnetObjectProperty[] = [
     {
         id: BACnetPropIds.objectType,
-        type: BACnetPropTypes.enumerated,
-        payload: {
-            value: BACnetObjTypes.AnalogInput,
-        },
+        payload: new BACnetTypes.BACnetEnumerated(BACnetObjTypes.AnalogInput),
     },
 ];

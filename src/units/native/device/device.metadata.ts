@@ -8,40 +8,27 @@ import {
     IBACnetObjectProperty,
 } from '../../../core/interfaces';
 
+import * as BACnetTypes from '../../../core/utils/types';
+
 export const DeviceMetadata: IBACnetObjectProperty[] = [
     {
         id: BACnetPropIds.objectType,
-        type: BACnetPropTypes.enumerated,
-        payload: {
-            value: BACnetObjTypes.Device,
-        },
+        payload: new BACnetTypes.BACnetEnumerated(BACnetObjTypes.Device),
     },
     {
         id: BACnetPropIds.vendorIdentifier,
-        type: BACnetPropTypes.characterString,
-        payload: {
-            value: '[thing-it] Test Device Name',
-        },
+        payload: new BACnetTypes.BACnetCharacterString('[thing-it] Test Device Name'),
     },
     {
         id: BACnetPropIds.vendorName,
-        type: BACnetPropTypes.characterString,
-        payload: {
-            value: 'THING TECHNOLOGIES GmbH Test',
-        },
+        payload: new BACnetTypes.BACnetCharacterString('THING TECHNOLOGIES GmbH Test'),
     },
     {
         id: BACnetPropIds.modelName,
-        type: BACnetPropTypes.characterString,
-        payload: {
-            value: '[thing-it] BACnet Test Server',
-        },
+        payload: new BACnetTypes.BACnetCharacterString('[thing-it] BACnet Test Server'),
     },
     {
         id: BACnetPropIds.applicationSoftwareVersion,
-        type: BACnetPropTypes.characterString,
-        payload: {
-            value: 'V1.0.0',
-        },
+        payload: new BACnetTypes.BACnetCharacterString('V1.0.0'),
     },
 ];

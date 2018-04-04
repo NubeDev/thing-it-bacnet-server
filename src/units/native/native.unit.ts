@@ -13,16 +13,16 @@ import {
     INativeUnit,
     IBACnetObjectProperty,
     IBACnetTypeObjectId,
-    IBACnetTypeUnsignedInt,
-    IBACnetType,
     IEDEUnit,
-    IBACnetPropertyNotification,
 } from '../../core/interfaces';
 
 import { NativeMetadata } from './native.metadata';
 
+import * as BACnetTypes from '../../core/utils/types';
+
 import {
     logger,
+    TyperUtil,
 } from '../../core/utils';
 
 export class NativeUnit {
@@ -68,32 +68,26 @@ export class NativeUnit {
 
         this.setProperty({
             id: BACnetPropIds.objectIdentifier,
-            payload: {
+            payload: new BACnetTypes.BACnetObjectId({
                 type: edeUnit.objType,
                 instance: edeUnit.objInst,
-            },
+            }),
         });
 
         this.setProperty({
             id: BACnetPropIds.objectName,
-            payload: {
-                value: edeUnit.objName,
-            },
+            payload: new BACnetTypes.BACnetCharacterString(edeUnit.objName),
         });
 
         this.setProperty({
             id: BACnetPropIds.objectType,
-            payload: {
-                value: edeUnit.objType,
-            },
+            payload: new BACnetTypes.BACnetEnumerated(edeUnit.objType),
         });
 
         if (edeUnit.description) {
             this.setProperty({
                 id: BACnetPropIds.description,
-                payload: {
-                    value: edeUnit.description,
-                },
+                payload: new BACnetTypes.BACnetCharacterString(edeUnit.description),
             });
         }
 
@@ -177,21 +171,22 @@ export class NativeUnit {
      *
      * @return {IBACnetType}
      */
-    public getCommandablePropertyValue (): IBACnetType {
+    public getCommandablePropertyValue (): BACnetTypes.BACnetTypeBase {
         const priorityArray = this.metadata.get(BACnetPropIds.priorityArray);
-        const priorityArrayPayload = priorityArray.payload as IBACnetType[];
+        const priorityArrayPayload = priorityArray.payload as BACnetTypes.BACnetTypeBase[];
 
-        let priorityArrayValue: IBACnetType, i: number;
+        let priorityArrayValue: BACnetTypes.BACnetTypeBase, i: number;
         for (i = 0; i < priorityArrayPayload.length; i++) {
-            if (_.isNull((<any>priorityArrayPayload[i]).value)) {
+            if (TyperUtil.isNil(priorityArrayPayload[i])) {
                 continue;
             }
             priorityArrayValue = priorityArrayPayload[i];
             break;
         }
 
-        const priorityIndex: IBACnetType = i === priorityArrayPayload.length
-            ? { value: null } : { value: i };
+        const priorityIndex: BACnetTypes.BACnetTypeBase = i === priorityArrayPayload.length
+            ? new BACnetTypes.BACnetNull()
+            : new BACnetTypes.BACnetUnsignedInteger(i);
         this.setProperty({
             id: BACnetPropIds.currentCommandPriority,
             payload: priorityIndex,
@@ -199,7 +194,7 @@ export class NativeUnit {
 
         if (_.isNil(priorityArrayValue)) {
             const relinquishDefault = this.metadata.get(BACnetPropIds.relinquishDefault);
-            const relinquishDefaultPayload = relinquishDefault.payload as IBACnetType;
+            const relinquishDefaultPayload = relinquishDefault.payload as BACnetTypes.BACnetTypeBase;
             return relinquishDefaultPayload;
         }
         return priorityArrayValue;
@@ -221,10 +216,11 @@ export class NativeUnit {
      * @return {boolean}
      */
     public isBACnetObject (objId: IBACnetTypeObjectId): boolean {
-        const unitId = this.getProperty(BACnetPropIds.objectIdentifier);
-        const unitIdPayload = unitId.payload as IBACnetTypeObjectId;
-        return unitIdPayload.type === objId.type
-            && unitIdPayload.instance === objId.instance;
+        const unitIdProp = this.getProperty(BACnetPropIds.objectIdentifier);
+        const unitId = unitIdProp.payload as BACnetTypes.BACnetObjectId;
+        const unitIdValue = unitId.getValue();
+        return unitIdValue.type === objId.type
+            && unitIdValue.instance === objId.instance;
     }
 
     /**

@@ -12,57 +12,42 @@ import {
     IBACnetObjectProperty,
 } from '../../../core/interfaces';
 
+import * as BACnetTypes from '../../../core/utils/types';
+
 export const BinaryInputMetadata: IBACnetObjectProperty[] = [
     {
         id: BACnetPropIds.objectType,
-        type: BACnetPropTypes.enumerated,
-        payload: {
-            value: BACnetObjTypes.BinaryInput,
-        },
+        payload: new BACnetTypes.BACnetEnumerated(BACnetObjTypes.BinaryInput),
     },
-    {
-        id: BACnetPropIds.outOfService,
-        type: BACnetPropTypes.boolean,
-        payload: {
-            value: false,
-        },
-    },
+
     {
         id: BACnetPropIds.presentValue,
-        type: BACnetPropTypes.enumerated,
-        payload: {
-            value: BACnetBinaryPV.Active,
-        },
+        payload: new BACnetTypes.BACnetEnumerated(BACnetBinaryPV.Active),
     },
     {
         id: BACnetPropIds.polarity,
-        type: BACnetPropTypes.enumerated,
-        payload: {
-            value: BACnetPolarity.Normal,
-        },
+        payload: new BACnetTypes.BACnetEnumerated(BACnetPolarity.Normal),
     },
+
     {
-        id: BACnetPropIds.eventState,
-        type: BACnetPropTypes.enumerated,
-        payload: {
-            value: BACnetEventState.Normal,
-        },
+        id: BACnetPropIds.outOfService,
+        payload: new BACnetTypes.BACnetBoolean(false),
     },
     {
         id: BACnetPropIds.reliability,
-        type: BACnetPropTypes.enumerated,
-        payload: {
-            value: BACnetReliability.NoFaultDetected,
-        },
+        payload: new BACnetTypes.BACnetEnumerated(BACnetReliability.NoFaultDetected),
+    },
+    {
+        id: BACnetPropIds.eventState,
+        payload: new BACnetTypes.BACnetEnumerated(BACnetEventState.Normal),
     },
     {
         id: BACnetPropIds.statusFlags,
-        type: BACnetPropTypes.bitString,
-        payload: {
+        payload: new BACnetTypes.BACnetStatusFlags({
             inAlarm: false,
             fault: false,
             overridden: false,
             outOfService: false,
-        },
+        }),
     },
 ];

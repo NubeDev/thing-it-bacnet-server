@@ -8,12 +8,11 @@ import {
     IBACnetObjectProperty,
 } from '../../../core/interfaces';
 
+import * as BACnetTypes from '../../../core/utils/types';
+
 export const MultiStateValueMetadata: IBACnetObjectProperty[] = [
     {
         id: BACnetPropIds.objectType,
-        type: BACnetPropTypes.enumerated,
-        payload: {
-            value: BACnetObjTypes.MultiStateValue,
-        },
+        payload: new BACnetTypes.BACnetEnumerated(BACnetObjTypes.MultiStateValue),
     },
 ];
