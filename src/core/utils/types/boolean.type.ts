@@ -21,6 +21,11 @@ export class BACnetBoolean extends BACnetTypeBase {
     protected tag: IBACnetTag;
     private value: boolean;
 
+    constructor (defValue?: boolean) {
+        super();
+        this.value = defValue;
+    }
+
     public readValue (reader: BACnetReaderUtil, changeOffset: boolean = true) {
         const tag = reader.readTag(changeOffset);
 

@@ -22,6 +22,11 @@ export class BACnetCharacterString extends BACnetTypeBase {
     private encoding: string;
     private value: string;
 
+    constructor (defValue?: string) {
+        super();
+        this.value = defValue;
+    }
+
     public readValue (reader: BACnetReaderUtil, changeOffset: boolean = true) {
         const tag = reader.readTag(changeOffset);
 

@@ -21,6 +21,11 @@ export class BACnetEnumerated extends BACnetTypeBase {
     protected tag: IBACnetTag;
     private value: number;
 
+    constructor (defValue?: number) {
+        super();
+        this.value = defValue;
+    }
+
     public readValue (reader: BACnetReaderUtil, changeOffset: boolean = true) {
         const tag = reader.readTag(changeOffset);
 

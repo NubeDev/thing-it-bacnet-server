@@ -8,6 +8,7 @@ import {
 
 import {
     IBACnetTag,
+    IBACnetTypeStatusFlags,
 } from '../../interfaces';
 
 import { ApiError } from '../../errors';
@@ -20,7 +21,12 @@ export class BACnetStatusFlags extends BACnetTypeBase {
     public readonly type: BACnetPropTypes = BACnetPropTypes.bitString;
 
     protected tag: IBACnetTag;
-    private statusFlags: any;
+    private value: IBACnetTypeStatusFlags;
+
+    constructor (defValue?: IBACnetTypeStatusFlags) {
+        super();
+        this.value = defValue;
+    }
 
     public readValue (reader: BACnetReaderUtil, changeOffset: boolean = true) {
         const tag = reader.readTag(changeOffset);
@@ -28,10 +34,18 @@ export class BACnetStatusFlags extends BACnetTypeBase {
         const unusedBits = reader.readUInt8(changeOffset);
         // Contains the status bits
         const value = reader.readUInt8(changeOffset);
-        this.statusFlags.inAlarm = !!TyperUtil.getBit(value, 7);
-        this.statusFlags.fault = !!TyperUtil.getBit(value, 6);
-        this.statusFlags.overridden = !!TyperUtil.getBit(value, 5);
-        this.statusFlags.outOfService = !!TyperUtil.getBit(value, 4);
+
+        const inAlarm = !!TyperUtil.getBit(value, 7);
+        const fault = !!TyperUtil.getBit(value, 6);
+        const overridden = !!TyperUtil.getBit(value, 5);
+        const outOfService = !!TyperUtil.getBit(value, 4);
+
+        this.value = {
+            inAlarm: inAlarm,
+            fault: fault,
+            overridden: overridden,
+            outOfService: outOfService,
+        };
     }
 
     public writeValue (writer: BACnetWriterUtil) {
@@ -41,20 +55,20 @@ export class BACnetStatusFlags extends BACnetTypeBase {
         writer.writeUInt8(0x04);
 
         let statusFlags = 0x00;
-        statusFlags = TyperUtil.setBit(statusFlags, 7, this.statusFlags.inAlarm);
-        statusFlags = TyperUtil.setBit(statusFlags, 6, this.statusFlags.fault);
-        statusFlags = TyperUtil.setBit(statusFlags, 5, this.statusFlags.overridden);
-        statusFlags = TyperUtil.setBit(statusFlags, 4, this.statusFlags.outOfService);
+        statusFlags = TyperUtil.setBit(statusFlags, 7, this.value.inAlarm);
+        statusFlags = TyperUtil.setBit(statusFlags, 6, this.value.fault);
+        statusFlags = TyperUtil.setBit(statusFlags, 5, this.value.overridden);
+        statusFlags = TyperUtil.setBit(statusFlags, 4, this.value.outOfService);
 
         // Write status flags
         writer.writeUInt8(statusFlags);
     }
 
     public setValue (newValue: any): void {
-        this.statusFlags = _.assign({}, this.statusFlags, newValue);
+        this.value = _.assign({}, this.value, newValue);
     }
 
-    public getValue (): number {
-        return _.cloneDeep(this.statusFlags);
+    public getValue (): IBACnetTypeStatusFlags {
+        return _.cloneDeep(this.value);
     }
 }
