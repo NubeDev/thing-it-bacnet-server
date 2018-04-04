@@ -1,3 +1,4 @@
+export * from './null.type';
 export * from './boolean.type';
 export * from './unsigned-integer.type';
 export * from './real.type';
