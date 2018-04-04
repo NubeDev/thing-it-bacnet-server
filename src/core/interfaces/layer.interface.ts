@@ -6,9 +6,10 @@ import {
 } from '../enums';
 
 import {
-    IBACnetType,
-    IBACnetParam,
-} from './bacnet.interface';
+    BACnetUnsignedInteger,
+    BACnetObjectId,
+    BACnetTypeBase,
+} from '../utils/types';
 
 /*
  * BLVC Layer
@@ -84,22 +85,22 @@ export type IConfirmedReqService = IConfirmedReqReadPropertyService
     | IConfirmedReqWritePropertyService;
 
 export interface IConfirmedReqReadPropertyService {
-    objId: IBACnetParam;
-    propId: IBACnetParam;
+    objId: BACnetObjectId;
+    propId: BACnetUnsignedInteger;
 }
 
 export interface IConfirmedReqSubscribeCOVService {
-    objId: IBACnetParam;
-    subscriberProcessId: IBACnetParam;
-    issConfNotif: IBACnetParam;
-    lifeTime: IBACnetParam;
+    objId: BACnetObjectId;
+    subscriberProcessId: BACnetUnsignedInteger;
+    issConfNotif: BACnetUnsignedInteger;
+    lifeTime: BACnetUnsignedInteger;
 }
 
 export interface IConfirmedReqWritePropertyService {
-    objId: IBACnetParam;
-    propId: IBACnetParam;
-    propValues: IBACnetParam[];
-    priority: IBACnetParam;
+    objId: BACnetObjectId;
+    propId: BACnetUnsignedInteger;
+    propValues: BACnetTypeBase[];
+    priority: BACnetUnsignedInteger;
 }
 
 /*
@@ -115,10 +116,10 @@ export type IUnconfirmedReqService = IUnconfirmedReqIAmService
     | IUnconfirmedReqWhoIsService;
 
 export interface IUnconfirmedReqIAmService {
-    objId: IBACnetParam;
-    maxAPDUlength: IBACnetParam;
-    segmSupported: IBACnetParam;
-    vendorId: IBACnetParam;
+    objId: BACnetObjectId;
+    maxAPDUlength: BACnetUnsignedInteger;
+    segmSupported: BACnetUnsignedInteger;
+    vendorId: BACnetUnsignedInteger;
 }
 
 export interface IUnconfirmedReqWhoIsService {
@@ -141,10 +142,10 @@ export interface IComplexACKLayer {
 export type IComplexACKService = IComplexACKReadPropertyService;
 
 export interface IComplexACKReadPropertyService {
-    objId: IBACnetParam;
-    propId: IBACnetParam;
-    propArrayIndex?: IBACnetParam;
-    propValues?: IBACnetParam[];
+    objId: BACnetObjectId;
+    propId: BACnetUnsignedInteger;
+    propArrayIndex?: BACnetUnsignedInteger;
+    propValues?: BACnetTypeBase[];
 }
 
 /*

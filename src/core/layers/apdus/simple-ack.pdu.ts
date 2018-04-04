@@ -19,7 +19,6 @@ import {
     BACnetPropTypes,
     BACnetTagTypes,
     BACnetConfirmedService,
-    BACnetUnconfirmedService,
     BACnetServiceTypes,
 } from '../../enums';
 
@@ -28,6 +27,12 @@ import {
     ISimpleACKSubscribeCOV,
     ISimpleACKWriteProperty,
 } from '../../interfaces';
+
+import {
+    BACnetUnsignedInteger,
+    BACnetObjectId,
+    BACnetTypeBase,
+} from '../../utils/types';
 
 export class SimpleACKPDU {
     public readonly className: string = 'SimpleACKPDU';

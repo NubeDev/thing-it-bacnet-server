@@ -25,9 +25,14 @@ import {
     BACnetPropTypes,
     BACnetTagTypes,
     BACnetConfirmedService,
-    BACnetUnconfirmedService,
     BACnetServiceTypes,
 } from '../../enums';
+
+import {
+    BACnetUnsignedInteger,
+    BACnetObjectId,
+    BACnetTypeBase,
+} from '../../utils/types';
 
 export class ConfirmReqPDU {
     public readonly className: string = 'ConfirmReqPDU';
@@ -103,7 +108,7 @@ export class ConfirmReqPDU {
 
     private getReadProperty (reader: BACnetReaderUtil): IConfirmedReqReadPropertyService {
         let serviceData: IConfirmedReqReadPropertyService;
-        let objId, propId;
+        let objId: BACnetObjectId, propId: BACnetUnsignedInteger;
 
         try {
             objId = reader.readObjectIdentifier();
@@ -123,7 +128,10 @@ export class ConfirmReqPDU {
 
     private getSubscribeCOV (reader: BACnetReaderUtil): IConfirmedReqSubscribeCOVService {
         let serviceData: IConfirmedReqSubscribeCOVService;
-        let objId, subscriberProcessId, issConfNotif, lifeTime;
+        let objId: BACnetObjectId,
+            subscriberProcessId: BACnetUnsignedInteger,
+            issConfNotif: BACnetUnsignedInteger,
+            lifeTime: BACnetUnsignedInteger;
 
         try {
             subscriberProcessId = reader.readParam();
@@ -149,7 +157,10 @@ export class ConfirmReqPDU {
 
     private getWriteProperty (reader: BACnetReaderUtil): IConfirmedReqWritePropertyService {
         let serviceData: IConfirmedReqWritePropertyService;
-        let objId, propId, propValues, priority;
+        let objId: BACnetObjectId,
+            propId: BACnetUnsignedInteger,
+            propValues: BACnetTypeBase[],
+            priority: BACnetUnsignedInteger;
 
         try {
             objId = reader.readObjectIdentifier();
@@ -212,7 +223,7 @@ export class ConfirmReqPDU {
 
         // Write Object identifier
         writer.writeTag(0, BACnetTagTypes.context, 4);
-        writer.writeObjectIdentifier(params.unitObjId);
+        writer.writeObjectIdentifier(params.unitObjId.getValue());
 
         // Write Property ID
         writer.writeParam(params.propId, 1);
