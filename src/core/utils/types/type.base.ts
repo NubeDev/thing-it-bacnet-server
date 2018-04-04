@@ -8,8 +8,9 @@ export abstract class BACnetTypeBase {
 
     abstract readValue (reader: BACnetReaderUtil, changeOffset?: boolean): void;
     abstract writeValue (writer: BACnetWriterUtil): void;
+    abstract getValue (): any;
 
     public getTag (): IBACnetTag {
         return this.tag;
-    };
+    }
 }
