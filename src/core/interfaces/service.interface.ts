@@ -23,7 +23,7 @@ import {
      vendorId: IBACnetObjectProperty;
  }
  export interface IUnconfirmReqCOVNotification {
-     processId: number;
+     processId: BACnetUnsignedInteger;
      devObjId: BACnetObjectId;
      unitObjId: BACnetObjectId;
      reportedProps: IBACnetObjectProperty[];

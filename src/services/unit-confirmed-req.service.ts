@@ -1,24 +1,20 @@
 import * as Bluebird from 'bluebird';
 
 import {
-    BACnetServiceTypes,
-    BLVCFunction,
     BACnetPropIds,
 } from '../core/enums';
-
-import { complexACKPDU, simpleACKPDU } from '../core/layers/apdus';
-import { blvc, npdu } from '../core/layers';
-
-import { BACnetWriterUtil } from '../core/utils';
 
 import {
     IConfirmedReqLayer,
     IConfirmedReqSubscribeCOVService,
     IConfirmedReqWritePropertyService,
     IConfirmedReqReadPropertyService,
-    IBACnetTypeObjectId,
-    IBACnetTypeUnsignedInt,
 } from '../core/interfaces';
+
+import {
+    BACnetObjectId,
+    BACnetUnsignedInteger,
+} from '../core/utils/types';
 
 import { InputSocket, OutputSocket, ServiceSocket } from '../core/sockets';
 
@@ -44,19 +40,18 @@ export class UnitConfirmedReqService {
 
         // Get object identifier
         const unitObjId = apduService.objId;
-        const unitObjIdPayload = unitObjId.payload as IBACnetTypeObjectId;
 
         // Get property identifier
         const propId = apduService.propId;
-        const propIdPayload = propId.payload as IBACnetTypeUnsignedInt;
+        const propIdValue = propId.getValue();
 
         // Get BACnet property (for BACnet object)
         const unitStorage: UnitStorageManager = serviceSocket.getService('unitStorage');
-        const unitProp = unitStorage.getUnitProperty(unitObjIdPayload, propIdPayload.value);
+        const unitProp = unitStorage.getUnitProperty(unitObjId, propIdValue);
 
         complexACKService.readProperty({
             invokeId: invokeId,
-            unitObjId: unitObjIdPayload,
+            unitObjId: unitObjId,
             unitProp: unitProp,
         }, outputSoc);
 
@@ -91,24 +86,22 @@ export class UnitConfirmedReqService {
 
         // Get process ID
         const subProcessId = apduService.subscriberProcessId;
-        const subProcessIdPayload = subProcessId.payload as IBACnetTypeUnsignedInt;
 
         // Get unit Object identifier
         const unitObjId = apduService.objId;
-        const unitObjIdPayload = unitObjId.payload as IBACnetTypeObjectId;
 
         // Get device Object identifier
         const device = unitStorage.getDevice();
-        const devObjId = device.getProperty(BACnetPropIds.objectIdentifier);
-        const devObjIdPayload = devObjId.payload as IBACnetTypeObjectId;
+        const devObjIdProp = device.getProperty(BACnetPropIds.objectIdentifier);
+        const devObjId = devObjIdProp.payload as BACnetObjectId;
 
         unitStorage
-            .subscribeToUnit(unitObjIdPayload)
+            .subscribeToUnit(unitObjId)
             .subscribe((reportedProps) => {
                 unconfirmedReqService.covNotification({
-                    processId: subProcessIdPayload,
-                    devObjId: devObjIdPayload,
-                    unitObjId: unitObjIdPayload,
+                    processId: subProcessId,
+                    devObjId: devObjId,
+                    unitObjId: unitObjId,
                     reportedProps: reportedProps,
                 }, outputSoc);
             });
@@ -132,29 +125,26 @@ export class UnitConfirmedReqService {
 
         // Get unit Object identifier
         const objId = apduService.objId;
-        const objIdPayload = objId.payload as IBACnetTypeObjectId;
 
         // Get property ID
         const propId = apduService.propId;
-        const propIdPayload = propId.payload as IBACnetTypeUnsignedInt;
 
         // Get property value
         const propValues = apduService.propValues;
-        const propValuePayload = propValues[0].payload;
+        const propValue = propValues[0];
 
         // Get priority of the property
         let priorityValue: number;
         try {
             const priority = apduService.priority;
-            const priorityPayload = priority.payload as IBACnetTypeUnsignedInt;
-            priorityValue = priorityPayload.value;
+            priorityValue = priority.getValue();
         } catch (error) {
         }
 
         const unitStorage: UnitStorageManager = serviceSocket.getService('unitStorage');
-        unitStorage.setUnitProperty(objIdPayload, {
-            id: propIdPayload.value,
-            payload: propValuePayload,
+        unitStorage.setUnitProperty(objId, {
+            id: propId.getValue(),
+            payload: propValue,
             priority: priorityValue,
         });
 

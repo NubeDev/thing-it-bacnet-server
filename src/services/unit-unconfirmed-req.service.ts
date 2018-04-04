@@ -1,20 +1,8 @@
 import * as Bluebird from 'bluebird';
 
 import {
-    BACnetServiceTypes,
-    BLVCFunction,
     BACnetPropIds,
 } from '../core/enums';
-
-import { complexACKPDU, simpleACKPDU } from '../core/layers/apdus';
-import { blvc, npdu } from '../core/layers';
-
-import { BACnetWriterUtil } from '../core/utils';
-
-import {
-    IBACnetTypeObjectId,
-    IBACnetTypeUnsignedInt,
-} from '../core/interfaces';
 
 import { InputSocket, OutputSocket, ServiceSocket } from '../core/sockets';
 

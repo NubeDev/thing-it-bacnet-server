@@ -3,10 +3,8 @@ import * as Bluebird from 'bluebird';
 import { Observable } from 'rxjs';
 
 import {
-    IBACnetTypeObjectId,
     IEDEUnit,
     IBACnetObjectProperty,
-    IBACnetType,
 } from '../core/interfaces';
 
 import {
@@ -17,6 +15,10 @@ import {
     BACnetObjTypes,
     BACnetPropIds,
 } from '../core/enums';
+
+import {
+    BACnetObjectId,
+} from '../core/utils/types';
 
 import {
     ApiError,
@@ -102,9 +104,10 @@ export class UnitStorageManager {
      * @param  {number} objType - object type
      * @return {NativeUnit}
      */
-    public getUnit (objType: number, objInst: number): NativeUnit {
-        const objId = this.getObjId(objType, objInst);
-        return this.units.get(objId);
+    public getUnit (objId: BACnetObjectId): NativeUnit {
+        const objIdValue = objId.getValue();
+        const objIdKey = this.getObjId(objIdValue.type, objIdValue.instance);
+        return this.units.get(objIdKey);
     }
 
     /**
@@ -112,12 +115,12 @@ export class UnitStorageManager {
      *
      * @param  {IBACnetTypeObjectId} objId - object identifier
      * @param  {BACnetPropIds} propId - property ID
-     * @param  {IBACnetType} value - property value
+     * @param  {} value - property value
      * @return {void}
      */
-    public setUnitProperty (objId: IBACnetTypeObjectId,
+    public setUnitProperty (objId: BACnetObjectId,
             prop: IBACnetObjectProperty): void {
-        const unit = this.getUnit(objId.type, objId.instance);
+        const unit = this.getUnit(objId);
         if (!unit) {
             return;
         }
@@ -131,9 +134,9 @@ export class UnitStorageManager {
      * @param  {BACnetPropIds} propId - property ID
      * @return {IBACnetObjectProperty}
      */
-    public getUnitProperty (objId: IBACnetTypeObjectId,
+    public getUnitProperty (objId: BACnetObjectId,
             propId: BACnetPropIds): IBACnetObjectProperty {
-        const unit = this.getUnit(objId.type, objId.instance);
+        const unit = this.getUnit(objId);
         if (!unit) {
             return null;
         }
@@ -146,8 +149,8 @@ export class UnitStorageManager {
      * @param  {IBACnetTypeObjectId} objId - object identifier
      * @return {Observable<IBACnetObjectProperty>}
      */
-    public subscribeToUnit (objId: IBACnetTypeObjectId): Observable<IBACnetObjectProperty[]> {
-        const unit = this.getUnit(objId.type, objId.instance);
+    public subscribeToUnit (objId: BACnetObjectId): Observable<IBACnetObjectProperty[]> {
+        const unit = this.getUnit(objId);
         if (!unit) {
             return null;
         }

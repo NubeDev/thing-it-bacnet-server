@@ -196,8 +196,7 @@ export class UnconfirmReqPDU {
         writer.writeUInt8(BACnetUnconfirmedService.covNotification);
 
         // Write Process Identifier
-        const processId = _.isNumber(params.processId) ? params.processId : 1;
-        writer.writeParam(processId, 0);
+        writer.writeParam(params.processId.getValue(), 0);
 
         // Write Device Object Identifier
         writer.writeTag(1, BACnetTagTypes.context, 4);
