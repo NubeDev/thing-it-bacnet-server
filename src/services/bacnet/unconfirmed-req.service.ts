@@ -1,8 +1,6 @@
 import * as Bluebird from 'bluebird';
 
 import {
-    BACnetServiceTypes,
-    BACnetPropIds,
     BLVCFunction,
 } from '../../core/enums';
 
@@ -10,22 +8,14 @@ import { unconfirmReqPDU } from '../../core/layers/apdus';
 import { blvc, npdu } from '../../core/layers';
 
 import { BACnetWriterUtil } from '../../core/utils';
-import { IUnconfirmReqWhoIsOptions } from '../../core/interfaces';
 
 import {
-    IConfirmedReqLayer,
-    IConfirmedReqSubscribeCOVService,
-    IConfirmedReqWritePropertyService,
-    IBACnetTypeObjectId,
-    IBACnetTypeUnsignedInt,
     IServiceUnconfirmReqCOVNotification,
     IServiceUnconfirmReqWhoIs,
     IServiceUnconfirmReqIAm,
 } from '../../core/interfaces';
 
-import { InputSocket, OutputSocket, ServiceSocket } from '../../core/sockets';
-
-import { UnitStorageManager } from '../../managers/unit-storage.manager';
+import { OutputSocket } from '../../core/sockets';
 
 export class UnconfirmedReqService {
     private readonly className: string = 'UnconfirmedReq';

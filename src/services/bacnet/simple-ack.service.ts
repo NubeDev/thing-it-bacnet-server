@@ -1,9 +1,7 @@
 import * as Bluebird from 'bluebird';
 
 import {
-    BACnetServiceTypes,
     BLVCFunction,
-    BACnetPropIds,
 } from '../../core/enums';
 
 import { complexACKPDU, simpleACKPDU } from '../../core/layers/apdus';
@@ -12,21 +10,11 @@ import { blvc, npdu } from '../../core/layers';
 import { BACnetWriterUtil } from '../../core/utils';
 
 import {
-    IConfirmedReqLayer,
-    IConfirmedReqSubscribeCOVService,
-    IConfirmedReqWritePropertyService,
-    IBACnetTypeObjectId,
-    IBACnetTypeUnsignedInt,
-    IUnconfirmReqCOVNotification,
-
     IServiceSimpleACKSubscribeCOV,
     IServiceSimpleACKWriteProperty,
 } from '../../core/interfaces';
 
-import { InputSocket, OutputSocket, ServiceSocket } from '../../core/sockets';
-
-import { UnitStorageManager } from '../../managers/unit-storage.manager';
-import { unconfirmedReqService } from './unconfirmed-req.service';
+import { OutputSocket } from '../../core/sockets';
 
 export class SimpleACKService {
     private readonly className: string = 'SimpleACK';

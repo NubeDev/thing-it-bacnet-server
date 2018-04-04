@@ -1,7 +1,6 @@
 import * as Bluebird from 'bluebird';
 
 import {
-    BACnetServiceTypes,
     BLVCFunction,
 } from '../../core/enums';
 
@@ -11,10 +10,10 @@ import { blvc, npdu } from '../../core/layers';
 import { BACnetWriterUtil } from '../../core/utils';
 
 import {
-    IConfirmedReqReadPropertyOptions,
+    IServiceConfirmedReqReadProperty,
 } from '../../core/interfaces';
 
-import { InputSocket, OutputSocket } from '../../core/sockets';
+import { OutputSocket } from '../../core/sockets';
 
 export class ConfirmedReqService {
 
@@ -25,7 +24,7 @@ export class ConfirmedReqService {
      * @param  {OutputSocket} resp - response object (socket)
      * @return {type}
      */
-    public readProperty (opts: IConfirmedReqReadPropertyOptions, output: OutputSocket) {
+    public readProperty (opts: IServiceConfirmedReqReadProperty, output: OutputSocket) {
         // Generate APDU writer
         const writerComplexACK = confirmReqPDU.writeReq(opts);
         const writerReadProperty = confirmReqPDU.writeReadProperty(opts);
