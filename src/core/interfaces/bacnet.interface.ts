@@ -57,8 +57,8 @@ export interface IBACnetTypeObjectId {
 }
 
 export interface IBACnetTypeStatusFlags {
-    inAlarm: boolean,
-    fault: boolean,
-    overridden: boolean,
-    outOfService: boolean,
+    inAlarm?: boolean,
+    fault?: boolean,
+    overridden?: boolean,
+    outOfService?: boolean,
 }
