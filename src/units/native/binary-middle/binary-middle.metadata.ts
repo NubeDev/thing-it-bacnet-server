@@ -16,11 +16,6 @@ import * as BACnetTypes from '../../../core/utils/types';
 
 export const BinaryMiddleMetadata: IBACnetObjectProperty[] = [
     {
-        id: BACnetPropIds.objectType,
-        payload: new BACnetTypes.BACnetEnumerated(BACnetObjTypes.BinaryOutput),
-    },
-
-    {
         id: BACnetPropIds.outOfService,
         payload: new BACnetTypes.BACnetBoolean(false),
     },

@@ -24,7 +24,7 @@ import { NativeUnit } from '../native.unit';
 import * as BACnetTypes from '../../../core/utils/types';
 
 export class BinaryMiddleUnit extends NativeUnit {
-    public readonly className: string = 'BinaryOutputUnit';
+    public readonly className: string = 'BinaryMiddleUnit';
 
     constructor (edeUnit: IEDEUnit, unitMetadata: IBACnetObjectProperty[]) {
         super(edeUnit, BinaryMiddleMetadata);
