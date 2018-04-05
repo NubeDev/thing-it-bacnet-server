@@ -12,7 +12,9 @@ export abstract class BACnetTypeBase {
     abstract writeValue (writer: BACnetWriterUtil): void;
 
     abstract getValue (): any;
+    abstract setValue (newValute: any): void;
     abstract get value (): any;
+    abstract set value (newValute: any);
 
     public getTag (): IBACnetTag {
         return this.tag;
