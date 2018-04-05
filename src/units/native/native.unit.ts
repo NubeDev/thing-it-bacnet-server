@@ -193,9 +193,9 @@ export class NativeUnit {
         if (_.isNil(priorityArrayValue)) {
             const relinquishDefaultProp = this.getProperty(BACnetPropIds.relinquishDefault);
             const relinquishDefault = relinquishDefaultProp.payload as BACnetTypes.BACnetTypeBase;
-            return relinquishDefault;
+            priorityArrayValue = relinquishDefault;
         }
-        return priorityArrayValue;
+        return _.cloneDeep(priorityArrayValue);
     }
 
     /**
