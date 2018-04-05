@@ -102,7 +102,10 @@ export class NativeUnit {
      */
     public sjHandler (notif: IBACnetObjectProperty): void {
         switch (notif.id) {
-            default:
+            case BACnetPropIds.objectIdentifier:
+            case BACnetPropIds.objectType:
+            case BACnetPropIds.objectName:
+            case BACnetPropIds.description:
                 return this.updateProperty(notif);
         }
     }
