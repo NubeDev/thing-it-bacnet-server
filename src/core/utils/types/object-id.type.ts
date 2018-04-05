@@ -20,11 +20,11 @@ export class BACnetObjectId extends BACnetTypeBase {
     public readonly type: BACnetPropTypes = BACnetPropTypes.objectIdentifier;
 
     protected tag: IBACnetTag;
-    private value: IBACnetTypeObjectId;
+    protected data: IBACnetTypeObjectId;
 
     constructor (defValue?: IBACnetTypeObjectId) {
         super();
-        this.value = defValue;
+        this.data = defValue;
     }
 
     public readValue (reader: BACnetReaderUtil, changeOffset: boolean = true) {
@@ -33,21 +33,27 @@ export class BACnetObjectId extends BACnetTypeBase {
         const objId = reader.readUInt32BE(changeOffset);
         const objIdPayload = reader.decodeObjectIdentifier(objId);
 
-        this.value = objIdPayload;
+        this.data = objIdPayload;
     }
 
     public writeValue (writer: BACnetWriterUtil) {
         writer.writeTag(BACnetPropTypes.objectIdentifier, 0, 4);
 
         // Write status flags
-        writer.writeObjectIdentifier(this.value);
+        writer.writeObjectIdentifier(this.data);
     }
 
     public setValue (newValue: IBACnetTypeObjectId): void {
-        this.value = _.assign({}, this.value, newValue);
+        this.data = _.assign({}, this.data, newValue);
+    }
+    public getValue (): IBACnetTypeObjectId {
+        return _.cloneDeep(this.data);
     }
 
-    public getValue (): IBACnetTypeObjectId {
-        return _.cloneDeep(this.value);
+    public set value (newValue: IBACnetTypeObjectId) {
+        this.setValue(newValue);
+    }
+    public get value (): IBACnetTypeObjectId {
+        return this.getValue();
     }
 }

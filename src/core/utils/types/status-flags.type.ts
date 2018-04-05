@@ -21,11 +21,11 @@ export class BACnetStatusFlags extends BACnetTypeBase {
     public readonly type: BACnetPropTypes = BACnetPropTypes.bitString;
 
     protected tag: IBACnetTag;
-    private value: IBACnetTypeStatusFlags;
+    protected data: IBACnetTypeStatusFlags;
 
     constructor (defValue?: IBACnetTypeStatusFlags) {
         super();
-        this.value = defValue;
+        this.data = defValue;
     }
 
     public readValue (reader: BACnetReaderUtil, changeOffset: boolean = true) {
@@ -40,7 +40,7 @@ export class BACnetStatusFlags extends BACnetTypeBase {
         const overridden = !!TyperUtil.getBit(value, 5);
         const outOfService = !!TyperUtil.getBit(value, 4);
 
-        this.value = {
+        this.data = {
             inAlarm: inAlarm,
             fault: fault,
             overridden: overridden,
@@ -55,20 +55,26 @@ export class BACnetStatusFlags extends BACnetTypeBase {
         writer.writeUInt8(0x04);
 
         let statusFlags = 0x00;
-        statusFlags = TyperUtil.setBit(statusFlags, 7, this.value.inAlarm);
-        statusFlags = TyperUtil.setBit(statusFlags, 6, this.value.fault);
-        statusFlags = TyperUtil.setBit(statusFlags, 5, this.value.overridden);
-        statusFlags = TyperUtil.setBit(statusFlags, 4, this.value.outOfService);
+        statusFlags = TyperUtil.setBit(statusFlags, 7, this.data.inAlarm);
+        statusFlags = TyperUtil.setBit(statusFlags, 6, this.data.fault);
+        statusFlags = TyperUtil.setBit(statusFlags, 5, this.data.overridden);
+        statusFlags = TyperUtil.setBit(statusFlags, 4, this.data.outOfService);
 
         // Write status flags
         writer.writeUInt8(statusFlags);
     }
 
-    public setValue (newValue: any): void {
-        this.value = _.assign({}, this.value, newValue);
+    public setValue (newValue: IBACnetTypeStatusFlags): void {
+        this.data = _.assign({}, this.data, newValue);
+    }
+    public getValue (): IBACnetTypeStatusFlags {
+        return _.cloneDeep(this.data);
     }
 
-    public getValue (): IBACnetTypeStatusFlags {
-        return _.cloneDeep(this.value);
+    public set value (newValue: IBACnetTypeStatusFlags) {
+        this.setValue(newValue);
+    }
+    public get value (): IBACnetTypeStatusFlags {
+        return this.getValue();
     }
 }

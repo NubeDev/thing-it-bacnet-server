@@ -19,11 +19,11 @@ export class BACnetEnumerated extends BACnetTypeBase {
     public readonly type: BACnetPropTypes = BACnetPropTypes.enumerated;
 
     protected tag: IBACnetTag;
-    private value: number;
+    protected data: number;
 
     constructor (defValue?: number) {
         super();
-        this.value = defValue;
+        this.data = defValue;
     }
 
     public readValue (reader: BACnetReaderUtil, changeOffset: boolean = true) {
@@ -31,21 +31,27 @@ export class BACnetEnumerated extends BACnetTypeBase {
 
         const value: number = reader.readUInt8(changeOffset)
 
-        this.value = value;
+        this.data = value;
     }
 
     public writeValue (writer: BACnetWriterUtil) {
         writer.writeTag(BACnetPropTypes.enumerated, 0, 1);
 
         // Write status flags
-        writer.writeUInt8(this.value);
+        writer.writeUInt8(this.data);
     }
 
     public setValue (newValue: number): void {
-        this.value = newValue;
+        this.data = newValue;
+    }
+    public getValue (): number {
+        return this.data;
     }
 
-    public getValue (): number {
-        return this.value;
+    public set value (newValue: number) {
+        this.setValue(newValue);
+    }
+    public get value (): number {
+        return this.getValue();
     }
 }

@@ -19,11 +19,11 @@ export class BACnetUnsignedInteger extends BACnetTypeBase {
     public readonly type: BACnetPropTypes = BACnetPropTypes.unsignedInt;
 
     protected tag: IBACnetTag;
-    private value: number;
+    protected data: number;
 
     constructor (defValue?: number) {
         super();
-        this.value = defValue;
+        this.data = defValue;
     }
 
     public readValue (reader: BACnetReaderUtil, changeOffset: boolean = true) {
@@ -42,18 +42,25 @@ export class BACnetUnsignedInteger extends BACnetTypeBase {
                 break;
         }
 
-        this.value = value;
+        this.data = value;
     }
 
     public writeValue (writer: BACnetWriterUtil) {
-        writer.writeParam(this.value, BACnetPropTypes.unsignedInt, 0);
+        writer.writeParam(this.data, BACnetPropTypes.unsignedInt, 0);
     }
 
     public setValue (newValue: number): void {
-        this.value = newValue;
+        this.data = newValue;
     }
 
     public getValue (): number {
-        return this.value;
+        return this.data;
+    }
+
+    public set value (newValue: number) {
+        this.setValue(newValue);
+    }
+    public get value (): number {
+        return this.getValue();
     }
 }

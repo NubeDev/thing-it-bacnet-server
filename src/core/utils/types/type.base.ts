@@ -6,10 +6,13 @@ import { IBACnetTag } from '../../interfaces';
 export abstract class BACnetTypeBase {
     public readonly className: string = 'BACnetTypeBase';
     protected tag: IBACnetTag;
+    protected data: any;
 
     abstract readValue (reader: BACnetReaderUtil, changeOffset?: boolean): void;
     abstract writeValue (writer: BACnetWriterUtil): void;
+
     abstract getValue (): any;
+    abstract get value (): any;
 
     public getTag (): IBACnetTag {
         return this.tag;

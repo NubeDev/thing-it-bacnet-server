@@ -19,11 +19,11 @@ export class BACnetReal extends BACnetTypeBase {
     public readonly type: BACnetPropTypes = BACnetPropTypes.real;
 
     protected tag: IBACnetTag;
-    private value: number;
+    protected data: number;
 
     constructor (defValue?: number) {
         super();
-        this.value = defValue;
+        this.data = defValue;
     }
 
     public readValue (reader: BACnetReaderUtil, changeOffset: boolean = true) {
@@ -31,20 +31,26 @@ export class BACnetReal extends BACnetTypeBase {
 
         let value: number = reader.readFloatBE(changeOffset);
 
-        this.value = value;
+        this.data = value;
     }
 
     public writeValue (writer: BACnetWriterUtil) {
         writer.writeTag(BACnetPropTypes.real, 0, 4);
 
-        writer.writeFloatBE(this.value)
+        writer.writeFloatBE(this.data)
     }
 
     public setValue (newValue: number) {
-        this.value = newValue;
+        this.data = newValue;
+    }
+    public getValue () {
+        return this.data;
     }
 
-    public getValue () {
-        return this.value;
+    public set value (newValue: number) {
+        this.setValue(newValue);
+    }
+    public get value (): number {
+        return this.getValue();
     }
 }

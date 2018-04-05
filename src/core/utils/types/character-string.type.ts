@@ -20,11 +20,11 @@ export class BACnetCharacterString extends BACnetTypeBase {
 
     protected tag: IBACnetTag;
     private encoding: string;
-    private value: string;
+    protected data: string;
 
     constructor (defValue?: string) {
         super();
-        this.value = defValue;
+        this.data = defValue;
     }
 
     public readValue (reader: BACnetReaderUtil, changeOffset: boolean = true) {
@@ -38,7 +38,7 @@ export class BACnetCharacterString extends BACnetTypeBase {
         this.encoding = charEncode;
 
         const value = reader.readString(charEncode, strLen - 1, changeOffset);
-        this.value = value;
+        this.data = value;
     }
 
     public writeValue (writer: BACnetWriterUtil) {
@@ -46,22 +46,28 @@ export class BACnetCharacterString extends BACnetTypeBase {
         writer.writeTag(BACnetPropTypes.characterString, 0, 5);
 
         // Write lenght
-        const paramValueLen = this.value.length + 1;
+        const paramValueLen = this.data.length + 1;
         writer.writeUInt8(paramValueLen);
 
         // Write "ansi" / "utf8" encoding
         writer.writeUInt8(0x00);
 
         // Write string
-        writer.writeString(this.value);
+        writer.writeString(this.data);
     }
 
     public setValue (newValue: string) {
-        this.value = newValue;
+        this.data = newValue;
+    }
+    public getValue (): string {
+        return this.data;
     }
 
-    public getValue (): string {
-        return this.value;
+    public set value (newValue: string) {
+        this.setValue(newValue);
+    }
+    public get value (): string {
+        return this.getValue();
     }
 
     /**

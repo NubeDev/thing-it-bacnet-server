@@ -19,28 +19,34 @@ export class BACnetBoolean extends BACnetTypeBase {
     public readonly type: BACnetPropTypes = BACnetPropTypes.boolean;
 
     protected tag: IBACnetTag;
-    private value: boolean;
+    protected data: boolean;
 
     constructor (defValue?: boolean) {
         super();
-        this.value = defValue;
+        this.data = defValue;
     }
 
     public readValue (reader: BACnetReaderUtil, changeOffset: boolean = true) {
         const tag = reader.readTag(changeOffset);
 
-        this.value = !!tag.value;
+        this.data = !!tag.value;
     }
 
     public writeValue (writer: BACnetWriterUtil) {
-        writer.writeTag(BACnetPropTypes.boolean, 0, +this.value);
+        writer.writeTag(BACnetPropTypes.boolean, 0, +this.data);
     }
 
     public setValue (newValue: boolean): void {
-        this.value = newValue;
+        this.data = newValue;
+    }
+    public getValue (): boolean {
+        return this.data;
     }
 
-    public getValue (): boolean {
-        return this.value;
+    public set value (newValue: boolean) {
+        this.setValue(newValue);
+    }
+    public get value (): boolean {
+        return this.getValue();
     }
 }
