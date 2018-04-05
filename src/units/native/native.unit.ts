@@ -92,8 +92,6 @@ export class NativeUnit {
         }
 
         this.dispatchCOVNotification();
-
-        logger.debug(`${this.getLogHeader()} - metadata:`, this.metadata);
     }
 
     /**
