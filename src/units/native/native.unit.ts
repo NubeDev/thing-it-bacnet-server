@@ -170,19 +170,19 @@ export class NativeUnit {
      * @return {IBACnetType}
      */
     public getCommandablePropertyValue (): BACnetTypes.BACnetTypeBase {
-        const priorityArray = this.metadata.get(BACnetPropIds.priorityArray);
-        const priorityArrayPayload = priorityArray.payload as BACnetTypes.BACnetTypeBase[];
+        const priorityArrayProp = this.getProperty(BACnetPropIds.priorityArray);
+        const priorityArray = priorityArrayProp.payload as BACnetTypes.BACnetTypeBase[];
 
         let priorityArrayValue: BACnetTypes.BACnetTypeBase, i: number;
-        for (i = 0; i < priorityArrayPayload.length; i++) {
-            if (TyperUtil.isNil(priorityArrayPayload[i])) {
+        for (i = 0; i < priorityArray.length; i++) {
+            if (TyperUtil.isNil(priorityArray[i])) {
                 continue;
             }
-            priorityArrayValue = priorityArrayPayload[i];
+            priorityArrayValue = priorityArray[i];
             break;
         }
 
-        const priorityIndex: BACnetTypes.BACnetTypeBase = i === priorityArrayPayload.length
+        const priorityIndex: BACnetTypes.BACnetTypeBase = i === priorityArray.length
             ? new BACnetTypes.BACnetNull()
             : new BACnetTypes.BACnetUnsignedInteger(i);
         this.setProperty({
@@ -191,9 +191,9 @@ export class NativeUnit {
         });
 
         if (_.isNil(priorityArrayValue)) {
-            const relinquishDefault = this.metadata.get(BACnetPropIds.relinquishDefault);
-            const relinquishDefaultPayload = relinquishDefault.payload as BACnetTypes.BACnetTypeBase;
-            return relinquishDefaultPayload;
+            const relinquishDefaultProp = this.getProperty(BACnetPropIds.relinquishDefault);
+            const relinquishDefault = relinquishDefaultProp.payload as BACnetTypes.BACnetTypeBase;
+            return relinquishDefault;
         }
         return priorityArrayValue;
     }
@@ -216,9 +216,8 @@ export class NativeUnit {
     public isBACnetObject (objId: IBACnetTypeObjectId): boolean {
         const unitIdProp = this.getProperty(BACnetPropIds.objectIdentifier);
         const unitId = unitIdProp.payload as BACnetTypes.BACnetObjectId;
-        const unitIdValue = unitId.getValue();
-        return unitIdValue.type === objId.type
-            && unitIdValue.instance === objId.instance;
+        return unitId.value.type === objId.type
+            && unitId.value.instance === objId.instance;
     }
 
     /**
