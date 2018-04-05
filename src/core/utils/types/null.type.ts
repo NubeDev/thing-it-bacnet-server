@@ -32,10 +32,16 @@ export class BACnetNull extends BACnetTypeBase {
         writer.writeTag(BACnetPropTypes.nullData, 0, 0);
     }
 
-    public setValue (newValue: boolean): void {
+    public setValue (newValue: null): void {
+    }
+    public getValue (): null {
+        return null;
     }
 
-    public getValue (): boolean {
-        return null;
+    public set value (newValue: null) {
+        this.setValue(newValue);
+    }
+    public get value (): null {
+        return this.getValue();
     }
 }
