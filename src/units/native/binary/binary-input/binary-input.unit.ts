@@ -4,33 +4,31 @@ import {
     BACnetPropIds,
     BACnetBinaryPV,
     BACnetEventState,
-} from '../../../core/enums';
+} from '../../../../core/enums';
 
 import {
     ApiError,
-} from '../../../core/errors';
+} from '../../../../core/errors';
 
 import {
     IBACnetObjectProperty,
     IBACnetTypeStatusFlags,
     IEDEUnit,
-} from '../../../core/interfaces';
+} from '../../../../core/interfaces';
 
 import { BinaryInputMetadata } from './binary-input.metadata';
 
-import { BinaryMiddleUnit } from '../binary-middle/binary-middle.unit';
+import { BinaryUnit } from '../../binary/binary.unit';
 
-import * as BACnetTypes from '../../../core/utils/types';
+import * as BACnetTypes from '../../../../core/utils/types';
 
-export class BinaryInputUnit extends BinaryMiddleUnit {
+export class BinaryInputUnit extends BinaryUnit {
     public readonly className: string = 'BinaryInputUnit';
-
-    constructor (edeUnit: IEDEUnit) {
-        super(edeUnit, BinaryInputMetadata);
-    }
 
     public initUnit (edeUnit: IEDEUnit) {
         super.initUnit(edeUnit);
+
+        this.storage.addUnitStorage(BinaryInputMetadata);
 
         this.dispatchCOVNotification();
     }
@@ -41,24 +39,22 @@ export class BinaryInputUnit extends BinaryMiddleUnit {
      * @param  {IBACnetObjectProperty} notif - notification object
      * @return {void}
      */
-    public sjHandler (notif: IBACnetObjectProperty): boolean {
-        const isSkipped = super.sjHandler(notif);
-        if (!isSkipped) {
-            return;
-        }
+    public sjHandler (): void {
+        super.sjHandler();
 
-        switch (notif.id) {
-            case BACnetPropIds.polarity:
-                this.shPolarity(notif);
-                return;
-            case BACnetPropIds.presentValue:
-                this.updateProperty(notif);
-                this.shPresentValue(notif);
-                return;
-            default:
-                this.updateProperty(notif);
-                return;
-        }
+        this.storage.addSjHandler((notif) => {
+            switch (notif.id) {
+                case BACnetPropIds.polarity:
+                    this.shPolarity(notif);
+                    return;
+                case BACnetPropIds.presentValue:
+                    this.storage.updateProperty(notif);
+                    this.shPresentValue(notif);
+                    return;
+            }
+            this.storage.updateProperty(notif);
+            return true;
+        });
     }
 
     /**
@@ -70,14 +66,14 @@ export class BinaryInputUnit extends BinaryMiddleUnit {
      * @return {void}
      */
     private shPolarity (notif: IBACnetObjectProperty): void {
-        const outOfServiceProp = this.getProperty(BACnetPropIds.outOfService);
+        const outOfServiceProp = this.storage.getProperty(BACnetPropIds.outOfService);
         const outOfService = outOfServiceProp.payload as BACnetTypes.BACnetBoolean;
 
         if (outOfService.value) {
             return;
         }
 
-        const polarityProp = this.getProperty(BACnetPropIds.polarity);
+        const polarityProp = this.storage.getProperty(BACnetPropIds.polarity);
         const polarity = polarityProp.payload as BACnetTypes.BACnetEnumerated;
         const newPolarity = notif.payload as BACnetTypes.BACnetEnumerated;
 
@@ -85,9 +81,9 @@ export class BinaryInputUnit extends BinaryMiddleUnit {
             return;
         }
 
-        this.updateProperty(notif);
+        this.storage.updateProperty(notif);
 
-        const presentValueProp = this.getProperty(BACnetPropIds.presentValue);
+        const presentValueProp = this.storage.getProperty(BACnetPropIds.presentValue);
         const presentValue = presentValueProp.payload as BACnetTypes.BACnetEnumerated;
 
         let newPresentValue: BACnetTypes.BACnetEnumerated;
@@ -103,7 +99,7 @@ export class BinaryInputUnit extends BinaryMiddleUnit {
                 break;
         }
 
-        this.setProperty({
+        this.storage.setProperty({
             id: BACnetPropIds.presentValue,
             payload: newPresentValue,
         });

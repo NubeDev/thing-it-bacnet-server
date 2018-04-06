@@ -5,33 +5,33 @@ import {
     BACnetBinaryPV,
     BACnetEventState,
     BACnetPolarity,
-} from '../../../core/enums';
+} from '../../../../core/enums';
 
 import {
     ApiError,
-} from '../../../core/errors';
+} from '../../../../core/errors';
 
 import {
     IBACnetObjectProperty,
     IBACnetTypeStatusFlags,
     IEDEUnit,
-} from '../../../core/interfaces';
+} from '../../../../core/interfaces';
 
 import { BinaryOutputMetadata } from './binary-output.metadata';
 
-import { BinaryMiddleUnit } from '../binary-middle/binary-middle.unit';
+import { BinaryUnit } from '../binary.unit';
 
-import * as BACnetTypes from '../../../core/utils/types';
+import * as BACnetTypes from '../../../../core/utils/types';
 
-export class BinaryOutputUnit extends BinaryMiddleUnit {
+export class BinaryOutputUnit extends BinaryUnit {
     public readonly className: string = 'BinaryOutputUnit';
-
-    constructor (edeUnit: IEDEUnit) {
-        super(edeUnit, BinaryOutputMetadata);
-    }
 
     public initUnit (edeUnit: IEDEUnit) {
         super.initUnit(edeUnit);
+
+        this.storage.addUnitStorage(BinaryOutputMetadata);
+
+        this.dispatchCOVNotification();
     }
 
     /**
@@ -40,26 +40,24 @@ export class BinaryOutputUnit extends BinaryMiddleUnit {
      * @param  {IBACnetObjectProperty} notif - notification object
      * @return {void}
      */
-    public sjHandler (notif: IBACnetObjectProperty): boolean {
-        const isSkipped = super.sjHandler(notif);
-        if (!isSkipped) {
-            return;
-        }
+    public sjHandler (): void {
+        super.sjHandler();
 
-        switch (notif.id) {
-            case BACnetPropIds.polarity:
-                this.shPolarity(notif);
-                return;
-            case BACnetPropIds.presentValue:
-                this.shPresentValue(notif);
-                return;
-            case BACnetPropIds.priorityArray:
-                this.shPriorityArray(notif);
-                return;
-            default:
-                this.updateProperty(notif);
-                return;
-        }
+        this.storage.addSjHandler((notif) => {
+            switch (notif.id) {
+                case BACnetPropIds.polarity:
+                    this.shPolarity(notif);
+                    return;
+                case BACnetPropIds.presentValue:
+                    this.shPresentValue(notif);
+                    return;
+                case BACnetPropIds.priorityArray:
+                    this.shPriorityArray(notif);
+                    return;
+            }
+            this.storage.updateProperty(notif);
+            return true;
+        });
     }
 
     /**
@@ -72,14 +70,14 @@ export class BinaryOutputUnit extends BinaryMiddleUnit {
      * @return {void}
      */
     private shPolarity (notif: IBACnetObjectProperty): void {
-        const outOfServiceProp = this.getProperty(BACnetPropIds.outOfService);
+        const outOfServiceProp = this.storage.getProperty(BACnetPropIds.outOfService);
         const outOfService = outOfServiceProp.payload as BACnetTypes.BACnetBoolean;
 
         if (outOfService.value) {
             return;
         }
 
-        const polarityProp = this.getProperty(BACnetPropIds.polarity);
+        const polarityProp = this.storage.getProperty(BACnetPropIds.polarity);
         const polarity = polarityProp.payload as BACnetTypes.BACnetEnumerated;
         const newPolarity = notif.payload as BACnetTypes.BACnetEnumerated;
 
@@ -87,9 +85,9 @@ export class BinaryOutputUnit extends BinaryMiddleUnit {
             return;
         }
 
-        this.updateProperty(notif);
+        this.storage.updateProperty(notif);
 
-        const presentValueProp = this.getProperty(BACnetPropIds.presentValue);
+        const presentValueProp = this.storage.getProperty(BACnetPropIds.presentValue);
         const presentValue = presentValueProp.payload as BACnetTypes.BACnetEnumerated;
 
         let newPresentValue: BACnetTypes.BACnetEnumerated;
@@ -105,7 +103,7 @@ export class BinaryOutputUnit extends BinaryMiddleUnit {
                 break;
         }
 
-        this.setProperty({
+        this.storage.setProperty({
             id: BACnetPropIds.presentValue,
             payload: newPresentValue,
         });
@@ -119,7 +117,7 @@ export class BinaryOutputUnit extends BinaryMiddleUnit {
      * @return {void}
      */
     private shPresentValue (notif: IBACnetObjectProperty): void {
-        const priorityArrayProp = this.getProperty(BACnetPropIds.priorityArray);
+        const priorityArrayProp = this.storage.getProperty(BACnetPropIds.priorityArray);
         const priorityArray = priorityArrayProp.payload as BACnetTypes.BACnetTypeBase[];
 
         const newPriorityArrayEl = notif.payload as BACnetTypes.BACnetTypeBase;
@@ -128,7 +126,7 @@ export class BinaryOutputUnit extends BinaryMiddleUnit {
         const newPriorityArray = [ ...priorityArray ];
         newPriorityArray[priority] = newPriorityArrayEl;
 
-        this.setProperty({
+        this.storage.setProperty({
             id: BACnetPropIds.priorityArray,
             payload: newPriorityArray,
         });
@@ -145,12 +143,12 @@ export class BinaryOutputUnit extends BinaryMiddleUnit {
      * @return {void}
      */
     private shPriorityArray (notif: IBACnetObjectProperty): void {
-        const presentValueProp = this.getProperty(BACnetPropIds.presentValue);
+        const presentValueProp = this.storage.getProperty(BACnetPropIds.presentValue);
         const presentValue = presentValueProp.payload as BACnetTypes.BACnetEnumerated;
 
         const newPresentValue = this.getCommandablePropertyValue() as BACnetTypes.BACnetEnumerated;
 
-        const polarityProp = this.getProperty(BACnetPropIds.polarity);
+        const polarityProp = this.storage.getProperty(BACnetPropIds.polarity);
         const polarity = polarityProp.payload as BACnetTypes.BACnetEnumerated;
 
         if (polarity.value === BACnetPolarity.Reverse) {
@@ -167,7 +165,7 @@ export class BinaryOutputUnit extends BinaryMiddleUnit {
             }
         }
 
-        this.updateProperty({
+        this.storage.updateProperty({
             id: BACnetPropIds.presentValue,
             payload: newPresentValue,
         });
