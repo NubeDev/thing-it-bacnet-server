@@ -30,9 +30,7 @@ type TSjHandler = (notif: IBACnetObjectProperty) => boolean;
 export class UnitStorage {
     /* Logging */
     public readonly className: string = 'UnitStorage';
-    public unitName: string;
-    public objType: number;
-    public objInst: number;
+    public logHeader: string;
     // Unit metadata
     public metadata: Map<BACnetPropIds, IBACnetObjectProperty>;
     // Unit properties subject
@@ -133,10 +131,8 @@ export class UnitStorage {
      * @param  {number} objInst - instance of the BACnet object
      * @return {void}
      */
-    public setLogHeader (unitName: string, objType: number, objInst: number): void {
-        this.unitName = unitName;
-        this.objType = objType;
-        this.objInst = objInst;
+    public setLogHeader (logHeader): void {
+        this.logHeader = logHeader;
     }
 
     /**
@@ -145,6 +141,6 @@ export class UnitStorage {
      * @return {string}
      */
     protected getLogHeader (): string {
-        return `${this.className}:${this.unitName} (${this.objType}:${this.objInst})`;
+        return `${this.className}:${this.logHeader}`;
     }
 }
