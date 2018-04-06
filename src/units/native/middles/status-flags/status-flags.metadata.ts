@@ -6,15 +6,15 @@ import {
     BACnetPolarity,
     BACnetEventState,
     BACnetReliability,
-} from '../../../core/enums';
+} from '../../../../core/enums';
 
 import {
     IBACnetObjectProperty,
-} from '../../../core/interfaces';
+} from '../../../../core/interfaces';
 
-import * as BACnetTypes from '../../../core/utils/types';
+import * as BACnetTypes from '../../../../core/utils/types';
 
-export const BinaryMiddleMetadata: IBACnetObjectProperty[] = [
+export const StatusFlagsMiddleMetadata: IBACnetObjectProperty[] = [
     {
         id: BACnetPropIds.outOfService,
         payload: new BACnetTypes.BACnetBoolean(false),

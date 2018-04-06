@@ -5,37 +5,34 @@ import {
     BACnetBinaryPV,
     BACnetEventState,
     BACnetPolarity,
-} from '../../../core/enums';
+} from '../../../../core/enums';
 
 import {
     ApiError,
-} from '../../../core/errors';
+} from '../../../../core/errors';
 
 import {
     IBACnetObjectProperty,
     IBACnetTypeStatusFlags,
     IEDEUnit,
-} from '../../../core/interfaces';
+} from '../../../../core/interfaces';
 
-import { BinaryMiddleMetadata } from './binary-middle.metadata';
+import { StatusFlagsMiddleMetadata } from './status-flags.metadata';
 
-import { NativeUnit } from '../native.unit';
+import { NativeUnit } from '../../native.unit';
+import { UnitStorage } from '../../unit.storage';
 
-import * as BACnetTypes from '../../../core/utils/types';
+import * as BACnetTypes from '../../../../core/utils/types';
 
-export class BinaryMiddleUnit extends NativeUnit {
-    public readonly className: string = 'BinaryMiddleUnit';
+export class StatusFlagsMiddleUnit {
+    public readonly className: string = 'StatusFlagsMiddleUnit';
 
-    constructor (edeUnit: IEDEUnit, unitMetadata: IBACnetObjectProperty[]) {
-        super(edeUnit, BinaryMiddleMetadata);
-
-        _.map(unitMetadata, (prop) => {
-            this.metadata.set(prop.id, prop);
-        });
+    constructor (private storage: UnitStorage,
+        private unit: NativeUnit) {
+        this.storage.addUnitStorage(StatusFlagsMiddleMetadata);
     }
 
     public initUnit (edeUnit: IEDEUnit) {
-        super.initUnit(edeUnit);
     }
 
     /**
@@ -44,30 +41,27 @@ export class BinaryMiddleUnit extends NativeUnit {
      * @param  {IBACnetObjectProperty} notif - notification object
      * @return {void}
      */
-    public sjHandler (notif: IBACnetObjectProperty): boolean {
-        const isSkipped = super.sjHandler(notif);
-        if (!isSkipped) {
-            return;
-        }
-
-        switch (notif.id) {
-            case BACnetPropIds.eventState:
-                this.updateProperty(notif);
-                this.shEventState(notif);
-                return;
-            case BACnetPropIds.outOfService:
-                this.updateProperty(notif);
-                this.shOutOfService(notif);
-                return;
-            case BACnetPropIds.reliability:
-                this.updateProperty(notif);
-                this.shReliability(notif);
-                return;
-            case BACnetPropIds.statusFlags:
-                this.shStatusFlags(notif);
-                return;
-        }
-        return true;
+    public sjHandler (): void {
+        this.storage.addSjHandler((notif) => {
+            switch (notif.id) {
+                case BACnetPropIds.eventState:
+                    this.storage.updateProperty(notif);
+                    this.shEventState(notif);
+                    return;
+                case BACnetPropIds.outOfService:
+                    this.storage.updateProperty(notif);
+                    this.shOutOfService(notif);
+                    return;
+                case BACnetPropIds.reliability:
+                    this.storage.updateProperty(notif);
+                    this.shReliability(notif);
+                    return;
+                case BACnetPropIds.statusFlags:
+                    this.shStatusFlags(notif);
+                    return;
+            }
+            return true;
+        })
     }
 
     /**
@@ -78,7 +72,7 @@ export class BinaryMiddleUnit extends NativeUnit {
      * @return {void}
      */
     private shEventState (notif: IBACnetObjectProperty): void {
-        const statusFlagsProp = this.getProperty(BACnetPropIds.statusFlags);
+        const statusFlagsProp = this.storage.getProperty(BACnetPropIds.statusFlags);
         const statusFlags = statusFlagsProp.payload as BACnetTypes.BACnetStatusFlags;
 
         const eventState = notif.payload as BACnetTypes.BACnetEnumerated;
@@ -93,7 +87,7 @@ export class BinaryMiddleUnit extends NativeUnit {
         });
         const newStatusFlags = new BACnetTypes.BACnetStatusFlags(newStatusFlagsValue);
 
-        this.setProperty({
+        this.storage.setProperty({
             id: BACnetPropIds.statusFlags,
             payload: newStatusFlags,
         });
@@ -107,7 +101,7 @@ export class BinaryMiddleUnit extends NativeUnit {
      * @return {void}
      */
     private shOutOfService (notif: IBACnetObjectProperty): void {
-        const statusFlagsProp = this.getProperty(BACnetPropIds.statusFlags);
+        const statusFlagsProp = this.storage.getProperty(BACnetPropIds.statusFlags);
         const statusFlags = statusFlagsProp.payload as BACnetTypes.BACnetStatusFlags;
 
         const outOfService = notif.payload as BACnetTypes.BACnetBoolean;
@@ -117,7 +111,7 @@ export class BinaryMiddleUnit extends NativeUnit {
         });
         const newStatusFlags = new BACnetTypes.BACnetStatusFlags(newStatusFlagsValue);
 
-        this.setProperty({
+        this.storage.setProperty({
             id: BACnetPropIds.statusFlags,
             payload: newStatusFlags,
         });
@@ -131,7 +125,7 @@ export class BinaryMiddleUnit extends NativeUnit {
      * @return {void}
      */
     private shReliability (notif: IBACnetObjectProperty): void {
-        const statusFlagsProp = this.getProperty(BACnetPropIds.statusFlags);
+        const statusFlagsProp = this.storage.getProperty(BACnetPropIds.statusFlags);
         const statusFlags = statusFlagsProp.payload as BACnetTypes.BACnetStatusFlags;
 
         const reliability = notif.payload as BACnetTypes.BACnetEnumerated;
@@ -141,7 +135,7 @@ export class BinaryMiddleUnit extends NativeUnit {
         });
         const newStatusFlags = new BACnetTypes.BACnetStatusFlags(newStatusFlagsValue);
 
-        this.setProperty({
+        this.storage.setProperty({
             id: BACnetPropIds.statusFlags,
             payload: newStatusFlags,
         });
@@ -156,7 +150,7 @@ export class BinaryMiddleUnit extends NativeUnit {
      * @return {void}
      */
     private shStatusFlags (notif: IBACnetObjectProperty): void {
-        const statusFlagsProp = this.getProperty(BACnetPropIds.statusFlags);
+        const statusFlagsProp = this.storage.getProperty(BACnetPropIds.statusFlags);
         const statusFlags = statusFlagsProp.payload as BACnetTypes.BACnetStatusFlags;
 
         const overridden = statusFlags.value.fault
@@ -164,7 +158,7 @@ export class BinaryMiddleUnit extends NativeUnit {
             || statusFlags.value.inAlarm;
 
         if (!!overridden === statusFlags.value.overridden) {
-            this.dispatchCOVNotification();
+            this.unit.dispatchCOVNotification();
             return;
         }
 
@@ -173,21 +167,9 @@ export class BinaryMiddleUnit extends NativeUnit {
         });
         const newStatusFlags = new BACnetTypes.BACnetStatusFlags(newStatusFlagsValue);
 
-        this.updateProperty({
+        this.storage.updateProperty({
             id: BACnetPropIds.statusFlags,
             payload: newStatusFlags,
         });
-    }
-
-    /**
-     * getReportedProperties - returns the reported properties for COV notification.
-     *
-     * @return {IBACnetObjectProperty[]}
-     */
-    protected getReportedProperties (): IBACnetObjectProperty[] {
-        const presentValue = this.getProperty(BACnetPropIds.presentValue);
-        const statusFlags = this.getProperty(BACnetPropIds.statusFlags);
-
-        return [ presentValue, statusFlags ];
     }
 }
