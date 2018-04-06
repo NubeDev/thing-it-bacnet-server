@@ -41,6 +41,7 @@ export class UnitStorage {
     constructor () {
         this.sjData = new Subject();
 
+        this.metadata = new Map();
 
         _.map(NativeMetadata, (prop) => {
             this.metadata.set(prop.id, prop);
