@@ -1,9 +1,9 @@
 import { NoopUnit } from './noop/noop.unit';
 import { DeviceUnit } from './device/device.unit';
 
-import { BinaryInputUnit } from './binary-input/binary-input.unit';
-import { BinaryOutputUnit } from './binary-output/binary-output.unit';
-import { BinaryValueUnit } from './binary-value/binary-value.unit';
+import { BinaryInputUnit } from './binary/binary-input/binary-input.unit';
+import { BinaryOutputUnit } from './binary/binary-output/binary-output.unit';
+import { BinaryValueUnit } from './binary/binary-value/binary-value.unit';
 
 import { AnalogInputUnit } from './analog-input/analog-input.unit';
 import { AnalogOutputUnit } from './analog-output/analog-output.unit';
