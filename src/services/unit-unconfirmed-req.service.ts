@@ -23,8 +23,8 @@ export class UnitUnconfirmedReqService {
         const unitStorage: UnitStorageManager = serviceSocket.getService('unitStorage');
 
         const device = unitStorage.getDevice();
-        const devObjId = device.getProperty(BACnetPropIds.objectIdentifier);
-        const vendorId = device.getProperty(BACnetPropIds.vendorIdentifier);
+        const devObjId = device.storage.getProperty(BACnetPropIds.objectIdentifier);
+        const vendorId = device.storage.getProperty(BACnetPropIds.vendorIdentifier);
 
         unconfirmedReqService.iAm({
             objId: devObjId,

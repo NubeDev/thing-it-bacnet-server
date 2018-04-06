@@ -92,7 +92,7 @@ export class UnitConfirmedReqService {
 
         // Get device Object identifier
         const device = unitStorage.getDevice();
-        const devObjIdProp = device.getProperty(BACnetPropIds.objectIdentifier);
+        const devObjIdProp = device.storage.getProperty(BACnetPropIds.objectIdentifier);
         const devObjId = devObjIdProp.payload as BACnetObjectId;
 
         unitStorage

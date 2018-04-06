@@ -124,7 +124,7 @@ export class UnitStorageManager {
         if (!unit) {
             return;
         }
-        unit.setProperty(prop, false);
+        unit.storage.setProperty(prop, false);
     }
 
     /**
@@ -140,7 +140,7 @@ export class UnitStorageManager {
         if (!unit) {
             return null;
         }
-        return unit.getProperty(propId);
+        return unit.storage.getProperty(propId);
     }
 
     /**

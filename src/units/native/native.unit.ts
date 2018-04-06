@@ -17,6 +17,7 @@ import {
 } from '../../core/interfaces';
 
 import { NativeMetadata } from './native.metadata';
+import { UnitStorage } from './unit.storage';
 
 import * as BACnetTypes from '../../core/utils/types';
 
@@ -27,29 +28,20 @@ import {
 
 export class NativeUnit {
     public readonly className: string = 'NativeUnit';
-    // For logging
-    protected objType: number;
-    protected objInst: number;
+    public logHeader: string;
+
     // Unit metadata
-    public metadata: Map<BACnetPropIds, IBACnetObjectProperty>;
+    public storage: UnitStorage;
     // Unit properties subject
-    public sjData: Subject<IBACnetObjectProperty>;
     public sjCOV: BehaviorSubject<IBACnetObjectProperty[]>;
 
-    constructor (edeUnit: IEDEUnit, unitMetadata: IBACnetObjectProperty[]) {
-        if (_.isNil(edeUnit.objInst)) {
-            throw new ApiError(`${this.className} - constructor: Unit ID is required!`);
-        }
-        this.sjData = new Subject();
-        this.sjCOV = new BehaviorSubject(null);
+    constructor () {
+        // Create and init unit storage
+        this.storage = new UnitStorage();
+        this.storage.initStorage();
+        this.storage.addUnitStorage(NativeMetadata);
 
-        this.metadata = new Map();
-        _.map(NativeMetadata, (prop) => {
-            this.metadata.set(prop.id, prop);
-        });
-        _.map(unitMetadata, (prop) => {
-            this.metadata.set(prop.id, prop);
-        });
+        this.sjCOV = new BehaviorSubject(null);
     }
 
     /**
@@ -59,14 +51,18 @@ export class NativeUnit {
      * @return {void}
      */
     public initUnit (edeUnit: IEDEUnit): void {
-        this.objType = edeUnit.objType;
-        this.objInst = edeUnit.objInst
+        this.sjHandler();
 
-        this.sjData.subscribe((notif) => {
-            this.sjHandler(notif);
-        });
+        if (_.isNil(edeUnit.objInst)) {
+            throw new ApiError(`${this.className} - constructor: Unit ID is required!`);
+        }
 
-        this.setProperty({
+        // Get header of the log messages
+        this.logHeader = this.getLogHeader(this.className, edeUnit.objType, edeUnit.objInst);
+        this.storage.setLogHeader(this.logHeader);
+
+        // Set default props
+        this.storage.setProperty({
             id: BACnetPropIds.objectIdentifier,
             payload: new BACnetTypes.BACnetObjectId({
                 type: edeUnit.objType,
@@ -74,24 +70,22 @@ export class NativeUnit {
             }),
         });
 
-        this.setProperty({
+        this.storage.setProperty({
             id: BACnetPropIds.objectName,
             payload: new BACnetTypes.BACnetCharacterString(edeUnit.objName),
         });
 
-        this.setProperty({
+        this.storage.setProperty({
             id: BACnetPropIds.objectType,
             payload: new BACnetTypes.BACnetEnumerated(edeUnit.objType),
         });
 
         if (edeUnit.description) {
-            this.setProperty({
+            this.storage.setProperty({
                 id: BACnetPropIds.description,
                 payload: new BACnetTypes.BACnetCharacterString(edeUnit.description),
             });
         }
-
-        this.dispatchCOVNotification();
     }
 
     /**
@@ -100,73 +94,18 @@ export class NativeUnit {
      * @param  {IBACnetObjectProperty} notif - notification object
      * @return {void}
      */
-    public sjHandler (notif: IBACnetObjectProperty): boolean {
-        switch (notif.id) {
-            case BACnetPropIds.objectIdentifier:
-            case BACnetPropIds.objectType:
-            case BACnetPropIds.objectName:
-            case BACnetPropIds.description:
-                this.updateProperty(notif);
-                return;
-        }
-        return true;
-    }
-
-    /**
-     * setProperty - sets the value of the unit property by property ID.
-     *
-     * @param  {BACnetPropIds} propId - property ID
-     * @param  {IBACnetType} value - property value
-     * @return {void}
-     */
-    public setProperty (newProp: IBACnetObjectProperty,
-            isWritable: boolean = true): void {
-        const oldProp = this.getProperty(newProp.id);
-
-        if (!isWritable && !oldProp.writable) {
-            return;
-        }
-
-        logger.debug(`${this.getLogHeader()} - setProperty (${BACnetPropIds[newProp.id]}):`
-            + `${JSON.stringify(newProp)}`);
-
-        this.sjData.next(newProp);
-    }
-
-    /**
-     * setProperty - sets the value of the unit property by property ID.
-     *
-     * @param  {BACnetPropIds} propId - property ID
-     * @param  {IBACnetType} value - property value
-     * @return {void}
-     */
-    public updateProperty (newProp: IBACnetObjectProperty): void {
-        const oldProp = this.getProperty(newProp.id);
-
-        oldProp.payload = newProp.payload;
-
-        this.metadata.set(newProp.id, oldProp);
-
-        logger.debug(`${this.getLogHeader()} - updateProperty (${BACnetPropIds[newProp.id]}):`
-            + `${JSON.stringify(newProp)}`);
-    }
-
-    /**
-     * getProperty - return the clone value of the unit property by property ID.
-     *
-     * @param  {BACnetPropIds} propId - property ID
-     * @return {IBACnetObjectProperty}
-     */
-    public getProperty (propId: BACnetPropIds): IBACnetObjectProperty {
-        const prop = this.metadata.get(propId);
-
-        if (_.isNil(prop)) {
-            logger.debug(`${this.getLogHeader()} - getProperty (${BACnetPropIds[propId]}): Empty`);
-            return null;
-        }
-        logger.debug(`${this.getLogHeader()} - getProperty (${BACnetPropIds[propId]}):`
-            + `${JSON.stringify(prop)}`);
-        return _.cloneDeep(prop);
+    public sjHandler (): void {
+        this.storage.addSjHandler((notif) => {
+            switch (notif.id) {
+                case BACnetPropIds.objectIdentifier:
+                case BACnetPropIds.objectType:
+                case BACnetPropIds.objectName:
+                case BACnetPropIds.description:
+                    this.storage.updateProperty(notif);
+                    return;
+            }
+            return true;
+        });
     }
 
     /**
@@ -175,7 +114,7 @@ export class NativeUnit {
      * @return {IBACnetType}
      */
     public getCommandablePropertyValue (): BACnetTypes.BACnetTypeBase {
-        const priorityArrayProp = this.getProperty(BACnetPropIds.priorityArray);
+        const priorityArrayProp = this.storage.getProperty(BACnetPropIds.priorityArray);
         const priorityArray = priorityArrayProp.payload as BACnetTypes.BACnetTypeBase[];
 
         let priorityArrayValue: BACnetTypes.BACnetTypeBase, i: number;
@@ -190,13 +129,13 @@ export class NativeUnit {
         const priorityIndex: BACnetTypes.BACnetTypeBase = i === priorityArray.length
             ? new BACnetTypes.BACnetNull()
             : new BACnetTypes.BACnetUnsignedInteger(i);
-        this.setProperty({
+        this.storage.setProperty({
             id: BACnetPropIds.currentCommandPriority,
             payload: priorityIndex,
         });
 
         if (_.isNil(priorityArrayValue)) {
-            const relinquishDefaultProp = this.getProperty(BACnetPropIds.relinquishDefault);
+            const relinquishDefaultProp = this.storage.getProperty(BACnetPropIds.relinquishDefault);
             const relinquishDefault = relinquishDefaultProp.payload as BACnetTypes.BACnetTypeBase;
             priorityArrayValue = relinquishDefault;
         }
@@ -219,7 +158,7 @@ export class NativeUnit {
      * @return {boolean}
      */
     public isBACnetObject (objId: IBACnetTypeObjectId): boolean {
-        const unitIdProp = this.getProperty(BACnetPropIds.objectIdentifier);
+        const unitIdProp = this.storage.getProperty(BACnetPropIds.objectIdentifier);
         const unitId = unitIdProp.payload as BACnetTypes.BACnetObjectId;
         return unitId.value.type === objId.type
             && unitId.value.instance === objId.instance;
@@ -249,7 +188,7 @@ export class NativeUnit {
      *
      * @return {string}
      */
-    protected getLogHeader (): string {
-        return `${this.className} (${this.objType}:${this.objInst})`;
+    protected getLogHeader (className: string, objType: number, objInst: number): string {
+        return `${className} (${objType}:${objInst})`;
     }
 }
