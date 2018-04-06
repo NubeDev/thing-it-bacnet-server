@@ -100,14 +100,16 @@ export class NativeUnit {
      * @param  {IBACnetObjectProperty} notif - notification object
      * @return {void}
      */
-    public sjHandler (notif: IBACnetObjectProperty): void {
+    public sjHandler (notif: IBACnetObjectProperty): boolean {
         switch (notif.id) {
             case BACnetPropIds.objectIdentifier:
             case BACnetPropIds.objectType:
             case BACnetPropIds.objectName:
             case BACnetPropIds.description:
-                return this.updateProperty(notif);
+                this.updateProperty(notif);
+                return;
         }
+        return true;
     }
 
     /**

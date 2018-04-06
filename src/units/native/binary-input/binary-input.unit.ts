@@ -41,17 +41,23 @@ export class BinaryInputUnit extends BinaryMiddleUnit {
      * @param  {IBACnetObjectProperty} notif - notification object
      * @return {void}
      */
-    public sjHandler (notif: IBACnetObjectProperty): void {
-        super.sjHandler(notif);
+    public sjHandler (notif: IBACnetObjectProperty): boolean {
+        const isSkipped = super.sjHandler(notif);
+        if (!isSkipped) {
+            return;
+        }
 
         switch (notif.id) {
             case BACnetPropIds.polarity:
-                return this.shPolarity(notif);
+                this.shPolarity(notif);
+                return;
             case BACnetPropIds.presentValue:
                 this.updateProperty(notif);
-                return this.shPresentValue(notif);
+                this.shPresentValue(notif);
+                return;
             default:
-                return this.updateProperty(notif);
+                this.updateProperty(notif);
+                return;
         }
     }
 

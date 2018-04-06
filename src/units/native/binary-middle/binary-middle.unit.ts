@@ -44,22 +44,30 @@ export class BinaryMiddleUnit extends NativeUnit {
      * @param  {IBACnetObjectProperty} notif - notification object
      * @return {void}
      */
-    public sjHandler (notif: IBACnetObjectProperty): void {
-        super.sjHandler(notif);
+    public sjHandler (notif: IBACnetObjectProperty): boolean {
+        const isSkipped = super.sjHandler(notif);
+        if (!isSkipped) {
+            return;
+        }
 
         switch (notif.id) {
             case BACnetPropIds.eventState:
                 this.updateProperty(notif);
-                return this.shEventState(notif);
+                this.shEventState(notif);
+                return;
             case BACnetPropIds.outOfService:
                 this.updateProperty(notif);
-                return this.shOutOfService(notif);
+                this.shOutOfService(notif);
+                return;
             case BACnetPropIds.reliability:
                 this.updateProperty(notif);
-                return this.shReliability(notif);
+                this.shReliability(notif);
+                return;
             case BACnetPropIds.statusFlags:
-                return this.shStatusFlags(notif);
+                this.shStatusFlags(notif);
+                return;
         }
+        return true;
     }
 
     /**
