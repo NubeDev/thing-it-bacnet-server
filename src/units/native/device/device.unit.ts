@@ -20,8 +20,9 @@ import { NativeUnit } from '../native.unit';
 export class DeviceUnit extends NativeUnit {
     public readonly className: string = 'DeviceUnit';
 
-    constructor (edeUnit: IEDEUnit) {
-        super(edeUnit, DeviceMetadata);
+    constructor () {
+        super();
+        this.storage.addUnitStorage(DeviceMetadata);
     }
 
     public initUnit (edeUnit: IEDEUnit) {

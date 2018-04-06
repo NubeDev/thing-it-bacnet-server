@@ -20,8 +20,9 @@ import { NativeUnit } from '../native.unit';
 export class AnalogInputUnit extends NativeUnit {
     public readonly className: string = 'AnalogInputUnit';
 
-    constructor (edeUnit: IEDEUnit) {
-        super(edeUnit, AnalogInputMetadata);
+    constructor () {
+        super();
+        this.storage.addUnitStorage(AnalogInputMetadata);
     }
 
     public initUnit (edeUnit: IEDEUnit) {

@@ -20,8 +20,9 @@ import { NativeUnit } from '../native.unit';
 export class MultiStateOutputUnit extends NativeUnit {
     public readonly className: string = 'MultiStateOutputUnit';
 
-    constructor (edeUnit: IEDEUnit) {
-        super(edeUnit, MultiStateOutputMetadata);
+    constructor () {
+        super();
+        this.storage.addUnitStorage(MultiStateOutputMetadata);
     }
 
     public initUnit (edeUnit: IEDEUnit) {
