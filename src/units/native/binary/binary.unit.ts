@@ -18,6 +18,7 @@ import {
 } from '../../../core/interfaces';
 
 import { BinaryMetadata } from './binary.metadata';
+import { StatusFlagsMiddleUnit } from '../middles/status-flags/status-flags.unit';
 
 import { NativeUnit } from '../native.unit';
 
@@ -30,6 +31,7 @@ export class BinaryUnit extends NativeUnit {
         super.initUnit(edeUnit);
 
         this.storage.addUnitStorage(BinaryMetadata);
+        StatusFlagsMiddleUnit.createAndBind(this.storage);
     }
 
     /**
