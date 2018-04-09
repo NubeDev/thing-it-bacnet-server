@@ -126,7 +126,10 @@ export class UnitStorage {
 
         if (_.isNil(prop)) {
             logger.debug(`${this.getLogHeader()} - getProperty (${BACnetPropIds[propId]}): Empty`);
-            return null;
+            return {
+                id: propId,
+                payload: new BACnetTypes.BACnetNull(),
+            };
         }
         logger.debug(`${this.getLogHeader()} - getProperty (${BACnetPropIds[propId]}):`
             + `${JSON.stringify(prop)}`);
