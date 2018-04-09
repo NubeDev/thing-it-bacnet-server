@@ -91,8 +91,8 @@ export class UnitStorage {
             return;
         }
 
-        logger.debug(`${this.getLogHeader()} - setProperty (${BACnetPropIds[newProp.id]}):`
-            + `${JSON.stringify(newProp)}`);
+        logger.debug(`${this.getLogHeader()} - setProperty (${BACnetPropIds[newProp.id]}):`,
+            JSON.stringify(newProp));
 
         this.sjData.next(newProp);
     }
@@ -111,8 +111,8 @@ export class UnitStorage {
 
         this.metadata.set(newProp.id, oldProp);
 
-        logger.debug(`${this.getLogHeader()} - updateProperty (${BACnetPropIds[newProp.id]}):`
-            + `${JSON.stringify(newProp)}`);
+        logger.debug(`${this.getLogHeader()} - updateProperty (${BACnetPropIds[newProp.id]}):`,
+            JSON.stringify(newProp));
     }
 
     /**
@@ -131,8 +131,8 @@ export class UnitStorage {
                 payload: new BACnetTypes.BACnetNull(),
             };
         }
-        logger.debug(`${this.getLogHeader()} - getProperty (${BACnetPropIds[propId]}):`
-            + `${JSON.stringify(prop)}`);
+        logger.debug(`${this.getLogHeader()} - getProperty (${BACnetPropIds[propId]}):`,
+            JSON.stringify(prop));
         return _.cloneDeep(prop);
     }
 
