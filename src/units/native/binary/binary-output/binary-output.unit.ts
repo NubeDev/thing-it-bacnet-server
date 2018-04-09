@@ -34,7 +34,7 @@ export class BinaryOutputUnit extends BinaryUnit {
     public initUnit (edeUnit: IEDEUnit) {
         super.initUnit(edeUnit);
 
-        this.dispatchCOVNotification();
+        this.storage.dispatch();
     }
 
     /**
@@ -168,6 +168,6 @@ export class BinaryOutputUnit extends BinaryUnit {
             payload: newPresentValue,
         });
 
-        this.dispatchCOVNotification();
+        this.storage.dispatch();
     }
 }

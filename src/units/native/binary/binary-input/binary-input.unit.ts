@@ -33,7 +33,7 @@ export class BinaryInputUnit extends BinaryUnit {
     public initUnit (edeUnit: IEDEUnit) {
         super.initUnit(edeUnit);
 
-        this.dispatchCOVNotification();
+        this.storage.dispatch();
     }
 
     /**
@@ -109,6 +109,6 @@ export class BinaryInputUnit extends BinaryUnit {
      */
     private shPresentValue (notif: IBACnetObjectProperty): void {
         this.storage.updateProperty(notif);
-        this.dispatchCOVNotification();
+        this.storage.dispatch();
     }
 }

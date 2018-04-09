@@ -156,7 +156,7 @@ export class StatusFlagsMiddleUnit {
             || statusFlags.value.inAlarm;
 
         if (!!overridden === statusFlags.value.overridden) {
-            this.unit.dispatchCOVNotification();
+            this.storage.dispatch();
             return;
         }
 

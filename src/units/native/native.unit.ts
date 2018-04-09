@@ -30,18 +30,14 @@ export class NativeUnit {
     public readonly className: string = 'NativeUnit';
     public logHeader: string;
 
-    // Unit metadata
+    // Unit storage
     public storage: UnitStorage;
-    // Unit properties subject
-    public sjCOV: BehaviorSubject<IBACnetObjectProperty[]>;
 
     constructor () {
         // Create and init unit storage
         this.storage = new UnitStorage();
         this.storage.initStorage();
         this.storage.addUnitStorage(NativeMetadata);
-
-        this.sjCOV = new BehaviorSubject(null);
     }
 
     /**
@@ -144,7 +140,12 @@ export class NativeUnit {
      * @return {Observable<IBACnetObjectProperty>}
      */
     public subscribe (): Observable<IBACnetObjectProperty[]> {
-        return this.sjCOV.filter(Boolean);
+        return this.storage.sjCOV.map(() => {
+            const reportedProps = this.getReportedProperties();
+            logger.debug(`${this.logHeader} - subscribe (dispatch):`,
+                `${JSON.stringify(reportedProps)}`);
+            return reportedProps;
+        });
     }
 
     /**
@@ -158,16 +159,6 @@ export class NativeUnit {
         const unitId = unitIdProp.payload as BACnetTypes.BACnetObjectId;
         return unitId.value.type === objId.type
             && unitId.value.instance === objId.instance;
-    }
-
-    /**
-     * dispatchCOVNotification - dispatchs the "COV Notification" event.
-     *
-     * @return {void}
-     */
-    public dispatchCOVNotification (): void {
-        const reportedProps = this.getReportedProperties();
-        this.sjCOV.next(reportedProps);
     }
 
     /**

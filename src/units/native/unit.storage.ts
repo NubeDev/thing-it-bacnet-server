@@ -33,13 +33,16 @@ export class UnitStorage {
     public logHeader: string;
     // Unit metadata
     public metadata: Map<BACnetPropIds, IBACnetObjectProperty>;
-    // Unit properties subject
+    // Subject for unit "CoV" event
     public sjData: Subject<IBACnetObjectProperty>;
+    // Subject for BACnet "CoV" event
+    public sjCOV: BehaviorSubject<null>;
     // Subject handlers
     private sjHandlers: Map<BACnetPropIds, TSjHandler>;
 
     constructor () {
         this.sjData = new Subject();
+        this.sjCOV = new BehaviorSubject(null);
 
         this.metadata = new Map();
 
@@ -134,6 +137,15 @@ export class UnitStorage {
         logger.debug(`${this.getLogHeader()} - getProperty (${BACnetPropIds[propId]}):`,
             JSON.stringify(prop));
         return _.cloneDeep(prop);
+    }
+
+    /**
+     * dispatch - emits the "CoV" event.
+     *
+     * @return {void}
+     */
+    public dispatch (): void {
+        this.sjCOV.next(null);
     }
 
     /**
