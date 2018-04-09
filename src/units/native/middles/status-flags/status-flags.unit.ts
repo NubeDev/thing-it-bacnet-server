@@ -42,26 +42,18 @@ export class StatusFlagsMiddleUnit {
      * @return {void}
      */
     public sjHandler (): void {
-        this.storage.addSjHandler((notif) => {
-            switch (notif.id) {
-                case BACnetPropIds.eventState:
-                    this.storage.updateProperty(notif);
-                    this.shEventState(notif);
-                    return;
-                case BACnetPropIds.outOfService:
-                    this.storage.updateProperty(notif);
-                    this.shOutOfService(notif);
-                    return;
-                case BACnetPropIds.reliability:
-                    this.storage.updateProperty(notif);
-                    this.shReliability(notif);
-                    return;
-                case BACnetPropIds.statusFlags:
-                    this.shStatusFlags(notif);
-                    return;
-            }
-            return true;
-        })
+        this.storage.setSjHandler(BACnetPropIds.eventState, (notif) => {
+            this.shEventState(notif);
+        });
+        this.storage.setSjHandler(BACnetPropIds.outOfService, (notif) => {
+            this.shOutOfService(notif);
+        });
+        this.storage.setSjHandler(BACnetPropIds.reliability, (notif) => {
+            this.shReliability(notif);
+        });
+        this.storage.setSjHandler(BACnetPropIds.statusFlags, (notif) => {
+            this.shStatusFlags(notif);
+        });
     }
 
     /**
@@ -72,6 +64,8 @@ export class StatusFlagsMiddleUnit {
      * @return {void}
      */
     private shEventState (notif: IBACnetObjectProperty): void {
+        this.storage.updateProperty(notif);
+
         const statusFlagsProp = this.storage.getProperty(BACnetPropIds.statusFlags);
         const statusFlags = statusFlagsProp.payload as BACnetTypes.BACnetStatusFlags;
 
@@ -101,6 +95,8 @@ export class StatusFlagsMiddleUnit {
      * @return {void}
      */
     private shOutOfService (notif: IBACnetObjectProperty): void {
+        this.storage.updateProperty(notif);
+
         const statusFlagsProp = this.storage.getProperty(BACnetPropIds.statusFlags);
         const statusFlags = statusFlagsProp.payload as BACnetTypes.BACnetStatusFlags;
 
@@ -125,6 +121,8 @@ export class StatusFlagsMiddleUnit {
      * @return {void}
      */
     private shReliability (notif: IBACnetObjectProperty): void {
+        this.storage.updateProperty(notif);
+
         const statusFlagsProp = this.storage.getProperty(BACnetPropIds.statusFlags);
         const statusFlags = statusFlagsProp.payload as BACnetTypes.BACnetStatusFlags;
 

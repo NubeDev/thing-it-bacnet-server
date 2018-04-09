@@ -46,20 +46,14 @@ export class BinaryOutputUnit extends BinaryUnit {
     public sjHandler (): void {
         super.sjHandler();
 
-        this.storage.addSjHandler((notif) => {
-            switch (notif.id) {
-                case BACnetPropIds.polarity:
-                    this.shPolarity(notif);
-                    return;
-                case BACnetPropIds.presentValue:
-                    this.shPresentValue(notif);
-                    return;
-                case BACnetPropIds.priorityArray:
-                    this.shPriorityArray(notif);
-                    return;
-            }
-            this.storage.updateProperty(notif);
-            return true;
+        this.storage.setSjHandler(BACnetPropIds.polarity, (notif) => {
+            this.shPolarity(notif);
+        });
+        this.storage.setSjHandler(BACnetPropIds.presentValue, (notif) => {
+            this.shPresentValue(notif);
+        });
+        this.storage.setSjHandler(BACnetPropIds.priorityArray, (notif) => {
+            this.shPriorityArray(notif);
         });
     }
 
@@ -149,6 +143,7 @@ export class BinaryOutputUnit extends BinaryUnit {
         const presentValueProp = this.storage.getProperty(BACnetPropIds.presentValue);
         const presentValue = presentValueProp.payload as BACnetTypes.BACnetEnumerated;
 
+        this.storage.updateProperty(notif);
         const newPresentValue = this.getCommandablePropertyValue() as BACnetTypes.BACnetEnumerated;
 
         const polarityProp = this.storage.getProperty(BACnetPropIds.polarity);

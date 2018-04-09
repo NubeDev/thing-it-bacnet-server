@@ -25,7 +25,7 @@ import {
     TyperUtil,
 } from '../../core/utils';
 
-type TSjHandler = (notif: IBACnetObjectProperty) => boolean;
+type TSjHandler = (notif: IBACnetObjectProperty) => void;
 
 export class UnitStorage {
     /* Logging */
@@ -36,7 +36,7 @@ export class UnitStorage {
     // Unit properties subject
     public sjData: Subject<IBACnetObjectProperty>;
     // Subject handlers
-    private sjHandlers: TSjHandler[];
+    private sjHandlers: Map<BACnetPropIds, TSjHandler>;
 
     constructor () {
         this.sjData = new Subject();
@@ -50,10 +50,16 @@ export class UnitStorage {
 
     public initStorage () {
         this.metadata = new Map();
-        this.sjHandlers = [];
+        this.sjHandlers = new Map();
 
         this.sjData.subscribe((notif) => {
-            _.some(this.sjHandlers, (sjHandler) => !sjHandler(notif));
+            const sjHandler = this.sjHandlers.get(notif.id);
+
+            if (!_.isFunction(sjHandler)) {
+                return;
+            }
+
+            sjHandler(notif);
         });
     }
 
@@ -63,8 +69,11 @@ export class UnitStorage {
         });
     }
 
-    public addSjHandler (fn: TSjHandler) {
-        this.sjHandlers.push(fn);
+    public setSjHandler (propIds: BACnetPropIds|BACnetPropIds[], fn: TSjHandler) {
+        let propIdArray: BACnetPropIds[] = _.isArray(propIds) ? propIds : [propIds];
+        _.map(propIdArray, (propId) => {
+            this.sjHandlers.set(propId, fn);
+        });
     }
 
     /**

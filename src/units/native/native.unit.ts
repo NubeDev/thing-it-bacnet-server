@@ -95,17 +95,13 @@ export class NativeUnit {
      * @return {void}
      */
     public sjHandler (): void {
-        this.storage.addSjHandler((notif) => {
-            switch (notif.id) {
-                case BACnetPropIds.objectIdentifier:
-                case BACnetPropIds.objectType:
-                case BACnetPropIds.objectName:
-                case BACnetPropIds.description:
-                    this.storage.updateProperty(notif);
-                    return;
+        this.storage.setSjHandler(
+            [ BACnetPropIds.objectIdentifier, BACnetPropIds.objectType,
+                BACnetPropIds.objectName, BACnetPropIds.description ],
+            (notif) => {
+                this.storage.updateProperty(notif);
             }
-            return true;
-        });
+        );
     }
 
     /**

@@ -45,18 +45,11 @@ export class BinaryInputUnit extends BinaryUnit {
     public sjHandler (): void {
         super.sjHandler();
 
-        this.storage.addSjHandler((notif) => {
-            switch (notif.id) {
-                case BACnetPropIds.polarity:
-                    this.shPolarity(notif);
-                    return;
-                case BACnetPropIds.presentValue:
-                    this.storage.updateProperty(notif);
-                    this.shPresentValue(notif);
-                    return;
-            }
-            this.storage.updateProperty(notif);
-            return true;
+        this.storage.setSjHandler(BACnetPropIds.polarity, (notif) => {
+            this.shPolarity(notif);
+        });
+        this.storage.setSjHandler(BACnetPropIds.presentValue, (notif) => {
+            this.shPresentValue(notif);
         });
     }
 
@@ -115,6 +108,7 @@ export class BinaryInputUnit extends BinaryUnit {
      * @return {void}
      */
     private shPresentValue (notif: IBACnetObjectProperty): void {
+        this.storage.updateProperty(notif);
         this.dispatchCOVNotification();
     }
 }
