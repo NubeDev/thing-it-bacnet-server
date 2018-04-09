@@ -19,20 +19,17 @@ import {
 
 import { StatusFlagsMiddleMetadata } from './status-flags.metadata';
 
-import { NativeUnit } from '../../native.unit';
+import { MiddleUnit } from '../middle.unit';
 import { UnitStorage } from '../../unit.storage';
 
 import * as BACnetTypes from '../../../../core/utils/types';
 
-export class StatusFlagsMiddleUnit {
+export class StatusFlagsMiddleUnit extends MiddleUnit {
     public readonly className: string = 'StatusFlagsMiddleUnit';
 
-    constructor (private storage: UnitStorage,
-        private unit: NativeUnit) {
+    constructor (protected storage: UnitStorage) {
+        super(storage);
         this.storage.addUnitStorage(StatusFlagsMiddleMetadata);
-    }
-
-    public initUnit (edeUnit: IEDEUnit) {
     }
 
     /**
