@@ -46,13 +46,13 @@ export class BinaryOutputUnit extends BinaryUnit {
     public sjHandler (): void {
         super.sjHandler();
 
-        this.storage.setSjHandler(BACnetPropIds.polarity, (notif) => {
+        this.storage.setFlowHandler('set', BACnetPropIds.polarity, (notif) => {
             this.shPolarity(notif);
         });
-        this.storage.setSjHandler(BACnetPropIds.presentValue, (notif) => {
+        this.storage.setFlowHandler('set', BACnetPropIds.presentValue, (notif) => {
             this.shPresentValue(notif);
         });
-        this.storage.setSjHandler(BACnetPropIds.priorityArray, (notif) => {
+        this.storage.setFlowHandler('set', BACnetPropIds.priorityArray, (notif) => {
             this.shPriorityArray(notif);
         });
     }

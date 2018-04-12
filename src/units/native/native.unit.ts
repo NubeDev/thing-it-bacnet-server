@@ -92,7 +92,7 @@ export class NativeUnit {
      * @return {void}
      */
     public sjHandler (): void {
-        this.storage.setSjHandler(
+        this.storage.setFlowHandler('set',
             [ BACnetPropIds.objectIdentifier, BACnetPropIds.objectType,
                 BACnetPropIds.objectName, BACnetPropIds.description ],
             (notif) => {

@@ -43,11 +43,11 @@ export class CommandableMiddleUnit extends MiddleUnit {
      * @return {void}
      */
     public sjHandler (): void {
-        this.storage.setSjHandler(BACnetPropIds.presentValue, (notif) => {
+        this.storage.setFlowHandler('set', BACnetPropIds.presentValue, (notif) => {
             this.shPresentValue(notif);
         });
 
-        this.storage.setSjHandler(BACnetPropIds.priorityArray, (notif) => {
+        this.storage.setFlowHandler('set', BACnetPropIds.priorityArray, (notif) => {
             this.shPriorityArray(notif);
         });
     }

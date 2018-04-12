@@ -46,16 +46,16 @@ export class StatusFlagsMiddleUnit extends MiddleUnit {
      * @return {void}
      */
     public sjHandler (): void {
-        this.storage.setSjHandler(BACnetPropIds.eventState, (notif) => {
+        this.storage.setFlowHandler('set', BACnetPropIds.eventState, (notif) => {
             this.shEventState(notif);
         });
-        this.storage.setSjHandler(BACnetPropIds.outOfService, (notif) => {
+        this.storage.setFlowHandler('set', BACnetPropIds.outOfService, (notif) => {
             this.shOutOfService(notif);
         });
-        this.storage.setSjHandler(BACnetPropIds.reliability, (notif) => {
+        this.storage.setFlowHandler('set', BACnetPropIds.reliability, (notif) => {
             this.shReliability(notif);
         });
-        this.storage.setSjHandler(BACnetPropIds.statusFlags, (notif) => {
+        this.storage.setFlowHandler('set', BACnetPropIds.statusFlags, (notif) => {
             this.shStatusFlags(notif);
         });
     }
