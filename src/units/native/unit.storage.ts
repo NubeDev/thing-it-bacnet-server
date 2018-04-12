@@ -35,6 +35,8 @@ export class UnitStorage {
     public metadata: Map<BACnetPropIds, IBACnetObjectProperty>;
     // Subject for "set" event
     public sjSetFlow: Subject<IBACnetObjectProperty>;
+    // Subject for "update" event
+    public sjUpdateFlow: Subject<IBACnetObjectProperty>;
     // Subject for BACnet "CoV" event
     public sjCOV: BehaviorSubject<null>;
     // Subject handlers
@@ -116,6 +118,8 @@ export class UnitStorage {
 
         logger.debug(`${this.getLogHeader()} - updateProperty (${BACnetPropIds[newProp.id]}):`,
             JSON.stringify(newProp));
+
+        this.sjUpdateFlow.next(oldProp);
     }
 
     /**
