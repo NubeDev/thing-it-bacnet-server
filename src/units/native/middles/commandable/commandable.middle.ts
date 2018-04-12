@@ -2,9 +2,6 @@ import * as _ from 'lodash';
 
 import {
     BACnetPropIds,
-    BACnetBinaryPV,
-    BACnetEventState,
-    BACnetPolarity,
 } from '../../../../core/enums';
 
 import {
@@ -13,7 +10,6 @@ import {
 
 import {
     IBACnetObjectProperty,
-    IBACnetTypeStatusFlags,
     IEDEUnit,
 } from '../../../../core/interfaces';
 
@@ -28,8 +24,15 @@ import { TyperUtil } from '../../../../core/utils';
 export class CommandableMiddleUnit extends MiddleUnit {
     public readonly className: string = 'StatusFlagsMiddleUnit';
 
-    constructor (protected storage: UnitStorage) {
-        super(storage);
+    /**
+     * initMiddle - initializes the middle unit.
+     *
+     * @param  {IEDEUnit} edeUnit -  ede unit configuration
+     * @return {void}
+     */
+    public initMiddle (edeUnit?: IEDEUnit): void {
+        super.initMiddle(edeUnit);
+
         this.storage.addUnitStorage(CommandableMiddleMetadata);
     }
 

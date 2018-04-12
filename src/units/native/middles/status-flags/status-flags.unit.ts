@@ -27,8 +27,15 @@ import * as BACnetTypes from '../../../../core/utils/types';
 export class StatusFlagsMiddleUnit extends MiddleUnit {
     public readonly className: string = 'StatusFlagsMiddleUnit';
 
-    constructor (protected storage: UnitStorage) {
-        super(storage);
+    /**
+     * initMiddle - initializes the middle unit.
+     *
+     * @param  {IEDEUnit} edeUnit -  ede unit configuration
+     * @return {void}
+     */
+    public initMiddle (edeUnit?: IEDEUnit): void {
+        super.initMiddle(edeUnit);
+
         this.storage.addUnitStorage(StatusFlagsMiddleMetadata);
     }
 

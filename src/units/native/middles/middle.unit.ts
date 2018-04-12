@@ -26,7 +26,6 @@ export class MiddleUnit {
 
     static createAndBind (storage: UnitStorage, edeUnit?: IEDEUnit) {
         const newInst = new this(storage);
-        newInst.sjHandler();
         newInst.initMiddle(edeUnit);
         return newInst;
     }
@@ -41,6 +40,7 @@ export class MiddleUnit {
      * @return {void}
      */
     public initMiddle (edeUnit?: IEDEUnit): void {
+        this.sjHandler();
     }
 
     /**
