@@ -109,17 +109,19 @@ export class UnitStorage {
      * @param  {IBACnetType} value - property value
      * @return {void}
      */
-    public updateProperty (newProp: IBACnetObjectProperty): void {
-        const oldProp = this.getProperty(newProp.id);
+    public updateProperty (newProp: IBACnetObjectProperty, isEmitted: boolean = true): void {
+        const prop = this.getProperty(newProp.id);
 
-        oldProp.payload = newProp.payload;
+        prop.payload = newProp.payload;
 
-        this.metadata.set(newProp.id, oldProp);
+        this.metadata.set(newProp.id, prop);
 
         logger.debug(`${this.getLogHeader()} - updateProperty (${BACnetPropIds[newProp.id]}):`,
             JSON.stringify(newProp));
 
-        this.sjUpdateFlow.next(oldProp);
+        if (isEmitted) {
+            this.sjUpdateFlow.next(prop);
+        }
     }
 
     /**
