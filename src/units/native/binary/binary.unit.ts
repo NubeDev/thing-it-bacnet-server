@@ -18,7 +18,7 @@ import {
 } from '../../../core/interfaces';
 
 import { BinaryMetadata } from './binary.metadata';
-import { StatusFlagsMiddleUnit } from '../middles/status-flags/status-flags.unit';
+import { StatusFlagsMiddleUnit } from '../middles/status-flags/status-flags.middle';
 
 import { NativeUnit } from '../native.unit';
 
