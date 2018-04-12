@@ -30,8 +30,8 @@ export class BinaryUnit extends NativeUnit {
     public initUnit (edeUnit: IEDEUnit) {
         super.initUnit(edeUnit);
 
-        this.storage.addUnitStorage(BinaryMetadata);
         StatusFlagsMiddleUnit.createAndBind(this.storage);
+        this.storage.addUnitStorage(BinaryMetadata);
     }
 
     /**

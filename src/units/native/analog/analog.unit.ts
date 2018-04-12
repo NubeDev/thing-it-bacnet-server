@@ -30,8 +30,8 @@ export class AnalogUnit extends NativeUnit {
     public initUnit (edeUnit: IEDEUnit) {
         super.initUnit(edeUnit);
 
-        this.storage.addUnitStorage(AnalogMetadata);
         StatusFlagsMiddleUnit.createAndBind(this.storage);
+        this.storage.addUnitStorage(AnalogMetadata);
     }
 
     /**
