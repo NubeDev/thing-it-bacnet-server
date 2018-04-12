@@ -37,7 +37,6 @@ export class NativeUnit {
         // Create and init unit storage
         this.storage = new UnitStorage();
         this.storage.initStorage();
-        this.storage.addUnitStorage(NativeMetadata);
     }
 
     /**
@@ -48,6 +47,8 @@ export class NativeUnit {
      */
     public initUnit (edeUnit: IEDEUnit): void {
         this.sjHandler();
+
+        this.storage.addUnitStorage(NativeMetadata);
 
         if (_.isNil(edeUnit.objInst)) {
             throw new ApiError(`${this.className} - constructor: Unit ID is required!`);
