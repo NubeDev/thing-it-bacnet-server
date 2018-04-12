@@ -5,9 +5,9 @@ import { BinaryInputUnit } from './binary/binary-input/binary-input.unit';
 import { BinaryOutputUnit } from './binary/binary-output/binary-output.unit';
 import { BinaryValueUnit } from './binary/binary-value/binary-value.unit';
 
-import { AnalogInputUnit } from './analog-input/analog-input.unit';
-import { AnalogOutputUnit } from './analog-output/analog-output.unit';
-import { AnalogValueUnit } from './analog-value/analog-value.unit';
+import { AnalogInputUnit } from './analog/analog-input/analog-input.unit';
+import { AnalogOutputUnit } from './analog/analog-output/analog-output.unit';
+import { AnalogValueUnit } from './analog/analog-value/analog-value.unit';
 
 import { MultiStateInputUnit } from './multi-state-input/multi-state-input.unit';
 import { MultiStateOutputUnit } from './multi-state-output/multi-state-output.unit';
