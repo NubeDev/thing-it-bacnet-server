@@ -2,6 +2,10 @@ import {
     BACnetPropIds,
     BACnetObjTypes,
     BACnetPropTypes,
+    BACnetBinaryPV,
+    BACnetPolarity,
+    BACnetEventState,
+    BACnetReliability,
 } from '../../../core/enums';
 
 import {
@@ -10,9 +14,5 @@ import {
 
 import * as BACnetTypes from '../../../core/utils/types';
 
-export const AnalogInputMetadata: IBACnetObjectProperty[] = [
-    {
-        id: BACnetPropIds.objectType,
-        payload: new BACnetTypes.BACnetEnumerated(BACnetObjTypes.AnalogInput),
-    },
+export const AnalogMetadata: IBACnetObjectProperty[] = [
 ];
