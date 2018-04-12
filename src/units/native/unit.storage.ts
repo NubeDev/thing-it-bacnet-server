@@ -33,15 +33,15 @@ export class UnitStorage {
     public logHeader: string;
     // Unit metadata
     public metadata: Map<BACnetPropIds, IBACnetObjectProperty>;
-    // Subject for unit "CoV" event
-    public sjData: Subject<IBACnetObjectProperty>;
+    // Subject for "set" event
+    public sjSetFlow: Subject<IBACnetObjectProperty>;
     // Subject for BACnet "CoV" event
     public sjCOV: BehaviorSubject<null>;
     // Subject handlers
     private sjHandlers: Map<BACnetPropIds, TSjHandler>;
 
     constructor () {
-        this.sjData = new Subject();
+        this.sjSetFlow = new Subject();
         this.sjCOV = new BehaviorSubject(null);
 
         this.metadata = new Map();
@@ -55,7 +55,7 @@ export class UnitStorage {
         this.metadata = new Map();
         this.sjHandlers = new Map();
 
-        this.sjData.subscribe((notif) => {
+        this.sjSetFlow.subscribe((notif) => {
             const sjHandler = this.sjHandlers.get(notif.id);
 
             if (!_.isFunction(sjHandler)) {
@@ -97,7 +97,7 @@ export class UnitStorage {
         logger.debug(`${this.getLogHeader()} - setProperty (${BACnetPropIds[newProp.id]}):`,
             JSON.stringify(newProp));
 
-        this.sjData.next(newProp);
+        this.sjSetFlow.next(newProp);
     }
 
     /**
