@@ -25,6 +25,7 @@ import {
     TyperUtil,
 } from '../../core/utils';
 
+type TFlowTypes = 'set' | 'update';
 type TSjHandler = (notif: IBACnetObjectProperty) => void;
 
 export class UnitStorage {
@@ -40,7 +41,8 @@ export class UnitStorage {
     // Subject for BACnet "CoV" event
     public sjCOV: BehaviorSubject<null>;
     // Subject handlers
-    private sjHandlers: Map<BACnetPropIds, TSjHandler>;
+    private shSetFlowHandlers: Map<BACnetPropIds, TSjHandler>;
+    private shUpdateFlowHandlers: Map<BACnetPropIds, TSjHandler>;
 
     constructor () {
         this.sjSetFlow = new Subject();
@@ -60,10 +62,10 @@ export class UnitStorage {
      */
     public initStorage (): void {
         this.metadata = new Map();
-        this.sjHandlers = new Map();
+        this.shSetFlowHandlers = new Map();
 
         this.sjSetFlow.subscribe((notif) => {
-            const sjHandler = this.sjHandlers.get(notif.id);
+            const sjHandler = this.shSetFlowHandlers.get(notif.id);
 
             if (!_.isFunction(sjHandler)) {
                 return;
@@ -85,10 +87,30 @@ export class UnitStorage {
         });
     }
 
-    public setSjHandler (propIds: BACnetPropIds|BACnetPropIds[], fn: TSjHandler) {
+    /**
+     * setFlowHandler - sets the handler for specific property on the specific flow.
+     *
+     * @param  {TFlowTypes} flowType - type of the flow
+     * @param  {BACnetPropIds|BACnetPropIds[]} propIds - identifier of the property
+     * @param  {TSjHandler} fn - handler of the flow events
+     * @return {void}
+     */
+    public setFlowHandler (flowType: TFlowTypes,
+            propIds: BACnetPropIds|BACnetPropIds[], fn: TSjHandler): void {
         let propIdArray: BACnetPropIds[] = _.isArray(propIds) ? propIds : [propIds];
+
+        let shFlowHandlers: Map<BACnetPropIds, TSjHandler>;
+        switch (flowType) {
+            case 'set':
+                shFlowHandlers = this.shSetFlowHandlers;
+                break;
+            case 'update':
+                shFlowHandlers = this.shUpdateFlowHandlers;
+                break;
+        }
+
         _.map(propIdArray, (propId) => {
-            this.sjHandlers.set(propId, fn);
+            shFlowHandlers.set(propId, fn);
         });
     }
 
