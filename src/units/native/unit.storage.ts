@@ -53,7 +53,12 @@ export class UnitStorage {
         });
     }
 
-    public initStorage () {
+    /**
+     * initStorage - inits the storage, creates the subscribtion on "set" event flow.
+     *
+     * @return {void}
+     */
+    public initStorage (): void {
         this.metadata = new Map();
         this.sjHandlers = new Map();
 
@@ -68,7 +73,13 @@ export class UnitStorage {
         });
     }
 
-    public addUnitStorage (unitMetadata: IBACnetObjectProperty[]) {
+    /**
+     * addUnitStorage - adds new unit metadata (properties) to the unit storage.
+     *
+     * @param  {IBACnetObjectProperty[]} unitMetadata - unit metadata
+     * @return {void}
+     */
+    public addUnitStorage (unitMetadata: IBACnetObjectProperty[]): void {
         _.map(unitMetadata, (prop) => {
             this.metadata.set(prop.id, prop);
         });
@@ -82,7 +93,7 @@ export class UnitStorage {
     }
 
     /**
-     * setProperty - sets the value of the unit property by property ID.
+     * setProperty - finds the property by "newProp.id" and emits newProp in "set" event.
      *
      * @param  {BACnetPropIds} propId - property ID
      * @param  {IBACnetType} value - property value
@@ -103,10 +114,11 @@ export class UnitStorage {
     }
 
     /**
-     * setProperty - sets the value of the unit property by property ID.
+     * updateProperty - finds the property by "newProp.id", sets new payload,
+     * updates the old property and emits "newProp" in "update" event flow.
      *
-     * @param  {BACnetPropIds} propId - property ID
-     * @param  {IBACnetType} value - property value
+     * @param  {BACnetPropIds} newProp - property ID
+     * @param  {boolean} isEmitted - emit the `update` event?
      * @return {void}
      */
     public updateProperty (newProp: IBACnetObjectProperty, isEmitted: boolean = true): void {
