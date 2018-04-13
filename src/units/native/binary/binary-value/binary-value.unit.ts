@@ -26,13 +26,10 @@ import * as BACnetTypes from '../../../../core/utils/types';
 export class BinaryValueUnit extends BinaryUnit {
     public readonly className: string = 'BinaryValueUnit';
 
-    constructor () {
-        super();
-        this.storage.addUnitStorage(BinaryValueMetadata);
-    }
-
     public initUnit (edeUnit: IEDEUnit) {
         super.initUnit(edeUnit);
+
+        this.storage.addUnitStorage(BinaryValueMetadata);
 
         this.storage.dispatch();
     }
