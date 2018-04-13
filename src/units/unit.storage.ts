@@ -3,27 +3,26 @@ import { Subject, BehaviorSubject, Observable } from 'rxjs';
 
 import {
     BACnetPropIds,
-} from '../../core/enums';
+} from '../core/enums';
 
 import {
     ApiError,
-} from '../../core/errors';
+} from '../core/errors';
 
 import {
     INativeUnit,
     IBACnetObjectProperty,
     IBACnetTypeObjectId,
     IEDEUnit,
-} from '../../core/interfaces';
+} from '../core/interfaces';
 
-import { NativeMetadata } from './native.metadata';
 
-import * as BACnetTypes from '../../core/utils/types';
+import * as BACnetTypes from '../core/utils/types';
 
 import {
     logger,
     TyperUtil,
-} from '../../core/utils';
+} from '../core/utils';
 
 type TFlowTypes = 'set' | 'update';
 type TSjHandler = (notif: IBACnetObjectProperty) => void;
@@ -49,10 +48,6 @@ export class UnitStorage {
         this.sjCOV = new BehaviorSubject(null);
 
         this.metadata = new Map();
-
-        _.map(NativeMetadata, (prop) => {
-            this.metadata.set(prop.id, prop);
-        });
     }
 
     /**

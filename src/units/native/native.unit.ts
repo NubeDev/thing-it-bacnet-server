@@ -17,7 +17,7 @@ import {
 } from '../../core/interfaces';
 
 import { NativeMetadata } from './native.metadata';
-import { UnitStorage } from './unit.storage';
+import { UnitStorage } from '../unit.storage';
 
 import * as BACnetTypes from '../../core/utils/types';
 
