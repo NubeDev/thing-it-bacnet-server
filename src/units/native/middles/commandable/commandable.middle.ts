@@ -91,8 +91,6 @@ export class CommandableMiddleUnit extends MiddleUnit {
             id: BACnetPropIds.presentValue,
             payload: newPresentValue,
         });
-
-        this.storage.dispatch();
     }
 
     /**
