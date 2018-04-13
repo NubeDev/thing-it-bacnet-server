@@ -14,5 +14,5 @@ import {
 
 import * as BACnetTypes from '../../../core/utils/types';
 
-export const AnalogMetadata: IBACnetObjectProperty[] = [
+export const MultiStateMetadata: IBACnetObjectProperty[] = [
 ];
