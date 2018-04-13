@@ -15,9 +15,9 @@ import {
 
 import { MultiStateValueMetadata } from './multi-state-value.metadata';
 
-import { NativeUnit } from '../../native.unit';
+import { MultiStateUnit } from '../multi-state.unit';
 
-export class MultiStateValueUnit extends NativeUnit {
+export class MultiStateValueUnit extends MultiStateUnit {
     public readonly className: string = 'MultiStateValueUnit';
 
     constructor () {

@@ -15,9 +15,9 @@ import {
 
 import { MultiStateOutputMetadata } from './multi-state-output.metadata';
 
-import { NativeUnit } from '../../native.unit';
+import { MultiStateUnit } from '../multi-state.unit';
 
-export class MultiStateOutputUnit extends NativeUnit {
+export class MultiStateOutputUnit extends MultiStateUnit {
     public readonly className: string = 'MultiStateOutputUnit';
 
     constructor () {
