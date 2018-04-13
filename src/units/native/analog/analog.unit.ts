@@ -25,7 +25,7 @@ import { NativeUnit } from '../native.unit';
 import * as BACnetTypes from '../../../core/utils/types';
 
 export class AnalogUnit extends NativeUnit {
-    public readonly className: string = 'BinaryUnit';
+    public readonly className: string = 'AnalogUnit';
 
     public initUnit (edeUnit: IEDEUnit) {
         super.initUnit(edeUnit);
