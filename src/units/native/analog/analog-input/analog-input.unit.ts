@@ -15,9 +15,9 @@ import {
 
 import { AnalogInputMetadata } from './analog-input.metadata';
 
-import { NativeUnit } from '../../native.unit';
+import { AnalogUnit } from '../analog.unit';
 
-export class AnalogInputUnit extends NativeUnit {
+export class AnalogInputUnit extends AnalogUnit {
     public readonly className: string = 'AnalogInputUnit';
 
     public initUnit (edeUnit: IEDEUnit) {

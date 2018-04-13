@@ -15,12 +15,12 @@ import {
 
 import { AnalogValueMetadata } from './analog-value.metadata';
 
-import { NativeUnit } from '../../native.unit';
+import { AnalogUnit } from '../analog.unit';
 import { CommandableMiddleUnit } from '../../middles/commandable/commandable.middle';
 
 import * as BACnetTypes from '../../../../core/utils/types';
 
-export class AnalogValueUnit extends NativeUnit {
+export class AnalogValueUnit extends AnalogUnit {
     public readonly className: string = 'AnalogValueUnit';
 
     public initUnit (edeUnit: IEDEUnit) {

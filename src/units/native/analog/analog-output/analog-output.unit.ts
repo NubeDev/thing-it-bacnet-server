@@ -16,9 +16,9 @@ import {
 import { AnalogOutputMetadata } from './analog-output.metadata';
 import { CommandableMiddleUnit } from '../../middles/commandable/commandable.middle';
 
-import { NativeUnit } from '../../native.unit';
+import { AnalogUnit } from '../analog.unit';
 
-export class AnalogOutputUnit extends NativeUnit {
+export class AnalogOutputUnit extends AnalogUnit {
     public readonly className: string = 'AnalogOutputUnit';
 
     public initUnit (edeUnit: IEDEUnit) {
