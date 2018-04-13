@@ -25,4 +25,29 @@ export class AnalogInputUnit extends NativeUnit {
 
         this.storage.addUnitStorage(AnalogInputMetadata);
     }
+
+    /**
+     * sjHandler - handles the changes of properties.
+     *
+     * @param  {IBACnetObjectProperty} notif - notification object
+     * @return {void}
+     */
+    public sjHandler (): void {
+        super.sjHandler();
+
+        this.storage.setFlowHandler('set', BACnetPropIds.presentValue, (notif) => {
+            this.shSetPresentValue(notif);
+        });
+    }
+
+    /**
+     * shPresentValue - handles the changes of 'Present Value' property.
+     *
+     * @param  {IBACnetObjectProperty} notif - notification object for presentValue
+     * @return {void}
+     */
+    private shSetPresentValue (notif: IBACnetObjectProperty): void {
+        this.storage.updateProperty(notif);
+        this.storage.dispatch();
+    }
 }

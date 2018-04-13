@@ -38,5 +38,20 @@ export class AnalogOutputUnit extends NativeUnit {
      */
     public sjHandler (): void {
         super.sjHandler();
+
+        this.storage.setFlowHandler('update', BACnetPropIds.presentValue, (notif) => {
+            this.shUpdatePresentValue(notif);
+        });
+    }
+
+    /**
+     * shUpdatePresentValue - handles the "update" flow event of 'Present Value' property.
+     * - Method emits the "CoV" event.
+     *
+     * @param  {IBACnetObjectProperty} notif - notification object for priorityArray
+     * @return {void}
+     */
+    private shUpdatePresentValue (notif: IBACnetObjectProperty): void {
+        this.storage.dispatch();
     }
 }
