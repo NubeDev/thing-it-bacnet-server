@@ -20,6 +20,7 @@ import {
 import { BinaryValueMetadata } from './binary-value.metadata';
 
 import { BinaryUnit } from '../binary.unit';
+import { CommandableMiddleUnit } from '../../middles/commandable/commandable.middle';
 
 import * as BACnetTypes from '../../../../core/utils/types';
 
@@ -29,6 +30,7 @@ export class BinaryValueUnit extends BinaryUnit {
     public initUnit (edeUnit: IEDEUnit) {
         super.initUnit(edeUnit);
 
+        CommandableMiddleUnit.createAndBind(this.storage);
         this.storage.addUnitStorage(BinaryValueMetadata);
 
         this.storage.dispatch();
@@ -43,55 +45,28 @@ export class BinaryValueUnit extends BinaryUnit {
     public sjHandler (): void {
         super.sjHandler();
 
-        this.storage.setFlowHandler('set', BACnetPropIds.presentValue, (notif) => {
-            this.shPresentValue(notif);
-        });
-
-        this.storage.setFlowHandler('set', BACnetPropIds.priorityArray, (notif) => {
-            this.shPriorityArray(notif);
+        this.storage.setFlowHandler('update', BACnetPropIds.presentValue, (notif) => {
+            this.shUpdatePresentValue(notif);
         });
     }
 
     /**
-     * shPresentValue - handles the changes of 'Present Value' property.
-     * - Method sets new commandable value in "priorityArray" BACnet property by priority.
-     *
-     * @param  {IBACnetObjectProperty} notif - notification object for presentValue
-     * @return {void}
-     */
-    private shPresentValue (notif: IBACnetObjectProperty): void {
-        const priorityArrayProp = this.storage.getProperty(BACnetPropIds.priorityArray);
-        const priorityArray = priorityArrayProp.payload as BACnetTypes.BACnetTypeBase[];
-
-        const newPriorityArrayEl = notif.payload as BACnetTypes.BACnetTypeBase;
-        const priority = _.isNumber(notif.priority) ? notif.priority - 1 : 15;
-
-        const newPriorityArray = [ ...priorityArray ];
-        newPriorityArray[priority] = newPriorityArrayEl;
-
-        this.storage.setProperty({
-            id: BACnetPropIds.priorityArray,
-            payload: newPriorityArray,
-        });
-    }
-
-    /**
-     * shPriorityArray - handles the changes of 'Priority Array' property.
-     * - Method sets the new commandable value of "presentValue" BACnet property.
-     * Commandable value will be got from "getCommandablePropertyValue" method.
+     * shUpdatePresentValue - handles the "update" flow event of 'Present Value' property.
+     * - Method emits the "CoV" event.
      *
      * @param  {IBACnetObjectProperty} notif - notification object for priorityArray
      * @return {void}
      */
-    private shPriorityArray (notif: IBACnetObjectProperty): void {
-        this.storage.updateProperty(notif);
-        const newPresentValue = this.getCommandablePropertyValue() as BACnetTypes.BACnetEnumerated;
-
-        this.storage.updateProperty({
-            id: BACnetPropIds.presentValue,
-            payload: newPresentValue,
-        });
-
+    public shUpdatePresentValue (notif: IBACnetObjectProperty): void {
         this.storage.dispatch();
+    }
+
+    /**
+     * shPolarity - handles the changes of 'Polarity' property.
+     *
+     * @param  {IBACnetObjectProperty} notif - notification object for Polarity
+     * @return {void}
+     */
+    public shSetPolarity (notif: IBACnetObjectProperty): void {
     }
 }
