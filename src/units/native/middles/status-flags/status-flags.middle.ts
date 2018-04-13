@@ -47,27 +47,27 @@ export class StatusFlagsMiddleUnit extends MiddleUnit {
      */
     public sjHandler (): void {
         this.storage.setFlowHandler('set', BACnetPropIds.eventState, (notif) => {
-            this.shEventState(notif);
+            this.shSetEventState(notif);
         });
         this.storage.setFlowHandler('set', BACnetPropIds.outOfService, (notif) => {
-            this.shOutOfService(notif);
+            this.shSetOutOfService(notif);
         });
         this.storage.setFlowHandler('set', BACnetPropIds.reliability, (notif) => {
-            this.shReliability(notif);
+            this.shSetReliability(notif);
         });
         this.storage.setFlowHandler('set', BACnetPropIds.statusFlags, (notif) => {
-            this.shStatusFlags(notif);
+            this.shSetStatusFlags(notif);
         });
     }
 
     /**
-     * shEventState - handles the changes of 'Event State' property.
-     * - Method changes the "shEventState" field in "statusFlags" BACnet property.
+     * shSetEventState - handles the changes of 'Event State' property.
+     * - Method changes the "shSetEventState" field in "statusFlags" BACnet property.
      *
      * @param  {IBACnetObjectProperty} notif - notification object for eventState
      * @return {void}
      */
-    private shEventState (notif: IBACnetObjectProperty): void {
+    private shSetEventState (notif: IBACnetObjectProperty): void {
         this.storage.updateProperty(notif);
 
         const statusFlagsProp = this.storage.getProperty(BACnetPropIds.statusFlags);
@@ -92,13 +92,13 @@ export class StatusFlagsMiddleUnit extends MiddleUnit {
     }
 
     /**
-     * shOutOfService - handles the changes of 'Out of Service' property.
+     * shSetOutOfService - handles the changes of 'Out of Service' property.
      * - Method changes the "outOfService" field in "statusFlags" BACnet property.
      *
      * @param  {IBACnetObjectProperty} notif - notification object for outOfService
      * @return {void}
      */
-    private shOutOfService (notif: IBACnetObjectProperty): void {
+    private shSetOutOfService (notif: IBACnetObjectProperty): void {
         this.storage.updateProperty(notif);
 
         const statusFlagsProp = this.storage.getProperty(BACnetPropIds.statusFlags);
@@ -118,13 +118,13 @@ export class StatusFlagsMiddleUnit extends MiddleUnit {
     }
 
     /**
-     * shReliability - handles the changes of 'Reliability' property.
+     * shSetReliability - handles the changes of 'Reliability' property.
      * - Method changes the "fault" field in "statusFlags" BACnet property.
      *
      * @param  {IBACnetObjectProperty} notif - notification object for reliability
      * @return {void}
      */
-    private shReliability (notif: IBACnetObjectProperty): void {
+    private shSetReliability (notif: IBACnetObjectProperty): void {
         this.storage.updateProperty(notif);
 
         const statusFlagsProp = this.storage.getProperty(BACnetPropIds.statusFlags);
@@ -144,14 +144,14 @@ export class StatusFlagsMiddleUnit extends MiddleUnit {
     }
 
     /**
-     * shStatusFlags - handles the changes of 'Status Flags' property.
+     * shSetStatusFlags - handles the changes of 'Status Flags' property.
      * - Method calculates the "overridden" status flag state and will set it if
      * old value does not equal to the calculated "overridden" state.
      *
      * @param  {IBACnetObjectProperty} notif - notification object for statusFlags
      * @return {void}
      */
-    private shStatusFlags (notif: IBACnetObjectProperty): void {
+    private shSetStatusFlags (notif: IBACnetObjectProperty): void {
         const statusFlagsProp = this.storage.getProperty(BACnetPropIds.statusFlags);
         const statusFlags = statusFlagsProp.payload as BACnetTypes.BACnetStatusFlags;
 

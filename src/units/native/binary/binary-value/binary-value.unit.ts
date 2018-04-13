@@ -62,7 +62,7 @@ export class BinaryValueUnit extends BinaryUnit {
     }
 
     /**
-     * shPolarity - handles the changes of 'Polarity' property.
+     * shSetPolarity - handles the changes of 'Polarity' property.
      *
      * @param  {IBACnetObjectProperty} notif - notification object for Polarity
      * @return {void}

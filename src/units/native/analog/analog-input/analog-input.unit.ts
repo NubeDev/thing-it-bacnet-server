@@ -41,7 +41,7 @@ export class AnalogInputUnit extends AnalogUnit {
     }
 
     /**
-     * shPresentValue - handles the changes of 'Present Value' property.
+     * shSetPresentValue - handles the changes of 'Present Value' property.
      *
      * @param  {IBACnetObjectProperty} notif - notification object for presentValue
      * @return {void}

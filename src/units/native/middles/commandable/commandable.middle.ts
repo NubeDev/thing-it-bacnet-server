@@ -44,22 +44,22 @@ export class CommandableMiddleUnit extends MiddleUnit {
      */
     public sjHandler (): void {
         this.storage.setFlowHandler('set', BACnetPropIds.presentValue, (notif) => {
-            this.shPresentValue(notif);
+            this.shSetPresentValue(notif);
         });
 
         this.storage.setFlowHandler('set', BACnetPropIds.priorityArray, (notif) => {
-            this.shPriorityArray(notif);
+            this.shSetPriorityArray(notif);
         });
     }
 
     /**
-     * shPresentValue - handles the changes of 'Present Value' property.
+     * shSetPresentValue - handles the changes of 'Present Value' property.
      * - Method sets new commandable value in "priorityArray" BACnet property by priority.
      *
      * @param  {IBACnetObjectProperty} notif - notification object for presentValue
      * @return {void}
      */
-    private shPresentValue (notif: IBACnetObjectProperty): void {
+    private shSetPresentValue (notif: IBACnetObjectProperty): void {
         const priorityArrayProp = this.storage.getProperty(BACnetPropIds.priorityArray);
         const priorityArray = priorityArrayProp.payload as BACnetTypes.BACnetTypeBase[];
 
@@ -76,14 +76,14 @@ export class CommandableMiddleUnit extends MiddleUnit {
     }
 
     /**
-     * shPriorityArray - handles the changes of 'Priority Array' property.
+     * shSetPriorityArray - handles the changes of 'Priority Array' property.
      * - Method sets the new commandable value of "presentValue" BACnet property.
      * Commandable value will be got from "getCommandablePropertyValue" method.
      *
      * @param  {IBACnetObjectProperty} notif - notification object for priorityArray
      * @return {void}
      */
-    private shPriorityArray (notif: IBACnetObjectProperty): void {
+    private shSetPriorityArray (notif: IBACnetObjectProperty): void {
         this.storage.updateProperty(notif);
         const newPresentValue = this.getCommandablePropertyValue() as BACnetTypes.BACnetTypeBase;
 

@@ -49,7 +49,7 @@ export class BinaryUnit extends NativeUnit {
     }
 
     /**
-     * shPolarity - handles the changes of 'Polarity' property.
+     * shSetPolarity - handles the changes of 'Polarity' property.
      * Method checks the "outOfService" BACnet property and if it equals "FALSE"
      * then method will change the "presentValue" BACnet property.
      *
