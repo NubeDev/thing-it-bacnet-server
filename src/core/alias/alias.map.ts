@@ -1,10 +1,10 @@
 import * as _ from 'lodash';
 
-import { AliasUtil } from './alias.util';
+import { Alias } from './alias';
 import { ApiError } from '../errors';
 
 export class AliasMap <T> {
-    private aliases: AliasUtil[];
+    private aliases: Alias[];
     private store: Map<symbol, T>;
 
     constructor () {
@@ -56,7 +56,7 @@ export class AliasMap <T> {
      * @param  {string} aliasTag - alias
      * @return {AliasUtil} - alias instance
      */
-    private getAlias (aliasTag: string): AliasUtil {
+    private getAlias (aliasTag: string): Alias {
         return _.find(this.aliases, (alias) => alias.has(aliasTag));
     }
 
@@ -67,7 +67,7 @@ export class AliasMap <T> {
      * @return {symbol} - ID of alias
      */
     private getAliasId (aliasTag: string): symbol {
-        const alias: AliasUtil = this.getAlias(aliasTag);
+        const alias: Alias = this.getAlias(aliasTag);
 
         return _.isNil(alias) ? null : alias.id;
     }

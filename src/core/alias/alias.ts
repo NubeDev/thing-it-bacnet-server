@@ -1,6 +1,6 @@
 import * as _ from 'lodash';
 
-export class AliasUtil {
+export class Alias {
     private aliases: Set<string>;
     private _id: symbol;
 
