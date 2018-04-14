@@ -13,6 +13,7 @@ import {
     IBACnetObjectProperty,
     IBACnetTypeObjectId,
     IEDEUnit,
+    ICustomFunction,
 } from '../../core/interfaces';
 
 import { UnitStorage } from '../unit.storage';
@@ -26,16 +27,13 @@ import {
 
 import { NativeUnit } from '../native/native.unit';
 
+type TFunctionName = string;
+
 export class CustomUnit {
     public readonly className: string = 'CustomUnit';
-
-    // Unit storage
-    public storage: UnitStorage;
+    public storage: Map<TFunctionName, ICustomFunction<NativeUnit>> = new Map();
 
     constructor () {
-        // Create and init unit storage
-        this.storage = new UnitStorage();
-        this.storage.initStorage();
     }
 
     /**
