@@ -31,4 +31,8 @@ export interface IEDEUnit {
     stateTextRef: number;
     unitCode: number;
     vendorAddr: string;
+    // Custom cells
+    custUnitType: string;
+    custUnitId: string;
+    custUnitFn: string;
 }
