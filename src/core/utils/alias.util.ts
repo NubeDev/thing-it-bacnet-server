@@ -34,11 +34,19 @@ export class AliasUtil {
         const arrAliases = _.isArray(aliases) ? aliases : [aliases];
 
         _.map(arrAliases, (alias) => {
-            this.aliases.add(alias);
+            const aliasTagLow = alias.toLowerCase();
+            this.aliases.add(aliasTagLow);
         });
     }
 
-    public has (alias: string): boolean {
-        return this.aliases.has(alias);
+    /**
+     * has - returns "true" if value exists in internal store.
+     *
+     * @param  {string} aliasTag - alias
+     * @return {boolean}
+     */
+    public has (aliasTag: string): boolean {
+        const aliasTagLow = aliasTag.toLowerCase();
+        return this.aliases.has(aliasTagLow);
     }
 }
