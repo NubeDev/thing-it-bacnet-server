@@ -1,5 +1,10 @@
 import { BACnetTagTypes } from '../enums';
 
+export interface ICustomMetadata {
+    alias: string|string[];
+    config: ICustomFunctionConfig;
+}
+
 export interface ICustomFunction <T> {
     unit: T;
     config: ICustomFunctionConfig;
