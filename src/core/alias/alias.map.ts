@@ -3,12 +3,36 @@ import * as _ from 'lodash';
 import { Alias } from './alias';
 import { ApiError } from '../errors';
 
+import { IAliasMapElement } from '../interfaces';
+
 export class AliasMap <T> {
     private aliases: Alias[];
     private store: Map<symbol, T>;
 
-    constructor () {
+    constructor (entries?: IAliasMapElement<T>[]) {
         this.store = new Map();
+        this.aliases = [];
+
+        _.map(entries, (entry) => {
+            if (_.isNil(entry.alias)) {
+                throw new ApiError('AliasMap - constructor: Alias name is required!');
+            }
+
+            // Create alias and add it to array with aliases
+            const alias = new Alias(entry.alias);
+            this.aliases.push(alias);
+
+            if (_.isNil(entry.value)) {
+                return;
+            }
+
+            // Get alias tag
+            const aliasTag: string = _.isArray(entry.alias)
+                ? entry.alias[0] || '' : entry.alias;
+
+            // Set value
+            this.set(aliasTag, entry.value);
+        });
     }
 
     /**
