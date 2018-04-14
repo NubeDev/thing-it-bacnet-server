@@ -10,7 +10,6 @@ import {
 } from '../core/errors';
 
 import {
-    INativeUnit,
     IBACnetObjectProperty,
     IBACnetTypeObjectId,
     IEDEUnit,
