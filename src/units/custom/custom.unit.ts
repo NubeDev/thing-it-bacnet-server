@@ -25,13 +25,15 @@ import {
     TyperUtil,
 } from '../../core/utils';
 
+import { AliasMap } from '../../core/alias/alias.map';
+
 import { NativeUnit } from '../native/native.unit';
 
 type TFunctionName = string;
 
 export class CustomUnit {
     public readonly className: string = 'CustomUnit';
-    public storage: Map<TFunctionName, ICustomFunction<NativeUnit>> = new Map();
+    public storage: AliasMap<ICustomFunction<NativeUnit>>;
 
     constructor () {
     }
@@ -56,5 +58,6 @@ export class CustomUnit {
      * @return {void}
      */
     public initUnit (): void {
+        this.storage = new AliasMap();
     }
 }
