@@ -17,7 +17,7 @@ import {
     IEDEUnit,
 } from '../../../core/interfaces';
 
-import { UnitStorage } from '../unit.storage';
+import { UnitStorage } from '../../unit.storage';
 
 import * as BACnetTypes from '../../../core/utils/types';
 
