@@ -25,7 +25,7 @@ describe('BACnetReal', () => {
             expect(tag).to.deep.equal({ num: 4, type: 0, value: 4 });
         });
 
-        it('should read "0x12" value', () => {
+        it('should read "22.5" value', () => {
             bacnetReaderUtil = new BACnetReaderUtil(Buffer.from([
                 0x44, 0x41, 0xb4, 0x00, 0x00,
             ]));
@@ -35,7 +35,7 @@ describe('BACnetReal', () => {
             expect(value).to.equal(22.5);
         });
 
-        it('should read "0x44" value', () => {
+        it('should read "25.2" value', () => {
             bacnetReaderUtil = new BACnetReaderUtil(Buffer.from([
                 0x44, 0x41, 0xc9, 0x99, 0x9a,
             ]));
@@ -46,30 +46,30 @@ describe('BACnetReal', () => {
         });
     });
 
-    // describe('writeValue', () => {
-    //     let bacnetReal: BACnetReal;
-    //     let bacnetWriterUtil: BACnetWriterUtil;
-    //
-    //     beforeEach(() => {
-    //         bacnetWriterUtil = new BACnetWriterUtil();
-    //     });
-    //
-    //     it('should write correct buffer for "true" value', () => {
-    //         bacnetReal = new BACnetReal(0x12);
-    //         bacnetReal.writeValue(bacnetWriterUtil);
-    //
-    //         const writerBuffer = bacnetWriterUtil.getBuffer();
-    //         const proposedBuffer = Buffer.from([0x91, 0x12]);
-    //         expect(writerBuffer).to.deep.equal(proposedBuffer);
-    //     });
-    //
-    //     it('should write correct buffer for "false" value', () => {
-    //         bacnetReal = new BACnetReal(0x44);
-    //         bacnetReal.writeValue(bacnetWriterUtil);
-    //
-    //         const writerBuffer = bacnetWriterUtil.getBuffer();
-    //         const proposedBuffer = Buffer.from([0x91, 0x44]);
-    //         expect(writerBuffer).to.deep.equal(proposedBuffer);
-    //     });
-    // });
+    describe('writeValue', () => {
+        let bacnetReal: BACnetReal;
+        let bacnetWriterUtil: BACnetWriterUtil;
+
+        beforeEach(() => {
+            bacnetWriterUtil = new BACnetWriterUtil();
+        });
+
+        it('should write correct buffer for "22.5" value', () => {
+            bacnetReal = new BACnetReal(22.5);
+            bacnetReal.writeValue(bacnetWriterUtil);
+
+            const writerBuffer = bacnetWriterUtil.getBuffer();
+            const proposedBuffer = Buffer.from([ 0x44, 0x41, 0xb4, 0x00, 0x00 ]);
+            expect(writerBuffer).to.deep.equal(proposedBuffer);
+        });
+
+        it('should write correct buffer for "25.2" value', () => {
+            bacnetReal = new BACnetReal(25.2);
+            bacnetReal.writeValue(bacnetWriterUtil);
+
+            const writerBuffer = bacnetWriterUtil.getBuffer();
+            const proposedBuffer = Buffer.from([ 0x44, 0x41, 0xc9, 0x99, 0x9a ]);
+            expect(writerBuffer).to.deep.equal(proposedBuffer);
+        });
+    });
 });
