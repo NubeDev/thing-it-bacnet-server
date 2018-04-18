@@ -19,8 +19,7 @@ export class AliasMap <T> {
             }
 
             // Create alias and add it to array with aliases
-            const alias = new Alias(entry.alias);
-            this.aliases.push(alias);
+            this.addAlias(entry.alias);
 
             if (_.isNil(entry.value)) {
                 return;
