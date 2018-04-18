@@ -62,6 +62,20 @@ export class CustomUnit {
     }
 
     /**
+     * getConfigFromEDE - extracts the unit configuration from EDE configuration.
+     *
+     * @param  {IEDEUnit} edeUnit - EDE configuration
+     * @return {ICustomFunctionConfig} - unit configuration
+     */
+    public getConfigFromEDE (edeUnit: IEDEUnit): ICustomFunctionConfig {
+        return {
+            max: edeUnit.custUnitMax,
+            min: edeUnit.custUnitMin,
+            freq: edeUnit.custUnitFreq,
+        };
+    }
+
+    /**
      * addMetadata - adds the metadata to alias store.
      *
      * @param  {ICustomMetadata} metadata - metadata object
