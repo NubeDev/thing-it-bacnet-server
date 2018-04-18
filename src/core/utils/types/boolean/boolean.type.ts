@@ -23,7 +23,9 @@ export class BACnetBoolean extends BACnetTypeBase {
 
     constructor (defValue?: boolean) {
         super();
-        this.data = defValue;
+
+        this.data = _.isNil(defValue)
+            ? false : !!defValue;
     }
 
     public readValue (reader: BACnetReaderUtil, changeOffset: boolean = true) {
