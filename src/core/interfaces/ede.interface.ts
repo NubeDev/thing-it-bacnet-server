@@ -33,7 +33,7 @@ export interface IEDEUnit {
     vendorAddr: string;
     // Custom cells
     custUnitType: string;
-    custUnitId: string;
+    custUnitId: number;
     custUnitFn: string;
     custUnitMax: number;
     custUnitMin: number;
