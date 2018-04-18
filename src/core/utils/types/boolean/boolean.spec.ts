@@ -46,7 +46,6 @@ describe('BACnetBoolean', () => {
 
         beforeEach(() => {
             bacnetWriterUtil = new BACnetWriterUtil();
-            console.log('----');
         });
 
         it('should write correct buffer for "true" value', () => {
