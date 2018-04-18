@@ -35,4 +35,7 @@ export interface IEDEUnit {
     custUnitType: string;
     custUnitId: string;
     custUnitFn: string;
+    custUnitMax: number;
+    custUnitMin: number;
+    custUnitFreq: number;
 }
