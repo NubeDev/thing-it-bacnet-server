@@ -14,6 +14,8 @@ import {
     IBACnetTypeObjectId,
     IEDEUnit,
     ICustomFunction,
+    ICustomFunctionConfig,
+    ICustomMetadata,
 } from '../../core/interfaces';
 
 import { UnitStorage } from '../unit.storage';
@@ -48,7 +50,17 @@ export class CustomUnit {
      * @return {void}
      */
     public setUnitFn (fn: string, unit: NativeUnit, edeUnit: IEDEUnit): void {
-        throw new Error('Not implemented yet');
+        const custFunc = this.storage.get(fn);
+
+        const unitConfig = this.getConfigFromEDE(edeUnit);
+        const newConfig = _.assign({}, custFunc.config, unitConfig);
+
+        const newCustFunc: ICustomFunction<NativeUnit> = _.assign({}, custFunc, {
+            unit: unit,
+            config: newConfig,
+        });
+
+        this.storage.set(fn, newCustFunc);
     }
 
     /**
