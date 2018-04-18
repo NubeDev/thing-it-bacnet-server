@@ -60,4 +60,24 @@ export class CustomUnit {
     public initUnit (): void {
         this.storage = new AliasMap();
     }
+
+    /**
+     * addMetadata - adds the metadata to alias store.
+     *
+     * @param  {ICustomMetadata} metadata - metadata object
+     * @return {void}
+     */
+    public addMetadata (metadata: ICustomMetadata[]): void {
+        _.map(metadata, (metaunit) => {
+            this.storage.addAlias(metaunit.alias);
+
+            const alias = _.isArray(metaunit.alias)
+                ? metaunit.alias[0] : metaunit.alias;
+
+            this.storage.set(alias, {
+                unit: null,
+                config: _.cloneDeep(metaunit.config),
+            });
+        });
+    }
 }
