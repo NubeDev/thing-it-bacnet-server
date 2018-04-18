@@ -24,7 +24,7 @@ export class BACnetObjectId extends BACnetTypeBase {
 
     constructor (defValue?: IBACnetTypeObjectId) {
         super();
-        this.data = defValue;
+        this.data = _.assign({}, { type: 0, instance: 0 }, defValue);
     }
 
     public readValue (reader: BACnetReaderUtil, changeOffset: boolean = true) {
