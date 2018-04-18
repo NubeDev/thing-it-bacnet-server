@@ -31,7 +31,7 @@ export class BACnetReal extends BACnetTypeBase {
         const tag = reader.readTag(changeOffset);
         this.tag = tag;
 
-        let value: number = reader.readFloatBE(changeOffset);
+        let value: number = +reader.readFloatBE(changeOffset).toFixed(4);
         this.data = value;
     }
 
