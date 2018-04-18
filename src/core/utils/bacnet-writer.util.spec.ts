@@ -173,7 +173,7 @@ describe('BACnetWriterUtil', () => {
         });
 
         it('should set object type 8 and object instance 9999', () => {
-            bacnetWriterUtil.writeObjectIdentifier(8, 9999);
+            bacnetWriterUtil.writeObjectIdentifier({ type: 8, instance: 9999 });
             const buffer = bacnetWriterUtil.getBuffer();
             expect(buffer[0]).to.equal(0x02);
             expect(buffer[1]).to.equal(0x00);
@@ -181,7 +181,7 @@ describe('BACnetWriterUtil', () => {
             expect(buffer[3]).to.equal(0x0f);
         });
         it('should set object type 5 and object instance 46', () => {
-            bacnetWriterUtil.writeObjectIdentifier(5, 46);
+            bacnetWriterUtil.writeObjectIdentifier({ type: 5, instance: 46 });
             const buffer = bacnetWriterUtil.getBuffer();
             expect(buffer[0]).to.equal(0x01);
             expect(buffer[1]).to.equal(0x40);
@@ -198,27 +198,24 @@ describe('BACnetWriterUtil', () => {
 
         it('should set tag 1/1/1 and param 0x08', () => {
             bacnetWriterUtil.writeParam(0x08, 1);
-            const buffer = bacnetWriterUtil.getBuffer();
-            expect(buffer[0]).to.equal(0x19);
-            expect(buffer[1]).to.equal(0x08);
-            expect(buffer[2]).to.be.undefined;
+
+            const writerBuffer = bacnetWriterUtil.getBuffer();
+            const proposedBuffer = Buffer.from([ 0x19, 0x08 ]);
+            expect(writerBuffer).to.deep.equal(proposedBuffer);
         });
         it('should set tag 2/1/2 and param 0x6708', () => {
-            bacnetWriterUtil.writeParam(0x6708, 2, 2);
-            const buffer = bacnetWriterUtil.getBuffer();
-            expect(buffer[0]).to.equal(0x2A);
-            expect(buffer[1]).to.equal(0x67);
-            expect(buffer[2]).to.equal(0x08);
-            expect(buffer[3]).to.be.undefined;
+            bacnetWriterUtil.writeParam(0x6708, 2, 0);
+
+            const writerBuffer = bacnetWriterUtil.getBuffer();
+            const proposedBuffer = Buffer.from([ 0x22, 0x67, 0x08 ]);
+            expect(writerBuffer).to.deep.equal(proposedBuffer);
         });
         it('should set tag 2/1/4 and param 0x12345678', () => {
-            bacnetWriterUtil.writeParam(0x12345678, 2, 4);
-            const buffer = bacnetWriterUtil.getBuffer();
-            expect(buffer[0]).to.equal(0x2C);
-            expect(buffer[1]).to.equal(0x12);
-            expect(buffer[2]).to.equal(0x34);
-            expect(buffer[3]).to.equal(0x56);
-            expect(buffer[4]).to.equal(0x78);
+            bacnetWriterUtil.writeParam(0x12345678, 2);
+
+            const writerBuffer = bacnetWriterUtil.getBuffer();
+            const proposedBuffer = Buffer.from([ 0x2C, 0x12, 0x34, 0x56, 0x78 ]);
+            expect(writerBuffer).to.deep.equal(proposedBuffer);
         });
     });
 
@@ -241,26 +238,6 @@ describe('BACnetWriterUtil', () => {
             expect(buffer[0]).to.equal(0x29);
             expect(buffer[1]).to.equal(0x4f);
             expect(buffer[2]).to.be.undefined;
-        });
-    });
-
-    describe('writeTypeUnsignedInt', () => {
-        let bacnetWriterUtil: BACnetWriterUtil;
-        beforeEach(() => {
-            bacnetWriterUtil = new BACnetWriterUtil();
-        });
-
-        it('param tag with "true" value', () => {
-            bacnetWriterUtil.writeTypeUnsignedInt({ value: 0x23 });
-            const buffer = bacnetWriterUtil.getBuffer();
-            expect(buffer[0]).to.equal(0x21);
-            expect(buffer[1]).to.equal(0x23);
-        });
-        it('param tag with "true" value', () => {
-            bacnetWriterUtil.writeTypeUnsignedInt({ value: 0x34 });
-            const buffer = bacnetWriterUtil.getBuffer();
-            expect(buffer[0]).to.equal(0x21);
-            expect(buffer[1]).to.equal(0x34);
         });
     });
 });
