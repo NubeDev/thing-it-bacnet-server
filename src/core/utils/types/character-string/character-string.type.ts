@@ -24,7 +24,8 @@ export class BACnetCharacterString extends BACnetTypeBase {
 
     constructor (defValue?: string) {
         super();
-        this.data = defValue;
+        this.data = _.isNil(defValue)
+            ? '' : `${defValue}`;
     }
 
     public readValue (reader: BACnetReaderUtil, changeOffset: boolean = true) {
