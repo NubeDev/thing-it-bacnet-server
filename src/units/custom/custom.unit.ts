@@ -53,7 +53,7 @@ export class CustomUnit {
         const custFunc = this.storage.get(fn);
 
         const unitConfig = this.getConfigFromEDE(edeUnit);
-        const newConfig = _.assign({}, custFunc.config, unitConfig);
+        const newConfig: ICustomFunctionConfig = _.assign({}, custFunc.config, unitConfig);
 
         const newCustFunc: ICustomFunction<NativeUnit> = _.assign({}, custFunc, {
             unit: unit,
@@ -66,7 +66,6 @@ export class CustomUnit {
     /**
      * initUnit - inits the custom unit.
      *
-     * @param  {IEDEUnit} edeUnit - property ID
      * @return {void}
      */
     public initUnit (): void {
