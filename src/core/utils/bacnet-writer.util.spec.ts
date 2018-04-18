@@ -244,24 +244,6 @@ describe('BACnetWriterUtil', () => {
         });
     });
 
-    describe('writeTypeBoolean', () => {
-        let bacnetWriterUtil: BACnetWriterUtil;
-        beforeEach(() => {
-            bacnetWriterUtil = new BACnetWriterUtil();
-        });
-
-        it('param tag with "true" value', () => {
-            bacnetWriterUtil.writeTypeBoolean({ value: true });
-            const buffer = bacnetWriterUtil.getBuffer();
-            expect(buffer[0]).to.equal(0x11);
-        });
-        it('param tag with "false" value', () => {
-            bacnetWriterUtil.writeTypeBoolean({ value: false });
-            const buffer = bacnetWriterUtil.getBuffer();
-            expect(buffer[0]).to.equal(0x10);
-        });
-    });
-
     describe('writeTypeUnsignedInt', () => {
         let bacnetWriterUtil: BACnetWriterUtil;
         beforeEach(() => {
