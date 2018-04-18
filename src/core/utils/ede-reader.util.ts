@@ -125,6 +125,15 @@ export class EDEReaderUtil {
         const vendorAddr =
             dataPointRow.getCellValue(offset.inc()) as string;
 
+        const custUnitType =
+            dataPointRow.getCellValue(offset.inc()) as string;
+
+        const custUnitId =
+            dataPointRow.getCellValue(offset.inc()) as number;
+
+        const custUnitFn =
+            dataPointRow.getCellValue(offset.inc()) as string;
+
         return {
             keyname: keyname,
             deviceInst: deviceInst,
@@ -142,6 +151,9 @@ export class EDEReaderUtil {
             stateTextRef: stateTextRef,
             unitCode: unitCode,
             vendorAddr: vendorAddr,
+            custUnitType: custUnitType,
+            custUnitId: custUnitId,
+            custUnitFn: custUnitFn,
         };
     }
 
