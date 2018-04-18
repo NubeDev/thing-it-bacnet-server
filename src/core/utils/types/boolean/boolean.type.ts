@@ -1,18 +1,18 @@
 import * as _ from 'lodash';
 
-import { BACnetTypeBase } from './type.base';
+import { BACnetTypeBase } from '../type.base';
 
 import {
     BACnetPropTypes,
-} from '../../enums';
+} from '../../../enums';
 
 import {
     IBACnetTag,
-} from '../../interfaces';
+} from '../../../interfaces';
 
-import { ApiError } from '../../errors';
-import { BACnetReaderUtil } from '../bacnet-reader.util';
-import { BACnetWriterUtil } from '../bacnet-writer.util';
+import { ApiError } from '../../../errors';
+import { BACnetReaderUtil } from '../../bacnet-reader.util';
+import { BACnetWriterUtil } from '../../bacnet-writer.util';
 
 export class BACnetBoolean extends BACnetTypeBase {
     public readonly className: string = 'BACnetBoolean';

@@ -1,22 +1,22 @@
 import * as _ from 'lodash';
 
-import { BACnetTypeBase } from './type.base';
+import { BACnetTypeBase } from '../type.base';
 
 import {
     BACnetPropTypes,
-} from '../../enums';
+} from '../../../enums';
 
 import {
     IBACnetTag,
-} from '../../interfaces';
+} from '../../../interfaces';
 
-import { ApiError } from '../../errors';
-import { BACnetReaderUtil } from '../bacnet-reader.util';
-import { BACnetWriterUtil } from '../bacnet-writer.util';
+import { ApiError } from '../../../errors';
+import { BACnetReaderUtil } from '../../bacnet-reader.util';
+import { BACnetWriterUtil } from '../../bacnet-writer.util';
 
-export class BACnetEnumerated extends BACnetTypeBase {
-    public readonly className: string = 'BACnetEnumerated';
-    public readonly type: BACnetPropTypes = BACnetPropTypes.enumerated;
+export class BACnetReal extends BACnetTypeBase {
+    public readonly className: string = 'BACnetReal';
+    public readonly type: BACnetPropTypes = BACnetPropTypes.real;
 
     protected tag: IBACnetTag;
     protected data: number;
@@ -30,21 +30,20 @@ export class BACnetEnumerated extends BACnetTypeBase {
         const tag = reader.readTag(changeOffset);
         this.tag = tag;
 
-        const value: number = reader.readUInt8(changeOffset)
+        let value: number = reader.readFloatBE(changeOffset);
         this.data = value;
     }
 
     public writeValue (writer: BACnetWriterUtil) {
-        writer.writeTag(BACnetPropTypes.enumerated, 0, 1);
+        writer.writeTag(BACnetPropTypes.real, 0, 4);
 
-        // Write status flags
-        writer.writeUInt8(this.data);
+        writer.writeFloatBE(this.data)
     }
 
-    public setValue (newValue: number): void {
+    public setValue (newValue: number) {
         this.data = newValue;
     }
-    public getValue (): number {
+    public getValue () {
         return this.data;
     }
 
