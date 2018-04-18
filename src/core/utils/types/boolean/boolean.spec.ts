@@ -7,7 +7,7 @@ import { BACnetWriterUtil } from '../../bacnet-writer.util';
 import { BACnetReaderUtil } from '../../bacnet-reader.util';
 
 describe('BACnetBoolean', () => {
-    describe('writeValue', () => {
+    describe('readValue', () => {
         let bacnetBoolean: BACnetBoolean;
         let bacnetReaderUtil: BACnetReaderUtil;
 
