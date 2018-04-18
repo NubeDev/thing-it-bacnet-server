@@ -24,15 +24,15 @@ export class BACnetReal extends BACnetTypeBase {
     constructor (defValue?: number) {
         super();
         this.data = _.isNil(defValue) || !_.isFinite(+defValue)
-            ? 0 : +defValue;
+            ? 0 : this.toFixed(+defValue);
     }
 
     public readValue (reader: BACnetReaderUtil, changeOffset: boolean = true) {
         const tag = reader.readTag(changeOffset);
         this.tag = tag;
 
-        let value: number = +reader.readFloatBE(changeOffset).toFixed(4);
-        this.data = value;
+        let value: number = reader.readFloatBE(changeOffset);
+        this.data = this.toFixed(value);
     }
 
     public writeValue (writer: BACnetWriterUtil) {
@@ -53,5 +53,13 @@ export class BACnetReal extends BACnetTypeBase {
     }
     public get value (): number {
         return this.getValue();
+    }
+
+    /**
+     * HELPERs
+     */
+
+    private toFixed (value: number): number {
+        return +value.toFixed(4);
     }
 }
