@@ -8,7 +8,7 @@ export class Alias {
         this.aliases = new Set();
         this._id = Symbol('alias');
 
-        this.add(aliases)
+        this.add(aliases);
     }
 
     /**
