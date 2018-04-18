@@ -75,6 +75,18 @@ export class AliasMap <T> {
     }
 
     /**
+     * addAlias - creates the instance of Alias class and adds this instance to
+     * internal aliases array.
+     *
+     * @param  {string|string[]} aliases - alias or lias of aliases
+     * @return {void}
+     */
+    public addAlias (aliases: string|string[]): void {
+        const alias = new Alias(aliases);
+        this.aliases.push(alias);
+    }
+
+    /**
      * getAlias - finds an alias by alias tag.
      *
      * @param  {string} aliasTag - alias
