@@ -2,14 +2,8 @@ import * as _ from 'lodash';
 
 import {
     BACnetPropIds,
-    BACnetBinaryPV,
     BACnetEventState,
-    BACnetPolarity,
 } from '../../../../core/enums';
-
-import {
-    ApiError,
-} from '../../../../core/errors';
 
 import {
     IBACnetObjectProperty,
@@ -20,7 +14,6 @@ import {
 import { StatusFlagsMiddleMetadata } from './status-flags.metadata';
 
 import { MiddleUnit } from '../middle.unit';
-import { UnitStorage } from '../../unit.storage';
 
 import * as BACnetTypes from '../../../../core/utils/types';
 
