@@ -7,10 +7,10 @@ import { IAliasMapElement } from '../interfaces';
 
 export class AliasMap <T> {
     private aliases: Alias[];
-    private store: Map<symbol, T>;
+    private storage: Map<symbol, T>;
 
     constructor (entries?: IAliasMapElement<T>[]) {
-        this.store = new Map();
+        this.storage = new Map();
         this.aliases = [];
 
         _.map(entries, (entry) => {
@@ -35,29 +35,29 @@ export class AliasMap <T> {
     }
 
     /**
-     * has - returns "true" if value from internal store exists.
+     * has - returns "true" if value from internal storage exists.
      *
      * @param  {string} aliasTag - alias
      * @return {boolean}
      */
     public has (aliasTag: string): boolean {
         const aliasId = this.getAliasId(aliasTag);
-        return this.store.has(aliasId);
+        return this.storage.has(aliasId);
     }
 
     /**
-     * get - returns the value from internal store.
+     * get - returns the value from internal storage.
      *
      * @param  {string} aliasTag - alias
      * @return {T}
      */
     public get (aliasTag: string): T {
         const aliasId = this.getAliasId(aliasTag);
-        return this.store.get(aliasId);
+        return this.storage.get(aliasId);
     }
 
     /**
-     * set - sets the value in internal store by alias tag.
+     * set - sets the value in internal storage by alias tag.
      *
      * @param  {string} aliasTag - alias
      * @param  {T} value - new value
@@ -70,7 +70,7 @@ export class AliasMap <T> {
             throw new ApiError('AliasMap - set: Alias is not exist!');
         }
 
-        this.store.set(aliasId, value);
+        this.storage.set(aliasId, value);
     }
 
     /**
