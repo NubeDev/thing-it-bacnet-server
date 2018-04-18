@@ -23,7 +23,8 @@ export class BACnetReal extends BACnetTypeBase {
 
     constructor (defValue?: number) {
         super();
-        this.data = defValue;
+        this.data = _.isNil(defValue) || !_.isFinite(+defValue)
+            ? 0 : +defValue;
     }
 
     public readValue (reader: BACnetReaderUtil, changeOffset: boolean = true) {
