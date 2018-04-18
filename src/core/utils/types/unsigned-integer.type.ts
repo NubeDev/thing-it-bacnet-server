@@ -28,6 +28,7 @@ export class BACnetUnsignedInteger extends BACnetTypeBase {
 
     public readValue (reader: BACnetReaderUtil, changeOffset: boolean = true) {
         const tag = reader.readTag(changeOffset);
+        this.tag = tag;
 
         let value: number;
         switch (tag.value) {

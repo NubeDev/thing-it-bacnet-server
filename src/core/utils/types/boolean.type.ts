@@ -28,6 +28,7 @@ export class BACnetBoolean extends BACnetTypeBase {
 
     public readValue (reader: BACnetReaderUtil, changeOffset: boolean = true) {
         const tag = reader.readTag(changeOffset);
+        this.tag = tag;
 
         this.data = !!tag.value;
     }

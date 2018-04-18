@@ -30,6 +30,7 @@ export class BACnetStatusFlags extends BACnetTypeBase {
 
     public readValue (reader: BACnetReaderUtil, changeOffset: boolean = true) {
         const tag = reader.readTag(changeOffset);
+        this.tag = tag;
 
         const unusedBits = reader.readUInt8(changeOffset);
         // Contains the status bits

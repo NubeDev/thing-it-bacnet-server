@@ -29,6 +29,7 @@ export class BACnetObjectId extends BACnetTypeBase {
 
     public readValue (reader: BACnetReaderUtil, changeOffset: boolean = true) {
         const tag = reader.readTag(changeOffset);
+        this.tag = tag;
 
         const objId = reader.readUInt32BE(changeOffset);
         const objIdPayload = reader.decodeObjectIdentifier(objId);
