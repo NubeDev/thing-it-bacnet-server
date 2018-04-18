@@ -3,7 +3,7 @@ import { ICustomMetadata } from '../../../core/interfaces';
 
 export const FunctionMetadata: ICustomMetadata[] = [
     {
-        alias: [ '', '0', 'rand', 'random' ],
+        alias: [ 'default', '0', 'rand', 'random' ],
         config: { min: 0, max: 1, freq: 1000 },
     },
     {
