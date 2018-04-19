@@ -20,12 +20,9 @@ import { NativeUnit } from '../native.unit';
 export class NoopUnit extends NativeUnit {
     public readonly className: string = 'NoopUnit';
 
-    constructor () {
-        super();
-        this.storage.addUnitStorage(NoopMetadata);
-    }
-
     public initUnit (edeUnit: IEDEUnit) {
         super.initUnit(edeUnit);
+
+        this.storage.addUnitStorage(NoopMetadata);
     }
 }

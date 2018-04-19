@@ -20,12 +20,9 @@ import { MultiStateUnit } from '../multi-state.unit';
 export class MultiStateInputUnit extends MultiStateUnit {
     public readonly className: string = 'MultiStateInputUnit';
 
-    constructor () {
-        super();
-        this.storage.addUnitStorage(MultiStateInputMetadata);
-    }
-
     public initUnit (edeUnit: IEDEUnit) {
         super.initUnit(edeUnit);
+
+        this.storage.addUnitStorage(MultiStateInputMetadata);
     }
 }

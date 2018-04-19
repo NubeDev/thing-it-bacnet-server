@@ -33,12 +33,6 @@ export class NativeUnit {
     // Unit storage
     public storage: UnitStorage;
 
-    constructor () {
-        // Create and init unit storage
-        this.storage = new UnitStorage();
-        this.storage.initStorage();
-    }
-
     /**
      * initUnit - inits the unit using the EDE unit configuration.
      *
@@ -46,6 +40,10 @@ export class NativeUnit {
      * @return {void}
      */
     public initUnit (edeUnit: IEDEUnit): void {
+        // Create and init unit storage
+        this.storage = new UnitStorage();
+        this.storage.initStorage();
+
         this.sjHandler();
 
         this.storage.addUnitStorage(NativeMetadata);
