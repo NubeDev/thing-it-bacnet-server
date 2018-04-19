@@ -144,7 +144,7 @@ export class UnitStorageManager {
 
         // Get ID of the custom unit with postfix owner abbreviation
         // U - user (manually), A - algorithm (auto)
-        const unitId = _.isFinite(+edeUnit.custUnitId)
+        const unitId = _.isNumber(edeUnit.custUnitId) && _.isFinite(+edeUnit.custUnitId)
             ? `${edeUnit.custUnitId}:U` : `${this.customCounter++}:A`;
 
         // Get token of the custom unit
