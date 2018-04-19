@@ -71,9 +71,9 @@ export class UnitStorageManager {
      * @return {NativeUnit} - instance of the native unit
      */
     private initNativeUnit (edeUnit: IEDEUnit): NativeUnit {
-        // Get string name of the BACnet object
+        // Get name of the native unit
         const objType = BACnetObjTypes[edeUnit.objType];
-        // Get token of the BACnet object
+        // Get token of the native unit
         const unitToken = this.getUnitToken(edeUnit.objType, edeUnit.objInst);
 
         let unit: NativeUnit = null;
