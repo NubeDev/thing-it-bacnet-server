@@ -4,6 +4,7 @@ import {
     BACnetPropIds,
     BACnetBinaryPV,
     BACnetEventState,
+    BACnetUnitDataFlow,
 } from '../../../../core/enums';
 
 import {
@@ -42,7 +43,7 @@ export class BinaryInputUnit extends BinaryUnit {
     public sjHandler (): void {
         super.sjHandler();
 
-        this.storage.setFlowHandler('set', BACnetPropIds.presentValue, (notif) => {
+        this.storage.setFlowHandler(BACnetUnitDataFlow.Set, BACnetPropIds.presentValue, (notif) => {
             this.shSetPresentValue(notif);
         });
     }

@@ -3,6 +3,7 @@ import * as _ from 'lodash';
 import {
     BACnetPropIds,
     BACnetEventState,
+    BACnetUnitDataFlow,
 } from '../../../../core/enums';
 
 import {
@@ -39,16 +40,16 @@ export class StatusFlagsMiddleUnit extends MiddleUnit {
      * @return {void}
      */
     public sjHandler (): void {
-        this.storage.setFlowHandler('set', BACnetPropIds.eventState, (notif) => {
+        this.storage.setFlowHandler(BACnetUnitDataFlow.Set, BACnetPropIds.eventState, (notif) => {
             this.shSetEventState(notif);
         });
-        this.storage.setFlowHandler('set', BACnetPropIds.outOfService, (notif) => {
+        this.storage.setFlowHandler(BACnetUnitDataFlow.Set, BACnetPropIds.outOfService, (notif) => {
             this.shSetOutOfService(notif);
         });
-        this.storage.setFlowHandler('set', BACnetPropIds.reliability, (notif) => {
+        this.storage.setFlowHandler(BACnetUnitDataFlow.Set, BACnetPropIds.reliability, (notif) => {
             this.shSetReliability(notif);
         });
-        this.storage.setFlowHandler('set', BACnetPropIds.statusFlags, (notif) => {
+        this.storage.setFlowHandler(BACnetUnitDataFlow.Set, BACnetPropIds.statusFlags, (notif) => {
             this.shSetStatusFlags(notif);
         });
     }

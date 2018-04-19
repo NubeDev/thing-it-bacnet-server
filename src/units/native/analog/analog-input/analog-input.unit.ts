@@ -2,6 +2,7 @@ import * as _ from 'lodash';
 
 import {
     BACnetPropIds,
+    BACnetUnitDataFlow,
 } from '../../../../core/enums';
 
 import {
@@ -35,7 +36,7 @@ export class AnalogInputUnit extends AnalogUnit {
     public sjHandler (): void {
         super.sjHandler();
 
-        this.storage.setFlowHandler('set', BACnetPropIds.presentValue, (notif) => {
+        this.storage.setFlowHandler(BACnetUnitDataFlow.Set, BACnetPropIds.presentValue, (notif) => {
             this.shSetPresentValue(notif);
         });
     }

@@ -2,6 +2,7 @@ import * as _ from 'lodash';
 
 import {
     BACnetPropIds,
+    BACnetUnitDataFlow,
 } from '../../../../core/enums';
 
 import {
@@ -38,11 +39,11 @@ export class CommandableMiddleUnit extends MiddleUnit {
      * @return {void}
      */
     public sjHandler (): void {
-        this.storage.setFlowHandler('set', BACnetPropIds.presentValue, (notif) => {
+        this.storage.setFlowHandler(BACnetUnitDataFlow.Set, BACnetPropIds.presentValue, (notif) => {
             this.shSetPresentValue(notif);
         });
 
-        this.storage.setFlowHandler('set', BACnetPropIds.priorityArray, (notif) => {
+        this.storage.setFlowHandler(BACnetUnitDataFlow.Set, BACnetPropIds.priorityArray, (notif) => {
             this.shSetPriorityArray(notif);
         });
     }

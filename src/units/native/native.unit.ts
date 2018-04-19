@@ -3,6 +3,7 @@ import { Subject, BehaviorSubject, Observable } from 'rxjs';
 
 import {
     BACnetPropIds,
+    BACnetUnitDataFlow,
 } from '../../core/enums';
 
 import {
@@ -91,7 +92,7 @@ export class NativeUnit {
      * @return {void}
      */
     public sjHandler (): void {
-        this.storage.setFlowHandler('set',
+        this.storage.setFlowHandler(BACnetUnitDataFlow.Set,
             [ BACnetPropIds.objectIdentifier, BACnetPropIds.objectType,
                 BACnetPropIds.objectName, BACnetPropIds.description ],
             (notif) => {
