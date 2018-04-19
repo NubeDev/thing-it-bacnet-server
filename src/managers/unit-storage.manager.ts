@@ -73,7 +73,7 @@ export class UnitStorageManager {
         });
 
         this.customUnits.forEach((customUnit) => {
-            customUnit.initUnit();
+            customUnit.startSimulation();
         });
 
         const deviceToken = this.getUnitToken(BACnetObjTypes.Device, edeUnits[0].deviceInst);
