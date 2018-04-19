@@ -18,7 +18,7 @@ describe('Alias', () => {
                 },
                 {
                     alias: ['el2', 'el3'],
-                }
+                },
             ]);
 
             expect(aliasStorage['storage'].size).to.equal(0);
@@ -32,7 +32,7 @@ describe('Alias', () => {
                 },
                 {
                     alias: ['el2', 'el3'],
-                }
+                },
             ]);
 
             expect(aliasStorage['storage'].size).to.equal(0);
@@ -51,7 +51,7 @@ describe('Alias', () => {
                 {
                     alias: ['el4', 'el5'],
                     value: 'data2',
-                }
+                },
             ]);
 
             expect(aliasStorage['storage'].size).to.equal(2);
@@ -74,7 +74,7 @@ describe('Alias', () => {
                 },
                 {
                     alias: ['el4', 'el5'],
-                }
+                },
             ]);
 
             const result = aliasStorage.get('el4');
@@ -88,7 +88,7 @@ describe('Alias', () => {
                 },
                 {
                     alias: ['el4', 'el5'],
-                }
+                },
             ]);
 
             const result = aliasStorage.get('el1');
@@ -103,7 +103,7 @@ describe('Alias', () => {
                 {
                     alias: ['el4', 'el5'],
                     value: 'Hello!',
-                }
+                },
             ]);
 
             const result = aliasStorage.get('el4');
@@ -118,7 +118,7 @@ describe('Alias', () => {
                 },
                 {
                     alias: ['el4', 'el5'],
-                }
+                },
             ]);
 
             const result = aliasStorage.get('el1');
@@ -134,7 +134,7 @@ describe('Alias', () => {
                 },
                 {
                     alias: ['el4', 'el5'],
-                }
+                },
             ]);
 
             try {
@@ -152,7 +152,7 @@ describe('Alias', () => {
                 },
                 {
                     alias: ['el4', 'el5'],
-                }
+                },
             ]);
 
             expect(aliasStorage.get('el4')).to.be.undefined;
@@ -168,7 +168,7 @@ describe('Alias', () => {
                 },
                 {
                     alias: ['el4', 'el5'],
-                }
+                },
             ]);
 
             expect(aliasStorage.get('el1')).to.be.undefined;
@@ -185,7 +185,7 @@ describe('Alias', () => {
                 },
                 {
                     alias: ['el4', 'el5'],
-                }
+                },
             ]);
 
             expect(aliasStorage.get('el1')).to.equal('Hello!');
@@ -202,7 +202,7 @@ describe('Alias', () => {
                 {
                     alias: ['el4', 'el5'],
                     value: 'Hello!',
-                }
+                },
             ]);
 
             expect(aliasStorage.get('el5')).to.equal('Hello!');
@@ -222,8 +222,9 @@ describe('Alias', () => {
                 {
                     alias: ['el4', 'el5'],
                     value: 'data2',
-                }
+                },
             ]);
+
             expect(aliasStorage.has('el1')).to.be.true;
             expect(aliasStorage.has('el4')).to.be.true;
         });
@@ -235,11 +236,39 @@ describe('Alias', () => {
                 },
                 {
                     alias: ['el4', 'el5'],
-                }
+                },
             ]);
+
             expect(aliasStorage.has('el1')).to.be.false;
             expect(aliasStorage.has('el2')).to.be.false;
             expect(aliasStorage.has('el4')).to.be.false;
+        });
+    });
+
+    describe('addAlias', () => {
+        it('should add new alias to empty alias storage', () => {
+            const aliasStorage = new AliasMap<string>();
+
+            expect(aliasStorage['aliases'].length).to.equal(0);
+
+            aliasStorage.addAlias('0');
+            expect(aliasStorage['aliases'].length).to.equal(1);
+        });
+
+        it('should add new alias to alias storage with 2 elements', () => {
+            const aliasStorage = new AliasMap<string>([
+                {
+                    alias: 'el1',
+                },
+                {
+                    alias: ['el4', 'el5'],
+                },
+            ]);
+
+            expect(aliasStorage['aliases'].length).to.equal(2);
+
+            aliasStorage.addAlias('0');
+            expect(aliasStorage['aliases'].length).to.equal(3);
         });
     });
 });
