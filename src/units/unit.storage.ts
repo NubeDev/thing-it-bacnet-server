@@ -26,29 +26,23 @@ import {
 type TFlowTypes = 'set' | 'update';
 type TSjHandler = (notif: IBACnetObjectProperty) => void;
 
+interface IDataFlow {
+    type: TFlowTypes;
+    value: IBACnetObjectProperty;
+}
+
 export class UnitStorage {
     /* Logging */
     public readonly className: string = 'UnitStorage';
     public logHeader: string;
     // Unit metadata
     public metadata: Map<BACnetPropIds, IBACnetObjectProperty>;
-    // Subject for "set" event
-    public sjSetFlow: Subject<IBACnetObjectProperty>;
-    // Subject for "update" event
-    public sjUpdateFlow: Subject<IBACnetObjectProperty>;
+    // Subject for data flow events
+    public sjDataFlow: Subject<IDataFlow>;
     // Subject for BACnet "CoV" event
     public sjCOV: BehaviorSubject<null>;
-    // Subject handlers
-    private shSetFlowHandlers: Map<BACnetPropIds, TSjHandler>;
-    private shUpdateFlowHandlers: Map<BACnetPropIds, TSjHandler>;
-
-    constructor () {
-        this.sjSetFlow = new Subject();
-        this.sjUpdateFlow = new Subject();
-        this.sjCOV = new BehaviorSubject(null);
-
-        this.metadata = new Map();
-    }
+    // Store with handlers of data flow events
+    private shFlowHandlers: Map<string, TSjHandler>;
 
     /**
      * initStorage - inits the storage, creates the subscribtion on "set" event flow.
@@ -56,17 +50,19 @@ export class UnitStorage {
      * @return {void}
      */
     public initStorage (): void {
+        this.sjDataFlow = new Subject();
+        this.sjCOV = new BehaviorSubject(null);
         this.metadata = new Map();
-        this.shSetFlowHandlers = new Map();
+        this.shFlowHandlers = new Map();
 
-        this.sjSetFlow.subscribe((notif) => {
-            const sjHandler = this.shSetFlowHandlers.get(notif.id);
+        this.sjDataFlow.subscribe((notif) => {
+            const sjHandler = this.getFlowHandler(notif.type, notif.value.id);
 
             if (!_.isFunction(sjHandler)) {
                 return;
             }
 
-            sjHandler(notif);
+            sjHandler(notif.value);
         });
     }
 
@@ -94,19 +90,21 @@ export class UnitStorage {
             propIds: BACnetPropIds|BACnetPropIds[], fn: TSjHandler): void {
         let propIdArray: BACnetPropIds[] = _.isArray(propIds) ? propIds : [propIds];
 
-        let shFlowHandlers: Map<BACnetPropIds, TSjHandler>;
-        switch (flowType) {
-            case 'set':
-                shFlowHandlers = this.shSetFlowHandlers;
-                break;
-            case 'update':
-                shFlowHandlers = this.shUpdateFlowHandlers;
-                break;
-        }
-
         _.map(propIdArray, (propId) => {
-            shFlowHandlers.set(propId, fn);
+            this.shFlowHandlers.set(`${flowType}:${propId}`, fn);
         });
+    }
+
+    /**
+     * getFlowHandler - finds the flow handler by flow type and property ID.
+     *
+     * @param  {TFlowTypes} flowType - type of the flow
+     * @param  {BACnetPropIds|BACnetPropIds[]} propIds - identifier of the property
+     * @return {TSjHandler}
+     */
+    public getFlowHandler (flowType: TFlowTypes,
+            propId: BACnetPropIds): TSjHandler {
+        return this.shFlowHandlers.get(`${flowType}:${propId}`);
     }
 
     /**
@@ -127,7 +125,7 @@ export class UnitStorage {
         logger.debug(`${this.getLogHeader()} - setProperty (${BACnetPropIds[newProp.id]}):`,
             JSON.stringify(newProp));
 
-        this.sjSetFlow.next(newProp);
+        this.sjDataFlow.next({ type: 'set', value: newProp });
     }
 
     /**
@@ -149,7 +147,7 @@ export class UnitStorage {
             JSON.stringify(newProp));
 
         if (isEmitted) {
-            this.sjUpdateFlow.next(prop);
+            this.sjDataFlow.next({ type: 'update', value: prop });
         }
     }
 
