@@ -59,6 +59,73 @@ describe('Alias', () => {
         });
     });
 
+    describe('get', () => {
+        it('should return "undefined" if aliases are not exist', () => {
+            const aliasStorage = new AliasMap<string>();
+
+            const result = aliasStorage.get('el4');
+            expect(result).to.be.undefined;
+        });
+
+        it('should return "undefined" for alias with multitag if value is not exist', () => {
+            const aliasStorage = new AliasMap<string>([
+                {
+                    alias: 'el1',
+                },
+                {
+                    alias: ['el4', 'el5'],
+                }
+            ]);
+
+            const result = aliasStorage.get('el4');
+            expect(result).to.be.undefined;
+        });
+
+        it('should return "undefined" for alias with singletag if value is not exist', () => {
+            const aliasStorage = new AliasMap<string>([
+                {
+                    alias: 'el1',
+                },
+                {
+                    alias: ['el4', 'el5'],
+                }
+            ]);
+
+            const result = aliasStorage.get('el1');
+            expect(result).to.be.undefined;
+        });
+
+        it('should return value for alias with multitag if value is exist in storage', () => {
+            const aliasStorage = new AliasMap<string>([
+                {
+                    alias: 'el1',
+                },
+                {
+                    alias: ['el4', 'el5'],
+                    value: 'Hello!',
+                }
+            ]);
+
+            const result = aliasStorage.get('el4');
+            expect(result).to.be.equal('Hello!');
+        });
+
+        it('should return value for alias with singletag if value is exist in storage', () => {
+            const aliasStorage = new AliasMap<string>([
+                {
+                    alias: 'el1',
+                    value: 'Hi!',
+                },
+                {
+                    alias: ['el4', 'el5'],
+                }
+            ]);
+
+            const result = aliasStorage.get('el1');
+            expect(result).to.equal('Hi!');
+        });
+    });
+
     describe('set', () => {
         it('should throw error if alias is not exist', () => {
             const aliasStorage = new AliasMap<string>([
