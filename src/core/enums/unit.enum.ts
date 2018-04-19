@@ -1,4 +1,9 @@
 
+export enum BACnetUnitDataFlow {
+    Set = 'set',
+    Update = 'update',
+}
+
 export enum BACnetUnitAbbr {
     Default = 'default',
 }
