@@ -1,3 +1,6 @@
+import { AliasMap } from '../../core/alias';
+import { BACnetUnitAbbr } from '../../core/enums';
+
 import { NoopUnit } from './noop/noop.unit';
 import { DeviceUnit } from './device/device.unit';
 
@@ -13,19 +16,19 @@ import { MultiStateInputUnit } from './multi-state/multi-state-input/multi-state
 import { MultiStateOutputUnit } from './multi-state/multi-state-output/multi-state-output.unit';
 import { MultiStateValueUnit } from './multi-state/multi-state-value/multi-state-value.unit';
 
-export const NativeModule: Map<string, any> = new Map<string, any>([
-    [ 'Noop', NoopUnit ],
-    [ 'Device', DeviceUnit ],
+export const NativeModule: AliasMap<any> = new AliasMap<any>([
+    { alias: [ BACnetUnitAbbr.Default, 'Noop' ], value: NoopUnit },
+    { alias: 'Device', value: DeviceUnit },
 
-    [ 'BinaryInput', BinaryInputUnit ],
-    [ 'BinaryOutput', BinaryOutputUnit ],
-    [ 'BinaryValue', BinaryValueUnit ],
+    { alias: 'BinaryInput', value: BinaryInputUnit },
+    { alias: 'BinaryOutput', value: BinaryOutputUnit },
+    { alias: 'BinaryValue', value: BinaryValueUnit },
 
-    [ 'AnalogInput', AnalogInputUnit ],
-    [ 'AnalogOutput', AnalogOutputUnit ],
-    [ 'AnalogValue', AnalogValueUnit ],
+    { alias: 'AnalogInput', value: AnalogInputUnit },
+    { alias: 'AnalogOutput', value: AnalogOutputUnit },
+    { alias: 'AnalogValue', value: AnalogValueUnit },
 
-    [ 'MultiStateInput', MultiStateInputUnit ],
-    [ 'MultiStateOutput', MultiStateOutputUnit ],
-    [ 'MultiStateValue', MultiStateValueUnit ],
+    { alias: 'MultiStateInput', value: MultiStateInputUnit },
+    { alias: 'MultiStateOutput', value: MultiStateOutputUnit },
+    { alias: 'MultiStateValue', value: MultiStateValueUnit },
 ]);
