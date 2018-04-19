@@ -34,11 +34,11 @@ import {
 
 export class UnitStorageManager {
     public readonly className: string = 'UnitStorageManager';
-    private units: Map<string, NativeUnit>;
+    private nativeUnits: Map<string, NativeUnit>;
     private device: NativeUnit;
 
     constructor () {
-        this.units = new Map();
+        this.nativeUnits = new Map();
     }
 
     /**
@@ -57,7 +57,7 @@ export class UnitStorageManager {
         });
 
         const devId = this.getObjId(BACnetObjTypes.Device, edeUnits[0].deviceInst);
-        const device = this.units.get(devId);
+        const device = this.nativeUnits.get(devId);
         this.device = device;
     }
 
@@ -86,7 +86,7 @@ export class UnitStorageManager {
             unit = new UnitClass(edeUnit);
             unit.initUnit(edeUnit);
 
-            this.units.set(token, unit);
+            this.nativeUnits.set(token, unit);
         } catch (error) {
             logger.debug(`${this.className} - initNativeUnit: ${objType} (${token})`, error);
         }
@@ -126,7 +126,7 @@ export class UnitStorageManager {
     public getUnit (objId: BACnetObjectId): NativeUnit {
         const objIdValue = objId.getValue();
         const objIdKey = this.getObjId(objIdValue.type, objIdValue.instance);
-        return this.units.get(objIdKey);
+        return this.nativeUnits.get(objIdKey);
     }
 
     /**
