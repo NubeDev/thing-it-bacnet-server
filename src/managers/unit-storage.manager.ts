@@ -53,26 +53,45 @@ export class UnitStorageManager {
         }
 
         _.map(edeUnits, (edeUnit) => {
-            const objType = BACnetObjTypes[edeUnit.objType];
-            const objId = this.getObjId(edeUnit.objType, edeUnit.objInst);
-
-            try {
-                let UnitClass = NativeModule.get(objType);
-                if (!UnitClass) {
-                    logger.debug(`${this.className} - initUnits: ${objType} (${objId}) - Use "Noop" stub unit`);
-                    UnitClass = NativeModule.get('Noop');
-                }
-                const unit: NativeUnit = new UnitClass(edeUnit);
-                unit.initUnit(edeUnit);
-                this.units.set(objId, unit);
-            } catch (error) {
-                logger.debug(`${this.className} - initUnits: ${objType} (${objId})`, error);
-            }
+            const nativeUnit = this.initNativeUnit(edeUnit);
         });
 
         const devId = this.getObjId(BACnetObjTypes.Device, edeUnits[0].deviceInst);
         const device = this.units.get(devId);
         this.device = device;
+    }
+
+    /**
+     * initNativeUnit - creates the instance of native unit by EDE unit
+     * configuration, sets the native unit to internal unit storage.
+     *
+     * @param  {IEDEUnit} edeUnit - EDE unit configuration
+     * @return {NativeUnit} - instance of the native unit
+     */
+    private initNativeUnit (edeUnit: IEDEUnit): NativeUnit {
+        // Get string name of the BACnet object
+        const objType = BACnetObjTypes[edeUnit.objType];
+        // Get token of the BACnet object
+        const token = this.getObjId(edeUnit.objType, edeUnit.objInst);
+
+        let unit: NativeUnit = null;
+        try {
+            let UnitClass = NativeModule.get(objType);
+
+            if (!UnitClass) {
+                logger.debug(`${this.className} - initNativeUnit: ${objType} (${token}) - Use "Noop" stub unit`);
+                UnitClass = NativeModule.get('Noop');
+            }
+
+            unit = new UnitClass(edeUnit);
+            unit.initUnit(edeUnit);
+
+            this.units.set(token, unit);
+        } catch (error) {
+            logger.debug(`${this.className} - initNativeUnit: ${objType} (${token})`, error);
+        }
+
+        return unit;
     }
 
     /**
