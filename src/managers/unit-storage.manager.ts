@@ -14,6 +14,7 @@ import {
 import {
     BACnetObjTypes,
     BACnetPropIds,
+    BACnetUnitAbbr,
 } from '../core/enums';
 
 import {
@@ -32,15 +33,27 @@ import {
     NativeUnit,
 } from '../units/native/native.unit';
 
+import {
+    CustomModule,
+} from '../units/custom/custom.module';
+
+import {
+    CustomUnit,
+} from '../units/custom/custom.unit';
+
 type NativeUnitToken = string;
+type CustomUnitToken = string;
 
 export class UnitStorageManager {
     public readonly className: string = 'UnitStorageManager';
     private nativeUnits: Map<NativeUnitToken, NativeUnit>;
+    private customUnits: Map<CustomUnitToken, CustomUnit>;
     private device: NativeUnit;
+    private customCounter: number = 0;
 
     constructor () {
         this.nativeUnits = new Map();
+        this.customUnits = new Map();
     }
 
     /**
@@ -56,6 +69,7 @@ export class UnitStorageManager {
 
         _.map(edeUnits, (edeUnit) => {
             const nativeUnit = this.initNativeUnit(edeUnit);
+            this.initCustomUnit(nativeUnit, edeUnit);
         });
 
         const deviceToken = this.getUnitToken(BACnetObjTypes.Device, edeUnits[0].deviceInst);
@@ -94,6 +108,56 @@ export class UnitStorageManager {
         }
 
         return unit;
+    }
+
+    /**
+     * initCustomUnit - creates the instance of custom unit by EDE unit
+     * configuration, binds the native unit to the function of the custom unit
+     * and adds custom unit to internal custom unit storage.
+     *
+     * @param  {NativeUnit} nativeUnit - instance of the native unit
+     * @param  {IEDEUnit} edeUnit - EDE unit configuration
+     * @return {CustomUnit}
+     */
+    private initCustomUnit (nativeUnit: NativeUnit, edeUnit: IEDEUnit): CustomUnit {
+        // Get type of the custom unit
+        let unitType = edeUnit.custUnitType !== ''
+            ? `${edeUnit.custUnitType}` : BACnetUnitAbbr.Default;
+
+        if (!CustomModule.has(unitType)) {
+            logger.debug(`${this.className} - initNativeUnit: "${unitType}" custom unit is not exist,`
+                + `use "${BACnetUnitAbbr.Default}" custom unit`);
+            unitType = BACnetUnitAbbr.Default;
+        }
+
+        // Get function of the custom unit
+        const unitFn = edeUnit.custUnitFn !== ''
+            ? `${edeUnit.custUnitFn}` : BACnetUnitAbbr.Default;
+
+        // Get ID of the custom unit with postfix owner abbreviation
+        // U - user (manually), A - algorithm (auto)
+        const unitId = _.isFinite(+edeUnit.custUnitId)
+            ? `${edeUnit.custUnitId}:U` : `${this.customCounter++}:A`;
+
+        // Get token of the custom unit
+        const unitToken = `${unitType}:${unitId}`;
+
+        logger.debug(`${this.className} - initCustomUnit: Use "${unitType} (${unitToken})" custom unit`);
+
+        let unit: CustomUnit = this.customUnits.get(unitType);
+        if (!unitToken) {
+            let UnitClass = CustomModule.get(unitType);
+            unit = new UnitClass();
+            this.customUnits.set(unitToken, unit);
+        }
+
+        try {
+            unit.setUnitFn(unitFn, nativeUnit, edeUnit);
+        } catch (error) {
+            logger.debug(`${this.className} - initCustomUnit: ${unitType} (${unitToken})`, error);
+        }
+
+        return null;
     }
 
     /**
