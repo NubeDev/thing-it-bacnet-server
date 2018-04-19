@@ -44,6 +44,7 @@ export class UnitStorage {
 
     constructor () {
         this.sjSetFlow = new Subject();
+        this.sjUpdateFlow = new Subject();
         this.sjCOV = new BehaviorSubject(null);
 
         this.metadata = new Map();
