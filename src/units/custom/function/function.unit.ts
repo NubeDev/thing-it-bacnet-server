@@ -19,7 +19,7 @@ import {
 import { UnitStorage } from '../../unit.storage';
 import { FunctionMetadata } from './function.metadata';
 
-import * as BACnetTypes from '../../../core/utils/types';
+import * as BACnetTypes from '../../../core/types';
 
 import {
     logger,

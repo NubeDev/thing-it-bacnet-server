@@ -22,7 +22,7 @@ import { BinaryOutputMetadata } from './binary-output.metadata';
 import { BinaryUnit } from '../binary.unit';
 import { CommandableMiddleUnit } from '../../middles/commandable/commandable.middle';
 
-import * as BACnetTypes from '../../../../core/utils/types';
+import * as BACnetTypes from '../../../../core/types';
 
 export class BinaryOutputUnit extends BinaryUnit {
     public readonly className: string = 'BinaryOutputUnit';

@@ -3,8 +3,7 @@ import { spy, SinonSpy } from 'sinon';
 
 import { BACnetReal } from './real.type';
 
-import { BACnetWriterUtil } from '../../bacnet-writer.util';
-import { BACnetReaderUtil } from '../../bacnet-reader.util';
+import { BACnetReaderUtil, BACnetWriterUtil } from '../../utils';
 
 describe('BACnetReal', () => {
     describe('readValue', () => {

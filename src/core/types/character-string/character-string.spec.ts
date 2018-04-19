@@ -3,8 +3,7 @@ import { spy, SinonSpy } from 'sinon';
 
 import { BACnetCharacterString } from './character-string.type';
 
-import { BACnetWriterUtil } from '../../bacnet-writer.util';
-import { BACnetReaderUtil } from '../../bacnet-reader.util';
+import { BACnetReaderUtil, BACnetWriterUtil } from '../../utils';
 
 describe('BACnetCharacterString', () => {
     describe('readValue', () => {

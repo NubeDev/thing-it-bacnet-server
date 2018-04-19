@@ -18,7 +18,7 @@ import {
 
 import {
     BACnetObjectId,
-} from '../core/utils/types';
+} from '../core/types';
 
 import {
     ApiError,

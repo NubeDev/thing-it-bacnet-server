@@ -35,7 +35,7 @@ import {
     BACnetUnsignedInteger,
     BACnetObjectId,
     BACnetTypeBase,
-} from '../../utils/types';
+} from '../../types';
 
 export class UnconfirmReqPDU {
     public readonly className: string = 'UnconfirmReqPDU';

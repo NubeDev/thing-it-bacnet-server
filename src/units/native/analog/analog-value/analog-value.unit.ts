@@ -18,7 +18,7 @@ import { AnalogValueMetadata } from './analog-value.metadata';
 import { AnalogUnit } from '../analog.unit';
 import { CommandableMiddleUnit } from '../../middles/commandable/commandable.middle';
 
-import * as BACnetTypes from '../../../../core/utils/types';
+import * as BACnetTypes from '../../../../core/types';
 
 export class AnalogValueUnit extends AnalogUnit {
     public readonly className: string = 'AnalogValueUnit';

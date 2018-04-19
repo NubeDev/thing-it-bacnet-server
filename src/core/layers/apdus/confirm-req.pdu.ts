@@ -32,7 +32,7 @@ import {
     BACnetUnsignedInteger,
     BACnetObjectId,
     BACnetTypeBase,
-} from '../../utils/types';
+} from '../../types';
 
 export class ConfirmReqPDU {
     public readonly className: string = 'ConfirmReqPDU';

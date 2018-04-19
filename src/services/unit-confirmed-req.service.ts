@@ -14,7 +14,7 @@ import {
 import {
     BACnetObjectId,
     BACnetUnsignedInteger,
-} from '../core/utils/types';
+} from '../core/types';
 
 import { InputSocket, OutputSocket, ServiceSocket } from '../core/sockets';
 

@@ -22,7 +22,7 @@ import { BinaryValueMetadata } from './binary-value.metadata';
 import { BinaryUnit } from '../binary.unit';
 import { CommandableMiddleUnit } from '../../middles/commandable/commandable.middle';
 
-import * as BACnetTypes from '../../../../core/utils/types';
+import * as BACnetTypes from '../../../../core/types';
 
 export class BinaryValueUnit extends BinaryUnit {
     public readonly className: string = 'BinaryValueUnit';

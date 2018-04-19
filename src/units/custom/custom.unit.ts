@@ -20,7 +20,7 @@ import {
 
 import { UnitStorage } from '../unit.storage';
 
-import * as BACnetTypes from '../../core/utils/types';
+import * as BACnetTypes from '../../core/types';
 
 import {
     logger,

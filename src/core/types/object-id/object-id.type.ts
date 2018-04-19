@@ -4,16 +4,16 @@ import { BACnetTypeBase } from '../type.base';
 
 import {
     BACnetPropTypes,
-} from '../../../enums';
+} from '../../enums';
 
 import {
     IBACnetTag,
     IBACnetTypeObjectId,
-} from '../../../interfaces';
+} from '../../interfaces';
 
-import { ApiError } from '../../../errors';
-import { BACnetReaderUtil } from '../../bacnet-reader.util';
-import { BACnetWriterUtil } from '../../bacnet-writer.util';
+import { ApiError } from '../../errors';
+
+import { BACnetReaderUtil, BACnetWriterUtil } from '../../utils';
 
 export class BACnetObjectId extends BACnetTypeBase {
     public readonly className: string = 'BACnetObjectId';

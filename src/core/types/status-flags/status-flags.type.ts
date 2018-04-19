@@ -4,17 +4,19 @@ import { BACnetTypeBase } from '../type.base';
 
 import {
     BACnetPropTypes,
-} from '../../../enums';
+} from '../../enums';
 
 import {
     IBACnetTag,
     IBACnetTypeStatusFlags,
-} from '../../../interfaces';
+} from '../../interfaces';
 
-import { ApiError } from '../../../errors';
-import { BACnetReaderUtil } from '../../bacnet-reader.util';
-import { BACnetWriterUtil } from '../../bacnet-writer.util';
-import { TyperUtil } from '../../typer.util';
+import { ApiError } from '../../errors';
+import {
+    TyperUtil,
+    BACnetReaderUtil,
+    BACnetWriterUtil,
+} from '../../utils';
 
 export class BACnetStatusFlags extends BACnetTypeBase {
     public readonly className: string = 'BACnetBitString';

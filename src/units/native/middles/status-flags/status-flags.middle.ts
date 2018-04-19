@@ -15,7 +15,7 @@ import { StatusFlagsMiddleMetadata } from './status-flags.metadata';
 
 import { MiddleUnit } from '../middle.unit';
 
-import * as BACnetTypes from '../../../../core/utils/types';
+import * as BACnetTypes from '../../../../core/types';
 
 export class StatusFlagsMiddleUnit extends MiddleUnit {
     public readonly className: string = 'StatusFlagsMiddleUnit';

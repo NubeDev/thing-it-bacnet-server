@@ -3,8 +3,7 @@ import { spy, SinonSpy } from 'sinon';
 
 import { BACnetBoolean } from './boolean.type';
 
-import { BACnetWriterUtil } from '../../bacnet-writer.util';
-import { BACnetReaderUtil } from '../../bacnet-reader.util';
+import { BACnetReaderUtil, BACnetWriterUtil } from '../../utils';
 
 describe('BACnetBoolean', () => {
     describe('readValue', () => {

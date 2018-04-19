@@ -16,7 +16,7 @@ import {
 import { OffsetUtil } from './offset.util';
 import { TyperUtil } from './typer.util';
 
-import * as BACnetTypes from './types';
+import * as BACnetTypes from '../types';
 
 export class BACnetWriterUtil {
     public offset: OffsetUtil;

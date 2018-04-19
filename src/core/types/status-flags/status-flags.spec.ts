@@ -3,8 +3,7 @@ import { spy, SinonSpy } from 'sinon';
 
 import { BACnetStatusFlags } from './status-flags.type';
 
-import { BACnetWriterUtil } from '../../bacnet-writer.util';
-import { BACnetReaderUtil } from '../../bacnet-reader.util';
+import { BACnetReaderUtil, BACnetWriterUtil } from '../../utils';
 
 describe('BACnetStatusFlags', () => {
     describe('readValue', () => {

@@ -2,7 +2,7 @@ import {
     BACnetUnsignedInteger,
     BACnetObjectId,
     BACnetTypeBase,
-} from '../utils/types';
+} from '../types';
 
 import {
     IBACnetObjectProperty,

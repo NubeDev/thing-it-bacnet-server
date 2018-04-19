@@ -28,7 +28,7 @@ import {
     BACnetUnsignedInteger,
     BACnetObjectId,
     BACnetTypeBase,
-} from '../../utils/types';
+} from '../../types';
 
 export class ComplexACKPDU {
     public readonly className: string = 'ComplexACKPDU';

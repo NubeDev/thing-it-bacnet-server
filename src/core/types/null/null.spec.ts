@@ -3,8 +3,7 @@ import { spy, SinonSpy } from 'sinon';
 
 import { BACnetNull } from './null.type';
 
-import { BACnetWriterUtil } from '../../bacnet-writer.util';
-import { BACnetReaderUtil } from '../../bacnet-reader.util';
+import { BACnetReaderUtil, BACnetWriterUtil } from '../../utils';
 
 describe('BACnetNull', () => {
     describe('readValue', () => {

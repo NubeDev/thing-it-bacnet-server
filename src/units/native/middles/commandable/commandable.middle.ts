@@ -13,7 +13,7 @@ import { CommandableMiddleMetadata } from './commandable.metadata';
 
 import { MiddleUnit } from '../middle.unit';
 
-import * as BACnetTypes from '../../../../core/utils/types';
+import * as BACnetTypes from '../../../../core/types';
 import { TyperUtil } from '../../../../core/utils';
 
 export class CommandableMiddleUnit extends MiddleUnit {

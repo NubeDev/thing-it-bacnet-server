@@ -22,7 +22,7 @@ import { StatusFlagsMiddleUnit } from '../middles/status-flags/status-flags.midd
 
 import { NativeUnit } from '../native.unit';
 
-import * as BACnetTypes from '../../../core/utils/types';
+import * as BACnetTypes from '../../../core/types';
 
 export class MultiStateUnit extends NativeUnit {
     public readonly className: string = 'MultiStateUnit';

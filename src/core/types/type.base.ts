@@ -1,7 +1,7 @@
 
-import { BACnetReaderUtil } from '../bacnet-reader.util';
-import { BACnetWriterUtil } from '../bacnet-writer.util';
-import { IBACnetTag } from '../../interfaces';
+import { BACnetReaderUtil } from '../utils/bacnet-reader.util';
+import { BACnetWriterUtil } from '../utils/bacnet-writer.util';
+import { IBACnetTag } from '../interfaces';
 
 export abstract class BACnetTypeBase {
     public readonly className: string = 'BACnetTypeBase';

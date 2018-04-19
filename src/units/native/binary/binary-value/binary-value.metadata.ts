@@ -12,7 +12,7 @@ import {
     IBACnetObjectProperty,
 } from '../../../../core/interfaces';
 
-import * as BACnetTypes from '../../../../core/utils/types';
+import * as BACnetTypes from '../../../../core/types';
 
 export const BinaryValueMetadata: IBACnetObjectProperty[] = [
     {

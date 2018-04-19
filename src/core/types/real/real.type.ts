@@ -4,15 +4,15 @@ import { BACnetTypeBase } from '../type.base';
 
 import {
     BACnetPropTypes,
-} from '../../../enums';
+} from '../../enums';
 
 import {
     IBACnetTag,
-} from '../../../interfaces';
+} from '../../interfaces';
 
-import { ApiError } from '../../../errors';
-import { BACnetReaderUtil } from '../../bacnet-reader.util';
-import { BACnetWriterUtil } from '../../bacnet-writer.util';
+import { ApiError } from '../../errors';
+
+import { BACnetReaderUtil, BACnetWriterUtil } from '../../utils';
 
 export class BACnetReal extends BACnetTypeBase {
     public readonly className: string = 'BACnetReal';

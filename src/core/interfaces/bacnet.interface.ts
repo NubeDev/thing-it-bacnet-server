@@ -7,7 +7,7 @@ import {
     BACnetTagTypes,
 } from '../enums';
 import { BACnetWriterUtil } from '../utils';
-import * as BACnetTypes from '../utils/types';
+import * as BACnetTypes from '../types';
 
 export interface IBACnetAddressInfo {
     address: string;

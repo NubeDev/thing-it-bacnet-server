@@ -2,7 +2,7 @@ import * as _ from 'lodash';
 
 import { ApiError } from '../errors';
 
-import { BACnetTypeBase } from './types';
+import { BACnetTypeBase } from '../types';
 
 export class TyperUtil {
 

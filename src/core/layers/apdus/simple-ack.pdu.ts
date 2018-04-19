@@ -32,7 +32,7 @@ import {
     BACnetUnsignedInteger,
     BACnetObjectId,
     BACnetTypeBase,
-} from '../../utils/types';
+} from '../../types';
 
 export class SimpleACKPDU {
     public readonly className: string = 'SimpleACKPDU';
