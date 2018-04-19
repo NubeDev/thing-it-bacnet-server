@@ -110,7 +110,7 @@ export class CSVRow {
 
         const formatedCells = _.map(cells, (cellStr) => {
             const cellNum = parseFloat(cellStr);
-            return _.isFinite(cellNum) ? cellNum : cellStr;
+            return _.isFinite(cellNum) ? cellNum : cellStr.trim();
         });
 
         this.cells = formatedCells;
