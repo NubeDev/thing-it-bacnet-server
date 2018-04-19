@@ -156,6 +156,7 @@ export class UnitStorageManager {
         if (!unit) {
             let UnitClass = CustomModule.get(unitType);
             unit = new UnitClass();
+            unit.initUnit();
 
             this.customUnits.set(unitToken, unit);
         }
