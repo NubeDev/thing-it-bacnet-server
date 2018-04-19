@@ -42,19 +42,19 @@ export class UnitStorageManager {
     }
 
     /**
-     * initUnits - creates unit instance, initializes the units array.
+     * initUnits - creates unit instances and initializes the units storage.
      *
-     * @param  {number} units - object type
+     * @param  {IEDEUnit[]} edeUnits - EDE configuration of units
      * @return {void}
      */
-    public initUnits (units: IEDEUnit[]): void {
-        if (!units.length) {
+    public initUnits (edeUnits: IEDEUnit[]): void {
+        if (!edeUnits.length) {
             throw new ApiError('UnitStorageManager - initUnits: Unit array is empty!');
         }
 
-        _.map(units, (unit) => {
-            const objType = BACnetObjTypes[unit.objType];
-            const objId = this.getObjId(unit.objType, unit.objInst);
+        _.map(edeUnits, (edeUnit) => {
+            const objType = BACnetObjTypes[edeUnit.objType];
+            const objId = this.getObjId(edeUnit.objType, edeUnit.objInst);
 
             try {
                 let UnitClass = NativeModule.get(objType);
@@ -62,15 +62,15 @@ export class UnitStorageManager {
                     logger.debug(`${this.className} - initUnits: ${objType} (${objId}) - Use "Noop" stub unit`);
                     UnitClass = NativeModule.get('Noop');
                 }
-                const unitInst: NativeUnit = new UnitClass(unit);
-                unitInst.initUnit(unit);
-                this.units.set(objId, unitInst);
+                const unit: NativeUnit = new UnitClass(edeUnit);
+                unit.initUnit(edeUnit);
+                this.units.set(objId, unit);
             } catch (error) {
                 logger.debug(`${this.className} - initUnits: ${objType} (${objId})`, error);
             }
         });
 
-        const devId = this.getObjId(BACnetObjTypes.Device, units[0].deviceInst);
+        const devId = this.getObjId(BACnetObjTypes.Device, edeUnits[0].deviceInst);
         const device = this.units.get(devId);
         this.device = device;
     }
