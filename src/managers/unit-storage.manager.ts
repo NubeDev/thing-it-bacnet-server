@@ -93,15 +93,15 @@ export class UnitStorageManager {
         let unitType = BACnetObjTypes[edeUnit.objType];
 
         if (!NativeModule.has(unitType)) {
-            logger.debug(`${this.className} - initNativeUnit: "${unitType}" native unit is not exist,`
-                + `use "${BACnetUnitAbbr.Default}" native unit`);
+            logger.warn(`${this.className} - initNativeUnit: "${unitType}" native unit is not exist,`,
+                `use "${BACnetUnitAbbr.Default}" native unit`);
             unitType = BACnetUnitAbbr.Default;
         }
 
         // Get token of the native unit
         const unitToken = this.getUnitToken(edeUnit.objType, edeUnit.objInst);
 
-        logger.debug(`${this.className} - initNativeUnit: Use "${unitType} (${unitToken})" native unit`);
+        logger.info(`${this.className} - initNativeUnit: Use "${unitType} (${unitToken})" native unit`);
 
         let unit: NativeUnit = null;
         try {
@@ -133,8 +133,8 @@ export class UnitStorageManager {
             ? `${edeUnit.custUnitType}` : BACnetUnitAbbr.Default;
 
         if (!CustomModule.has(unitType)) {
-            logger.debug(`${this.className} - initCustomUnit: "${unitType}" custom unit is not exist,`
-                + `use "${BACnetUnitAbbr.Default}" custom unit`);
+            logger.warn(`${this.className} - initCustomUnit: "${unitType}" custom unit is not exist,`,
+                `use "${BACnetUnitAbbr.Default}" custom unit`);
             unitType = BACnetUnitAbbr.Default;
         }
 
@@ -150,7 +150,7 @@ export class UnitStorageManager {
         // Get token of the custom unit
         const unitToken = `${unitType}:${unitId}`;
 
-        logger.debug(`${this.className} - initCustomUnit: Use "${unitType} (${unitToken})" custom unit`);
+        logger.info(`${this.className} - initCustomUnit: Use "${unitType} (${unitToken})" custom unit`);
 
         let unit: CustomUnit = this.customUnits.get(unitType);
         if (!unit) {
