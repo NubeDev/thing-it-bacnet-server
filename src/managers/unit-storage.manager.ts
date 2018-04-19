@@ -56,8 +56,8 @@ export class UnitStorageManager {
             const nativeUnit = this.initNativeUnit(edeUnit);
         });
 
-        const devId = this.getObjId(BACnetObjTypes.Device, edeUnits[0].deviceInst);
-        const device = this.nativeUnits.get(devId);
+        const deviceToken = this.getUnitToken(BACnetObjTypes.Device, edeUnits[0].deviceInst);
+        const device = this.nativeUnits.get(deviceToken);
         this.device = device;
     }
 
@@ -72,40 +72,39 @@ export class UnitStorageManager {
         // Get string name of the BACnet object
         const objType = BACnetObjTypes[edeUnit.objType];
         // Get token of the BACnet object
-        const token = this.getObjId(edeUnit.objType, edeUnit.objInst);
+        const unitToken = this.getUnitToken(edeUnit.objType, edeUnit.objInst);
 
         let unit: NativeUnit = null;
         try {
             let UnitClass = NativeModule.get(objType);
 
             if (!UnitClass) {
-                logger.debug(`${this.className} - initNativeUnit: ${objType} (${token}) - Use "Noop" stub unit`);
+                logger.debug(`${this.className} - initNativeUnit: ${objType} (${unitToken}) - Use "Noop" stub unit`);
                 UnitClass = NativeModule.get('Noop');
             }
 
             unit = new UnitClass(edeUnit);
             unit.initUnit(edeUnit);
 
-            this.nativeUnits.set(token, unit);
+            this.nativeUnits.set(unitToken, unit);
         } catch (error) {
-            logger.debug(`${this.className} - initNativeUnit: ${objType} (${token})`, error);
+            logger.debug(`${this.className} - initNativeUnit: ${objType} (${unitToken})`, error);
         }
 
         return unit;
     }
 
     /**
-     * getObjId - returns the storage identifier by the object type and
-     * object instance.
+     * getUnitToken - returns the storage identifier (token) by the BACnet object
+     * type and the BACnet object instance.
      *
      * @param  {number} objType - object type
      * @param  {number} objInst - object identifier
      * @return {string}
      */
-    public getObjId (objType: number, objInst: number): string {
+    public getUnitToken (objType: number, objInst: number): string {
         return `${objType}:${objInst}`;
     }
-
 
     /**
      * getDevice - returns the current device.
@@ -125,8 +124,8 @@ export class UnitStorageManager {
      */
     public getUnit (objId: BACnetObjectId): NativeUnit {
         const objIdValue = objId.getValue();
-        const objIdKey = this.getObjId(objIdValue.type, objIdValue.instance);
-        return this.nativeUnits.get(objIdKey);
+        const unitToken = this.getUnitToken(objIdValue.type, objIdValue.instance);
+        return this.nativeUnits.get(unitToken);
     }
 
     /**
