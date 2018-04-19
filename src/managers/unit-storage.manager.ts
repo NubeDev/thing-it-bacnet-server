@@ -145,9 +145,10 @@ export class UnitStorageManager {
         logger.debug(`${this.className} - initCustomUnit: Use "${unitType} (${unitToken})" custom unit`);
 
         let unit: CustomUnit = this.customUnits.get(unitType);
-        if (!unitToken) {
+        if (!unit) {
             let UnitClass = CustomModule.get(unitType);
             unit = new UnitClass();
+
             this.customUnits.set(unitToken, unit);
         }
 
