@@ -1,4 +1,8 @@
 
+export enum BACnetUnitAbbr {
+    Default = 'default',
+}
+
 export enum BACnetBinaryPV {
     Inactive = 0,
     Active = 1,
