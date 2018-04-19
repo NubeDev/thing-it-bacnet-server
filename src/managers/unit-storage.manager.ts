@@ -79,32 +79,36 @@ export class UnitStorageManager {
 
     /**
      * initNativeUnit - creates the instance of native unit by EDE unit
-     * configuration, sets the native unit to internal unit storage.
+     * configuration, sets the native unit to internal native unit storage.
      *
      * @param  {IEDEUnit} edeUnit - EDE unit configuration
      * @return {NativeUnit} - instance of the native unit
      */
     private initNativeUnit (edeUnit: IEDEUnit): NativeUnit {
         // Get name of the native unit
-        const objType = BACnetObjTypes[edeUnit.objType];
+        let unitType = BACnetObjTypes[edeUnit.objType];
+
+        if (!NativeModule.has(unitType)) {
+            logger.debug(`${this.className} - initNativeUnit: "${unitType}" native unit is not exist,`
+                + `use "${BACnetUnitAbbr.Default}" native unit`);
+            unitType = BACnetUnitAbbr.Default;
+        }
+
         // Get token of the native unit
         const unitToken = this.getUnitToken(edeUnit.objType, edeUnit.objInst);
 
+        logger.debug(`${this.className} - initNativeUnit: Use "${unitType} (${unitToken})" native unit`);
+
         let unit: NativeUnit = null;
         try {
-            let UnitClass = NativeModule.get(objType);
-
-            if (!UnitClass) {
-                logger.debug(`${this.className} - initNativeUnit: ${objType} (${unitToken}) - Use "Noop" stub unit`);
-                UnitClass = NativeModule.get('Noop');
-            }
-
-            unit = new UnitClass(edeUnit);
+            let UnitClass = NativeModule.get(unitType);
+            unit = new UnitClass();
             unit.initUnit(edeUnit);
 
             this.nativeUnits.set(unitToken, unit);
         } catch (error) {
-            logger.debug(`${this.className} - initNativeUnit: ${objType} (${unitToken})`, error);
+            logger.error(`${this.className} - initNativeUnit: "${unitType} (${unitToken})" native unit is not created!`);
+            throw error;
         }
 
         return unit;
