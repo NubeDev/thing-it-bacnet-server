@@ -4,6 +4,12 @@ import { IDistribution } from '../interfaces';
 
 import { PRNGBase } from './prng.base';
 
+/**
+ * PRNG for uniform distribution.
+ * PRNG - pseudorandom number generator.
+ *
+ * @class
+ */
 export class UniformPRNG extends PRNGBase {
 
     /**

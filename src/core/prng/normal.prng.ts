@@ -4,6 +4,12 @@ import { IDistribution } from '../interfaces';
 
 import { PRNGBase } from './prng.base';
 
+/**
+ * PRNG for normal (Gaussian or Gauss or Laplace-Gauss) distribution.
+ * PRNG - pseudorandom number generator.
+ *
+ * @class
+ */
 export class NormalPRNG extends PRNGBase {
 
     /**

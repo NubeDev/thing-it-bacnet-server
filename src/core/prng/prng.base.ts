@@ -2,6 +2,12 @@ import * as _ from 'lodash';
 
 import { IDistribution } from '../interfaces';
 
+/**
+ * Base class for all PRNG.
+ * PRNG - pseudorandom number generator.
+ *
+ * @class
+ */
 export class PRNGBase {
 
     constructor (protected opts: IDistribution) {
