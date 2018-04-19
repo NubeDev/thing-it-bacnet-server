@@ -73,6 +73,14 @@ export class CustomUnit {
     }
 
     /**
+     * startSimulation - starts the simulation logic of the custom unit.
+     *
+     * @return {void}
+     */
+    public startSimulation (): void {
+    }
+
+    /**
      * getConfigFromEDE - extracts the unit configuration from EDE configuration.
      *
      * @param  {IEDEUnit} edeUnit - EDE configuration
