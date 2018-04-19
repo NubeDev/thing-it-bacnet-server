@@ -5,7 +5,7 @@ export enum BACnetUnitDataFlow {
 }
 
 export enum BACnetUnitAbbr {
-    Default = 'default',
+    Default = 'Default',
 }
 
 export enum BACnetBinaryPV {
