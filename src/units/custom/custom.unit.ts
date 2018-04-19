@@ -38,6 +38,7 @@ export class CustomUnit {
     public storage: AliasMap<ICustomFunction<NativeUnit>>;
 
     constructor () {
+        this.storage = new AliasMap();
     }
 
     /**
@@ -69,7 +70,6 @@ export class CustomUnit {
      * @return {void}
      */
     public initUnit (): void {
-        this.storage = new AliasMap();
     }
 
     /**
