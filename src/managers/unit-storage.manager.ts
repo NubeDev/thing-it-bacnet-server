@@ -129,7 +129,7 @@ export class UnitStorageManager {
             ? `${edeUnit.custUnitType}` : BACnetUnitAbbr.Default;
 
         if (!CustomModule.has(unitType)) {
-            logger.debug(`${this.className} - initNativeUnit: "${unitType}" custom unit is not exist,`
+            logger.debug(`${this.className} - initCustomUnit: "${unitType}" custom unit is not exist,`
                 + `use "${BACnetUnitAbbr.Default}" custom unit`);
             unitType = BACnetUnitAbbr.Default;
         }
