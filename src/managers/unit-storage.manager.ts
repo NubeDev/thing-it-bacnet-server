@@ -163,7 +163,8 @@ export class UnitStorageManager {
         try {
             unit.setUnitFn(unitFn, nativeUnit, edeUnit);
         } catch (error) {
-            logger.debug(`${this.className} - initCustomUnit: ${unitType} (${unitToken})`, error);
+            logger.error(`${this.className} - initCustomUnit: "${unitToken}" custom unit is not created!`);
+            throw error;
         }
 
         return null;
