@@ -32,9 +32,11 @@ import {
     NativeUnit,
 } from '../units/native/native.unit';
 
+type NativeUnitToken = string;
+
 export class UnitStorageManager {
     public readonly className: string = 'UnitStorageManager';
-    private nativeUnits: Map<string, NativeUnit>;
+    private nativeUnits: Map<NativeUnitToken, NativeUnit>;
     private device: NativeUnit;
 
     constructor () {
@@ -100,9 +102,9 @@ export class UnitStorageManager {
      *
      * @param  {number} objType - object type
      * @param  {number} objInst - object identifier
-     * @return {string}
+     * @return {NativeUnitToken}
      */
-    public getUnitToken (objType: number, objInst: number): string {
+    public getUnitToken (objType: number, objInst: number): NativeUnitToken {
         return `${objType}:${objInst}`;
     }
 
