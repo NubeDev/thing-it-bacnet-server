@@ -3,6 +3,7 @@ import { Subject, BehaviorSubject, Observable } from 'rxjs';
 
 import {
     BACnetPropIds,
+    BACnetUnitDataFlow,
 } from '../core/enums';
 
 import {
@@ -15,7 +16,6 @@ import {
     IEDEUnit,
 } from '../core/interfaces';
 
-
 import * as BACnetTypes from '../core/types';
 
 import {
@@ -23,11 +23,10 @@ import {
     TyperUtil,
 } from '../core/utils';
 
-type TFlowTypes = 'set' | 'update';
 type TSjHandler = (notif: IBACnetObjectProperty) => void;
 
 interface IDataFlow {
-    type: TFlowTypes;
+    type: BACnetUnitDataFlow;
     value: IBACnetObjectProperty;
 }
 
@@ -86,7 +85,7 @@ export class UnitStorage {
      * @param  {TSjHandler} fn - handler of the flow events
      * @return {void}
      */
-    public setFlowHandler (flowType: TFlowTypes,
+    public setFlowHandler (flowType: BACnetUnitDataFlow,
             propIds: BACnetPropIds|BACnetPropIds[], fn: TSjHandler): void {
         let propIdArray: BACnetPropIds[] = _.isArray(propIds) ? propIds : [propIds];
 
@@ -102,7 +101,7 @@ export class UnitStorage {
      * @param  {BACnetPropIds|BACnetPropIds[]} propIds - identifier of the property
      * @return {TSjHandler}
      */
-    public getFlowHandler (flowType: TFlowTypes,
+    public getFlowHandler (flowType: BACnetUnitDataFlow,
             propId: BACnetPropIds): TSjHandler {
         return this.shFlowHandlers.get(`${flowType}:${propId}`);
     }
@@ -125,7 +124,7 @@ export class UnitStorage {
         logger.debug(`${this.getLogHeader()} - setProperty (${BACnetPropIds[newProp.id]}):`,
             JSON.stringify(newProp));
 
-        this.sjDataFlow.next({ type: 'set', value: newProp });
+        this.sjDataFlow.next({ type: BACnetUnitDataFlow.Set, value: newProp });
     }
 
     /**
@@ -147,7 +146,7 @@ export class UnitStorage {
             JSON.stringify(newProp));
 
         if (isEmitted) {
-            this.sjDataFlow.next({ type: 'update', value: prop });
+            this.sjDataFlow.next({ type: BACnetUnitDataFlow.Update, value: prop });
         }
     }
 
