@@ -145,7 +145,23 @@ describe('Alias', () => {
             }
         });
 
-        it('should set value in empty data storage', () => {
+        it('should set value in empty data storage with multitag', () => {
+            const aliasStorage = new AliasMap<string>([
+                {
+                    alias: 'el1',
+                },
+                {
+                    alias: ['el4', 'el5'],
+                }
+            ]);
+
+            expect(aliasStorage.get('el4')).to.be.undefined;
+
+            aliasStorage.set('el4', 'hello!');
+            expect(aliasStorage.get('el4')).to.equal('hello!');
+        });
+
+        it('should set value in empty data storage with singletag', () => {
             const aliasStorage = new AliasMap<string>([
                 {
                     alias: 'el1',
@@ -161,14 +177,31 @@ describe('Alias', () => {
             expect(aliasStorage.get('el1')).to.equal('hello!');
         });
 
-        it('should set value in data storage with 1 element', () => {
+        it('should set value in data storage with 1 element with singletag', () => {
+            const aliasStorage = new AliasMap<string>([
+                {
+                    alias: 'el1',
+                    value: 'Hello!',
+                },
+                {
+                    alias: ['el4', 'el5'],
+                }
+            ]);
+
+            expect(aliasStorage.get('el1')).to.equal('Hello!');
+
+            aliasStorage.set('el1', 'Hello test!');
+            expect(aliasStorage.get('el1')).to.equal('Hello test!');
+        });
+
+        it('should set value in data storage with 1 element with multitag', () => {
             const aliasStorage = new AliasMap<string>([
                 {
                     alias: 'el1',
                 },
                 {
                     alias: ['el4', 'el5'],
-                    value: 'Hello!'
+                    value: 'Hello!',
                 }
             ]);
 
