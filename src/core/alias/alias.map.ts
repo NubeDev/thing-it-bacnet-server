@@ -106,4 +106,16 @@ export class AliasMap <T> {
 
         return _.isNil(alias) ? null : alias.id;
     }
+
+    /**
+     * forEach - loops through the value storage.
+     *
+     * @param {(value:T) => void} callback
+     * @return {void}
+     */
+    public forEach (callback: (value: T) => void): void {
+        this.storage.forEach((value) => {
+            callback(value);
+        });
+    }
 }
