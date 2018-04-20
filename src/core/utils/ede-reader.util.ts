@@ -77,97 +77,79 @@ export class EDEReaderUtil {
         const offset = new OffsetUtil(0);
         const dataPointRow = this.csvTable.getRowByIndex(index);
         // <Device Instance>_<Device Name>_<Object Name>
-        const keyname =
-            dataPointRow.getCellValue(offset.inc()) as string;
+        const keyname = dataPointRow.getCellValue(offset.inc());
         // BACnet Master Device Instance
-        const deviceInst =
-            dataPointRow.getCellValue(offset.inc()) as number;
+        const deviceInst = dataPointRow.getCellValue(offset.inc());
         // BACnet Object Name
-        const objName =
-            dataPointRow.getCellValue(offset.inc()) as string;
+        const objName = dataPointRow.getCellValue(offset.inc());
         // BACnet Object Type
-        const objType =
-            dataPointRow.getCellValue(offset.inc()) as number;
+        const objType = dataPointRow.getCellValue(offset.inc());
         // BACnet Object Instance
-        const objInst =
-            dataPointRow.getCellValue(offset.inc()) as number;
+        const objInst = dataPointRow.getCellValue(offset.inc());
         // BACnet Object Description
-        const description =
-            dataPointRow.getCellValue(offset.inc()) as string;
+        const description = dataPointRow.getCellValue(offset.inc());
 
-        const defPresentValue =
-            dataPointRow.getCellValue(offset.inc()) as number;
+        const defPresentValue = dataPointRow.getCellValue(offset.inc());
 
-        const minPresentValue =
-            dataPointRow.getCellValue(offset.inc()) as number;
+        const minPresentValue = dataPointRow.getCellValue(offset.inc());
 
-        const maxPresentValue =
-            dataPointRow.getCellValue(offset.inc()) as number;
+        const maxPresentValue = dataPointRow.getCellValue(offset.inc());
 
-        const commandable =
-            dataPointRow.getCellValue(offset.inc()) as string;
+        const commandable = dataPointRow.getCellValue(offset.inc());
 
-        const supportCOV =
-            dataPointRow.getCellValue(offset.inc()) as string;
+        const supportCOV = dataPointRow.getCellValue(offset.inc());
 
-        const hiLimit =
-            dataPointRow.getCellValue(offset.inc()) as number;
+        const hiLimit = dataPointRow.getCellValue(offset.inc());
 
-        const liLimit =
-            dataPointRow.getCellValue(offset.inc()) as number;
+        const liLimit = dataPointRow.getCellValue(offset.inc());
 
-        const stateTextRef =
-            dataPointRow.getCellValue(offset.inc()) as number;
+        const stateTextRef = dataPointRow.getCellValue(offset.inc());
 
-        const unitCode =
-            dataPointRow.getCellValue(offset.inc()) as number;
+        const unitCode = dataPointRow.getCellValue(offset.inc());
 
-        const vendorAddr =
-            dataPointRow.getCellValue(offset.inc()) as string;
+        const vendorAddr = dataPointRow.getCellValue(offset.inc());
 
-        const custUnitType =
-            dataPointRow.getCellValue(offset.inc()) as string;
+        const custUnitType = dataPointRow.getCellValue(offset.inc());
 
-        const custUnitId =
-            dataPointRow.getCellValue(offset.inc()) as number;
+        const custUnitId = dataPointRow.getCellValue(offset.inc());
 
-        const custUnitFn =
-            dataPointRow.getCellValue(offset.inc()) as string;
+        const custUnitFn = dataPointRow.getCellValue(offset.inc());
 
-        const custUnitMax =
-            dataPointRow.getCellValue(offset.inc()) as number;
+        const custUnitMax = dataPointRow.getCellValue(offset.inc());
 
-        const custUnitMin =
-            dataPointRow.getCellValue(offset.inc()) as number;
+        const custUnitMin = dataPointRow.getCellValue(offset.inc());
 
-        const custUnitFreq =
-            dataPointRow.getCellValue(offset.inc()) as number;
+        const custUnitFreq = dataPointRow.getCellValue(offset.inc());
 
         return {
             keyname: keyname,
-            deviceInst: deviceInst,
+            deviceInst: this.toNumber(deviceInst),
             objName: objName,
-            objType: objType,
-            objInst: objInst,
+            objType: this.toNumber(objType),
+            objInst: this.toNumber(objInst),
             description: description,
-            defPresentValue: defPresentValue,
-            minPresentValue: minPresentValue,
-            maxPresentValue: maxPresentValue,
+            defPresentValue: this.toNumber(defPresentValue),
+            minPresentValue: this.toNumber(minPresentValue),
+            maxPresentValue: this.toNumber(maxPresentValue),
             commandable: commandable,
             supportCOV: supportCOV,
-            hiLimit: hiLimit,
-            liLimit: liLimit,
-            stateTextRef: stateTextRef,
-            unitCode: unitCode,
+            hiLimit: this.toNumber(hiLimit),
+            liLimit: this.toNumber(liLimit),
+            stateTextRef: this.toNumber(stateTextRef),
+            unitCode: this.toNumber(unitCode),
             vendorAddr: vendorAddr,
 
             custUnitType: custUnitType,
-            custUnitId: custUnitId,
+            custUnitId: this.toNumber(custUnitId),
             custUnitFn: custUnitFn,
-            custUnitMax: custUnitMax,
-            custUnitMin: custUnitMin,
-            custUnitFreq: custUnitFreq,
+            custUnitMax: this.toNumber(custUnitMax),
+            custUnitMin: this.toNumber(custUnitMin),
+            custUnitFreq: this.toNumber(custUnitFreq),
         };
+    }
+
+    public toNumber (value): number {
+        return value !== '' && _.isFinite(+value) ? +value : null;
     }
 
     /**
