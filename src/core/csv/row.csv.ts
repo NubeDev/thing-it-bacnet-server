@@ -7,7 +7,7 @@ export const CSVCellSeparators = [ CSVCellSeparatorMain, ',' ];
 
 export class CSVRow {
     private aliases: Map<string, number>;
-    private cells: Array<number|string>;
+    private cells: Array<string>;
 
     constructor (strRow: string = '') {
         this.aliases = new Map();
@@ -48,7 +48,7 @@ export class CSVRow {
      * @param  {number|string} cellValue - new valuse of cell
      * @return {CSVRow}
      */
-    public setCellValue (cellInst: number|string, cellValue: number|string): CSVRow {
+    public setCellValue (cellInst: number|string, cellValue: string): CSVRow {
         let cellNumber: number = _.isString(cellInst)
             ? this.aliases.get(cellInst)
             : cellInst;
@@ -57,9 +57,7 @@ export class CSVRow {
             throw new ApiError(`CSVRow - setValue: Cell "${cellInst}" is not exist!`);
         }
 
-        const newCellValue: number|string = _.isString(cellValue)
-            ? this.escapeString(cellValue)
-            : cellValue;
+        const newCellValue: string = this.escapeString(cellValue);
 
         this.cells[cellNumber] = newCellValue;
         return this;
@@ -72,7 +70,7 @@ export class CSVRow {
      * @param  {number|string} cellInst - cell ID of cell alias
      * @return {number|string}
      */
-    public getCellValue (cellInst: number|string): number|string {
+    public getCellValue (cellInst: number|string): string {
         let cellNumber: number = _.isString(cellInst)
             ? this.aliases.get(cellInst)
             : cellInst;
