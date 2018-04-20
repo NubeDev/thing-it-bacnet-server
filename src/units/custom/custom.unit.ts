@@ -52,8 +52,7 @@ export class CustomUnit {
     public setUnitFn (fn: string, unit: NativeUnit, edeUnit: IEDEUnit): void {
         const custFunc = this.storage.get(fn);
 
-        const unitConfig = this.getConfigFromEDE(edeUnit);
-        const newConfig: ICustomFunctionConfig = _.assign({}, custFunc.config, unitConfig);
+        const newConfig = this.getConfigWithEDE(custFunc.config, edeUnit);
 
         const newCustFunc: ICustomFunction<NativeUnit> = _.assign({}, custFunc, {
             unit: unit,
@@ -81,17 +80,24 @@ export class CustomUnit {
     }
 
     /**
-     * getConfigFromEDE - extracts the unit configuration from EDE configuration.
+     * getConfigWithEDE - concatenates the default unit configuration with EDE
+     * configuration.
      *
+     * @param  {ICustomFunctionConfig} unitConfig - default unit configuration
      * @param  {IEDEUnit} edeUnit - EDE configuration
      * @return {ICustomFunctionConfig} - unit configuration
      */
-    public getConfigFromEDE (edeUnit: IEDEUnit): ICustomFunctionConfig {
-        return {
-            max: edeUnit.custUnitMax,
-            min: edeUnit.custUnitMin,
-            freq: edeUnit.custUnitFreq,
-        };
+    public getConfigWithEDE (unitConfig: ICustomFunctionConfig, edeUnit: IEDEUnit): ICustomFunctionConfig {
+        let max: number = _.isNumber(edeUnit.custUnitMax) && _.isFinite(edeUnit.custUnitMax)
+            ? edeUnit.custUnitMax : unitConfig.max;
+
+        let min: number = _.isNumber(edeUnit.custUnitMin) && _.isFinite(edeUnit.custUnitMin)
+            ? edeUnit.custUnitMin : unitConfig.min;
+
+        let freq: number = _.isNumber(edeUnit.custUnitFreq) && _.isFinite(edeUnit.custUnitFreq)
+            ? edeUnit.custUnitFreq : unitConfig.freq;
+
+        return { min, max, freq };
     }
 
     /**
