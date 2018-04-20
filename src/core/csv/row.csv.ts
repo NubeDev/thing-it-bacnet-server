@@ -2,7 +2,8 @@ import * as _ from 'lodash';
 
 import { ApiError } from '../errors';
 
-export const CSVCellSeparator = ';';
+export const CSVCellSeparatorMain = ';';
+export const CSVCellSeparators = [ CSVCellSeparatorMain, ',' ];
 
 export class CSVRow {
     private aliases: Map<string, number>;
@@ -106,7 +107,19 @@ export class CSVRow {
             return;
         }
 
-        const cells = strRow.split(CSVCellSeparator);
+        const varCells = _.map(CSVCellSeparators, (CSVCellSeparator) => {
+            return strRow.split(CSVCellSeparator);
+        });
+
+        let maxLen: number = 0;
+        let cells: string[] = null;
+        _.map(varCells, (varCell) => {
+            if (maxLen > varCell.length) {
+                return;
+            }
+            maxLen = varCell.length;
+            cells = varCell;
+        });
 
         const formatedCells = _.map(cells, (cellStr) => {
             const cellNum = parseFloat(cellStr);
@@ -130,7 +143,7 @@ export class CSVRow {
             rowArray[arrIndex] = this.cells[arrIndex];
         }
 
-        return rowArray.join(CSVCellSeparator);
+        return rowArray.join(CSVCellSeparatorMain);
     }
 
     /**
