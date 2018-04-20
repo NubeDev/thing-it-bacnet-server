@@ -8,10 +8,6 @@ import {
 } from '../../core/enums';
 
 import {
-    ApiError,
-} from '../../core/errors';
-
-import {
     IBACnetObjectProperty,
     IBACnetTypeObjectId,
     IEDEUnit,
@@ -19,6 +15,8 @@ import {
 
 import { NativeMetadata } from './native.metadata';
 import { UnitStorage } from '../unit.storage';
+
+import { MetainfoMiddleUnit } from './middles/metainfo/metainfo.middle';
 
 import * as BACnetTypes from '../../core/types';
 
@@ -48,41 +46,14 @@ export class NativeUnit {
 
         this.sjHandler();
 
-        this.storage.addUnitStorage(NativeMetadata);
-
-        if (_.isNil(edeUnit.objInst)) {
-            throw new ApiError(`${this.className} - constructor: Unit ID is required!`);
-        }
-
         // Get header of the log messages
         this.logHeader = this.getLogHeader(this.className, edeUnit.objType, edeUnit.objInst);
         this.storage.setLogHeader(this.logHeader);
 
-        // Set default props
-        this.storage.setProperty({
-            id: BACnetPropIds.objectIdentifier,
-            payload: new BACnetTypes.BACnetObjectId({
-                type: edeUnit.objType,
-                instance: edeUnit.objInst,
-            }),
-        });
-
-        this.storage.setProperty({
-            id: BACnetPropIds.objectName,
-            payload: new BACnetTypes.BACnetCharacterString(edeUnit.objName),
-        });
-
-        this.storage.setProperty({
-            id: BACnetPropIds.objectType,
-            payload: new BACnetTypes.BACnetEnumerated(edeUnit.objType),
-        });
-
-        if (edeUnit.description) {
-            this.storage.setProperty({
-                id: BACnetPropIds.description,
-                payload: new BACnetTypes.BACnetCharacterString(edeUnit.description),
-            });
-        }
+        // Set middle storages
+        MetainfoMiddleUnit.createAndBind(this.storage, edeUnit);
+        // Set unit storage
+        this.storage.addUnitStorage(NativeMetadata);
     }
 
     /**
