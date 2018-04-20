@@ -91,43 +91,98 @@ export class CSVRow {
     }
 
     /**
+     * fromString - parses the CSV row and inits the internal storage of CSV cells.
+     *
+     * @param  {string} strRow - CSV row
+     * @return {void}
+     */
+    public fromString (strRow: string) {
+        const rgxValid1 = /^\s*(?:'[^'\\]*(?:\\[\S\s][^'\\]*)*'|"[^"\\]*(?:\\[\S\s][^"\\]*)*"|[^,'"\s\\]*(?:\s+[^,'"\s\\]+)*)\s*(?:,\s*(?:'[^'\\]*(?:\\[\S\s][^'\\]*)*'|"[^"\\]*(?:\\[\S\s][^"\\]*)*"|[^,'"\s\\]*(?:\s+[^,'"\s\\]+)*)\s*)*$/;
+        const rgxValid2 = /^\s*(?:'[^'\\]*(?:\\[\S\s][^'\\]*)*'|"[^"\\]*(?:\\[\S\s][^"\\]*)*"|[^;'"\s\\]*(?:\s+[^;'"\s\\]+)*)\s*(?:,\s*(?:'[^'\\]*(?:\\[\S\s][^'\\]*)*'|"[^"\\]*(?:\\[\S\s][^"\\]*)*"|[^;'"\s\\]*(?:\s+[^;'"\s\\]+)*)\s*)*$/;
+
+        if (!rgxValid1.test(strRow) && !rgxValid2.test(strRow)) {
+            throw new ApiError('CSVRow - fromString: Input string must have valid format');
+        };
+
+        const rgxValue1 = /(?!\s*$)\s*(?:'([^'\\]*(?:\\[\S\s][^'\\]*)*)'|"([^"\\]*(?:\\[\S\s][^"\\]*)*)"|([^,'"\s\\]*(?:\s+[^,'"\s\\]+)*))\s*(?:,|$)/g;
+        const cells1 = this.CSVtoArray(strRow, rgxValue1);
+
+        const rgxValue2 = /(?!\s*$)\s*(?:'([^'\\]*(?:\\[\S\s][^'\\]*)*)'|"([^"\\]*(?:\\[\S\s][^"\\]*)*)"|([^;'"\s\\]*(?:\s+[^;'"\s\\]+)*))\s*(?:;|$)/g;
+        const cells2 = this.CSVtoArray(strRow, rgxValue2);
+
+        const cells = cells1.length > cells2.length ? cells1 : cells2;
+
+        this.cells = cells;
+    };
+
+    /**
+     * CSVtoArray - parses the CSV row and creates an array of CSV cells by
+     * specific CSV regular expression.
+     *
+     * @param  {string} strRow - CSV row
+     * @param  {RegExp} rgxValue - CSV regular expression
+     * @return {string[]} - array of CSV cells
+     */
+    private CSVtoArray (strRow: string, rgxValue: RegExp): string[] {
+        const cells = [];
+        strRow.replace(rgxValue, (m0, m1, m2, m3) => {
+            if (m1) {
+                const value = m1.replace(/\\'/g, `'`);
+                cells.push(value);
+            } else if (m2) {
+                cells.push(m2.replace(/\\"/g, `"`));
+            } else {
+                cells.push(m3);
+            }
+            return '';
+        });
+
+        // Handle special case of empty last value.
+        if (/,\s*$/.test(strRow)) {
+            cells.push('');
+        };
+
+        return cells;
+    }
+
+    /**
      * fromString - parses the "Row" string (csv format) and creates an array
      * of "value"s from parsed data.
      *
      * @param  {string} strRow - string in csv format (row)
      * @return {void}
      */
-    public fromString (strRow: string): void {
-        if (!_.isString(strRow)) {
-            throw new ApiError(`CSVRow - fromString: Input string must have string type!`);
-        }
-
-        if (!strRow) {
-            this.cells = [];
-            return;
-        }
-
-        const varCells = _.map(CSVCellSeparators, (CSVCellSeparator) => {
-            return strRow.split(CSVCellSeparator);
-        });
-
-        let maxLen: number = 0;
-        let cells: string[] = null;
-        _.map(varCells, (varCell) => {
-            if (maxLen > varCell.length) {
-                return;
-            }
-            maxLen = varCell.length;
-            cells = varCell;
-        });
-
-        const formatedCells = _.map(cells, (cellStr) => {
-            const cellNum = parseFloat(cellStr);
-            return _.isFinite(cellNum) ? cellNum : cellStr.trim();
-        });
-
-        this.cells = formatedCells;
-    }
+    // public fromString (strRow: string): void {
+    //     if (!_.isString(strRow)) {
+    //         throw new ApiError(`CSVRow - fromString: Input string must have string type!`);
+    //     }
+    //
+    //     if (!strRow) {
+    //         this.cells = [];
+    //         return;
+    //     }
+    //
+    //     const varCells = _.map(CSVCellSeparators, (CSVCellSeparator) => {
+    //         return strRow.split(CSVCellSeparator);
+    //     });
+    //
+    //     let maxLen: number = 0;
+    //     let cells: string[] = null;
+    //     _.map(varCells, (varCell) => {
+    //         if (maxLen > varCell.length) {
+    //             return;
+    //         }
+    //         maxLen = varCell.length;
+    //         cells = varCell;
+    //     });
+    //
+    //     const formatedCells = _.map(cells, (cellStr) => {
+    //         const cellNum = parseFloat(cellStr);
+    //         return _.isFinite(cellNum) ? cellNum : cellStr.trim();
+    //     });
+    //
+    //     this.cells = formatedCells;
+    // }
 
     /**
      * toString - returns the string representation (csv format) of the row.
