@@ -4,6 +4,7 @@ import { Subject, BehaviorSubject, Observable } from 'rxjs';
 import {
     BACnetPropIds,
     BACnetUnitDataFlow,
+    BACnetUnitFamily,
 } from '../../core/enums';
 
 import {
@@ -30,6 +31,7 @@ export class NativeUnit {
     public readonly className: string = 'NativeUnit';
     public logHeader: string;
 
+    public readonly family: string = BACnetUnitFamily.Native;
     // Unit storage
     public storage: UnitStorage;
 

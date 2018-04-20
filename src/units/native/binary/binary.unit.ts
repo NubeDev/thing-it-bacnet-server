@@ -3,9 +3,9 @@ import * as _ from 'lodash';
 import {
     BACnetPropIds,
     BACnetBinaryPV,
-    BACnetEventState,
     BACnetPolarity,
     BACnetUnitDataFlow,
+    BACnetUnitFamily,
 } from '../../../core/enums';
 
 import {
@@ -14,7 +14,6 @@ import {
 
 import {
     IBACnetObjectProperty,
-    IBACnetTypeStatusFlags,
     IEDEUnit,
 } from '../../../core/interfaces';
 
@@ -27,6 +26,7 @@ import * as BACnetTypes from '../../../core/types';
 
 export class BinaryUnit extends NativeUnit {
     public readonly className: string = 'BinaryUnit';
+    public readonly family: string = BACnetUnitFamily.Binary;
 
     public initUnit (edeUnit: IEDEUnit) {
         super.initUnit(edeUnit);
