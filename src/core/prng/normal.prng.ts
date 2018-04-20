@@ -13,7 +13,8 @@ import { PRNGBase } from './prng.base';
 export class NormalPRNG extends PRNGBase {
 
     /**
-     * random - calculates the random value in [-1;1] range.
+     * random - calculates the random value in [-1;1] range, relies on the
+     * {@link https://en.wikipedia.org/wiki/Central_limit_theorem|central limit theorem (CLT)}.
      *
      * @return {number} - random value
      */
