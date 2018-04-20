@@ -8,6 +8,13 @@ export enum BACnetUnitAbbr {
     Default = 'Default',
 }
 
+export enum BACnetUnitFamily {
+    Native = 'native',
+    Analog = 'analog',
+    Binary = 'binary',
+    MultiState = 'multi-state',
+}
+
 export enum BACnetBinaryPV {
     Inactive = 0,
     Active = 1,
