@@ -98,6 +98,10 @@ export class UnitStorageManager {
             unitType = BACnetUnitAbbr.Default;
         }
 
+        if (_.isNil(edeUnit.objInst)) {
+            throw new ApiError(`${this.className} - initNativeUnit: Unit ID (Object Instance) is required!`);
+        }
+
         // Get token of the native unit
         const unitToken = this.getUnitToken(edeUnit.objType, edeUnit.objInst);
 
