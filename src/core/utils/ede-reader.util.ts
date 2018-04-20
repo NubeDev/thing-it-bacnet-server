@@ -88,37 +88,37 @@ export class EDEReaderUtil {
         const objInst = dataPointRow.getCellValue(offset.inc());
         // BACnet Object Description
         const description = dataPointRow.getCellValue(offset.inc());
-
+        // BACnet default value for "Present Value" property
         const defPresentValue = dataPointRow.getCellValue(offset.inc());
-
+        // BACnet min value for "Present Value" property
         const minPresentValue = dataPointRow.getCellValue(offset.inc());
-
+        // BACnet max value for "Present Value" property
         const maxPresentValue = dataPointRow.getCellValue(offset.inc());
-
+        // BACnet object has or not commandable properties
         const commandable = dataPointRow.getCellValue(offset.inc());
-
+        // BACnet object support COV notification
         const supportCOV = dataPointRow.getCellValue(offset.inc());
 
         const hiLimit = dataPointRow.getCellValue(offset.inc());
 
         const liLimit = dataPointRow.getCellValue(offset.inc());
-
+        // ID in the "State Text" array (property)
         const stateTextRef = dataPointRow.getCellValue(offset.inc());
-
+        // Measurement unit of the "Present Value" property
         const unitCode = dataPointRow.getCellValue(offset.inc());
 
         const vendorAddr = dataPointRow.getCellValue(offset.inc());
-
+        // Type of the custom unit
         const custUnitType = dataPointRow.getCellValue(offset.inc());
-
+        // ID of the custom unit
         const custUnitId = dataPointRow.getCellValue(offset.inc());
-
+        // Function of the BACnet object in custom unit
         const custUnitFn = dataPointRow.getCellValue(offset.inc());
-
+        // Max value for simulation logic
         const custUnitMax = dataPointRow.getCellValue(offset.inc());
-
+        // Min value for simulation logic
         const custUnitMin = dataPointRow.getCellValue(offset.inc());
-
+        // Frequency of changes of the value for simulation logic
         const custUnitFreq = dataPointRow.getCellValue(offset.inc());
 
         return {
