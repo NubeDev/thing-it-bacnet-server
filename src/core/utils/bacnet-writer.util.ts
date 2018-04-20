@@ -3,12 +3,20 @@ import * as _ from 'lodash';
 import { ApiError } from '../errors';
 
 import {
+    IBACnetTypeObjectId,
+} from '../interfaces';
+
+import {
     BACnetPropIds,
     BACnetPropTypes,
+    OpertionMaxValue,
+    BACnetTagTypes,
 } from '../enums';
 
 import { OffsetUtil } from './offset.util';
 import { TyperUtil } from './typer.util';
+
+import * as BACnetTypes from '../types';
 
 export class BACnetWriterUtil {
     public offset: OffsetUtil;
@@ -148,40 +156,29 @@ export class BACnetWriterUtil {
      * @param  {number} objectId - object id
      * @return {void}
      */
-    public writeObjectIdentifier (objectType: number, objectInst: number): void {
+    public writeObjectIdentifier (objId: IBACnetTypeObjectId): void {
         // Object Identifier = Object Type 10 bits, Object ID 22 bits
-        const objectIdentifier = ((objectType & 0x03FF) << 22)
-            | (objectInst & 0x03FFFFF);
+        const objectIdentifier = ((objId.type & 0x03FF) << 22)
+            | (objId.instance & 0x03FFFFF);
         this.writeUInt32BE(objectIdentifier);
     }
 
     /**
-     * writeParam - writes BACnet param name to the internal buffer.
+     * writeParam - writes BACnet param to the internal buffer.
      *
-     * @param  {number} paramName - param name
-     * @param  {number} tagContext - tag context
-     * @param  {number} paramSize - param size
+     * @param  {number} paramValue - param value
+     * @param  {number} tagNumber - tag number
+     * @param  {BACnetTagTypes} [tagType=BACnetTagTypes.context] - tag type
      * @return {void}
      */
     public writeParam (
-            paramName: number, tagContext: number, paramSize: number = 1): void {
-        // Context Number - Context tag - Param Length (bytes)
-        this.writeTag(tagContext, 1, paramSize);
-
-        // Write param by the param length
-        switch (paramSize) {
-            case 4:
-                this.writeUInt32BE(paramName);
-                break;
-            case 2:
-                this.writeUInt16BE(paramName);
-                break;
-            case 1:
-                this.writeUInt8(paramName);
-                break;
-            default:
-                throw new ApiError(`BACnetReaderUtil - writeIntBySizte: Size ${paramSize} is not supported!`);
-        }
+            paramValue: number, tagNumber: number,
+            tagType: BACnetTagTypes = BACnetTagTypes.context): void {
+        const uIntSize = this.getUIntSize(paramValue);
+        // Tag Number - Tag Type - Param Length (bytes)
+        this.writeTag(tagNumber, tagType, uIntSize);
+        // Write unsigned integer value
+        this.writeUIntValue(paramValue);
     }
 
     /**
@@ -202,150 +199,57 @@ export class BACnetWriterUtil {
     /**
      * writeValue - writes BACnet property value to the internal buffer.
      *
-     * @param  {number} tagContext - tag context
+     * @param  {number} tagNumber - tag number
      * @param  {BACnetPropTypes} valueType - type of property value
-     * @param  {any} params - parama object with value
+     * @param  {IBACnetType} value - parama object with value
      * @return {void}
      */
-    public writeValue (tagContext: number, propValueType: BACnetPropTypes, params: any): void {
+    public writeValue (tagNumber: number,
+            propValues: BACnetTypes.BACnetTypeBase | BACnetTypes.BACnetTypeBase[]): void {
         // Context Number - Context tag - "Opening" Tag
-        this.writeTag(tagContext, 1, 6);
+        this.writeTag(tagNumber, 1, 6);
 
-        switch (propValueType) {
-            case BACnetPropTypes.boolean:
-                this.writeTypeBoolean(params);
-                break;
-            case BACnetPropTypes.unsignedInt:
-                this.writeTypeUnsignedInt(params);
-                break;
-            case BACnetPropTypes.real:
-                this.writeTypeReal(params);
-                break;
-            case BACnetPropTypes.characterString:
-                this.writeTypeCharString(params);
-                break;
-            case BACnetPropTypes.bitString:
-                this.writeTypeStatusFlags(params);
-                break;
-            case BACnetPropTypes.enumerated:
-                this.writeTypeEnumerated(params);
-                break;
-            case BACnetPropTypes.objectIdentifier:
-                this.writeTypeObjectIdentifier(params);
-                break;
-        }
+        let values: BACnetTypes.BACnetTypeBase[] = _.isArray(propValues)
+            ? propValues : [ propValues ];
+
+        _.map(values, (value) => {
+            value.writeValue(this);
+        });
 
         // Context Number - Context tag - "Closing" Tag
-        this.writeTag(tagContext, 1, 7);
+        this.writeTag(tagNumber, 1, 7);
     }
 
     /**
-     * writeTypeBoolean - writes BACnet Boolean value to the internal buffer.
+     * writeUIntValue - writes unsigned integer value to the internal buffer.
      *
-     * @param  {any} params - object with parameters
+     * @param  {number} uIntValue - unsigned int value
      * @return {void}
      */
-    public writeTypeBoolean (params: any): void {
+    public writeUIntValue (uIntValue: number): void {
         // DataType - Application tag - DataTypeSize
-        this.writeTag(BACnetPropTypes.boolean, 0, +params.value);
+        if (uIntValue <= OpertionMaxValue.uInt8) {
+            this.writeUInt8(uIntValue);
+        } else if (uIntValue <= OpertionMaxValue.uInt16) {
+            this.writeUInt16BE(uIntValue);
+        } else if (uIntValue <= OpertionMaxValue.uInt32) {
+            this.writeUInt32BE(uIntValue);
+        }
     }
 
     /**
-     * writeTypeUnsignedInt - writes BACnet Integer value to the internal buffer.
+     * getUIntSize - returns the size (byte) of the unsigned int value.
      *
-     * @param  {any} params - object with parameters
-     * @return {void}
+     * @param  {number} uIntValue - unsigned int value
+     * @return {number}
      */
-    public writeTypeUnsignedInt (params: any): void {
-        // DataType - Application tag - DataTypeSize
-        this.writeTag(BACnetPropTypes.unsignedInt, 0, 1);
-
-        this.writeUInt8(params.value)
-    }
-
-    /**
-     * writeTypeReal - writes BACnet Real value to the internal buffer.
-     *
-     * @param  {any} params - object with parameters
-     * @return {void}
-     */
-    public writeTypeReal (params: any): void {
-        // DataType - Application tag - DataTypeSize
-        this.writeTag(BACnetPropTypes.real, 0, 4);
-
-        this.writeFloatBE(params.value)
-    }
-
-    /**
-     * writeTypeStatusFlags - writes BACnet Status Flags value to the internal buffer.
-     *
-     * @param  {any} params - object with parameters
-     * @return {void}
-     */
-    public writeTypeCharString (params: any): void {
-        // DataType - Application tag - Extended value (5)
-        this.writeTag(BACnetPropTypes.characterString, 0, 5);
-
-        // Write lenght
-        const paramValueLen = params.value.length + 1;
-        this.writeUInt8(paramValueLen);
-
-        // Write "ansi" / "utf8" encoding
-        this.writeUInt8(0x00);
-
-        // Write string
-        this.writeString(params.value);
-    }
-
-    /**
-     * writeTypeStatusFlags - writes BACnet Status Flags value to the internal buffer.
-     *
-     * @param  {any} params - object with parameters
-     * @return {void}
-     */
-    public writeTypeStatusFlags (params: any): void {
-        // DataType - Application tag - 2 bytes
-        this.writeTag(BACnetPropTypes.bitString, 0, 2);
-
-        // Write unused bits
-        this.writeUInt8(0x04);
-
-        let statusFlags = 0x00;
-        statusFlags = TyperUtil.setBit(statusFlags, 7, params.inAlarm);
-        statusFlags = TyperUtil.setBit(statusFlags, 6, params.fault);
-        statusFlags = TyperUtil.setBit(statusFlags, 5, params.overridden);
-        statusFlags = TyperUtil.setBit(statusFlags, 4, params.outOfService);
-
-        // Write status flags
-        this.writeUInt8(statusFlags);
-    }
-
-    /**
-     * writeTypeEnumerated - writes BACnet Enumerated value to the internal buffer.
-     *
-     * @param  {any} params - object with parameters
-     * @return {void}
-     */
-    public writeTypeEnumerated (params: any): void {
-        // DataType - Application tag - 1 bytes
-        this.writeTag(BACnetPropTypes.enumerated, 0, 1);
-
-        // Write status flags
-        this.writeUInt8(params.value);
-    }
-
-    /**
-     * writeTypeObjectIdentifier - writes BACnet ObjectIdentifier value to the
-     * internal buffer.
-     *
-     * @param  {any} params - object with parameters
-     * @return {void}
-     */
-    public writeTypeObjectIdentifier (params: any): void {
-        // DataType - Application tag - 4 bytes
-        this.writeTag(BACnetPropTypes.objectIdentifier, 0, 4);
-
-        // Write status flags
-        this.writeObjectIdentifier(params.objType, params.objInst);
+    public getUIntSize (uIntValue: number): number {
+        if (uIntValue <= OpertionMaxValue.uInt8) {
+            return 1;
+        } else if (uIntValue <= OpertionMaxValue.uInt16) {
+            return 2;
+        } else if (uIntValue <= OpertionMaxValue.uInt32) {
+            return 4;
+        }
     }
 }

@@ -2,6 +2,8 @@ import * as _ from 'lodash';
 
 import { ApiError } from '../errors';
 
+import { BACnetTypeBase } from '../types';
+
 export class TyperUtil {
 
     /**
@@ -81,5 +83,18 @@ export class TyperUtil {
     static getWord (value: number, pos: number): number {
         const word: number = (value >> (pos * 16)) & 0xFF;
         return word;
+    }
+
+    /**
+     * isNil - returns the true if value has a BACnetNull type.
+     *
+     * @param  {BACnetTypeBase} value - BACnet Value
+     * @return {boolean}
+     */
+    static isNil (value?: BACnetTypeBase): boolean {
+        if (!value) {
+            return false;
+        }
+        return value.className === 'BACnetNull';
     }
 }

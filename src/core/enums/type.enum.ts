@@ -1,4 +1,5 @@
 export enum BACnetPropTypes {
+    nullData = 0,
     boolean = 1,
     unsignedInt = 2,
     real = 4,

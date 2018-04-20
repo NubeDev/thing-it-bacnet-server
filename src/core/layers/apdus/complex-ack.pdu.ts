@@ -12,81 +12,112 @@ import {
     BACnetPropTypes,
     BACnetTagTypes,
     BACnetConfirmedService,
-    BACnetUnconfirmedService,
     BACnetServiceTypes,
 } from '../../enums';
 
 import {
     IComplexACK,
     IComplexACKReadProperty,
+
+    IComplexACKLayer,
+    IComplexACKService,
+    IComplexACKReadPropertyService,
 } from '../../interfaces';
 
-export class ComplexACKPDU {
-    public className: string = 'ComplexACKPDU';
+import {
+    BACnetUnsignedInteger,
+    BACnetObjectId,
+    BACnetTypeBase,
+} from '../../types';
 
-    private getFromBuffer (buf: Buffer): Map<string, any> {
+export class ComplexACKPDU {
+    public readonly className: string = 'ComplexACKPDU';
+
+    private getFromBuffer (buf: Buffer): IComplexACKLayer {
         const reader = new BACnetReaderUtil(buf);
-        const reqMap: Map<string, any> = new Map();
+
+        let reqMap: IComplexACKLayer;
+        let serviceChoice: BACnetConfirmedService, serviceData: IComplexACKService;
+        let pduType: number, pduSeg: boolean, pduMor: boolean;
+        let invokeId: number, sequenceNumber: number, proposedWindowSize: number;
 
         try {
             // --- Read meta byte
             const mMeta = reader.readUInt8();
 
-            const pduType = TyperUtil.getBitRange(mMeta, 4, 4);
-            reqMap.set('type', pduType);
+            pduType = TyperUtil.getBitRange(mMeta, 4, 4);
 
-            const pduSeg = TyperUtil.getBit(mMeta, 3);
-            reqMap.set('seg', pduSeg);
+            pduSeg = !!TyperUtil.getBit(mMeta, 3);
 
-            const pduMor = TyperUtil.getBit(mMeta, 2);
-            reqMap.set('mor', pduMor);
+            pduMor = !!TyperUtil.getBit(mMeta, 2);
 
             // --- Read InvokeID byte
-            const invokeId = reader.readUInt8();
-            reqMap.set('invokeId', invokeId);
+            invokeId = reader.readUInt8();
 
             if (pduSeg) {
-                const sequenceNumber = reader.readUInt8();
-                reqMap.set('sequenceNumber', sequenceNumber);
+                sequenceNumber = reader.readUInt8();
 
-                const proposedWindowSize = reader.readUInt8();
-                reqMap.set('proposedWindowSize', proposedWindowSize);
+                proposedWindowSize = reader.readUInt8();
             }
 
-            const serviceChoice = reader.readUInt8();
-            reqMap.set('serviceChoice', serviceChoice);
+            serviceChoice = reader.readUInt8();
 
-            let serviceMap;
             switch (serviceChoice) {
                 case BACnetConfirmedService.ReadProperty:
-                    serviceMap = this.getReadProperty(reader);
+                    serviceData = this.getReadProperty(reader);
                     break;
             }
-            reqMap.set('service', serviceMap);
         } catch (error) {
             logger.error(`${this.className} - getFromBuffer: Parse - ${error}`);
         }
 
+        reqMap = {
+            type: pduType,
+            seg: pduSeg,
+            mor: pduMor,
+            invokeId: invokeId,
+            sequenceNumber: sequenceNumber,
+            proposedWindowSize: proposedWindowSize,
+            serviceChoice: serviceChoice,
+            service: serviceData,
+        };
+
         return reqMap;
     }
 
-    private getReadProperty (reader: BACnetReaderUtil): Map<string, any> {
-        const serviceMap: Map<string, any> = new Map();
+    private getReadProperty (reader: BACnetReaderUtil): IComplexACKReadPropertyService {
+        let serviceData: IComplexACKReadPropertyService;
+
+        let objId: BACnetObjectId,
+            propId: BACnetUnsignedInteger,
+            propArrayIndex: BACnetUnsignedInteger,
+            propValues: BACnetTypeBase[];
 
         try {
-            const objIdent = reader.readObjectIdentifier();
-            serviceMap.set('objIdent', objIdent);
+            objId = reader.readObjectIdentifier();
 
-            const propIdent = reader.readProperty();
-            serviceMap.set('propIdent', propIdent);
+            propId = reader.readParam();
 
-            const propValue = reader.readParamValue();
-            serviceMap.set('propValue', propValue);
+            const optTag = reader.readTag(false);
+            const optTagNumber = optTag.num;
+
+            if (optTagNumber === 2) {
+                propArrayIndex = reader.readParam();
+            }
+
+            propValues = reader.readParamValue();
         } catch (error) {
             logger.error(`${this.className} - getReadProperty: Parse - ${error}`);
         }
 
-        return serviceMap;
+        serviceData = {
+            objId: objId,
+            propId: propId,
+            propArrayIndex: propArrayIndex,
+            propValues: propValues,
+        };
+
+        return serviceData;
     }
 
     /**
@@ -136,14 +167,13 @@ export class ComplexACKPDU {
 
         // Write Object identifier
         writer.writeTag(0, BACnetTagTypes.context, 4);
-        writer.writeObjectIdentifier(params.objType, params.objInst);
+        writer.writeObjectIdentifier(params.unitObjId.getValue());
 
         // Write PropertyID
-        writer.writeTag(1, BACnetTagTypes.context, 1);
-        writer.writeUInt8(params.propId);
+        writer.writeParam(params.unitProp.id, 1);
 
         // Write PropertyID
-        writer.writeValue(3, params.propType, params.propValue);
+        writer.writeValue(3, params.unitProp.payload);
 
         return writer;
     }

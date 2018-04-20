@@ -9,10 +9,16 @@ import {
 } from '../../utils';
 
 import {
+    IUnconfirmedReqLayer,
+    IUnconfirmedReqService,
+    IUnconfirmedReqIAmService,
+    IUnconfirmedReqWhoIsService,
+} from '../../interfaces';
+
+import {
     BACnetPropTypes,
     BACnetPropIds,
     BACnetTagTypes,
-    BACnetConfirmedService,
     BACnetUnconfirmedService,
     BACnetServiceTypes,
 } from '../../enums';
@@ -20,69 +26,89 @@ import {
 import {
     IUnconfirmReq,
     IUnconfirmReqIAm,
-    IUnconfirmReqCOVNotification
+    IUnconfirmReqCOVNotification,
+    IUnconfirmReqWhoIs,
+    IBACnetTypeObjectId,
 } from '../../interfaces';
 
-export class UnconfirmReqPDU {
-    public className: string = 'UnconfirmReqPDU';
+import {
+    BACnetUnsignedInteger,
+    BACnetObjectId,
+    BACnetTypeBase,
+} from '../../types';
 
-    public getFromBuffer (buf: Buffer): Map<string, any> {
+export class UnconfirmReqPDU {
+    public readonly className: string = 'UnconfirmReqPDU';
+
+    public getFromBuffer (buf: Buffer): IUnconfirmedReqLayer {
         const reader = new BACnetReaderUtil(buf);
-        const reqMap: Map<string, any> = new Map();
+
+        let reqMap: IUnconfirmedReqLayer;
+        let serviceChoice: BACnetUnconfirmedService, serviceData: IUnconfirmedReqService;
+        let pduType: number;
 
         try {
             // --- Read meta byte
             const mMeta = reader.readUInt8();
 
-            const pduType = TyperUtil.getBitRange(mMeta, 4, 4);
-            reqMap.set('type', pduType);
+            pduType = TyperUtil.getBitRange(mMeta, 4, 4);
 
-            const serviceChoice = reader.readUInt8();
-            reqMap.set('serviceChoice', serviceChoice);
+            serviceChoice = reader.readUInt8();
 
-            let serviceMap;
             switch (serviceChoice) {
                 case BACnetUnconfirmedService.iAm:
-                    serviceMap = this.getIAm(reader);
+                    serviceData = this.getIAm(reader);
                     break;
                 case BACnetUnconfirmedService.whoIs:
-                    serviceMap = this.getWhoIs(reader);
+                    serviceData = this.getWhoIs(reader);
                     break;
             }
-            reqMap.set('service', serviceMap);
         } catch (error) {
             logger.error(`${this.className} - getFromBuffer: Parse - ${error}`);
         }
 
+        reqMap = {
+            type: pduType,
+            serviceChoice: serviceChoice,
+            service: serviceData,
+        };
+
         return reqMap;
     }
 
-    private getIAm (reader: BACnetReaderUtil): Map<string, any> {
-        const serviceMap: Map<string, any> = new Map();
+    private getIAm (reader: BACnetReaderUtil): IUnconfirmedReqIAmService {
+        let serviceData: IUnconfirmedReqIAmService;
+        let objId: BACnetObjectId,
+            maxAPDUlength: BACnetUnsignedInteger,
+            segmSupported: BACnetUnsignedInteger,
+            vendorId: BACnetUnsignedInteger;
 
         try {
-            const objIdent = reader.readObjectIdentifier();
-            serviceMap.set('objIdent', objIdent);
+            objId = reader.readObjectIdentifier();
 
-            const maxAPDUlength = reader.readParam();
-            serviceMap.set('maxAPDUlength', maxAPDUlength);
+            maxAPDUlength = reader.readParam();
 
-            const segmentationSupported = reader.readParam();
-            serviceMap.set('segmentationSupported', segmentationSupported);
+            segmSupported = reader.readParam();
 
-            const vendorId = reader.readParam();
-            serviceMap.set('vendorId', vendorId);
+            vendorId = reader.readParam();
         } catch (error) {
             logger.error(`${this.className} - getIAm: Parse - ${error}`);
         }
 
-        return serviceMap;
+        serviceData = {
+            objId: objId,
+            maxAPDUlength: maxAPDUlength,
+            segmSupported: segmSupported,
+            vendorId: vendorId,
+        };
+
+        return serviceData;
     }
 
-    private getWhoIs (reader: BACnetReaderUtil): Map<string, any> {
-        const serviceMap: Map<string, any> = new Map();
+    private getWhoIs (reader: BACnetReaderUtil): IUnconfirmedReqWhoIsService {
+        const serviceData: IUnconfirmedReqWhoIsService = {};
 
-        return serviceMap;
+        return serviceData;
     }
 
     /**
@@ -103,6 +129,22 @@ export class UnconfirmReqPDU {
     }
 
     /**
+     * writeWhoIs - writes the message for whoIs service and returns the instance of
+     * the writer utility.
+     *
+     * @param  {IUnconfirmReqWhoIs} params - whoIs params
+     * @return {BACnetWriterUtil}
+     */
+    public writeWhoIs (params: IUnconfirmReqWhoIs): BACnetWriterUtil {
+        const writer = new BACnetWriterUtil();
+
+        // Write Service choice
+        writer.writeUInt8(BACnetUnconfirmedService.whoIs);
+
+        return writer;
+    }
+
+    /**
      * writeIAm - writes the message for iAm service and returns the instance of
      * the writer utility.
      *
@@ -116,9 +158,10 @@ export class UnconfirmReqPDU {
         writer.writeUInt8(BACnetUnconfirmedService.iAm);
 
         // Write Object identifier
+        const objIdPayload = params.objId.payload as BACnetObjectId;
         writer.writeTag(BACnetPropTypes.objectIdentifier,
             BACnetTagTypes.application, 4);
-        writer.writeObjectIdentifier(params.objType, params.objInst);
+        writer.writeObjectIdentifier(objIdPayload.getValue());
 
         // Write maxAPDUlength (1476 chars)
         writer.writeTag(BACnetPropTypes.unsignedInt,
@@ -131,9 +174,10 @@ export class UnconfirmReqPDU {
         writer.writeUInt8(0x00);
 
         // Write Vendor ID
+        const propIdPayload = params.vendorId.payload as BACnetUnsignedInteger;
         writer.writeTag(BACnetPropTypes.unsignedInt,
             BACnetTagTypes.application, 1);
-        writer.writeUInt8(params.vendorId);
+        writer.writeUInt8(propIdPayload.getValue());
 
         return writer;
     }
@@ -152,37 +196,29 @@ export class UnconfirmReqPDU {
         writer.writeUInt8(BACnetUnconfirmedService.covNotification);
 
         // Write Process Identifier
-        writer.writeTag(0, BACnetTagTypes.context, 1);
-        const processId = _.isNumber(params.processId) ? params.processId : 1;
-        writer.writeUInt8(processId);
+        writer.writeParam(params.processId.getValue(), 0);
 
         // Write Device Object Identifier
         writer.writeTag(1, BACnetTagTypes.context, 4);
-        writer.writeObjectIdentifier(params.device.type, params.device.id);
+        writer.writeObjectIdentifier(params.devObjId.getValue());
 
         // Write Object Identifier for device port
         writer.writeTag(2, BACnetTagTypes.context, 4);
-        writer.writeObjectIdentifier(params.devObject.type, params.devObject.id);
+        writer.writeObjectIdentifier(params.unitObjId.getValue());
 
         // Write timer remaining
-        writer.writeTag(3, BACnetTagTypes.context, 1);
-        writer.writeUInt8(0x00);
+        writer.writeParam(0x00, 3);
 
         // List of Values
         // Write opening tag for list of values
         writer.writeTag(4, BACnetTagTypes.context, 6);
 
-        // Write PropertyID
-        writer.writeTag(0, BACnetTagTypes.context, 1);
-        writer.writeUInt8(params.prop.id);
-        // Write PropertyValue
-        writer.writeValue(2, params.prop.type, params.prop.values);
-
-        // Write PropertyID of Status flag
-        writer.writeTag(0, BACnetTagTypes.context, 1);
-        writer.writeUInt8(params.status.id);
-        // Write PropertyValue of Status flag
-        writer.writeValue(2, params.status.type, params.status.values);
+        _.map(params.reportedProps, (reportedProp) => {
+            // Write PropertyID
+            writer.writeParam(reportedProp.id, 0);
+            // Write PropertyValue
+            writer.writeValue(2, reportedProp.payload);
+        });
 
         // Write closing tag for list of values
         writer.writeTag(4, BACnetTagTypes.context, 7);

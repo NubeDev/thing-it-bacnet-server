@@ -3,13 +3,21 @@ import * as _ from 'lodash';
 import { ApiError } from '../errors';
 
 import {
+    IBACnetTag,
+    IBACnetTypeObjectId,
+} from '../interfaces';
+
+import {
     BACnetPropIds,
     BACnetPropTypes,
+    BACnetTagTypes,
     getStringEncode,
 } from '../enums';
 
 import { OffsetUtil } from './offset.util';
 import { TyperUtil } from './typer.util';
+
+import * as BACnetTypes from '../types';
 
 export class BACnetReaderUtil {
     public offset: OffsetUtil;
@@ -34,8 +42,11 @@ export class BACnetReaderUtil {
      *
      * @return {number}
      */
-    public readUInt8 (): number {
-        return this.buffer.readUInt8(this.offset.inc());
+    public readUInt8 (changeOffset: boolean = true): number {
+        const offset = this.offset.getVaule();
+        return changeOffset
+            ? this.buffer.readUInt8(this.offset.inc())
+            : this.buffer.readUInt8(offset);
     }
 
     /**
@@ -43,8 +54,11 @@ export class BACnetReaderUtil {
      *
      * @return {number}
      */
-    public readUInt16BE (): number {
-        return this.buffer.readUInt16BE(this.offset.inc(2));
+    public readUInt16BE (changeOffset: boolean = true): number {
+        const offset = this.offset.getVaule();
+        return changeOffset
+            ? this.buffer.readUInt16BE(this.offset.inc(2))
+            : this.buffer.readUInt16BE(offset);
     }
 
     /**
@@ -52,8 +66,11 @@ export class BACnetReaderUtil {
      *
      * @return {number}
      */
-    public readUInt32BE (): number {
-        return this.buffer.readUInt32BE(this.offset.inc(4));
+    public readUInt32BE (changeOffset: boolean = true): number {
+        const offset = this.offset.getVaule();
+        return changeOffset
+            ? this.buffer.readUInt32BE(this.offset.inc(4))
+            : this.buffer.readUInt32BE(offset);
     }
 
     /**
@@ -61,8 +78,11 @@ export class BACnetReaderUtil {
      *
      * @return {number}
      */
-    public readFloatBE (): number {
-        return this.buffer.readFloatBE(this.offset.inc(4));
+    public readFloatBE (changeOffset: boolean = true): number {
+        const offset = this.offset.getVaule();
+        return changeOffset
+            ? this.buffer.readFloatBE(this.offset.inc(4))
+            : this.buffer.readFloatBE(offset);
     }
 
     /**
@@ -73,222 +93,16 @@ export class BACnetReaderUtil {
      * @param  {number} len - lenght of string
      * @return {string}
      */
-    public readString (encoding: string, len: number): string {
-        const offStart = this.offset.inc(len - 1);
-        const offEnd = this.offset.getVaule();
+    public readString (encoding: string, len: number, changeOffset: boolean = true): string {
+        let offStart: number, offEnd: number;
+        if (changeOffset) {
+            offStart = this.offset.inc(len);
+            offEnd = this.offset.getVaule();
+        } else {
+            offStart = this.offset.getVaule();
+            offEnd = offStart + len;
+        }
         return this.buffer.toString(encoding, offStart, offEnd);
-    }
-
-    /**
-     * readObjectIdentifier - reads the BACnet object identifier from the internal
-     * buffer and returns map with:
-     * - tag = param tag (tag map)
-     * - type = object type (number)
-     * - instance = object instance (number)
-     *
-     * @return {Map<string, any>}
-     */
-    public readObjectIdentifier (): Map<string, any> {
-        const objMap: Map<string, any> = new Map();
-
-        const tag = this.readTag();
-        objMap.set('tag', tag);
-
-        const objIdent = this.readUInt32BE();
-        const objValue = this.decodeObjectIdentifier(objIdent);
-        objMap.set('value', objValue);
-
-        return objMap;
-    }
-
-    /**
-     * decodeObjectIdentifier - decodes the Object Identifier and returns the
-     * map with object type and object instance.
-     *
-     * @param  {number} objIdent - 4 bytes of object identifier
-     * @return {Map<string, any>}
-     */
-    public decodeObjectIdentifier (objIdent: number): Map<string, any> {
-        const objMap: Map<string, any> = new Map();
-        const objType = (objIdent >> 22) & 0x03FF;
-        objMap.set('type', objType);
-
-        const objInstance = objIdent & 0x03FFFFF;
-        objMap.set('instance', objInstance);
-
-        return objMap;
-    }
-
-    /**
-     * readParam - reads the BACnet param from the internal buffer and returns
-     * map with:
-     * - tag = param tag (tag map)
-     * - value = param value (number)
-     *
-     * @return {Map<string, any>}
-     */
-    public readParam (): Map<string, any> {
-        const paramMap: Map<string, any> = new Map();
-
-        const tag = this.readTag();
-        paramMap.set('tag', tag);
-
-        let param;
-        const len: number = tag.get('value');
-        if (len === 1) {
-            param = this.readUInt8();
-        } else if (len === 2) {
-            param = this.readUInt16BE();
-        } else if (len === 4) {
-            param = this.readUInt32BE();
-        }
-
-        paramMap.set('value', param);
-
-        return paramMap;
-    }
-
-    /**
-     * readProperty - reads the BACnet property from the internal buffer and
-     * returns map with:
-     * - tag = param tag (tag map)
-     * - value = param value (number)
-     * - name = param name (string)
-     *
-     * @return {Map<string, any>}
-     */
-    public readProperty (): Map<string, any> {
-        const propMap: Map<string, any> = this.readParam();
-
-        const propValue: number = propMap.get('value');
-        const propName: string = BACnetPropIds[propValue];
-        propMap.set('name', propName);
-
-        return propMap;
-    }
-
-    /**
-     * readListOfParams - stub
-     */
-    public readListOfParams (): Map<string, any> {
-        const paramMap: Map<string, any> = new Map();
-
-        const openTag = this.readTag();
-
-        const property = this.readProperty();
-        paramMap.set('property', property);
-
-        const propertyValue = this.readParamValue();
-        paramMap.set('propertyValue', propertyValue);
-
-        const statusFlags = this.readProperty();
-        paramMap.set('statusFlags', statusFlags);
-
-        const statusFlagsValue = this.readParamValue();
-        paramMap.set('statusFlagsValue', statusFlagsValue);
-
-        const closeTag = this.readTag();
-
-        return paramMap;
-    }
-
-    /**
-     * readValue - reads the param value from internal buffer.
-     *
-     * @return {Map<string, any>}
-     */
-    public readParamValue (): Map<string, any> {
-        const paramValueMap: Map<string, any> = new Map();
-
-        // Context Number - Context tag - "Opening" Tag
-        const openTag = this.readTag();
-
-        // Value Type - Application tag - any
-        const paramValueTag = this.readTag();
-        paramValueMap.set('tag', paramValueTag);
-
-        const paramValueType: BACnetPropTypes = paramValueTag.get('number');
-
-        let paramValue: any;
-        switch (paramValueType) {
-            case BACnetPropTypes.boolean: {
-                paramValue = {
-                    value: !!paramValueTag.get('value'),
-                };
-                break;
-            }
-            case BACnetPropTypes.unsignedInt: {
-                paramValue = {
-                    value: this.readUInt8(),
-                };
-                break;
-            }
-            case BACnetPropTypes.real: {
-                paramValue = {
-                    value: this.readFloatBE(),
-                };
-                break;
-            }
-            case BACnetPropTypes.characterString: {
-                const strLen = this.readUInt8();
-                const charSet = this.readUInt8();
-
-                // Get the character encoding
-                const charEncode = getStringEncode(charSet);
-                paramValueMap.set('encoding', charEncode);
-
-                paramValue = {
-                    encoding: charEncode,
-                    value: this.readString(charEncode, strLen),
-                };
-                break;
-            }
-            case BACnetPropTypes.bitString: {
-                // Read the bitString as status flag
-                // Unused byte - show the mask of unused bites
-                const unusedBits = this.readUInt8();
-                // Contains the status bits
-                const statusByte = this.readUInt8();
-                const statusMap: Map<string, boolean> = new Map();
-
-                const inAlarm = TyperUtil.getBit(statusByte, 7);
-                const fault = TyperUtil.getBit(statusByte, 6);
-                const overridden = TyperUtil.getBit(statusByte, 5);
-                const outOfService = TyperUtil.getBit(statusByte, 4);
-
-                paramValue = {
-                    inAlarm: !!inAlarm,
-                    fault: !!fault,
-                    overridden: !!overridden,
-                    outOfService: !!outOfService
-                };
-                break;
-            }
-            case BACnetPropTypes.enumerated: {
-                paramValue = {
-                    value: this.readUInt8(),
-                };
-                break;
-            }
-            case BACnetPropTypes.objectIdentifier: {
-                const objIdent = this.readUInt32BE();
-
-                const objMap: Map<string, any> =
-                    this.decodeObjectIdentifier(objIdent);
-
-                paramValue = {
-                    type: objMap.get('type'),
-                    instance: objMap.get('instance'),
-                };
-                break;
-            }
-        }
-        paramValueMap.set('value', paramValue);
-
-        // Context Number - Context tag - "Closing" Tag
-        const closeTag = this.readTag();
-
-        return paramValueMap;
     }
 
     /**
@@ -299,20 +113,151 @@ export class BACnetReaderUtil {
      *
      * @return {Map<string, number>}
      */
-    public readTag (): Map<string, number> {
-        const typeMap: Map<string, number> = new Map();
+    public readTag (changeOffset: boolean = true): IBACnetTag {
+        let tagData: IBACnetTag;
 
-        const tag = this.readUInt8();
+        const tag = this.readUInt8(changeOffset);
 
         const tagNumber = tag >> 4;
-        typeMap.set('number', tagNumber);
 
-        const tagClass = (tag >> 3) & 0x01;
-        typeMap.set('class', tagClass);
+        const tagType = (tag >> 3) & 0x01;
 
         const tagValue = tag & 0x07;
-        typeMap.set('value', tagValue);
 
-        return typeMap;
+        tagData = {
+            num: tagNumber,
+            type: tagType,
+            value: tagValue,
+        }
+
+        return tagData;
+    }
+
+
+    /**
+     * readObjectIdentifier - reads the BACnet object identifier from the internal
+     * buffer and returns map with:
+     * - tag = param tag (tag map)
+     * - type = object type (number)
+     * - instance = object instance (number)
+     *
+     * @return {Map<string, any>}
+     */
+    public readObjectIdentifier (changeOffset: boolean = true): BACnetTypes.BACnetObjectId {
+        const inst = new BACnetTypes.BACnetObjectId();
+        inst.readValue(this);
+
+        return inst;
+    }
+
+    /**
+     * decodeObjectIdentifier - decodes the Object Identifier and returns the
+     * map with object type and object instance.
+     *
+     * @param  {number} objId - 4 bytes of object identifier
+     * @return {Map<string, any>}
+     */
+    public decodeObjectIdentifier (objId: number): IBACnetTypeObjectId {
+        let objIdPayload: IBACnetTypeObjectId;
+        const objType = (objId >> 22) & 0x03FF;
+
+        const objInstance = objId & 0x03FFFFF;
+
+        objIdPayload = {
+            type: objType,
+            instance: objInstance,
+        };
+
+        return objIdPayload;
+    }
+
+    /**
+     * readParam - reads the BACnet param from the internal buffer and returns
+     * map with:
+     * - tag = param tag (tag map)
+     * - value = param value (number)
+     *
+     * @return {Map<string, any>}
+     */
+    public readParam (changeOffset: boolean = true): BACnetTypes.BACnetUnsignedInteger {
+        const inst = new BACnetTypes.BACnetUnsignedInteger();
+        inst.readValue(this, changeOffset);
+
+        return inst;
+    }
+
+    /**
+     * readParamValue - reads the param value from internal buffer.
+     *
+     * @return {Map<string, any>}
+     */
+    public readParamValue (changeOffset: boolean = true): BACnetTypes.BACnetTypeBase[] {
+        const paramValuesMap: Map<string, any> = new Map();
+
+        // Context Number - Context tag - "Opening" Tag
+        const openTag = this.readTag(changeOffset);
+
+        const paramValues: BACnetTypes.BACnetTypeBase[] = [];
+        while (true) {
+            const paramValueTag = this.readTag(false);
+
+            if (this.isClosingTag(paramValueTag)) {
+                // Context Number - Context tag - "Closing" Tag
+                break;
+            }
+            const paramValueType: BACnetPropTypes = paramValueTag.num;
+
+            let inst: BACnetTypes.BACnetTypeBase;
+            switch (paramValueType) {
+                case BACnetPropTypes.boolean:
+                    inst = new BACnetTypes.BACnetBoolean();
+                    break;
+                case BACnetPropTypes.unsignedInt:
+                    inst = new BACnetTypes.BACnetUnsignedInteger();
+                    break;
+                case BACnetPropTypes.real:
+                    inst = new BACnetTypes.BACnetReal();
+                    break;
+                case BACnetPropTypes.characterString:
+                    inst = new BACnetTypes.BACnetCharacterString();
+                    break;
+                case BACnetPropTypes.bitString:
+                    inst = new BACnetTypes.BACnetStatusFlags();
+                    break;
+                case BACnetPropTypes.enumerated:
+                    inst = new BACnetTypes.BACnetEnumerated();
+                    break;
+                case BACnetPropTypes.objectIdentifier:
+                    inst = new BACnetTypes.BACnetObjectId();
+                    break;
+            }
+            inst.readValue(this, changeOffset);
+
+            paramValues.push(inst);
+        }
+
+        return paramValues;
+    }
+
+    /**
+     * isOpeningTag - return true if tag is an opening tag
+     *
+     * @param  {Map<string,number>} tag - tag
+     * @return {boolean}
+     */
+    public isOpeningTag (tag: IBACnetTag): boolean {
+        return tag.type === BACnetTagTypes.context
+            && tag.value === 0x06;
+    }
+
+    /**
+     * isClosingTag - return true if tag is a closing tag
+     *
+     * @param  {Map<string,number>} tag - tag
+     * @return {boolean}
+     */
+    public isClosingTag (tag: IBACnetTag): boolean {
+        return tag.type === BACnetTagTypes.context
+            && tag.value === 0x07;
     }
 }

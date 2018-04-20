@@ -4,38 +4,36 @@ import {
     BLVCFunction,
     BACnetPropIds,
     BACnetObjTypes,
+    BACnetTagTypes,
 } from '../enums';
 import { BACnetWriterUtil } from '../utils';
+import * as BACnetTypes from '../types';
 
-export interface IBACnetModule {
+export interface IBACnetAddressInfo {
+    address: string;
     port: number;
-    device: IBACnetDevice;
-}
-
-export interface IBACnetDevice extends IBACnetObject {
-    vendorId?: number;
-    objects?: IBACnetObject[];
-}
-
-export interface IBACnetObject {
-    id: number;
-    type: BACnetObjTypes;
-    props: IBACnetObjectProperty[];
 }
 
 export interface IBACnetObjectProperty {
     id: BACnetPropIds;
-    type: BACnetPropTypes;
-    values: any;
+    payload: BACnetTypes.BACnetTypeBase | BACnetTypes.BACnetTypeBase[];
+    writable?: boolean;
+    priority?: number;
 }
 
-export interface IBLVCLayer {
+export interface IBACnetTag {
+    num: number;
+    type: BACnetTagTypes;
+    value: number;
+}
+
+export interface IBLVCReqLayer {
     func: BLVCFunction;
     npdu: BACnetWriterUtil;
     apdu: BACnetWriterUtil;
 }
 
-export interface INPDULayer {
+export interface INPDUReqLayer {
     control?: INPDULayerControl;
     destNetworkAddress?: number;
     destMacAddress?: string;
@@ -53,41 +51,14 @@ export interface INPDULayerControl {
     priority2?: number;
 }
 
-export interface IUnconfirmReq {
-}
-export interface IUnconfirmReqIAm {
-    objType: number;
-    objInst: number;
-    vendorId: number;
-}
-export interface IUnconfirmReqCOVNotification {
-    processId: number;
-    device: IBACnetObject;
-    devObject: IBACnetObject;
-    prop: IBACnetObjectProperty;
-    status: IBACnetObjectProperty;
+export interface IBACnetTypeObjectId {
+    type: number; // enum
+    instance: number;
 }
 
-export interface ISimpleACK {
-    invokeId: number;
-}
-
-export interface ISimpleACKSubscribeCOV {
-}
-
-export interface ISimpleACKWriteProperty {
-}
-
-export interface IComplexACK {
-    seg?: boolean;
-    mor?: boolean;
-    invokeId: number;
-}
-
-export interface IComplexACKReadProperty {
-    objType: number;
-    objInst: number;
-    propId: number;
-    propValue: any;
-    propType: BACnetPropTypes;
+export interface IBACnetTypeStatusFlags {
+    inAlarm?: boolean,
+    fault?: boolean,
+    overridden?: boolean,
+    outOfService?: boolean,
 }
