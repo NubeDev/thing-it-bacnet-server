@@ -8,7 +8,7 @@ export const FunctionMetadata: ICustomMetadata[] = [
         config: { min: 0, max: 1, freq: 1000 },
     },
     {
-        alias: [ '1', 'gaus', 'gaussian' ],
+        alias: [ '1', 'gaus', 'gaussian', 'norm', 'normal', 'normalDistribution' ],
         config: { min: 0, max: 1, freq: 1000 },
     },
 ];
