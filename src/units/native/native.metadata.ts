@@ -8,34 +8,23 @@ import {
     IBACnetObjectProperty,
 } from '../../core/interfaces';
 
+import * as BACnetTypes from '../../core/types';
+
 export const NativeMetadata: IBACnetObjectProperty[] = [
     {
         id: BACnetPropIds.objectIdentifier,
-        type: BACnetPropTypes.objectIdentifier,
-        payload: {
-            type: null,
-            instance: null,
-        },
+        payload: new BACnetTypes.BACnetObjectId(),
     },
     {
         id: BACnetPropIds.objectName,
-        type: BACnetPropTypes.characterString,
-        payload: {
-            value: '[thing-it] Test Device Name',
-        },
+        payload: new BACnetTypes.BACnetCharacterString('[thing-it] Test Device Name'),
     },
     {
         id: BACnetPropIds.objectType,
-        type: BACnetPropTypes.enumerated,
-        payload: {
-            value: null,
-        },
+        payload: new BACnetTypes.BACnetEnumerated(),
     },
     {
         id: BACnetPropIds.description,
-        type: BACnetPropTypes.characterString,
-        payload: {
-            value: '[thing-it] Test Device Description',
-        },
+        payload: new BACnetTypes.BACnetCharacterString('[thing-it] Test Device Description'),
     },
 ];

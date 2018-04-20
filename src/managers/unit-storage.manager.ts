@@ -3,10 +3,8 @@ import * as Bluebird from 'bluebird';
 import { Observable } from 'rxjs';
 
 import {
-    IBACnetTypeObjectId,
     IEDEUnit,
     IBACnetObjectProperty,
-    IBACnetType,
 } from '../core/interfaces';
 
 import {
@@ -16,7 +14,12 @@ import {
 import {
     BACnetObjTypes,
     BACnetPropIds,
+    BACnetUnitAbbr,
 } from '../core/enums';
+
+import {
+    BACnetObjectId,
+} from '../core/types';
 
 import {
     ApiError,
@@ -30,61 +33,159 @@ import {
     NativeUnit,
 } from '../units/native/native.unit';
 
+import {
+    CustomModule,
+} from '../units/custom/custom.module';
+
+import {
+    CustomUnit,
+} from '../units/custom/custom.unit';
+
+type NativeUnitToken = string;
+type CustomUnitToken = string;
+
 export class UnitStorageManager {
     public readonly className: string = 'UnitStorageManager';
-    private units: Map<string, NativeUnit>;
+    private nativeUnits: Map<NativeUnitToken, NativeUnit>;
+    private customUnits: Map<CustomUnitToken, CustomUnit>;
     private device: NativeUnit;
+    private customCounter: number = 0;
 
     constructor () {
-        this.units = new Map();
+        this.nativeUnits = new Map();
+        this.customUnits = new Map();
     }
 
     /**
-     * initUnits - creates unit instance, initializes the units array.
+     * initUnits - creates unit instances and initializes the units storage.
      *
-     * @param  {number} units - object type
+     * @param  {IEDEUnit[]} edeUnits - EDE configuration of units
      * @return {void}
      */
-    public initUnits (units: IEDEUnit[]): void {
-        if (!units.length) {
+    public initUnits (edeUnits: IEDEUnit[]): void {
+        if (!edeUnits.length) {
             throw new ApiError('UnitStorageManager - initUnits: Unit array is empty!');
         }
 
-        _.map(units, (unit) => {
-            const objType = BACnetObjTypes[unit.objType];
-            const objId = this.getObjId(unit.objType, unit.objInst);
-
-            try {
-                let UnitClass = NativeModule.get(objType);
-                if (!UnitClass) {
-                    logger.debug(`${this.className} - initUnits: ${objType} (${objId}) - Use "Noop" stub unit`);
-                    UnitClass = NativeModule.get('Noop');
-                }
-                const unitInst: NativeUnit = new UnitClass(unit);
-                unitInst.initUnit(unit);
-                this.units.set(objId, unitInst);
-            } catch (error) {
-                logger.debug(`${this.className} - initUnits: ${objType} (${objId})`, error);
-            }
+        _.map(edeUnits, (edeUnit) => {
+            const nativeUnit = this.initNativeUnit(edeUnit);
+            this.initCustomUnit(nativeUnit, edeUnit);
         });
 
-        const devId = this.getObjId(BACnetObjTypes.Device, units[0].deviceInst);
-        const device = this.units.get(devId);
+        this.customUnits.forEach((customUnit) => {
+            customUnit.startSimulation();
+        });
+
+        const deviceToken = this.getUnitToken(BACnetObjTypes.Device, edeUnits[0].deviceInst);
+        const device = this.nativeUnits.get(deviceToken);
         this.device = device;
     }
 
     /**
-     * getObjId - returns the storage identifier by the object type and
-     * object instance.
+     * initNativeUnit - creates the instance of native unit by EDE unit
+     * configuration, sets the native unit to internal native unit storage.
+     *
+     * @param  {IEDEUnit} edeUnit - EDE unit configuration
+     * @return {NativeUnit} - instance of the native unit
+     */
+    private initNativeUnit (edeUnit: IEDEUnit): NativeUnit {
+        // Get name of the native unit
+        let unitType = BACnetObjTypes[edeUnit.objType];
+
+        if (!NativeModule.has(unitType)) {
+            logger.warn(`${this.className} - initNativeUnit: "${unitType}" native unit is not exist,`,
+                `use "${BACnetUnitAbbr.Default}" native unit`);
+            unitType = BACnetUnitAbbr.Default;
+        }
+
+        if (_.isNil(edeUnit.objInst)) {
+            throw new ApiError(`${this.className} - initNativeUnit: Unit ID (Object Instance) is required!`);
+        }
+
+        // Get token of the native unit
+        const unitToken = this.getUnitToken(edeUnit.objType, edeUnit.objInst);
+
+        logger.info(`${this.className} - initNativeUnit: Use "${unitType} (${unitToken})" native unit`);
+
+        let unit: NativeUnit = null;
+        try {
+            let UnitClass = NativeModule.get(unitType);
+            unit = new UnitClass();
+            unit.initUnit(edeUnit);
+
+            this.nativeUnits.set(unitToken, unit);
+        } catch (error) {
+            logger.error(`${this.className} - initNativeUnit: "${unitType} (${unitToken})" native unit is not created!`);
+            throw error;
+        }
+
+        return unit;
+    }
+
+    /**
+     * initCustomUnit - creates the instance of custom unit by EDE unit
+     * configuration, binds the native unit to the function of the custom unit
+     * and adds custom unit to internal custom unit storage.
+     *
+     * @param  {NativeUnit} nativeUnit - instance of the native unit
+     * @param  {IEDEUnit} edeUnit - EDE unit configuration
+     * @return {CustomUnit}
+     */
+    private initCustomUnit (nativeUnit: NativeUnit, edeUnit: IEDEUnit): CustomUnit {
+        // Get type of the custom unit
+        let unitType = edeUnit.custUnitType !== ''
+            ? `${edeUnit.custUnitType}` : BACnetUnitAbbr.Default;
+
+        if (!CustomModule.has(unitType)) {
+            logger.warn(`${this.className} - initCustomUnit: "${unitType}" custom unit is not exist,`,
+                `use "${BACnetUnitAbbr.Default}" custom unit`);
+            unitType = BACnetUnitAbbr.Default;
+        }
+
+        // Get function of the custom unit
+        const unitFn = edeUnit.custUnitFn !== ''
+            ? `${edeUnit.custUnitFn}` : BACnetUnitAbbr.Default;
+
+        // Get ID of the custom unit with postfix owner abbreviation
+        // U - user (manually), A - algorithm (auto)
+        const unitId = _.isNumber(edeUnit.custUnitId) && _.isFinite(+edeUnit.custUnitId)
+            ? `${edeUnit.custUnitId}:U` : `${this.customCounter++}:A`;
+
+        // Get token of the custom unit
+        const unitToken = `${unitType}:${unitId}`;
+
+        logger.info(`${this.className} - initCustomUnit: Use "${unitType} (${unitToken})" custom unit`);
+
+        let unit: CustomUnit = this.customUnits.get(unitType);
+        if (!unit) {
+            let UnitClass = CustomModule.get(unitType);
+            unit = new UnitClass();
+            unit.initUnit();
+
+            this.customUnits.set(unitToken, unit);
+        }
+
+        try {
+            unit.setUnitFn(unitFn, nativeUnit, edeUnit);
+        } catch (error) {
+            logger.error(`${this.className} - initCustomUnit: "${unitToken}" custom unit is not created!`);
+            throw error;
+        }
+
+        return null;
+    }
+
+    /**
+     * getUnitToken - returns the storage identifier (token) by the BACnet object
+     * type and the BACnet object instance.
      *
      * @param  {number} objType - object type
      * @param  {number} objInst - object identifier
-     * @return {string}
+     * @return {NativeUnitToken}
      */
-    public getObjId (objType: number, objInst: number): string {
+    public getUnitToken (objType: number, objInst: number): NativeUnitToken {
         return `${objType}:${objInst}`;
     }
-
 
     /**
      * getDevice - returns the current device.
@@ -102,9 +203,10 @@ export class UnitStorageManager {
      * @param  {number} objType - object type
      * @return {NativeUnit}
      */
-    public getUnit (objType: number, objInst: number): NativeUnit {
-        const objId = this.getObjId(objType, objInst);
-        return this.units.get(objId);
+    public getUnit (objId: BACnetObjectId): NativeUnit {
+        const objIdValue = objId.getValue();
+        const unitToken = this.getUnitToken(objIdValue.type, objIdValue.instance);
+        return this.nativeUnits.get(unitToken);
     }
 
     /**
@@ -112,16 +214,16 @@ export class UnitStorageManager {
      *
      * @param  {IBACnetTypeObjectId} objId - object identifier
      * @param  {BACnetPropIds} propId - property ID
-     * @param  {IBACnetType} value - property value
+     * @param  {} value - property value
      * @return {void}
      */
-    public setUnitProperty (objId: IBACnetTypeObjectId,
-            propId: BACnetPropIds, value: IBACnetType): void {
-        const unit = this.getUnit(objId.type, objId.instance);
+    public setUnitProperty (objId: BACnetObjectId,
+            prop: IBACnetObjectProperty): void {
+        const unit = this.getUnit(objId);
         if (!unit) {
             return;
         }
-        unit.setProperty(propId, value, false);
+        unit.storage.setProperty(prop, false);
     }
 
     /**
@@ -131,13 +233,13 @@ export class UnitStorageManager {
      * @param  {BACnetPropIds} propId - property ID
      * @return {IBACnetObjectProperty}
      */
-    public getUnitProperty (objId: IBACnetTypeObjectId,
+    public getUnitProperty (objId: BACnetObjectId,
             propId: BACnetPropIds): IBACnetObjectProperty {
-        const unit = this.getUnit(objId.type, objId.instance);
+        const unit = this.getUnit(objId);
         if (!unit) {
             return null;
         }
-        return unit.getProperty(propId);
+        return unit.storage.getProperty(propId);
     }
 
     /**
@@ -146,8 +248,8 @@ export class UnitStorageManager {
      * @param  {IBACnetTypeObjectId} objId - object identifier
      * @return {Observable<IBACnetObjectProperty>}
      */
-    public subscribeToUnit (objId: IBACnetTypeObjectId): Observable<IBACnetObjectProperty[]> {
-        const unit = this.getUnit(objId.type, objId.instance);
+    public subscribeToUnit (objId: BACnetObjectId): Observable<IBACnetObjectProperty[]> {
+        const unit = this.getUnit(objId);
         if (!unit) {
             return null;
         }

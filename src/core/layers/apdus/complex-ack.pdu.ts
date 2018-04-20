@@ -12,7 +12,6 @@ import {
     BACnetPropTypes,
     BACnetTagTypes,
     BACnetConfirmedService,
-    BACnetUnconfirmedService,
     BACnetServiceTypes,
 } from '../../enums';
 
@@ -24,6 +23,12 @@ import {
     IComplexACKService,
     IComplexACKReadPropertyService,
 } from '../../interfaces';
+
+import {
+    BACnetUnsignedInteger,
+    BACnetObjectId,
+    BACnetTypeBase,
+} from '../../types';
 
 export class ComplexACKPDU {
     public readonly className: string = 'ComplexACKPDU';
@@ -83,7 +88,10 @@ export class ComplexACKPDU {
     private getReadProperty (reader: BACnetReaderUtil): IComplexACKReadPropertyService {
         let serviceData: IComplexACKReadPropertyService;
 
-        let objId, propId, propArrayIndex, propValues;
+        let objId: BACnetObjectId,
+            propId: BACnetUnsignedInteger,
+            propArrayIndex: BACnetUnsignedInteger,
+            propValues: BACnetTypeBase[];
 
         try {
             objId = reader.readObjectIdentifier();
@@ -159,13 +167,13 @@ export class ComplexACKPDU {
 
         // Write Object identifier
         writer.writeTag(0, BACnetTagTypes.context, 4);
-        writer.writeObjectIdentifier(params.unitObjId);
+        writer.writeObjectIdentifier(params.unitObjId.getValue());
 
         // Write PropertyID
         writer.writeParam(params.unitProp.id, 1);
 
         // Write PropertyID
-        writer.writeValue(3, params.unitProp.type, params.unitProp.payload);
+        writer.writeValue(3, params.unitProp.payload);
 
         return writer;
     }

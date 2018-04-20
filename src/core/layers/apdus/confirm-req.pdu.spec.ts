@@ -8,7 +8,6 @@ import { confirmReqPDU } from './confirm-req.pdu';
 
 import {
     IBACnetTypeObjectId,
-    IBACnetTypeUnsignedInt,
     IConfirmedReqReadPropertyService,
 } from '../../interfaces';
 
@@ -34,21 +33,21 @@ describe('ConfirmedReqPDU', () => {
             const service = newBuf.service as IConfirmedReqReadPropertyService;
 
             const objId = service.objId;
-            const objTag = objId.tag;
+            const objTag = objId.getTag();
             expect(objTag.num).to.equal(0);
             expect(objTag.type).to.equal(1);
             expect(objTag.value).to.equal(4);
-            const objIdPayload = objId.payload as IBACnetTypeObjectId;
+            const objIdPayload = objId.getValue();
             expect(objIdPayload.type).to.equal(8);
             expect(objIdPayload.instance).to.equal(9999);
 
             const propId = service.propId;
-            const propTag = propId.tag;
+            const propTag = propId.getTag();
             expect(propTag.num).to.equal(1);
             expect(propTag.type).to.equal(1);
             expect(propTag.value).to.equal(1);
-            const propIdPayload = propId.payload as IBACnetTypeUnsignedInt;
-            expect(propIdPayload.value).to.equal(77);
+            const propIdPayload = propId.getValue();
+            expect(propIdPayload).to.equal(77);
         });
     });
 });

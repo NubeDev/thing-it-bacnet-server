@@ -1,20 +1,8 @@
 import * as Bluebird from 'bluebird';
 
 import {
-    BACnetServiceTypes,
-    BLVCFunction,
     BACnetPropIds,
 } from '../core/enums';
-
-import { complexACKPDU, simpleACKPDU } from '../core/layers/apdus';
-import { blvc, npdu } from '../core/layers';
-
-import { BACnetWriterUtil } from '../core/utils';
-
-import {
-    IBACnetTypeObjectId,
-    IBACnetTypeUnsignedInt,
-} from '../core/interfaces';
 
 import { InputSocket, OutputSocket, ServiceSocket } from '../core/sockets';
 
@@ -35,8 +23,8 @@ export class UnitUnconfirmedReqService {
         const unitStorage: UnitStorageManager = serviceSocket.getService('unitStorage');
 
         const device = unitStorage.getDevice();
-        const devObjId = device.getProperty(BACnetPropIds.objectIdentifier);
-        const vendorId = device.getProperty(BACnetPropIds.vendorIdentifier);
+        const devObjId = device.storage.getProperty(BACnetPropIds.objectIdentifier);
+        const vendorId = device.storage.getProperty(BACnetPropIds.vendorIdentifier);
 
         unconfirmedReqService.iAm({
             objId: devObjId,

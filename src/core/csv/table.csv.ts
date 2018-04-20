@@ -115,7 +115,8 @@ export class CSVTable {
             return;
         }
 
-        const strRows = strTable.split(CSVRowSeparator);
+        const strRows = strTable.split(CSVRowSeparator)
+            .filter((strRow) => strRow !== '');
 
         const formatedRows = _.map(strRows, (strRow) => {
             return new CSVRow(strRow);

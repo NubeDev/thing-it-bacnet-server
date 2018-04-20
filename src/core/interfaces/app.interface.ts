@@ -37,3 +37,8 @@ export interface ISequenceFlow {
     method: any;
     params: any[];
 }
+
+export interface IDistribution {
+    min: number;
+    max: number;
+}

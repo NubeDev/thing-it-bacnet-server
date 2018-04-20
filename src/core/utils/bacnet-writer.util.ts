@@ -3,15 +3,7 @@ import * as _ from 'lodash';
 import { ApiError } from '../errors';
 
 import {
-    IBACnetTypeBoolean,
-    IBACnetTypeUnsignedInt,
-    IBACnetTypeReal,
-    IBACnetTypeBitString,
-    IBACnetTypeCharString,
-    IBACnetTypeEnumerated,
-    IBACnetTypeStatusFlags,
     IBACnetTypeObjectId,
-    IBACnetType,
 } from '../interfaces';
 
 import {
@@ -23,6 +15,8 @@ import {
 
 import { OffsetUtil } from './offset.util';
 import { TyperUtil } from './typer.util';
+
+import * as BACnetTypes from '../types';
 
 export class BACnetWriterUtil {
     public offset: OffsetUtil;
@@ -210,57 +204,20 @@ export class BACnetWriterUtil {
      * @param  {IBACnetType} value - parama object with value
      * @return {void}
      */
-    public writeValue (tagNumber: number, propValueType: BACnetPropTypes, value: IBACnetType): void {
+    public writeValue (tagNumber: number,
+            propValues: BACnetTypes.BACnetTypeBase | BACnetTypes.BACnetTypeBase[]): void {
         // Context Number - Context tag - "Opening" Tag
         this.writeTag(tagNumber, 1, 6);
 
-        switch (propValueType) {
-            case BACnetPropTypes.boolean:
-                this.writeTypeBoolean(value as IBACnetTypeBoolean);
-                break;
-            case BACnetPropTypes.unsignedInt:
-                this.writeTypeUnsignedInt(value as IBACnetTypeUnsignedInt);
-                break;
-            case BACnetPropTypes.real:
-                this.writeTypeReal(value as IBACnetTypeReal);
-                break;
-            case BACnetPropTypes.characterString:
-                this.writeTypeCharString(value as IBACnetTypeCharString);
-                break;
-            case BACnetPropTypes.bitString:
-                this.writeTypeStatusFlags(value as IBACnetTypeStatusFlags);
-                break;
-            case BACnetPropTypes.enumerated:
-                this.writeTypeEnumerated(value as IBACnetTypeEnumerated);
-                break;
-            case BACnetPropTypes.objectIdentifier:
-                this.writeTypeObjectIdentifier(value as IBACnetTypeObjectId);
-                break;
-        }
+        let values: BACnetTypes.BACnetTypeBase[] = _.isArray(propValues)
+            ? propValues : [ propValues ];
+
+        _.map(values, (value) => {
+            value.writeValue(this);
+        });
 
         // Context Number - Context tag - "Closing" Tag
         this.writeTag(tagNumber, 1, 7);
-    }
-
-    /**
-     * writeTypeBoolean - writes BACnet Boolean value to the internal buffer.
-     *
-     * @param  {any} params - object with parameters
-     * @return {void}
-     */
-    public writeTypeBoolean (params: IBACnetTypeBoolean): void {
-        // DataType - Application tag - DataTypeSize
-        this.writeTag(BACnetPropTypes.boolean, 0, +params.value);
-    }
-
-    /**
-     * writeTypeUnsignedInt - writes BACnet Integer value to the internal buffer.
-     *
-     * @param  {IBACnetTypeUnsignedInt} params - object with parameters
-     * @return {void}
-     */
-    public writeTypeUnsignedInt (param: IBACnetTypeUnsignedInt): void {
-        this.writeParam(param.value, BACnetPropTypes.unsignedInt, 0);
     }
 
     /**
@@ -294,91 +251,5 @@ export class BACnetWriterUtil {
         } else if (uIntValue <= OpertionMaxValue.uInt32) {
             return 4;
         }
-    }
-
-    /**
-     * writeTypeReal - writes BACnet Real value to the internal buffer.
-     *
-     * @param  {any} params - object with parameters
-     * @return {void}
-     */
-    public writeTypeReal (params: IBACnetTypeReal): void {
-        // DataType - Application tag - DataTypeSize
-        this.writeTag(BACnetPropTypes.real, 0, 4);
-
-        this.writeFloatBE(params.value)
-    }
-
-    /**
-     * writeTypeStatusFlags - writes BACnet Status Flags value to the internal buffer.
-     *
-     * @param  {any} params - object with parameters
-     * @return {void}
-     */
-    public writeTypeCharString (params: IBACnetTypeCharString): void {
-        // DataType - Application tag - Extended value (5)
-        this.writeTag(BACnetPropTypes.characterString, 0, 5);
-
-        // Write lenght
-        const paramValueLen = params.value.length + 1;
-        this.writeUInt8(paramValueLen);
-
-        // Write "ansi" / "utf8" encoding
-        this.writeUInt8(0x00);
-
-        // Write string
-        this.writeString(params.value);
-    }
-
-    /**
-     * writeTypeStatusFlags - writes BACnet Status Flags value to the internal buffer.
-     *
-     * @param  {any} params - object with parameters
-     * @return {void}
-     */
-    public writeTypeStatusFlags (params: IBACnetTypeStatusFlags): void {
-        // DataType - Application tag - 2 bytes
-        this.writeTag(BACnetPropTypes.bitString, 0, 2);
-
-        // Write unused bits
-        this.writeUInt8(0x04);
-
-        let statusFlags = 0x00;
-        statusFlags = TyperUtil.setBit(statusFlags, 7, params.inAlarm);
-        statusFlags = TyperUtil.setBit(statusFlags, 6, params.fault);
-        statusFlags = TyperUtil.setBit(statusFlags, 5, params.overridden);
-        statusFlags = TyperUtil.setBit(statusFlags, 4, params.outOfService);
-
-        // Write status flags
-        this.writeUInt8(statusFlags);
-    }
-
-    /**
-     * writeTypeEnumerated - writes BACnet Enumerated value to the internal buffer.
-     *
-     * @param  {any} params - object with parameters
-     * @return {void}
-     */
-    public writeTypeEnumerated (params: IBACnetTypeEnumerated): void {
-        // DataType - Application tag - 1 bytes
-        this.writeTag(BACnetPropTypes.enumerated, 0, 1);
-
-        // Write status flags
-        this.writeUInt8(params.value);
-    }
-
-    /**
-     * writeTypeObjectIdentifier - writes BACnet ObjectIdentifier value to the
-     * internal buffer.
-     *
-     * @param  {any} params - object with parameters
-     * @return {void}
-     */
-    public writeTypeObjectIdentifier (params: IBACnetTypeObjectId): void {
-        // DataType - Application tag - 4 bytes
-        this.writeTag(BACnetPropTypes.objectIdentifier, 0, 4);
-
-        // Write status flags
-        this.writeObjectIdentifier(params);
     }
 }

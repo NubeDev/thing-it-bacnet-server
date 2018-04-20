@@ -125,6 +125,24 @@ export class EDEReaderUtil {
         const vendorAddr =
             dataPointRow.getCellValue(offset.inc()) as string;
 
+        const custUnitType =
+            dataPointRow.getCellValue(offset.inc()) as string;
+
+        const custUnitId =
+            dataPointRow.getCellValue(offset.inc()) as number;
+
+        const custUnitFn =
+            dataPointRow.getCellValue(offset.inc()) as string;
+
+        const custUnitMax =
+            dataPointRow.getCellValue(offset.inc()) as number;
+
+        const custUnitMin =
+            dataPointRow.getCellValue(offset.inc()) as number;
+
+        const custUnitFreq =
+            dataPointRow.getCellValue(offset.inc()) as number;
+
         return {
             keyname: keyname,
             deviceInst: deviceInst,
@@ -142,6 +160,13 @@ export class EDEReaderUtil {
             stateTextRef: stateTextRef,
             unitCode: unitCode,
             vendorAddr: vendorAddr,
+
+            custUnitType: custUnitType,
+            custUnitId: custUnitId,
+            custUnitFn: custUnitFn,
+            custUnitMax: custUnitMax,
+            custUnitMin: custUnitMin,
+            custUnitFreq: custUnitFreq,
         };
     }
 

@@ -46,4 +46,5 @@ export enum BACnetPropIds {
     units = 117,
     protocolRevision = 139,
     databaseRevision = 155,
+    currentCommandPriority = 431,
 }

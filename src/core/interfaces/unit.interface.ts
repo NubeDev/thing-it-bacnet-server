@@ -1,19 +1,20 @@
 import { BACnetTagTypes } from '../enums';
 
-export interface IBACnetModule {
-    port: number;
-    device: INativeUnit;
-    units: Array<INativeUnit|ICustomUnit>;
+export interface ICustomMetadata {
+    alias: string|string[];
+    config: ICustomFunctionConfig;
 }
 
-export interface INativeUnit {
-    id: number;
-    name?: string;
-    alias?: string;
-    vendorId?: number;
-    props?: any;
+export interface ICustomFunction <T> {
+    unit: T;
+    config: ICustomFunctionConfig;
 }
-export interface ICustomUnit {
-    name?: string;
-    units: INativeUnit[];
+
+export interface ICustomFunctionConfig {
+    // Min value
+    min: number;
+    // Max value
+    max: number;
+    // Frequency
+    freq: number;
 }

@@ -1,7 +1,6 @@
 import * as Bluebird from 'bluebird';
 
 import {
-    BACnetServiceTypes,
     BLVCFunction,
 } from '../../core/enums';
 
@@ -11,17 +10,10 @@ import { blvc, npdu } from '../../core/layers';
 import { BACnetWriterUtil } from '../../core/utils';
 
 import {
-    IConfirmedReqReadPropertyOptions,
-    IComplexACKLayer,
-    IComplexACKReadPropertyService,
-    IBACnetTypeObjectId,
-    IBACnetTypeUnsignedInt,
     IServiceComplexACKReadProperty,
 } from '../../core/interfaces';
 
-import { InputSocket, OutputSocket, ServiceSocket } from '../../core/sockets';
-
-import { UnitStorageManager } from '../../managers/unit-storage.manager';
+import { OutputSocket } from '../../core/sockets';
 
 export class ComplexACKService {
     private readonly className: string = 'ComplexACK';

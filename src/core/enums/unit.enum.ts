@@ -1,4 +1,20 @@
 
+export enum BACnetUnitDataFlow {
+    Set = 'set',
+    Update = 'update',
+}
+
+export enum BACnetUnitAbbr {
+    Default = 'Default',
+}
+
+export enum BACnetUnitFamily {
+    Native = 'native',
+    Analog = 'analog',
+    Binary = 'binary',
+    MultiState = 'multi-state',
+}
+
 export enum BACnetBinaryPV {
     Inactive = 0,
     Active = 1,
@@ -43,4 +59,62 @@ export enum BACnetReliability {
     ProprietaryCommandFailure = 22,
     FaultsListed = 23,
     referencedObjectFault = 24,
+}
+
+export enum BACnetEngineeringUnits {
+    metersPerSecondPerSecond = 166,
+    // Area
+    squareMeters = 0,
+    squareCentimeters = 116,
+    squareFeet = 1,
+    squareInches = 115,
+    // Currency
+    currency1 = 105,
+    currency2 = 106,
+    currency3 = 107,
+    currency4 = 108,
+    currency5 = 109,
+    currency6 = 110,
+    currency7 = 111,
+    currency8 = 112,
+    currency9 = 113,
+    currency10 = 114,
+    // Electrical
+    milliamperes = 2,
+    amperes = 3,
+    amperesPerMeter = 167,
+    amperesPerSquareMeter = 168,
+    ampereSquareMeters = 169,
+    decibels = 199,
+    decibelsMillivolt = 200,
+    decibelsVolt = 201,
+    farads = 170,
+    henrys = 171,
+    ohms = 4,
+    ohmMeterSquaredPerMeter = 237,
+    ohmMeters = 172,
+    kilohms = 122,
+    megohms = 123,
+    microsiemens = 190,
+    millisiemens = 202,
+    siemens = 173,
+    siemensPerMeter = 174,
+    teslas = 175,
+    volts = 5,
+    millivolts = 124,
+    kilovolts = 6,
+    megavolts = 7,
+    voltAmperes = 8,
+    kilovoltAmperes = 9,
+    megavoltAmperes = 10,
+    voltAmperesReactive = 11,
+    kilovoltAmperesReactive = 12,
+    megavoltAmperesReactive = 13,
+    voltsPerDegreeLelvin = 176,
+    voltsPerMeter = 177,
+    degreesPhase = 14,
+    powerFactor = 15,
+    webers = 178,
+    // Other
+    noUnits = 95,
 }

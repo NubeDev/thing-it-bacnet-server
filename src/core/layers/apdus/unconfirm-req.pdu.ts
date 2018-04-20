@@ -19,7 +19,6 @@ import {
     BACnetPropTypes,
     BACnetPropIds,
     BACnetTagTypes,
-    BACnetConfirmedService,
     BACnetUnconfirmedService,
     BACnetServiceTypes,
 } from '../../enums';
@@ -30,8 +29,13 @@ import {
     IUnconfirmReqCOVNotification,
     IUnconfirmReqWhoIs,
     IBACnetTypeObjectId,
-    IBACnetTypeUnsignedInt,
 } from '../../interfaces';
+
+import {
+    BACnetUnsignedInteger,
+    BACnetObjectId,
+    BACnetTypeBase,
+} from '../../types';
 
 export class UnconfirmReqPDU {
     public readonly className: string = 'UnconfirmReqPDU';
@@ -74,7 +78,10 @@ export class UnconfirmReqPDU {
 
     private getIAm (reader: BACnetReaderUtil): IUnconfirmedReqIAmService {
         let serviceData: IUnconfirmedReqIAmService;
-        let objId, maxAPDUlength, segmSupported, vendorId;
+        let objId: BACnetObjectId,
+            maxAPDUlength: BACnetUnsignedInteger,
+            segmSupported: BACnetUnsignedInteger,
+            vendorId: BACnetUnsignedInteger;
 
         try {
             objId = reader.readObjectIdentifier();
@@ -151,10 +158,10 @@ export class UnconfirmReqPDU {
         writer.writeUInt8(BACnetUnconfirmedService.iAm);
 
         // Write Object identifier
-        const objIdPayload = params.objId.payload as IBACnetTypeObjectId;
+        const objIdPayload = params.objId.payload as BACnetObjectId;
         writer.writeTag(BACnetPropTypes.objectIdentifier,
             BACnetTagTypes.application, 4);
-        writer.writeObjectIdentifier(objIdPayload);
+        writer.writeObjectIdentifier(objIdPayload.getValue());
 
         // Write maxAPDUlength (1476 chars)
         writer.writeTag(BACnetPropTypes.unsignedInt,
@@ -167,10 +174,10 @@ export class UnconfirmReqPDU {
         writer.writeUInt8(0x00);
 
         // Write Vendor ID
-        const propIdPayload = params.vendorId.payload as IBACnetTypeUnsignedInt;
+        const propIdPayload = params.vendorId.payload as BACnetUnsignedInteger;
         writer.writeTag(BACnetPropTypes.unsignedInt,
             BACnetTagTypes.application, 1);
-        writer.writeUInt8(propIdPayload.value);
+        writer.writeUInt8(propIdPayload.getValue());
 
         return writer;
     }
@@ -189,16 +196,15 @@ export class UnconfirmReqPDU {
         writer.writeUInt8(BACnetUnconfirmedService.covNotification);
 
         // Write Process Identifier
-        const processId = _.isNumber(params.processId) ? params.processId : 1;
-        writer.writeParam(processId, 0);
+        writer.writeParam(params.processId.getValue(), 0);
 
         // Write Device Object Identifier
         writer.writeTag(1, BACnetTagTypes.context, 4);
-        writer.writeObjectIdentifier(params.devObjId);
+        writer.writeObjectIdentifier(params.devObjId.getValue());
 
         // Write Object Identifier for device port
         writer.writeTag(2, BACnetTagTypes.context, 4);
-        writer.writeObjectIdentifier(params.unitObjId);
+        writer.writeObjectIdentifier(params.unitObjId.getValue());
 
         // Write timer remaining
         writer.writeParam(0x00, 3);
@@ -211,7 +217,7 @@ export class UnconfirmReqPDU {
             // Write PropertyID
             writer.writeParam(reportedProp.id, 0);
             // Write PropertyValue
-            writer.writeValue(2, reportedProp.type, reportedProp.payload);
+            writer.writeValue(2, reportedProp.payload);
         });
 
         // Write closing tag for list of values
