@@ -6,32 +6,15 @@ import {
 } from '../../core/enums';
 
 import {
-    ApiError,
-} from '../../core/errors';
-
-import {
-    IBACnetObjectProperty,
-    IBACnetTypeObjectId,
     IEDEUnit,
     ICustomFunction,
     ICustomFunctionConfig,
     ICustomMetadata,
 } from '../../core/interfaces';
 
-import { UnitStorage } from '../unit.storage';
-
-import * as BACnetTypes from '../../core/types';
-
-import {
-    logger,
-    TyperUtil,
-} from '../../core/utils';
-
 import { AliasMap } from '../../core/alias/alias.map';
 
 import { NativeUnit } from '../native/native.unit';
-
-type TFunctionName = string;
 
 export class CustomUnit {
     public readonly className: string = 'CustomUnit';

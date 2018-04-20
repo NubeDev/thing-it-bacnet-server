@@ -1,5 +1,5 @@
 import * as _ from 'lodash';
-import { Subject, BehaviorSubject, Observable } from 'rxjs';
+import { Observable } from 'rxjs';
 
 import {
     BACnetPropIds,
@@ -7,13 +7,6 @@ import {
 } from '../../../core/enums';
 
 import {
-    ApiError,
-} from '../../../core/errors';
-
-import {
-    IBACnetObjectProperty,
-    IBACnetTypeObjectId,
-    IEDEUnit,
     ICustomFunction,
 } from '../../../core/interfaces';
 
@@ -21,11 +14,6 @@ import { UnitStorage } from '../../unit.storage';
 import { FunctionMetadata } from './function.metadata';
 
 import * as BACnetTypes from '../../../core/types';
-
-import {
-    logger,
-    TyperUtil,
-} from '../../../core/utils';
 
 import { CustomUnit } from '../custom.unit';
 
