@@ -1,6 +1,6 @@
 import {
     BACnetPropIds,
-    BACnetObjTypes,
+    BACnetObjectType,
     BACnetPropTypes,
     BACnetBinaryPV,
     BACnetPolarity,
@@ -17,7 +17,7 @@ import * as BACnetTypes from '../../../../core/types';
 export const BinaryInputMetadata: IBACnetObjectProperty[] = [
     {
         id: BACnetPropIds.objectType,
-        payload: new BACnetTypes.BACnetEnumerated(BACnetObjTypes.BinaryInput),
+        payload: new BACnetTypes.BACnetEnumerated(BACnetObjectType.BinaryInput),
     },
 
     {

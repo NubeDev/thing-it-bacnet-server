@@ -12,7 +12,7 @@ import {
 } from '../core/utils';
 
 import {
-    BACnetObjTypes,
+    BACnetObjectType,
     BACnetPropIds,
     BACnetUnitAbbr,
 } from '../core/enums';
@@ -76,7 +76,7 @@ export class UnitStorageManager {
             customUnit.startSimulation();
         });
 
-        const deviceToken = this.getUnitToken(BACnetObjTypes.Device, edeUnits[0].deviceInst);
+        const deviceToken = this.getUnitToken(BACnetObjectType.Device, edeUnits[0].deviceInst);
         const device = this.nativeUnits.get(deviceToken);
         this.device = device;
     }
@@ -90,7 +90,7 @@ export class UnitStorageManager {
      */
     private initNativeUnit (edeUnit: IEDEUnit): NativeUnit {
         // Get name of the native unit
-        let unitType = BACnetObjTypes[edeUnit.objType];
+        let unitType = BACnetObjectType[edeUnit.objType];
 
         if (!NativeModule.has(unitType)) {
             logger.warn(`${this.className} - initNativeUnit: "${unitType}" native unit is not exist,`,

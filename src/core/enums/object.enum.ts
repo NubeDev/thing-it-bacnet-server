@@ -1,5 +1,5 @@
 
-export enum BACnetObjTypes {
+export enum BACnetObjectType {
     AnalogInput = 0,
     AnalogOutput = 1,
     AnalogValue = 2,

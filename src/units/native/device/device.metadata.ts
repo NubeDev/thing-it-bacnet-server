@@ -1,6 +1,6 @@
 import {
     BACnetPropIds,
-    BACnetObjTypes,
+    BACnetObjectType,
     BACnetPropTypes,
 } from '../../../core/enums';
 
@@ -13,7 +13,7 @@ import * as BACnetTypes from '../../../core/types';
 export const DeviceMetadata: IBACnetObjectProperty[] = [
     {
         id: BACnetPropIds.objectType,
-        payload: new BACnetTypes.BACnetEnumerated(BACnetObjTypes.Device),
+        payload: new BACnetTypes.BACnetEnumerated(BACnetObjectType.Device),
     },
     {
         id: BACnetPropIds.vendorIdentifier,

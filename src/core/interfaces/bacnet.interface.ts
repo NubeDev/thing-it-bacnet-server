@@ -3,7 +3,7 @@ import {
     BACnetPropTypes,
     BLVCFunction,
     BACnetPropIds,
-    BACnetObjTypes,
+    BACnetObjectType,
     BACnetTagTypes,
 } from '../enums';
 import { BACnetWriterUtil } from '../utils';

@@ -1,6 +1,6 @@
 import {
     BACnetPropIds,
-    BACnetObjTypes,
+    BACnetObjectType,
     BACnetPropTypes,
     BACnetBinaryPV,
     BACnetPolarity,
