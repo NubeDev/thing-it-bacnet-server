@@ -1,11 +1,6 @@
 import {
     BACnetPropertyId,
     BACnetObjectType,
-    BACnetPropTypes,
-    BACnetBinaryPV,
-    BACnetPolarity,
-    BACnetEventState,
-    BACnetReliability,
 } from '../../../core/bacnet/enums';
 
 import {
@@ -15,4 +10,12 @@ import {
 import * as BACnetTypes from '../../../core/bacnet/types';
 
 export const MultiStateMetadata: IBACnetObjectProperty[] = [
+    {
+        id: BACnetPropertyId.presentValue,
+        payload: new BACnetTypes.BACnetUnsignedInteger(1),
+    },
+    {
+        id: BACnetPropertyId.numberOfStates,
+        payload: new BACnetTypes.BACnetUnsignedInteger(1),
+    },
 ];
