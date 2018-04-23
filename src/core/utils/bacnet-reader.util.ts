@@ -11,7 +11,6 @@ import {
     BACnetPropIds,
     BACnetPropTypes,
     BACnetTagTypes,
-    getStringEncode,
 } from '../enums';
 
 import { OffsetUtil } from './offset.util';
