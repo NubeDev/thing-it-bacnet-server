@@ -13,7 +13,11 @@ import {
 
 import {
     OffsetUtil,
-} from '../bacnet/utils/offset.util';
+} from '../bacnet/utils';
+
+import {
+    ConverterUtil,
+} from '../utils';
 
 export class EDEReaderUtil {
     private csvTable: CSVTable;
@@ -123,33 +127,29 @@ export class EDEReaderUtil {
 
         return {
             keyname: keyname,
-            deviceInst: this.toNumber(deviceInst),
+            deviceInst: ConverterUtil.stringToNumber(deviceInst),
             objName: objName,
-            objType: this.toNumber(objType),
-            objInst: this.toNumber(objInst),
+            objType: ConverterUtil.stringToNumber(objType),
+            objInst: ConverterUtil.stringToNumber(objInst),
             description: description,
-            defPresentValue: this.toNumber(defPresentValue),
-            minPresentValue: this.toNumber(minPresentValue),
-            maxPresentValue: this.toNumber(maxPresentValue),
+            defPresentValue: ConverterUtil.stringToNumber(defPresentValue),
+            minPresentValue: ConverterUtil.stringToNumber(minPresentValue),
+            maxPresentValue: ConverterUtil.stringToNumber(maxPresentValue),
             commandable: commandable,
             supportCOV: supportCOV,
-            hiLimit: this.toNumber(hiLimit),
-            liLimit: this.toNumber(liLimit),
-            stateTextRef: this.toNumber(stateTextRef),
-            unitCode: this.toNumber(unitCode),
+            hiLimit: ConverterUtil.stringToNumber(hiLimit),
+            liLimit: ConverterUtil.stringToNumber(liLimit),
+            stateTextRef: ConverterUtil.stringToNumber(stateTextRef),
+            unitCode: ConverterUtil.stringToNumber(unitCode),
             vendorAddr: vendorAddr,
 
             custUnitType: custUnitType,
-            custUnitId: this.toNumber(custUnitId),
+            custUnitId: ConverterUtil.stringToNumber(custUnitId),
             custUnitFn: custUnitFn,
-            custUnitMax: this.toNumber(custUnitMax),
-            custUnitMin: this.toNumber(custUnitMin),
-            custUnitFreq: this.toNumber(custUnitFreq),
+            custUnitMax: ConverterUtil.stringToNumber(custUnitMax),
+            custUnitMin: ConverterUtil.stringToNumber(custUnitMin),
+            custUnitFreq: ConverterUtil.stringToNumber(custUnitFreq),
         };
-    }
-
-    public toNumber (value): number {
-        return value !== '' && _.isFinite(+value) ? +value : null;
     }
 
     /**
