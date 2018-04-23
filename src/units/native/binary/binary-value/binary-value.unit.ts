@@ -1,7 +1,7 @@
 import * as _ from 'lodash';
 
 import {
-    BACnetPropIds,
+    BACnetPropertyId,
     BACnetBinaryPV,
     BACnetEventState,
     BACnetPolarity,
@@ -46,7 +46,7 @@ export class BinaryValueUnit extends BinaryUnit {
     public sjHandler (): void {
         super.sjHandler();
 
-        this.storage.setFlowHandler(BACnetUnitDataFlow.Update, BACnetPropIds.presentValue, (notif) => {
+        this.storage.setFlowHandler(BACnetUnitDataFlow.Update, BACnetPropertyId.presentValue, (notif) => {
             this.shUpdatePresentValue(notif);
         });
     }

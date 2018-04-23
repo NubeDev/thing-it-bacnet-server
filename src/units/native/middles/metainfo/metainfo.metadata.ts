@@ -1,5 +1,5 @@
 import {
-    BACnetPropIds,
+    BACnetPropertyId,
 } from '../../../../core/enums';
 
 import {
@@ -10,19 +10,19 @@ import * as BACnetTypes from '../../../../core/types';
 
 export const MetainfoMiddleMetadata: IBACnetObjectProperty[] = [
     {
-        id: BACnetPropIds.objectIdentifier,
+        id: BACnetPropertyId.objectIdentifier,
         payload: new BACnetTypes.BACnetObjectId(),
     },
     {
-        id: BACnetPropIds.objectName,
+        id: BACnetPropertyId.objectName,
         payload: new BACnetTypes.BACnetCharacterString('[thing-it] Test Device Name'),
     },
     {
-        id: BACnetPropIds.objectType,
+        id: BACnetPropertyId.objectType,
         payload: new BACnetTypes.BACnetEnumerated(),
     },
     {
-        id: BACnetPropIds.description,
+        id: BACnetPropertyId.description,
         payload: new BACnetTypes.BACnetCharacterString('[thing-it] Test Device Description'),
     },
 ];

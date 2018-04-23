@@ -1,7 +1,7 @@
 import * as _ from 'lodash';
 
 import {
-    BACnetPropIds,
+    BACnetPropertyId,
     BACnetBinaryPV,
     BACnetEventState,
     BACnetPolarity,
@@ -46,7 +46,7 @@ export class BinaryOutputUnit extends BinaryUnit {
     public sjHandler (): void {
         super.sjHandler();
 
-        this.storage.setFlowHandler(BACnetUnitDataFlow.Update, BACnetPropIds.presentValue, (notif) => {
+        this.storage.setFlowHandler(BACnetUnitDataFlow.Update, BACnetPropertyId.presentValue, (notif) => {
             this.shUpdatePresentValue(notif);
         });
     }
@@ -59,7 +59,7 @@ export class BinaryOutputUnit extends BinaryUnit {
      * @return {void}
      */
     private shUpdatePresentValue (notif: IBACnetObjectProperty): void {
-        const polarityProp = this.storage.getProperty(BACnetPropIds.polarity);
+        const polarityProp = this.storage.getProperty(BACnetPropertyId.polarity);
         const polarity = polarityProp.payload as BACnetTypes.BACnetEnumerated;
 
         if (polarity.value === BACnetPolarity.Reverse) {
@@ -78,7 +78,7 @@ export class BinaryOutputUnit extends BinaryUnit {
             }
 
             this.storage.updateProperty({
-                id: BACnetPropIds.presentValue,
+                id: BACnetPropertyId.presentValue,
                 payload: newPresentValue,
             }, false);
         }

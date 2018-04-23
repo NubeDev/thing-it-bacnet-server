@@ -1,7 +1,7 @@
 import * as Bluebird from 'bluebird';
 
 import {
-    BACnetPropIds,
+    BACnetPropertyId,
 } from '../core/enums';
 
 import { InputSocket, OutputSocket, ServiceSocket } from '../core/sockets';
@@ -23,8 +23,8 @@ export class UnitUnconfirmedReqService {
         const unitStorage: UnitStorageManager = serviceSocket.getService('unitStorage');
 
         const device = unitStorage.getDevice();
-        const devObjId = device.storage.getProperty(BACnetPropIds.objectIdentifier);
-        const vendorId = device.storage.getProperty(BACnetPropIds.vendorIdentifier);
+        const devObjId = device.storage.getProperty(BACnetPropertyId.objectIdentifier);
+        const vendorId = device.storage.getProperty(BACnetPropertyId.vendorIdentifier);
 
         unconfirmedReqService.iAm({
             objId: devObjId,

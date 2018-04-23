@@ -1,5 +1,5 @@
 import {
-    BACnetPropIds,
+    BACnetPropertyId,
     BACnetObjectType,
     BACnetPropTypes,
 } from '../../../core/enums';
@@ -12,23 +12,23 @@ import * as BACnetTypes from '../../../core/types';
 
 export const DeviceMetadata: IBACnetObjectProperty[] = [
     {
-        id: BACnetPropIds.objectType,
+        id: BACnetPropertyId.objectType,
         payload: new BACnetTypes.BACnetEnumerated(BACnetObjectType.Device),
     },
     {
-        id: BACnetPropIds.vendorIdentifier,
+        id: BACnetPropertyId.vendorIdentifier,
         payload: new BACnetTypes.BACnetCharacterString('[thing-it] Test Device Name'),
     },
     {
-        id: BACnetPropIds.vendorName,
+        id: BACnetPropertyId.vendorName,
         payload: new BACnetTypes.BACnetCharacterString('THING TECHNOLOGIES GmbH Test'),
     },
     {
-        id: BACnetPropIds.modelName,
+        id: BACnetPropertyId.modelName,
         payload: new BACnetTypes.BACnetCharacterString('[thing-it] BACnet Test Server'),
     },
     {
-        id: BACnetPropIds.applicationSoftwareVersion,
+        id: BACnetPropertyId.applicationSoftwareVersion,
         payload: new BACnetTypes.BACnetCharacterString('V1.0.0'),
     },
 ];

@@ -1,5 +1,5 @@
 import {
-    BACnetPropIds,
+    BACnetPropertyId,
     BACnetObjectType,
     BACnetPropTypes,
 } from '../../../../core/enums';
@@ -12,7 +12,7 @@ import * as BACnetTypes from '../../../../core/types';
 
 export const MultiStateInputMetadata: IBACnetObjectProperty[] = [
     {
-        id: BACnetPropIds.objectType,
+        id: BACnetPropertyId.objectType,
         payload: new BACnetTypes.BACnetEnumerated(BACnetObjectType.MultiStateInput),
     },
 ];

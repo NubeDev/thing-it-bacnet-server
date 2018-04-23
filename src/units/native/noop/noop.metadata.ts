@@ -1,5 +1,5 @@
 import {
-    BACnetPropIds,
+    BACnetPropertyId,
     BACnetObjectType,
     BACnetPropTypes,
 } from '../../../core/enums';

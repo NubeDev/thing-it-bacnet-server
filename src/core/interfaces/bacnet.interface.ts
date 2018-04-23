@@ -2,7 +2,7 @@
 import {
     BACnetPropTypes,
     BLVCFunction,
-    BACnetPropIds,
+    BACnetPropertyId,
     BACnetObjectType,
     BACnetTagTypes,
 } from '../enums';
@@ -15,7 +15,7 @@ export interface IBACnetAddressInfo {
 }
 
 export interface IBACnetObjectProperty {
-    id: BACnetPropIds;
+    id: BACnetPropertyId;
     payload: BACnetTypes.BACnetTypeBase | BACnetTypes.BACnetTypeBase[];
     writable?: boolean;
     priority?: number;

@@ -1,7 +1,7 @@
 import * as _ from 'lodash';
 
 import {
-    BACnetPropIds,
+    BACnetPropertyId,
     BACnetUnitDataFlow,
 } from '../../../../core/enums';
 
@@ -32,7 +32,7 @@ export class MetainfoMiddleUnit extends MiddleUnit {
 
         // --- Set default state in metainfo properties
         this.storage.setProperty({
-            id: BACnetPropIds.objectIdentifier,
+            id: BACnetPropertyId.objectIdentifier,
             payload: new BACnetTypes.BACnetObjectId({
                 type: edeUnit.objType,
                 instance: edeUnit.objInst,
@@ -40,18 +40,18 @@ export class MetainfoMiddleUnit extends MiddleUnit {
         });
 
         this.storage.setProperty({
-            id: BACnetPropIds.objectName,
+            id: BACnetPropertyId.objectName,
             payload: new BACnetTypes.BACnetCharacterString(edeUnit.objName),
         });
 
         this.storage.setProperty({
-            id: BACnetPropIds.objectType,
+            id: BACnetPropertyId.objectType,
             payload: new BACnetTypes.BACnetEnumerated(edeUnit.objType),
         });
 
         if (edeUnit.description) {
             this.storage.setProperty({
-                id: BACnetPropIds.description,
+                id: BACnetPropertyId.description,
                 payload: new BACnetTypes.BACnetCharacterString(edeUnit.description),
             });
         }

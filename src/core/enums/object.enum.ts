@@ -62,7 +62,7 @@ export enum BACnetObjectType {
     Lift = 59,
 }
 
-export enum BACnetPropIds {
+export enum BACnetPropertyId {
     apduSegmentTimeout = 10,
     apduTimeout = 11,
     applicationSoftwareVersion = 12,

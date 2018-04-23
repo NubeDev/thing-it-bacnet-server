@@ -13,7 +13,7 @@ import {
 
 import {
     BACnetObjectType,
-    BACnetPropIds,
+    BACnetPropertyId,
     BACnetUnitAbbr,
 } from '../core/enums';
 
@@ -213,7 +213,7 @@ export class UnitStorageManager {
      * setUnitProperty - sets the value of the object property by property ID.
      *
      * @param  {IBACnetTypeObjectId} objId - object identifier
-     * @param  {BACnetPropIds} propId - property ID
+     * @param  {BACnetPropertyId} propId - property ID
      * @param  {} value - property value
      * @return {void}
      */
@@ -230,11 +230,11 @@ export class UnitStorageManager {
      * getUnitProperty - return the clone value of the object property by property ID.
      *
      * @param  {IBACnetTypeObjectId} objId - object identifier
-     * @param  {BACnetPropIds} propId - property ID
+     * @param  {BACnetPropertyId} propId - property ID
      * @return {IBACnetObjectProperty}
      */
     public getUnitProperty (objId: BACnetObjectId,
-            propId: BACnetPropIds): IBACnetObjectProperty {
+            propId: BACnetPropertyId): IBACnetObjectProperty {
         const unit = this.getUnit(objId);
         if (!unit) {
             return null;

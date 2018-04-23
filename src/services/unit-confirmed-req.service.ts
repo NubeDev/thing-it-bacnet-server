@@ -1,7 +1,7 @@
 import * as Bluebird from 'bluebird';
 
 import {
-    BACnetPropIds,
+    BACnetPropertyId,
 } from '../core/enums';
 
 import {
@@ -92,7 +92,7 @@ export class UnitConfirmedReqService {
 
         // Get device Object identifier
         const device = unitStorage.getDevice();
-        const devObjIdProp = device.storage.getProperty(BACnetPropIds.objectIdentifier);
+        const devObjIdProp = device.storage.getProperty(BACnetPropertyId.objectIdentifier);
         const devObjId = devObjIdProp.payload as BACnetObjectId;
 
         unitStorage

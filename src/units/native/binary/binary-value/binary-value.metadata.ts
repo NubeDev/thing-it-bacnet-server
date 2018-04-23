@@ -1,5 +1,5 @@
 import {
-    BACnetPropIds,
+    BACnetPropertyId,
     BACnetObjectType,
     BACnetPropTypes,
     BACnetBinaryPV,
@@ -16,16 +16,16 @@ import * as BACnetTypes from '../../../../core/types';
 
 export const BinaryValueMetadata: IBACnetObjectProperty[] = [
     {
-        id: BACnetPropIds.objectType,
+        id: BACnetPropertyId.objectType,
         payload: new BACnetTypes.BACnetEnumerated(BACnetObjectType.BinaryValue),
     },
 
     {
-        id: BACnetPropIds.presentValue,
+        id: BACnetPropertyId.presentValue,
         payload: new BACnetTypes.BACnetEnumerated(BACnetBinaryPV.Active),
     },
     {
-        id: BACnetPropIds.relinquishDefault,
+        id: BACnetPropertyId.relinquishDefault,
         payload: new BACnetTypes.BACnetEnumerated(BACnetBinaryPV.Active),
     },
 ];

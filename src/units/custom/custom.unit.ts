@@ -6,7 +6,7 @@ import {
 } from '../../core/errors';
 
 import {
-    BACnetPropIds,
+    BACnetPropertyId,
 } from '../../core/enums';
 
 import {

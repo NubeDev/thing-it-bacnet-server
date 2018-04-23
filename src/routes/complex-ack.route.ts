@@ -6,7 +6,7 @@ import {
 
 import {
     BACnetConfirmedService,
-    BACnetPropIds,
+    BACnetPropertyId,
 } from '../core/enums';
 
 import { InputSocket, OutputSocket, ServiceSocket } from '../core/sockets';

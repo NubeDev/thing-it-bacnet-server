@@ -2,7 +2,7 @@ import * as _ from 'lodash';
 import { Subject, BehaviorSubject, Observable } from 'rxjs';
 
 import {
-    BACnetPropIds,
+    BACnetPropertyId,
     BACnetUnitDataFlow,
     BACnetUnitFamily,
 } from '../../core/enums';
@@ -64,8 +64,8 @@ export class NativeUnit {
      */
     public sjHandler (): void {
         this.storage.setFlowHandler(BACnetUnitDataFlow.Set,
-            [ BACnetPropIds.objectIdentifier, BACnetPropIds.objectType,
-                BACnetPropIds.objectName, BACnetPropIds.description ],
+            [ BACnetPropertyId.objectIdentifier, BACnetPropertyId.objectType,
+                BACnetPropertyId.objectName, BACnetPropertyId.description ],
             (notif) => {
                 this.storage.updateProperty(notif);
             }
@@ -78,7 +78,7 @@ export class NativeUnit {
      * @return {IBACnetType}
      */
     public getCommandablePropertyValue (): BACnetTypes.BACnetTypeBase {
-        const priorityArrayProp = this.storage.getProperty(BACnetPropIds.priorityArray);
+        const priorityArrayProp = this.storage.getProperty(BACnetPropertyId.priorityArray);
         const priorityArray = priorityArrayProp.payload as BACnetTypes.BACnetTypeBase[];
 
         let priorityArrayValue: BACnetTypes.BACnetTypeBase, i: number;
@@ -94,12 +94,12 @@ export class NativeUnit {
             ? new BACnetTypes.BACnetNull()
             : new BACnetTypes.BACnetUnsignedInteger(i);
         this.storage.setProperty({
-            id: BACnetPropIds.currentCommandPriority,
+            id: BACnetPropertyId.currentCommandPriority,
             payload: priorityIndex,
         });
 
         if (_.isNil(priorityArrayValue)) {
-            const relinquishDefaultProp = this.storage.getProperty(BACnetPropIds.relinquishDefault);
+            const relinquishDefaultProp = this.storage.getProperty(BACnetPropertyId.relinquishDefault);
             const relinquishDefault = relinquishDefaultProp.payload as BACnetTypes.BACnetTypeBase;
             priorityArrayValue = relinquishDefault;
         }
@@ -127,7 +127,7 @@ export class NativeUnit {
      * @return {boolean}
      */
     public isBACnetObject (objId: IBACnetTypeObjectId): boolean {
-        const unitIdProp = this.storage.getProperty(BACnetPropIds.objectIdentifier);
+        const unitIdProp = this.storage.getProperty(BACnetPropertyId.objectIdentifier);
         const unitId = unitIdProp.payload as BACnetTypes.BACnetObjectId;
         return unitId.value.type === objId.type
             && unitId.value.instance === objId.instance;

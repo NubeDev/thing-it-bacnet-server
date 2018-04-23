@@ -2,7 +2,7 @@ import * as _ from 'lodash';
 import { Observable } from 'rxjs';
 
 import {
-    BACnetPropIds,
+    BACnetPropertyId,
     BACnetUnitFamily,
 } from '../../../core/enums';
 
@@ -125,7 +125,7 @@ export class FunctionUnit extends CustomUnit {
                 }
 
                 unit.storage.setProperty({
-                    id: BACnetPropIds.presentValue,
+                    id: BACnetPropertyId.presentValue,
                     payload: payload,
                 });
             });

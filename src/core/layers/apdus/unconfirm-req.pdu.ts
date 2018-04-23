@@ -17,7 +17,7 @@ import {
 
 import {
     BACnetPropTypes,
-    BACnetPropIds,
+    BACnetPropertyId,
     BACnetTagTypes,
     BACnetUnconfirmedService,
     BACnetServiceTypes,

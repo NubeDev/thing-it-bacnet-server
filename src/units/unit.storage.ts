@@ -2,7 +2,7 @@ import * as _ from 'lodash';
 import { Subject, BehaviorSubject, Observable } from 'rxjs';
 
 import {
-    BACnetPropIds,
+    BACnetPropertyId,
     BACnetUnitDataFlow,
 } from '../core/enums';
 
@@ -35,7 +35,7 @@ export class UnitStorage {
     public readonly className: string = 'UnitStorage';
     public logHeader: string;
     // Unit metadata
-    public metadata: Map<BACnetPropIds, IBACnetObjectProperty>;
+    public metadata: Map<BACnetPropertyId, IBACnetObjectProperty>;
     // Subject for data flow events
     public sjDataFlow: Subject<IDataFlow>;
     // Subject for BACnet "CoV" event
@@ -81,13 +81,13 @@ export class UnitStorage {
      * setFlowHandler - sets the handler for specific property on the specific flow.
      *
      * @param  {TFlowTypes} flowType - type of the flow
-     * @param  {BACnetPropIds|BACnetPropIds[]} propIds - identifier of the property
+     * @param  {BACnetPropertyId|BACnetPropertyId[]} propIds - identifier of the property
      * @param  {TSjHandler} fn - handler of the flow events
      * @return {void}
      */
     public setFlowHandler (flowType: BACnetUnitDataFlow,
-            propIds: BACnetPropIds|BACnetPropIds[], fn: TSjHandler): void {
-        let propIdArray: BACnetPropIds[] = _.isArray(propIds) ? propIds : [propIds];
+            propIds: BACnetPropertyId|BACnetPropertyId[], fn: TSjHandler): void {
+        let propIdArray: BACnetPropertyId[] = _.isArray(propIds) ? propIds : [propIds];
 
         _.map(propIdArray, (propId) => {
             this.shFlowHandlers.set(`${flowType}:${propId}`, fn);
@@ -98,18 +98,18 @@ export class UnitStorage {
      * getFlowHandler - finds the flow handler by flow type and property ID.
      *
      * @param  {TFlowTypes} flowType - type of the flow
-     * @param  {BACnetPropIds|BACnetPropIds[]} propIds - identifier of the property
+     * @param  {BACnetPropertyId|BACnetPropertyId[]} propIds - identifier of the property
      * @return {TSjHandler}
      */
     public getFlowHandler (flowType: BACnetUnitDataFlow,
-            propId: BACnetPropIds): TSjHandler {
+            propId: BACnetPropertyId): TSjHandler {
         return this.shFlowHandlers.get(`${flowType}:${propId}`);
     }
 
     /**
      * setProperty - finds the property by "newProp.id" and emits newProp in "set" event.
      *
-     * @param  {BACnetPropIds} propId - property ID
+     * @param  {BACnetPropertyId} propId - property ID
      * @param  {IBACnetType} value - property value
      * @return {void}
      */
@@ -121,7 +121,7 @@ export class UnitStorage {
             return;
         }
 
-        logger.debug(`${this.getLogHeader()} - setProperty (${BACnetPropIds[newProp.id]}):`,
+        logger.debug(`${this.getLogHeader()} - setProperty (${BACnetPropertyId[newProp.id]}):`,
             JSON.stringify(newProp));
 
         this.sjDataFlow.next({ type: BACnetUnitDataFlow.Set, value: newProp });
@@ -131,7 +131,7 @@ export class UnitStorage {
      * updateProperty - finds the property by "newProp.id", sets new payload,
      * updates the old property and emits "newProp" in "update" event flow.
      *
-     * @param  {BACnetPropIds} newProp - property ID
+     * @param  {BACnetPropertyId} newProp - property ID
      * @param  {boolean} isEmitted - emit the `update` event?
      * @return {void}
      */
@@ -142,7 +142,7 @@ export class UnitStorage {
 
         this.metadata.set(newProp.id, prop);
 
-        logger.debug(`${this.getLogHeader()} - updateProperty (${BACnetPropIds[newProp.id]}):`,
+        logger.debug(`${this.getLogHeader()} - updateProperty (${BACnetPropertyId[newProp.id]}):`,
             JSON.stringify(newProp));
 
         if (isEmitted) {
@@ -153,20 +153,20 @@ export class UnitStorage {
     /**
      * getProperty - return the clone value of the unit property by property ID.
      *
-     * @param  {BACnetPropIds} propId - property ID
+     * @param  {BACnetPropertyId} propId - property ID
      * @return {IBACnetObjectProperty}
      */
-    public getProperty (propId: BACnetPropIds): IBACnetObjectProperty {
+    public getProperty (propId: BACnetPropertyId): IBACnetObjectProperty {
         const prop = this.metadata.get(propId);
 
         if (_.isNil(prop)) {
-            logger.debug(`${this.getLogHeader()} - getProperty (${BACnetPropIds[propId]}): Empty`);
+            logger.debug(`${this.getLogHeader()} - getProperty (${BACnetPropertyId[propId]}): Empty`);
             return {
                 id: propId,
                 payload: new BACnetTypes.BACnetNull(),
             };
         }
-        logger.debug(`${this.getLogHeader()} - getProperty (${BACnetPropIds[propId]}):`,
+        logger.debug(`${this.getLogHeader()} - getProperty (${BACnetPropertyId[propId]}):`,
             JSON.stringify(prop));
         return _.cloneDeep(prop);
     }

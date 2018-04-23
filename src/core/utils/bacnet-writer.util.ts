@@ -7,7 +7,7 @@ import {
 } from '../interfaces';
 
 import {
-    BACnetPropIds,
+    BACnetPropertyId,
     BACnetPropTypes,
     OpertionMaxValue,
     BACnetTagTypes,

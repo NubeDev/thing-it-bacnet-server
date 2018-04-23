@@ -1,7 +1,7 @@
 import * as _ from 'lodash';
 
 import {
-    BACnetPropIds,
+    BACnetPropertyId,
     BACnetUnitFamily,
 } from '../../../core/enums';
 
@@ -38,8 +38,8 @@ export class AnalogUnit extends NativeUnit {
     * @return {IBACnetObjectProperty[]}
     */
    protected getReportedProperties (): IBACnetObjectProperty[] {
-       const presentValue = this.storage.getProperty(BACnetPropIds.presentValue);
-       const statusFlags = this.storage.getProperty(BACnetPropIds.statusFlags);
+       const presentValue = this.storage.getProperty(BACnetPropertyId.presentValue);
+       const statusFlags = this.storage.getProperty(BACnetPropertyId.statusFlags);
 
        return [ presentValue, statusFlags ];
    }
