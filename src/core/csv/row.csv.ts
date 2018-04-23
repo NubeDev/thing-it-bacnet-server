@@ -111,7 +111,7 @@ export class CSVRow {
         const cells = cells1.length > cells2.length ? cells1 : cells2;
 
         this.cells = cells;
-    };
+    }
 
     /**
      * CSVtoArray - parses the CSV row and creates an array of CSV cells by
@@ -142,45 +142,6 @@ export class CSVRow {
 
         return cells;
     }
-
-    /**
-     * fromString - parses the "Row" string (csv format) and creates an array
-     * of "value"s from parsed data.
-     *
-     * @param  {string} strRow - string in csv format (row)
-     * @return {void}
-     */
-    // public fromString (strRow: string): void {
-    //     if (!_.isString(strRow)) {
-    //         throw new ApiError(`CSVRow - fromString: Input string must have string type!`);
-    //     }
-    //
-    //     if (!strRow) {
-    //         this.cells = [];
-    //         return;
-    //     }
-    //
-    //     const varCells = _.map(CSVCellSeparators, (CSVCellSeparator) => {
-    //         return strRow.split(CSVCellSeparator);
-    //     });
-    //
-    //     let maxLen: number = 0;
-    //     let cells: string[] = null;
-    //     _.map(varCells, (varCell) => {
-    //         if (maxLen > varCell.length) {
-    //             return;
-    //         }
-    //         maxLen = varCell.length;
-    //         cells = varCell;
-    //     });
-    //
-    //     const formatedCells = _.map(cells, (cellStr) => {
-    //         const cellNum = parseFloat(cellStr);
-    //         return _.isFinite(cellNum) ? cellNum : cellStr.trim();
-    //     });
-    //
-    //     this.cells = formatedCells;
-    // }
 
     /**
      * toString - returns the string representation (csv format) of the row.
