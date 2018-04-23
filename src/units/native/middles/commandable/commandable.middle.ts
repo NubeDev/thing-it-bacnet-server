@@ -1,7 +1,7 @@
 import * as _ from 'lodash';
 
 import {
-    BACnetPropIds,
+    BACnetPropertyId,
     BACnetUnitDataFlow,
 } from '../../../../core/enums';
 
@@ -39,11 +39,11 @@ export class CommandableMiddleUnit extends MiddleUnit {
      * @return {void}
      */
     public sjHandler (): void {
-        this.storage.setFlowHandler(BACnetUnitDataFlow.Set, BACnetPropIds.presentValue, (notif) => {
+        this.storage.setFlowHandler(BACnetUnitDataFlow.Set, BACnetPropertyId.presentValue, (notif) => {
             this.shSetPresentValue(notif);
         });
 
-        this.storage.setFlowHandler(BACnetUnitDataFlow.Set, BACnetPropIds.priorityArray, (notif) => {
+        this.storage.setFlowHandler(BACnetUnitDataFlow.Set, BACnetPropertyId.priorityArray, (notif) => {
             this.shSetPriorityArray(notif);
         });
     }
@@ -56,7 +56,7 @@ export class CommandableMiddleUnit extends MiddleUnit {
      * @return {void}
      */
     private shSetPresentValue (notif: IBACnetObjectProperty): void {
-        const priorityArrayProp = this.storage.getProperty(BACnetPropIds.priorityArray);
+        const priorityArrayProp = this.storage.getProperty(BACnetPropertyId.priorityArray);
         const priorityArray = priorityArrayProp.payload as BACnetTypes.BACnetTypeBase[];
 
         const newPriorityArrayEl = notif.payload as BACnetTypes.BACnetTypeBase;
@@ -66,7 +66,7 @@ export class CommandableMiddleUnit extends MiddleUnit {
         newPriorityArray[priority] = newPriorityArrayEl;
 
         this.storage.setProperty({
-            id: BACnetPropIds.priorityArray,
+            id: BACnetPropertyId.priorityArray,
             payload: newPriorityArray,
         });
     }
@@ -84,7 +84,7 @@ export class CommandableMiddleUnit extends MiddleUnit {
         const newPresentValue = this.getCommandablePropertyValue() as BACnetTypes.BACnetTypeBase;
 
         this.storage.updateProperty({
-            id: BACnetPropIds.presentValue,
+            id: BACnetPropertyId.presentValue,
             payload: newPresentValue,
         });
     }
@@ -95,7 +95,7 @@ export class CommandableMiddleUnit extends MiddleUnit {
      * @return {IBACnetType}
      */
     private getCommandablePropertyValue (): BACnetTypes.BACnetTypeBase {
-        const priorityArrayProp = this.storage.getProperty(BACnetPropIds.priorityArray);
+        const priorityArrayProp = this.storage.getProperty(BACnetPropertyId.priorityArray);
         const priorityArray = priorityArrayProp.payload as BACnetTypes.BACnetTypeBase[];
 
         let priorityArrayValue: BACnetTypes.BACnetTypeBase, i: number;
@@ -111,12 +111,12 @@ export class CommandableMiddleUnit extends MiddleUnit {
             ? new BACnetTypes.BACnetNull()
             : new BACnetTypes.BACnetUnsignedInteger(i);
         this.storage.setProperty({
-            id: BACnetPropIds.currentCommandPriority,
+            id: BACnetPropertyId.currentCommandPriority,
             payload: priorityIndex,
         });
 
         if (_.isNil(priorityArrayValue)) {
-            const relinquishDefaultProp = this.storage.getProperty(BACnetPropIds.relinquishDefault);
+            const relinquishDefaultProp = this.storage.getProperty(BACnetPropertyId.relinquishDefault);
             const relinquishDefault = relinquishDefaultProp.payload as BACnetTypes.BACnetTypeBase;
             priorityArrayValue = relinquishDefault;
         }
