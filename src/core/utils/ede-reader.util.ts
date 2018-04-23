@@ -13,7 +13,7 @@ import {
 
 import {
     OffsetUtil,
-} from './offset.util';
+} from '../bacnet/utils/offset.util';
 
 export class EDEReaderUtil {
     private csvTable: CSVTable;

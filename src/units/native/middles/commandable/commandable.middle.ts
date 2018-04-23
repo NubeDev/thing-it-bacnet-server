@@ -3,19 +3,20 @@ import * as _ from 'lodash';
 import {
     BACnetPropertyId,
     BACnetUnitDataFlow,
-} from '../../../../core/enums';
+} from '../../../../core/bacnet/enums';
 
 import {
     IBACnetObjectProperty,
-    IEDEUnit,
-} from '../../../../core/interfaces';
+} from '../../../../core/bacnet/interfaces';
+
+import { IEDEUnit } from '../../../../core/interfaces';
 
 import { CommandableMiddleMetadata } from './commandable.metadata';
 
 import { MiddleUnit } from '../middle.unit';
 
-import * as BACnetTypes from '../../../../core/types';
-import { TyperUtil } from '../../../../core/utils';
+import * as BACnetTypes from '../../../../core/bacnet/types';
+import { TyperUtil } from '../../../../core/bacnet/utils';
 
 export class CommandableMiddleUnit extends MiddleUnit {
     public readonly className: string = 'StatusFlagsMiddleUnit';

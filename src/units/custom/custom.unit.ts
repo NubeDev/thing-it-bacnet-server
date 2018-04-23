@@ -7,14 +7,15 @@ import {
 
 import {
     BACnetPropertyId,
-} from '../../core/enums';
+} from '../../core/bacnet/enums';
 
 import {
-    IEDEUnit,
     ICustomFunction,
     ICustomFunctionConfig,
     ICustomMetadata,
-} from '../../core/interfaces';
+} from '../../core/bacnet/interfaces';
+
+import { IEDEUnit } from '../../core/interfaces';
 
 import { AliasMap } from '../../core/alias/alias.map';
 

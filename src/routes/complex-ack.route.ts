@@ -2,12 +2,12 @@ import { logger } from '../core/utils';
 
 import {
     IComplexACKLayer,
-} from '../core/interfaces';
+} from '../core/bacnet/interfaces';
 
 import {
     BACnetConfirmedService,
     BACnetPropertyId,
-} from '../core/enums';
+} from '../core/bacnet/enums';
 
 import { InputSocket, OutputSocket, ServiceSocket } from '../core/sockets';
 

@@ -2,11 +2,11 @@ import { logger } from '../core/utils';
 
 import {
     IUnconfirmedReqLayer,
-} from '../core/interfaces';
+} from '../core/bacnet/interfaces';
 
 import {
     BACnetUnconfirmedService,
-} from '../core/enums';
+} from '../core/bacnet/enums';
 
 import { unitUnconfirmedReqService } from '../services';
 

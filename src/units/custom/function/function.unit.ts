@@ -4,16 +4,16 @@ import { Observable } from 'rxjs';
 import {
     BACnetPropertyId,
     BACnetUnitFamily,
-} from '../../../core/enums';
+} from '../../../core/bacnet/enums';
 
 import {
     ICustomFunction,
-} from '../../../core/interfaces';
+} from '../../../core/bacnet/interfaces';
 
 import { UnitStorage } from '../../unit.storage';
 import { FunctionMetadata } from './function.metadata';
 
-import * as BACnetTypes from '../../../core/types';
+import * as BACnetTypes from '../../../core/bacnet/types';
 
 import { CustomUnit } from '../custom.unit';
 

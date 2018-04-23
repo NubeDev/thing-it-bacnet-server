@@ -2,11 +2,11 @@ import {
     BACnetUnsignedInteger,
     BACnetObjectId,
     BACnetTypeBase,
-} from '../types';
+} from '../bacnet/types';
 
 import {
     IBACnetObjectProperty,
-} from './bacnet.interface';
+} from '../bacnet/interfaces';
 
 /**
  * Unconfirmed Request

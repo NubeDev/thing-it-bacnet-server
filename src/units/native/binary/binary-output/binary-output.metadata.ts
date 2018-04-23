@@ -1,18 +1,15 @@
 import {
     BACnetPropertyId,
     BACnetObjectType,
-    BACnetPropTypes,
     BACnetBinaryPV,
     BACnetPolarity,
-    BACnetEventState,
-    BACnetReliability,
-} from '../../../../core/enums';
+} from '../../../../core/bacnet/enums';
 
 import {
     IBACnetObjectProperty,
-} from '../../../../core/interfaces';
+} from '../../../../core/bacnet/interfaces';
 
-import * as BACnetTypes from '../../../../core/types';
+import * as BACnetTypes from '../../../../core/bacnet/types';
 
 export const BinaryOutputMetadata: IBACnetObjectProperty[] = [
     {

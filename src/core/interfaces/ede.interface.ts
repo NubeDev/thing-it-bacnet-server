@@ -1,9 +1,5 @@
 import { OutputSocket } from '../sockets';
 
-import {
-    IBACnetAddressInfo,
-} from './bacnet.interface';
-
 export interface IEDEHeaderData {
     projectName: string;
     versionOfRefFile: number;

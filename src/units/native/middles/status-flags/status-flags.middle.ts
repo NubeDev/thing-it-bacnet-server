@@ -4,19 +4,20 @@ import {
     BACnetPropertyId,
     BACnetEventState,
     BACnetUnitDataFlow,
-} from '../../../../core/enums';
+} from '../../../../core/bacnet/enums';
 
 import {
     IBACnetObjectProperty,
     IBACnetTypeStatusFlags,
-    IEDEUnit,
-} from '../../../../core/interfaces';
+} from '../../../../core/bacnet/interfaces';
+
+import { IEDEUnit } from '../../../../core/interfaces';
 
 import { StatusFlagsMiddleMetadata } from './status-flags.metadata';
 
 import { MiddleUnit } from '../middle.unit';
 
-import * as BACnetTypes from '../../../../core/types';
+import * as BACnetTypes from '../../../../core/bacnet/types';
 
 export class StatusFlagsMiddleUnit extends MiddleUnit {
     public readonly className: string = 'StatusFlagsMiddleUnit';

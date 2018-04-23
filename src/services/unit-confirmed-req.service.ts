@@ -2,25 +2,24 @@ import * as Bluebird from 'bluebird';
 
 import {
     BACnetPropertyId,
-} from '../core/enums';
+} from '../core/bacnet/enums';
 
 import {
     IConfirmedReqLayer,
     IConfirmedReqSubscribeCOVService,
     IConfirmedReqWritePropertyService,
     IConfirmedReqReadPropertyService,
-} from '../core/interfaces';
+} from '../core/bacnet/interfaces';
 
 import {
     BACnetObjectId,
-    BACnetUnsignedInteger,
-} from '../core/types';
+} from '../core/bacnet/types';
 
 import { InputSocket, OutputSocket, ServiceSocket } from '../core/sockets';
 
 import { UnitStorageManager } from '../managers/unit-storage.manager';
 
-import { unconfirmedReqService, simpleACKService, complexACKService } from './bacnet';
+import { unconfirmedReqService, simpleACKService, complexACKService } from '../core/bacnet/services';
 
 export class UnitConfirmedReqService {
 
@@ -49,11 +48,12 @@ export class UnitConfirmedReqService {
         const unitStorage: UnitStorageManager = serviceSocket.getService('unitStorage');
         const unitProp = unitStorage.getUnitProperty(unitObjId, propIdValue);
 
-        complexACKService.readProperty({
+        const msgReadProperty = complexACKService.readProperty({
             invokeId: invokeId,
             unitObjId: unitObjId,
             unitProp: unitProp,
-        }, outputSoc);
+        });
+        outputSoc.send(msgReadProperty, `Complex ACK - readProperty`);
 
         return Bluebird.resolve();
     }
@@ -78,9 +78,10 @@ export class UnitConfirmedReqService {
         // Get invoke ID
         const invokeId = apduMessage.invokeId;
 
-        simpleACKService.subscribeCOV({
+        const msgSubscribeCOV = simpleACKService.subscribeCOV({
             invokeId: invokeId
-        }, outputSoc);
+        });
+        outputSoc.send(msgSubscribeCOV, `Simple ACK - subscribeCOV`);
 
         // --- Sends response "covNotification"
 
@@ -98,12 +99,13 @@ export class UnitConfirmedReqService {
         unitStorage
             .subscribeToUnit(unitObjId)
             .subscribe((reportedProps) => {
-                unconfirmedReqService.covNotification({
+                const msgCovNotification = unconfirmedReqService.covNotification({
                     processId: subProcessId,
                     devObjId: devObjId,
                     unitObjId: unitObjId,
                     reportedProps: reportedProps,
-                }, outputSoc);
+                });
+                outputSoc.send(msgCovNotification, `Unconfirmed Request - covNotification`);
             });
 
         return Bluebird.resolve();
@@ -148,9 +150,10 @@ export class UnitConfirmedReqService {
             priority: priorityValue,
         });
 
-        simpleACKService.writeProperty({
+        const msgWriteProperty = simpleACKService.writeProperty({
             invokeId: invokeId,
-        }, outputSoc);
+        });
+        outputSoc.send(msgWriteProperty, `Simple ACK - writeProperty`);
 
         return Bluebird.resolve();
     }

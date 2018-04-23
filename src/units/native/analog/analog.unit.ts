@@ -3,7 +3,7 @@ import * as _ from 'lodash';
 import {
     BACnetPropertyId,
     BACnetUnitFamily,
-} from '../../../core/enums';
+} from '../../../core/bacnet/enums';
 
 import {
     ApiError,
@@ -11,15 +11,16 @@ import {
 
 import {
     IBACnetObjectProperty,
-    IEDEUnit,
-} from '../../../core/interfaces';
+} from '../../../core/bacnet/interfaces';
+
+import { IEDEUnit } from '../../../core/interfaces';
 
 import { AnalogMetadata } from './analog.metadata';
 import { StatusFlagsMiddleUnit } from '../middles/status-flags/status-flags.middle';
 
 import { NativeUnit } from '../native.unit';
 
-import * as BACnetTypes from '../../../core/types';
+import * as BACnetTypes from '../../../core/bacnet/types';
 
 export class AnalogUnit extends NativeUnit {
     public readonly className: string = 'AnalogUnit';

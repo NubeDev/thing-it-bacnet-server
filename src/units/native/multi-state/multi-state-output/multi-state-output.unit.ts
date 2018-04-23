@@ -2,16 +2,15 @@ import * as _ from 'lodash';
 
 import {
     BACnetPropertyId,
-} from '../../../../core/enums';
+} from '../../../../core/bacnet/enums';
 
-import {
-    ApiError,
-} from '../../../../core/errors';
+import { ApiError } from '../../../../core/errors';
 
 import {
     IBACnetObjectProperty,
-    IEDEUnit,
-} from '../../../../core/interfaces';
+} from '../../../../core/bacnet/interfaces';
+
+import { IEDEUnit } from '../../../../core/interfaces';
 
 import { MultiStateOutputMetadata } from './multi-state-output.metadata';
 

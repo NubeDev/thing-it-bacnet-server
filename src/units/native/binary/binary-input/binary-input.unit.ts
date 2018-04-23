@@ -5,7 +5,7 @@ import {
     BACnetBinaryPV,
     BACnetEventState,
     BACnetUnitDataFlow,
-} from '../../../../core/enums';
+} from '../../../../core/bacnet/enums';
 
 import {
     ApiError,
@@ -14,14 +14,15 @@ import {
 import {
     IBACnetObjectProperty,
     IBACnetTypeStatusFlags,
-    IEDEUnit,
-} from '../../../../core/interfaces';
+} from '../../../../core/bacnet/interfaces';
+
+import { IEDEUnit } from '../../../../core/interfaces';
 
 import { BinaryInputMetadata } from './binary-input.metadata';
 
 import { BinaryUnit } from '../../binary/binary.unit';
 
-import * as BACnetTypes from '../../../../core/types';
+import * as BACnetTypes from '../../../../core/bacnet/types';
 
 export class BinaryInputUnit extends BinaryUnit {
     public readonly className: string = 'BinaryInputUnit';

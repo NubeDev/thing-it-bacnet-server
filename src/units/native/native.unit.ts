@@ -5,25 +5,24 @@ import {
     BACnetPropertyId,
     BACnetUnitDataFlow,
     BACnetUnitFamily,
-} from '../../core/enums';
+} from '../../core/bacnet/enums';
 
 import {
     IBACnetObjectProperty,
     IBACnetTypeObjectId,
-    IEDEUnit,
-} from '../../core/interfaces';
+} from '../../core/bacnet/interfaces';
+
+import { IEDEUnit } from '../../core/interfaces';
 
 import { NativeMetadata } from './native.metadata';
 import { UnitStorage } from '../unit.storage';
 
 import { MetainfoMiddleUnit } from './middles/metainfo/metainfo.middle';
 
-import * as BACnetTypes from '../../core/types';
+import * as BACnetTypes from '../../core/bacnet/types';
 
-import {
-    logger,
-    TyperUtil,
-} from '../../core/utils';
+import { logger } from '../../core/utils';
+import { TyperUtil } from '../../core/bacnet/utils';
 
 export class NativeUnit {
     public readonly className: string = 'NativeUnit';

@@ -2,11 +2,11 @@ import * as dgram from 'dgram';
 
 import * as Bluebird from 'bluebird';
 
-import { blvc } from '../layers/blvc.layer';
+import { blvc } from '../bacnet/layers';
 
 import { logger } from '../utils';
 
-import { IBLVCLayer, INPDULayer, IAPDULayer } from '../interfaces';
+import { IBLVCLayer, INPDULayer, IAPDULayer } from '../bacnet/interfaces';
 
 export class InputSocket {
     public readonly className: string = 'InputSocket';

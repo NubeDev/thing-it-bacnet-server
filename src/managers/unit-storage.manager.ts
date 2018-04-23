@@ -2,44 +2,27 @@ import * as _ from 'lodash';
 import * as Bluebird from 'bluebird';
 import { Observable } from 'rxjs';
 
-import {
-    IEDEUnit,
-    IBACnetObjectProperty,
-} from '../core/interfaces';
+import { IEDEUnit } from '../core/interfaces';
 
-import {
-    logger,
-} from '../core/utils';
+import { IBACnetObjectProperty } from '../core/bacnet/interfaces';
+
+import { logger } from '../core/utils';
 
 import {
     BACnetObjectType,
     BACnetPropertyId,
     BACnetUnitAbbr,
-} from '../core/enums';
+} from '../core/bacnet/enums';
 
-import {
-    BACnetObjectId,
-} from '../core/types';
+import { BACnetObjectId } from '../core/bacnet/types';
 
-import {
-    ApiError,
-} from '../core/errors';
+import { ApiError } from '../core/errors';
 
-import {
-    NativeModule,
-} from '../units/native/native.module';
+import { NativeModule } from '../units/native/native.module';
+import { NativeUnit } from '../units/native/native.unit';
 
-import {
-    NativeUnit,
-} from '../units/native/native.unit';
-
-import {
-    CustomModule,
-} from '../units/custom/custom.module';
-
-import {
-    CustomUnit,
-} from '../units/custom/custom.unit';
+import { CustomModule } from '../units/custom/custom.module';
+import { CustomUnit } from '../units/custom/custom.unit';
 
 type NativeUnitToken = string;
 type CustomUnitToken = string;

@@ -6,7 +6,7 @@ import {
     BACnetEventState,
     BACnetPolarity,
     BACnetUnitDataFlow,
-} from '../../../../core/enums';
+} from '../../../../core/bacnet/enums';
 
 import {
     ApiError,
@@ -15,15 +15,16 @@ import {
 import {
     IBACnetObjectProperty,
     IBACnetTypeStatusFlags,
-    IEDEUnit,
-} from '../../../../core/interfaces';
+} from '../../../../core/bacnet/interfaces';
+
+import { IEDEUnit } from '../../../../core/interfaces';
 
 import { BinaryOutputMetadata } from './binary-output.metadata';
 
 import { BinaryUnit } from '../binary.unit';
 import { CommandableMiddleUnit } from '../../middles/commandable/commandable.middle';
 
-import * as BACnetTypes from '../../../../core/types';
+import * as BACnetTypes from '../../../../core/bacnet/types';
 
 export class BinaryOutputUnit extends BinaryUnit {
     public readonly className: string = 'BinaryOutputUnit';

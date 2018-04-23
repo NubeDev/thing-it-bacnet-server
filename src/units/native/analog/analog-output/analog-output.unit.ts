@@ -3,7 +3,7 @@ import * as _ from 'lodash';
 import {
     BACnetPropertyId,
     BACnetUnitDataFlow,
-} from '../../../../core/enums';
+} from '../../../../core/bacnet/enums';
 
 import {
     ApiError,
@@ -11,8 +11,9 @@ import {
 
 import {
     IBACnetObjectProperty,
-    IEDEUnit,
-} from '../../../../core/interfaces';
+} from '../../../../core/bacnet/interfaces';
+
+import { IEDEUnit } from '../../../../core/interfaces';
 
 import { AnalogOutputMetadata } from './analog-output.metadata';
 import { CommandableMiddleUnit } from '../../middles/commandable/commandable.middle';

@@ -2,13 +2,13 @@ import * as Bluebird from 'bluebird';
 
 import {
     BACnetPropertyId,
-} from '../core/enums';
+} from '../core/bacnet/enums';
 
 import { InputSocket, OutputSocket, ServiceSocket } from '../core/sockets';
 
 import { UnitStorageManager } from '../managers/unit-storage.manager';
 
-import { unconfirmedReqService, simpleACKService } from './bacnet';
+import { unconfirmedReqService, simpleACKService } from '../core/bacnet/services';
 
 export class UnitUnconfirmedReqService {
     /**
@@ -26,10 +26,11 @@ export class UnitUnconfirmedReqService {
         const devObjId = device.storage.getProperty(BACnetPropertyId.objectIdentifier);
         const vendorId = device.storage.getProperty(BACnetPropertyId.vendorIdentifier);
 
-        unconfirmedReqService.iAm({
+        const msgIAm = unconfirmedReqService.iAm({
             objId: devObjId,
             vendorId: vendorId,
-        }, outputSoc);
+        });
+        outputSoc.send(msgIAm, `Unconfirmed Request - iAm`);
 
         return Bluebird.resolve();
     }

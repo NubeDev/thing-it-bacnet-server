@@ -4,7 +4,7 @@ import { Subject, BehaviorSubject, Observable } from 'rxjs';
 import {
     BACnetPropertyId,
     BACnetUnitDataFlow,
-} from '../core/enums';
+} from '../core/bacnet/enums';
 
 import {
     ApiError,
@@ -12,15 +12,12 @@ import {
 
 import {
     IBACnetObjectProperty,
-    IBACnetTypeObjectId,
-    IEDEUnit,
-} from '../core/interfaces';
+} from '../core/bacnet/interfaces';
 
-import * as BACnetTypes from '../core/types';
+import * as BACnetTypes from '../core/bacnet/types';
 
 import {
     logger,
-    TyperUtil,
 } from '../core/utils';
 
 type TSjHandler = (notif: IBACnetObjectProperty) => void;

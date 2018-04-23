@@ -2,7 +2,7 @@ import * as _ from 'lodash';
 
 import {
     BACnetPropertyId,
-} from '../../../../core/enums';
+} from '../../../../core/bacnet/enums';
 
 import {
     ApiError,
@@ -10,8 +10,9 @@ import {
 
 import {
     IBACnetObjectProperty,
-    IEDEUnit,
-} from '../../../../core/interfaces';
+} from '../../../../core/bacnet/interfaces';
+
+import { IEDEUnit } from '../../../../core/interfaces';
 
 import { MultiStateValueMetadata } from './multi-state-value.metadata';
 

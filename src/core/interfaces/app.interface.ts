@@ -1,4 +1,9 @@
 
+export interface IBACnetAddressInfo {
+    address: string;
+    port: number;
+}
+
 /*
  * Configuration
  */

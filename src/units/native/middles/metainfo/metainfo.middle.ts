@@ -3,10 +3,13 @@ import * as _ from 'lodash';
 import {
     BACnetPropertyId,
     BACnetUnitDataFlow,
-} from '../../../../core/enums';
+} from '../../../../core/bacnet/enums';
 
 import {
     IBACnetObjectProperty,
+} from '../../../../core/bacnet/interfaces';
+
+import {
     IEDEUnit,
 } from '../../../../core/interfaces';
 
@@ -14,7 +17,7 @@ import { MetainfoMiddleMetadata } from './metainfo.metadata';
 
 import { MiddleUnit } from '../middle.unit';
 
-import * as BACnetTypes from '../../../../core/types';
+import * as BACnetTypes from '../../../../core/bacnet/types';
 
 export class MetainfoMiddleUnit extends MiddleUnit {
     public readonly className: string = 'MetainfoMiddleUnit';

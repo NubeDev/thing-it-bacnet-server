@@ -5,7 +5,7 @@ import {
     BACnetBinaryPV,
     BACnetEventState,
     BACnetPolarity,
-} from '../../../core/enums';
+} from '../../../core/bacnet/enums';
 
 import {
     ApiError,
@@ -14,12 +14,15 @@ import {
 import {
     IBACnetObjectProperty,
     IBACnetTypeStatusFlags,
+} from '../../../core/bacnet/interfaces';
+
+import {
     IEDEUnit,
 } from '../../../core/interfaces';
 
 import { UnitStorage } from '../../unit.storage';
 
-import * as BACnetTypes from '../../../core/types';
+import * as BACnetTypes from '../../../core/bacnet/types';
 
 export class MiddleUnit {
     public readonly className: string = 'MiddleUnit';
