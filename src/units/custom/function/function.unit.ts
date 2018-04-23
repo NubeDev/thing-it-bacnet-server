@@ -8,15 +8,12 @@ import {
 
 import {
     ICustomFunction,
-} from '../../../core/bacnet/interfaces';
-
-import { UnitStorage } from '../../unit.storage';
-import { FunctionMetadata } from './function.metadata';
+} from '../../../core/interfaces';
 
 import * as BACnetTypes from '../../../core/bacnet/types';
 
+import { FunctionMetadata } from './function.metadata';
 import { CustomUnit } from '../custom.unit';
-
 import { NativeUnit } from '../../native/native.unit';
 
 import * as PRNG from '../../../core/prng';

@@ -1,6 +1,6 @@
 import { BACnetUnitAbbr} from '../../../core/bacnet/enums';
 
-import { ICustomMetadata } from '../../../core/bacnet/interfaces';
+import { ICustomMetadata } from '../../../core/interfaces';
 
 export const NoopMetadata: ICustomMetadata[] = [
     {

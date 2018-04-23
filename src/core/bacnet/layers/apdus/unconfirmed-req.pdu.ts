@@ -25,10 +25,10 @@ import {
 } from '../../enums';
 
 import {
-    IUnconfirmReq,
-    IUnconfirmReqIAm,
-    IUnconfirmReqCOVNotification,
-    IUnconfirmReqWhoIs,
+    IUnconfirmedReq,
+    IUnconfirmedReqIAm,
+    IUnconfirmedReqCOVNotification,
+    IUnconfirmedReqWhoIs,
     IBACnetTypeObjectId,
 } from '../../interfaces';
 
@@ -118,7 +118,7 @@ export class UnconfirmedReqPDU {
      * @param  {IUnconfirmReq} params - UnconfirmReq params
      * @return {BACnetWriterUtil}
      */
-    public writeReq (params: IUnconfirmReq): BACnetWriterUtil {
+    public writeReq (params: IUnconfirmedReq): BACnetWriterUtil {
         const writer = new BACnetWriterUtil();
 
         // Write Service Type
@@ -136,7 +136,7 @@ export class UnconfirmedReqPDU {
      * @param  {IUnconfirmReqWhoIs} params - whoIs params
      * @return {BACnetWriterUtil}
      */
-    public writeWhoIs (params: IUnconfirmReqWhoIs): BACnetWriterUtil {
+    public writeWhoIs (params: IUnconfirmedReqWhoIs): BACnetWriterUtil {
         const writer = new BACnetWriterUtil();
 
         // Write Service choice
@@ -152,7 +152,7 @@ export class UnconfirmedReqPDU {
      * @param  {IUnconfirmReqIAm} params - iAm params
      * @return {BACnetWriterUtil}
      */
-    public writeIAm (params: IUnconfirmReqIAm): BACnetWriterUtil {
+    public writeIAm (params: IUnconfirmedReqIAm): BACnetWriterUtil {
         const writer = new BACnetWriterUtil();
 
         // Write Service choice
@@ -190,7 +190,7 @@ export class UnconfirmedReqPDU {
      * @param  {IUnconfirmReqCOVNotification} params - COVNotification params
      * @return {BACnetWriterUtil}
      */
-    public writeCOVNotification (params: IUnconfirmReqCOVNotification): BACnetWriterUtil {
+    public writeCOVNotification (params: IUnconfirmedReqCOVNotification): BACnetWriterUtil {
         const writer = new BACnetWriterUtil();
 
         // Write Service choice

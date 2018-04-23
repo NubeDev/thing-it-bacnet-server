@@ -1,5 +1,3 @@
-import * as Bluebird from 'bluebird';
-
 import {
     BLVCFunction,
 } from '../enums';

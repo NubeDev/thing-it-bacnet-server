@@ -13,7 +13,7 @@ import {
     ICustomFunction,
     ICustomFunctionConfig,
     ICustomMetadata,
-} from '../../core/bacnet/interfaces';
+} from '../../core/interfaces';
 
 import { IEDEUnit } from '../../core/interfaces';
 

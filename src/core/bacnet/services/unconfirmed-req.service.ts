@@ -1,5 +1,3 @@
-import * as Bluebird from 'bluebird';
-
 import {
     BLVCFunction,
 } from '../enums';
@@ -10,9 +8,9 @@ import { blvc, npdu } from '../layers';
 import { BACnetWriterUtil } from '../utils';
 
 import {
-    IServiceUnconfirmReqCOVNotification,
-    IServiceUnconfirmReqWhoIs,
-    IServiceUnconfirmReqIAm,
+    IServiceUnconfirmedReqCOVNotification,
+    IServiceUnconfirmedReqWhoIs,
+    IServiceUnconfirmedReqIAm,
 } from '../interfaces';
 
 export class UnconfirmedReqService {
@@ -25,7 +23,7 @@ export class UnconfirmedReqService {
      * @param  {OutputSocket} outputSoc - output socket
      * @return {type}
      */
-    public whoIs (opts: IServiceUnconfirmReqWhoIs) {
+    public whoIs (opts: IServiceUnconfirmedReqWhoIs) {
         // Generate APDU writer
         const writerUnconfirmReq = unconfirmedReqPDU.writeReq(opts);
         const writerWhoIs = unconfirmedReqPDU.writeWhoIs(opts);
@@ -62,7 +60,7 @@ export class UnconfirmedReqService {
      * @param  {OutputSocket} outputSoc - output socket
      * @return {type}
      */
-    public iAm (opts: IServiceUnconfirmReqIAm) {
+    public iAm (opts: IServiceUnconfirmedReqIAm) {
         // Generate APDU writer
         const writerUnconfirmReq = unconfirmedReqPDU.writeReq(opts);
         const writerIAm = unconfirmedReqPDU.writeIAm(opts);
@@ -99,7 +97,7 @@ export class UnconfirmedReqService {
      * @param  {ResponseSocket} resp - response object (socket)
      * @return {type}
      */
-    public covNotification (opts: IServiceUnconfirmReqCOVNotification) {
+    public covNotification (opts: IServiceUnconfirmedReqCOVNotification) {
         // Generate APDU writer
         const writerUnconfirmReq = unconfirmedReqPDU.writeReq(opts);
         const writerCOVNotification = unconfirmedReqPDU.writeCOVNotification(opts);

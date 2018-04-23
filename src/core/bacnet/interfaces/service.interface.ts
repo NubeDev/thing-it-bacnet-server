@@ -11,34 +11,34 @@ import {
 /**
  * Unconfirmed Request
  */
- export interface IUnconfirmReq {
- }
- export interface IUnconfirmReqWhoIs {
- }
- export interface IUnconfirmReqWhoIsOptions
-     extends IUnconfirmReq, IUnconfirmReqWhoIs {
- }
- export interface IUnconfirmReqIAm {
-     objId: IBACnetObjectProperty;
-     vendorId: IBACnetObjectProperty;
- }
- export interface IUnconfirmReqCOVNotification {
-     processId: BACnetUnsignedInteger;
-     devObjId: BACnetObjectId;
-     unitObjId: BACnetObjectId;
-     reportedProps: IBACnetObjectProperty[];
- }
+export interface IUnconfirmedReq {
+}
+export interface IUnconfirmedReqWhoIs {
+}
+export interface IUnconfirmedReqWhoIsOptions
+    extends IUnconfirmedReq, IUnconfirmedReqWhoIs {
+}
+export interface IUnconfirmedReqIAm {
+    objId: IBACnetObjectProperty;
+    vendorId: IBACnetObjectProperty;
+}
+export interface IUnconfirmedReqCOVNotification {
+    processId: BACnetUnsignedInteger;
+    devObjId: BACnetObjectId;
+    unitObjId: BACnetObjectId;
+    reportedProps: IBACnetObjectProperty[];
+}
 
+export interface IServiceUnconfirmedReqCOVNotification
+    extends IUnconfirmedReq, IUnconfirmedReqCOVNotification {
+}
+export interface IServiceUnconfirmedReqWhoIs
+    extends IUnconfirmedReq, IUnconfirmedReqWhoIs {
+}
+export interface IServiceUnconfirmedReqIAm
+    extends IUnconfirmedReq, IUnconfirmedReqIAm {
+}
 
-export interface IServiceUnconfirmReqCOVNotification
-    extends IUnconfirmReq, IUnconfirmReqCOVNotification {
-}
-export interface IServiceUnconfirmReqWhoIs
-    extends IUnconfirmReq, IUnconfirmReqWhoIs {
-}
-export interface IServiceUnconfirmReqIAm
-    extends IUnconfirmReq, IUnconfirmReqIAm {
-}
 
 /**
  * Confirmed Request
