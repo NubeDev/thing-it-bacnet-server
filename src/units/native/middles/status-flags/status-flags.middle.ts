@@ -1,22 +1,23 @@
 import * as _ from 'lodash';
 
 import {
-    BACnetPropIds,
+    BACnetPropertyId,
     BACnetEventState,
     BACnetUnitDataFlow,
-} from '../../../../core/enums';
+} from '../../../../core/bacnet/enums';
 
 import {
     IBACnetObjectProperty,
     IBACnetTypeStatusFlags,
-    IEDEUnit,
-} from '../../../../core/interfaces';
+} from '../../../../core/bacnet/interfaces';
+
+import { IEDEUnit } from '../../../../core/interfaces';
 
 import { StatusFlagsMiddleMetadata } from './status-flags.metadata';
 
 import { MiddleUnit } from '../middle.unit';
 
-import * as BACnetTypes from '../../../../core/types';
+import * as BACnetTypes from '../../../../core/bacnet/types';
 
 export class StatusFlagsMiddleUnit extends MiddleUnit {
     public readonly className: string = 'StatusFlagsMiddleUnit';
@@ -40,16 +41,16 @@ export class StatusFlagsMiddleUnit extends MiddleUnit {
      * @return {void}
      */
     public sjHandler (): void {
-        this.storage.setFlowHandler(BACnetUnitDataFlow.Set, BACnetPropIds.eventState, (notif) => {
+        this.storage.setFlowHandler(BACnetUnitDataFlow.Set, BACnetPropertyId.eventState, (notif) => {
             this.shSetEventState(notif);
         });
-        this.storage.setFlowHandler(BACnetUnitDataFlow.Set, BACnetPropIds.outOfService, (notif) => {
+        this.storage.setFlowHandler(BACnetUnitDataFlow.Set, BACnetPropertyId.outOfService, (notif) => {
             this.shSetOutOfService(notif);
         });
-        this.storage.setFlowHandler(BACnetUnitDataFlow.Set, BACnetPropIds.reliability, (notif) => {
+        this.storage.setFlowHandler(BACnetUnitDataFlow.Set, BACnetPropertyId.reliability, (notif) => {
             this.shSetReliability(notif);
         });
-        this.storage.setFlowHandler(BACnetUnitDataFlow.Set, BACnetPropIds.statusFlags, (notif) => {
+        this.storage.setFlowHandler(BACnetUnitDataFlow.Set, BACnetPropertyId.statusFlags, (notif) => {
             this.shSetStatusFlags(notif);
         });
     }
@@ -64,7 +65,7 @@ export class StatusFlagsMiddleUnit extends MiddleUnit {
     private shSetEventState (notif: IBACnetObjectProperty): void {
         this.storage.updateProperty(notif);
 
-        const statusFlagsProp = this.storage.getProperty(BACnetPropIds.statusFlags);
+        const statusFlagsProp = this.storage.getProperty(BACnetPropertyId.statusFlags);
         const statusFlags = statusFlagsProp.payload as BACnetTypes.BACnetStatusFlags;
 
         const eventState = notif.payload as BACnetTypes.BACnetEnumerated;
@@ -80,7 +81,7 @@ export class StatusFlagsMiddleUnit extends MiddleUnit {
         const newStatusFlags = new BACnetTypes.BACnetStatusFlags(newStatusFlagsValue);
 
         this.storage.setProperty({
-            id: BACnetPropIds.statusFlags,
+            id: BACnetPropertyId.statusFlags,
             payload: newStatusFlags,
         });
     }
@@ -95,7 +96,7 @@ export class StatusFlagsMiddleUnit extends MiddleUnit {
     private shSetOutOfService (notif: IBACnetObjectProperty): void {
         this.storage.updateProperty(notif);
 
-        const statusFlagsProp = this.storage.getProperty(BACnetPropIds.statusFlags);
+        const statusFlagsProp = this.storage.getProperty(BACnetPropertyId.statusFlags);
         const statusFlags = statusFlagsProp.payload as BACnetTypes.BACnetStatusFlags;
 
         const outOfService = notif.payload as BACnetTypes.BACnetBoolean;
@@ -106,7 +107,7 @@ export class StatusFlagsMiddleUnit extends MiddleUnit {
         const newStatusFlags = new BACnetTypes.BACnetStatusFlags(newStatusFlagsValue);
 
         this.storage.setProperty({
-            id: BACnetPropIds.statusFlags,
+            id: BACnetPropertyId.statusFlags,
             payload: newStatusFlags,
         });
     }
@@ -121,7 +122,7 @@ export class StatusFlagsMiddleUnit extends MiddleUnit {
     private shSetReliability (notif: IBACnetObjectProperty): void {
         this.storage.updateProperty(notif);
 
-        const statusFlagsProp = this.storage.getProperty(BACnetPropIds.statusFlags);
+        const statusFlagsProp = this.storage.getProperty(BACnetPropertyId.statusFlags);
         const statusFlags = statusFlagsProp.payload as BACnetTypes.BACnetStatusFlags;
 
         const reliability = notif.payload as BACnetTypes.BACnetEnumerated;
@@ -132,7 +133,7 @@ export class StatusFlagsMiddleUnit extends MiddleUnit {
         const newStatusFlags = new BACnetTypes.BACnetStatusFlags(newStatusFlagsValue);
 
         this.storage.setProperty({
-            id: BACnetPropIds.statusFlags,
+            id: BACnetPropertyId.statusFlags,
             payload: newStatusFlags,
         });
     }
@@ -146,7 +147,7 @@ export class StatusFlagsMiddleUnit extends MiddleUnit {
      * @return {void}
      */
     private shSetStatusFlags (notif: IBACnetObjectProperty): void {
-        const statusFlagsProp = this.storage.getProperty(BACnetPropIds.statusFlags);
+        const statusFlagsProp = this.storage.getProperty(BACnetPropertyId.statusFlags);
         const statusFlags = statusFlagsProp.payload as BACnetTypes.BACnetStatusFlags;
 
         const overridden = statusFlags.value.fault
@@ -164,7 +165,7 @@ export class StatusFlagsMiddleUnit extends MiddleUnit {
         const newStatusFlags = new BACnetTypes.BACnetStatusFlags(newStatusFlagsValue);
 
         this.storage.updateProperty({
-            id: BACnetPropIds.statusFlags,
+            id: BACnetPropertyId.statusFlags,
             payload: newStatusFlags,
         });
     }

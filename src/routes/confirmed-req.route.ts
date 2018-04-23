@@ -1,12 +1,12 @@
 import { logger } from '../core/utils';
 
 import {
-    IConfirmedReqLayer,
-} from '../core/interfaces';
+    ILayerConfirmedReq,
+} from '../core/bacnet/interfaces';
 
 import {
     BACnetConfirmedService,
-} from '../core/enums';
+} from '../core/bacnet/enums';
 
 import { unitConfirmedReqService } from '../services';
 
@@ -14,7 +14,7 @@ import { InputSocket, OutputSocket, ServiceSocket } from '../core/sockets';
 
 export function ConfirmedReqRouter (
         inputSoc: InputSocket, outputSoc: OutputSocket, serviceSocket: ServiceSocket) {
-        const apduMessage = inputSoc.apdu as IConfirmedReqLayer;
+        const apduMessage = inputSoc.apdu as ILayerConfirmedReq;
         const serviceChoice = apduMessage.serviceChoice;
 
     logger.debug(`MainRouter - Request Service: ${BACnetConfirmedService[serviceChoice]}`);

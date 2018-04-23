@@ -1,35 +1,32 @@
 import {
-    BACnetPropIds,
-    BACnetObjTypes,
-    BACnetPropTypes,
+    BACnetPropertyId,
+    BACnetObjectType,
     BACnetBinaryPV,
     BACnetPolarity,
-    BACnetEventState,
-    BACnetReliability,
-} from '../../../../core/enums';
+} from '../../../../core/bacnet/enums';
 
 import {
     IBACnetObjectProperty,
-} from '../../../../core/interfaces';
+} from '../../../../core/bacnet/interfaces';
 
-import * as BACnetTypes from '../../../../core/types';
+import * as BACnetTypes from '../../../../core/bacnet/types';
 
 export const BinaryOutputMetadata: IBACnetObjectProperty[] = [
     {
-        id: BACnetPropIds.objectType,
-        payload: new BACnetTypes.BACnetEnumerated(BACnetObjTypes.BinaryOutput),
+        id: BACnetPropertyId.objectType,
+        payload: new BACnetTypes.BACnetEnumerated(BACnetObjectType.BinaryOutput),
     },
 
     {
-        id: BACnetPropIds.polarity,
+        id: BACnetPropertyId.polarity,
         payload: new BACnetTypes.BACnetEnumerated(BACnetPolarity.Normal),
     },
     {
-        id: BACnetPropIds.presentValue,
+        id: BACnetPropertyId.presentValue,
         payload: new BACnetTypes.BACnetEnumerated(BACnetBinaryPV.Active),
     },
     {
-        id: BACnetPropIds.relinquishDefault,
+        id: BACnetPropertyId.relinquishDefault,
         payload: new BACnetTypes.BACnetEnumerated(BACnetBinaryPV.Active),
     },
 ];

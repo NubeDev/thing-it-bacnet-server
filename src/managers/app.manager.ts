@@ -3,9 +3,7 @@ import * as _ from 'lodash';
 import * as path from 'path';
 import { argv } from 'yargs';
 
-import { InputSocket, OutputSocket, Server } from '../core/sockets';
-
-import { unconfirmedReqService } from '../services';
+import { Server } from '../core/sockets';
 
 import { mainRouter } from '../routes';
 
@@ -15,7 +13,6 @@ import {
 
 import {
     IAppConfig,
-    IBACnetAddressInfo,
 } from '../core/interfaces';
 
 import {

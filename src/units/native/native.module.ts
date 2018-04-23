@@ -1,5 +1,5 @@
 import { AliasMap } from '../../core/alias';
-import { BACnetUnitAbbr } from '../../core/enums';
+import { BACnetUnitAbbr } from '../../core/bacnet/enums';
 
 import { NoopUnit } from './noop/noop.unit';
 import { DeviceUnit } from './device/device.unit';

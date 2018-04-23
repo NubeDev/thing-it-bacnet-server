@@ -1,12 +1,12 @@
 import * as _ from 'lodash';
 
 import {
-    BACnetPropIds,
+    BACnetPropertyId,
     BACnetBinaryPV,
     BACnetEventState,
     BACnetPolarity,
     BACnetUnitDataFlow,
-} from '../../../../core/enums';
+} from '../../../../core/bacnet/enums';
 
 import {
     ApiError,
@@ -15,15 +15,16 @@ import {
 import {
     IBACnetObjectProperty,
     IBACnetTypeStatusFlags,
-    IEDEUnit,
-} from '../../../../core/interfaces';
+} from '../../../../core/bacnet/interfaces';
+
+import { IEDEUnit } from '../../../../core/interfaces';
 
 import { BinaryValueMetadata } from './binary-value.metadata';
 
 import { BinaryUnit } from '../binary.unit';
 import { CommandableMiddleUnit } from '../../middles/commandable/commandable.middle';
 
-import * as BACnetTypes from '../../../../core/types';
+import * as BACnetTypes from '../../../../core/bacnet/types';
 
 export class BinaryValueUnit extends BinaryUnit {
     public readonly className: string = 'BinaryValueUnit';
@@ -46,7 +47,7 @@ export class BinaryValueUnit extends BinaryUnit {
     public sjHandler (): void {
         super.sjHandler();
 
-        this.storage.setFlowHandler(BACnetUnitDataFlow.Update, BACnetPropIds.presentValue, (notif) => {
+        this.storage.setFlowHandler(BACnetUnitDataFlow.Update, BACnetPropertyId.presentValue, (notif) => {
             this.shUpdatePresentValue(notif);
         });
     }

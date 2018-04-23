@@ -1,18 +1,18 @@
 import {
-    BACnetPropIds,
-    BACnetObjTypes,
+    BACnetPropertyId,
+    BACnetObjectType,
     BACnetPropTypes,
-} from '../../../../core/enums';
+} from '../../../../core/bacnet/enums';
 
 import {
     IBACnetObjectProperty,
-} from '../../../../core/interfaces';
+} from '../../../../core/bacnet/interfaces';
 
-import * as BACnetTypes from '../../../../core/types';
+import * as BACnetTypes from '../../../../core/bacnet/types';
 
 export const MultiStateOutputMetadata: IBACnetObjectProperty[] = [
     {
-        id: BACnetPropIds.objectType,
-        payload: new BACnetTypes.BACnetEnumerated(BACnetObjTypes.MultiStateOutput),
+        id: BACnetPropertyId.objectType,
+        payload: new BACnetTypes.BACnetEnumerated(BACnetObjectType.MultiStateOutput),
     },
 ];

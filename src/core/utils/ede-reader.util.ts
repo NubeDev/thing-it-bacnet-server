@@ -13,7 +13,11 @@ import {
 
 import {
     OffsetUtil,
-} from './offset.util';
+} from '../bacnet/utils';
+
+import {
+    ConverterUtil,
+} from '../utils';
 
 export class EDEReaderUtil {
     private csvTable: CSVTable;
@@ -77,96 +81,74 @@ export class EDEReaderUtil {
         const offset = new OffsetUtil(0);
         const dataPointRow = this.csvTable.getRowByIndex(index);
         // <Device Instance>_<Device Name>_<Object Name>
-        const keyname =
-            dataPointRow.getCellValue(offset.inc()) as string;
+        const keyname = dataPointRow.getCellValue(offset.inc());
         // BACnet Master Device Instance
-        const deviceInst =
-            dataPointRow.getCellValue(offset.inc()) as number;
+        const deviceInst = dataPointRow.getCellValue(offset.inc());
         // BACnet Object Name
-        const objName =
-            dataPointRow.getCellValue(offset.inc()) as string;
+        const objName = dataPointRow.getCellValue(offset.inc());
         // BACnet Object Type
-        const objType =
-            dataPointRow.getCellValue(offset.inc()) as number;
+        const objType = dataPointRow.getCellValue(offset.inc());
         // BACnet Object Instance
-        const objInst =
-            dataPointRow.getCellValue(offset.inc()) as number;
+        const objInst = dataPointRow.getCellValue(offset.inc());
         // BACnet Object Description
-        const description =
-            dataPointRow.getCellValue(offset.inc()) as string;
+        const description = dataPointRow.getCellValue(offset.inc());
+        // BACnet default value for "Present Value" property
+        const defPresentValue = dataPointRow.getCellValue(offset.inc());
+        // BACnet min value for "Present Value" property
+        const minPresentValue = dataPointRow.getCellValue(offset.inc());
+        // BACnet max value for "Present Value" property
+        const maxPresentValue = dataPointRow.getCellValue(offset.inc());
+        // BACnet object has or not commandable properties
+        const commandable = dataPointRow.getCellValue(offset.inc());
+        // BACnet object support COV notification
+        const supportCOV = dataPointRow.getCellValue(offset.inc());
 
-        const defPresentValue =
-            dataPointRow.getCellValue(offset.inc()) as number;
+        const hiLimit = dataPointRow.getCellValue(offset.inc());
 
-        const minPresentValue =
-            dataPointRow.getCellValue(offset.inc()) as number;
+        const liLimit = dataPointRow.getCellValue(offset.inc());
+        // ID in the "State Text" array (property)
+        const stateTextRef = dataPointRow.getCellValue(offset.inc());
+        // Measurement unit of the "Present Value" property
+        const unitCode = dataPointRow.getCellValue(offset.inc());
 
-        const maxPresentValue =
-            dataPointRow.getCellValue(offset.inc()) as number;
-
-        const commandable =
-            dataPointRow.getCellValue(offset.inc()) as string;
-
-        const supportCOV =
-            dataPointRow.getCellValue(offset.inc()) as string;
-
-        const hiLimit =
-            dataPointRow.getCellValue(offset.inc()) as number;
-
-        const liLimit =
-            dataPointRow.getCellValue(offset.inc()) as number;
-
-        const stateTextRef =
-            dataPointRow.getCellValue(offset.inc()) as number;
-
-        const unitCode =
-            dataPointRow.getCellValue(offset.inc()) as number;
-
-        const vendorAddr =
-            dataPointRow.getCellValue(offset.inc()) as string;
-
-        const custUnitType =
-            dataPointRow.getCellValue(offset.inc()) as string;
-
-        const custUnitId =
-            dataPointRow.getCellValue(offset.inc()) as number;
-
-        const custUnitFn =
-            dataPointRow.getCellValue(offset.inc()) as string;
-
-        const custUnitMax =
-            dataPointRow.getCellValue(offset.inc()) as number;
-
-        const custUnitMin =
-            dataPointRow.getCellValue(offset.inc()) as number;
-
-        const custUnitFreq =
-            dataPointRow.getCellValue(offset.inc()) as number;
+        const vendorAddr = dataPointRow.getCellValue(offset.inc());
+        // Type of the custom unit
+        const custUnitType = dataPointRow.getCellValue(offset.inc());
+        // ID of the custom unit
+        const custUnitId = dataPointRow.getCellValue(offset.inc());
+        // Function of the BACnet object in custom unit
+        const custUnitFn = dataPointRow.getCellValue(offset.inc());
+        // Max value for simulation logic
+        const custUnitMax = dataPointRow.getCellValue(offset.inc());
+        // Min value for simulation logic
+        const custUnitMin = dataPointRow.getCellValue(offset.inc());
+        // Frequency of changes of the value for simulation logic
+        const custUnitFreq = dataPointRow.getCellValue(offset.inc());
 
         return {
             keyname: keyname,
-            deviceInst: deviceInst,
+            deviceInst: ConverterUtil.stringToNumber(deviceInst),
             objName: objName,
-            objType: objType,
-            objInst: objInst,
+            objType: ConverterUtil.stringToNumber(objType),
+            objInst: ConverterUtil.stringToNumber(objInst),
             description: description,
-            defPresentValue: defPresentValue,
-            minPresentValue: minPresentValue,
-            maxPresentValue: maxPresentValue,
+            defPresentValue: ConverterUtil.stringToNumber(defPresentValue),
+            minPresentValue: ConverterUtil.stringToNumber(minPresentValue),
+            maxPresentValue: ConverterUtil.stringToNumber(maxPresentValue),
             commandable: commandable,
             supportCOV: supportCOV,
-            hiLimit: hiLimit,
-            liLimit: liLimit,
-            stateTextRef: stateTextRef,
-            unitCode: unitCode,
+            hiLimit: ConverterUtil.stringToNumber(hiLimit),
+            liLimit: ConverterUtil.stringToNumber(liLimit),
+            stateTextRef: ConverterUtil.stringToNumber(stateTextRef),
+            unitCode: ConverterUtil.stringToNumber(unitCode),
             vendorAddr: vendorAddr,
 
             custUnitType: custUnitType,
-            custUnitId: custUnitId,
+            custUnitId: ConverterUtil.stringToNumber(custUnitId),
             custUnitFn: custUnitFn,
-            custUnitMax: custUnitMax,
-            custUnitMin: custUnitMin,
-            custUnitFreq: custUnitFreq,
+            custUnitMax: ConverterUtil.stringToNumber(custUnitMax),
+            custUnitMin: ConverterUtil.stringToNumber(custUnitMin),
+            custUnitFreq: ConverterUtil.stringToNumber(custUnitFreq),
         };
     }
 

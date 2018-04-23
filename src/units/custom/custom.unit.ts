@@ -2,15 +2,20 @@ import * as _ from 'lodash';
 import { Subject, BehaviorSubject, Observable } from 'rxjs';
 
 import {
-    BACnetPropIds,
-} from '../../core/enums';
+    ApiError,
+} from '../../core/errors';
 
 import {
-    IEDEUnit,
+    BACnetPropertyId,
+} from '../../core/bacnet/enums';
+
+import {
     ICustomFunction,
     ICustomFunctionConfig,
     ICustomMetadata,
 } from '../../core/interfaces';
+
+import { IEDEUnit } from '../../core/interfaces';
 
 import { AliasMap } from '../../core/alias/alias.map';
 
@@ -34,6 +39,10 @@ export class CustomUnit {
      */
     public setUnitFn (fn: string, unit: NativeUnit, edeUnit: IEDEUnit): void {
         const custFunc = this.storage.get(fn);
+
+        if (!_.isNil(custFunc.unit)) {
+            throw new ApiError(`${this.className} - setUnitFn: Unit is already in use!`);
+        }
 
         const newConfig = this.getConfigWithEDE(custFunc.config, edeUnit);
 

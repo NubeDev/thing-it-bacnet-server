@@ -1,12 +1,12 @@
 import { logger } from '../core/utils';
 
 import {
-    IUnconfirmedReqLayer,
-} from '../core/interfaces';
+    ILayerUnconfirmedReq,
+} from '../core/bacnet/interfaces';
 
 import {
     BACnetUnconfirmedService,
-} from '../core/enums';
+} from '../core/bacnet/enums';
 
 import { unitUnconfirmedReqService } from '../services';
 
@@ -14,7 +14,7 @@ import { InputSocket, OutputSocket, ServiceSocket } from '../core/sockets';
 
 export function UnconfirmedReqRouter (
         inputSoc: InputSocket, outputSoc: OutputSocket, serviceSocket: ServiceSocket) {
-    const apduMessage = inputSoc.apdu as IUnconfirmedReqLayer;
+    const apduMessage = inputSoc.apdu as ILayerUnconfirmedReq;
     const serviceChoice = apduMessage.serviceChoice;
 
     logger.debug(`MainRouter - Request Service: ${BACnetUnconfirmedService[serviceChoice]}`);

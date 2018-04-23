@@ -1,26 +1,26 @@
 import {
-    BACnetPropIds,
-    BACnetObjTypes,
+    BACnetPropertyId,
+    BACnetObjectType,
     BACnetPropTypes,
-} from '../../../../core/enums';
+} from '../../../../core/bacnet/enums';
 
 import {
     IBACnetObjectProperty,
-} from '../../../../core/interfaces';
+} from '../../../../core/bacnet/interfaces';
 
-import * as BACnetTypes from '../../../../core/types';
+import * as BACnetTypes from '../../../../core/bacnet/types';
 
 export const CommandableMiddleMetadata: IBACnetObjectProperty[] = [
     {
-        id: BACnetPropIds.presentValue,
+        id: BACnetPropertyId.presentValue,
         payload: new BACnetTypes.BACnetNull(),
     },
     {
-        id: BACnetPropIds.relinquishDefault,
+        id: BACnetPropertyId.relinquishDefault,
         payload: new BACnetTypes.BACnetNull(),
     },
     {
-        id: BACnetPropIds.priorityArray,
+        id: BACnetPropertyId.priorityArray,
         payload: [
             new BACnetTypes.BACnetNull(), // #1
             new BACnetTypes.BACnetNull(), // #2
@@ -41,7 +41,7 @@ export const CommandableMiddleMetadata: IBACnetObjectProperty[] = [
         ],
     },
     {
-        id: BACnetPropIds.currentCommandPriority,
+        id: BACnetPropertyId.currentCommandPriority,
         payload: new BACnetTypes.BACnetNull(),
     },
 ];

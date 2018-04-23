@@ -1,31 +1,28 @@
 import {
-    BACnetPropIds,
-    BACnetObjTypes,
-    BACnetPropTypes,
+    BACnetPropertyId,
+    BACnetObjectType,
     BACnetBinaryPV,
     BACnetPolarity,
-    BACnetEventState,
-    BACnetReliability,
-} from '../../../../core/enums';
+} from '../../../../core/bacnet/enums';
 
 import {
     IBACnetObjectProperty,
-} from '../../../../core/interfaces';
+} from '../../../../core/bacnet/interfaces';
 
-import * as BACnetTypes from '../../../../core/types';
+import * as BACnetTypes from '../../../../core/bacnet/types';
 
 export const BinaryValueMetadata: IBACnetObjectProperty[] = [
     {
-        id: BACnetPropIds.objectType,
-        payload: new BACnetTypes.BACnetEnumerated(BACnetObjTypes.BinaryValue),
+        id: BACnetPropertyId.objectType,
+        payload: new BACnetTypes.BACnetEnumerated(BACnetObjectType.BinaryValue),
     },
 
     {
-        id: BACnetPropIds.presentValue,
+        id: BACnetPropertyId.presentValue,
         payload: new BACnetTypes.BACnetEnumerated(BACnetBinaryPV.Active),
     },
     {
-        id: BACnetPropIds.relinquishDefault,
+        id: BACnetPropertyId.relinquishDefault,
         payload: new BACnetTypes.BACnetEnumerated(BACnetBinaryPV.Active),
     },
 ];

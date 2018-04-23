@@ -7,7 +7,7 @@ export const CSVCellSeparators = [ CSVCellSeparatorMain, ',' ];
 
 export class CSVRow {
     private aliases: Map<string, number>;
-    private cells: Array<number|string>;
+    private cells: Array<string>;
 
     constructor (strRow: string = '') {
         this.aliases = new Map();
@@ -48,7 +48,7 @@ export class CSVRow {
      * @param  {number|string} cellValue - new valuse of cell
      * @return {CSVRow}
      */
-    public setCellValue (cellInst: number|string, cellValue: number|string): CSVRow {
+    public setCellValue (cellInst: number|string, cellValue: string): CSVRow {
         let cellNumber: number = _.isString(cellInst)
             ? this.aliases.get(cellInst)
             : cellInst;
@@ -57,9 +57,7 @@ export class CSVRow {
             throw new ApiError(`CSVRow - setValue: Cell "${cellInst}" is not exist!`);
         }
 
-        const newCellValue: number|string = _.isString(cellValue)
-            ? this.escapeString(cellValue)
-            : cellValue;
+        const newCellValue: string = this.escapeString(cellValue);
 
         this.cells[cellNumber] = newCellValue;
         return this;
@@ -72,7 +70,7 @@ export class CSVRow {
      * @param  {number|string} cellInst - cell ID of cell alias
      * @return {number|string}
      */
-    public getCellValue (cellInst: number|string): number|string {
+    public getCellValue (cellInst: number|string): string {
         let cellNumber: number = _.isString(cellInst)
             ? this.aliases.get(cellInst)
             : cellInst;
@@ -113,7 +111,7 @@ export class CSVRow {
         const cells = cells1.length > cells2.length ? cells1 : cells2;
 
         this.cells = cells;
-    };
+    }
 
     /**
      * CSVtoArray - parses the CSV row and creates an array of CSV cells by
@@ -144,45 +142,6 @@ export class CSVRow {
 
         return cells;
     }
-
-    /**
-     * fromString - parses the "Row" string (csv format) and creates an array
-     * of "value"s from parsed data.
-     *
-     * @param  {string} strRow - string in csv format (row)
-     * @return {void}
-     */
-    // public fromString (strRow: string): void {
-    //     if (!_.isString(strRow)) {
-    //         throw new ApiError(`CSVRow - fromString: Input string must have string type!`);
-    //     }
-    //
-    //     if (!strRow) {
-    //         this.cells = [];
-    //         return;
-    //     }
-    //
-    //     const varCells = _.map(CSVCellSeparators, (CSVCellSeparator) => {
-    //         return strRow.split(CSVCellSeparator);
-    //     });
-    //
-    //     let maxLen: number = 0;
-    //     let cells: string[] = null;
-    //     _.map(varCells, (varCell) => {
-    //         if (maxLen > varCell.length) {
-    //             return;
-    //         }
-    //         maxLen = varCell.length;
-    //         cells = varCell;
-    //     });
-    //
-    //     const formatedCells = _.map(cells, (cellStr) => {
-    //         const cellNum = parseFloat(cellStr);
-    //         return _.isFinite(cellNum) ? cellNum : cellStr.trim();
-    //     });
-    //
-    //     this.cells = formatedCells;
-    // }
 
     /**
      * toString - returns the string representation (csv format) of the row.

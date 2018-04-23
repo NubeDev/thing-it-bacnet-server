@@ -2,44 +2,27 @@ import * as _ from 'lodash';
 import * as Bluebird from 'bluebird';
 import { Observable } from 'rxjs';
 
-import {
-    IEDEUnit,
-    IBACnetObjectProperty,
-} from '../core/interfaces';
+import { IEDEUnit } from '../core/interfaces';
+
+import { IBACnetObjectProperty } from '../core/bacnet/interfaces';
+
+import { logger } from '../core/utils';
 
 import {
-    logger,
-} from '../core/utils';
-
-import {
-    BACnetObjTypes,
-    BACnetPropIds,
+    BACnetObjectType,
+    BACnetPropertyId,
     BACnetUnitAbbr,
-} from '../core/enums';
+} from '../core/bacnet/enums';
 
-import {
-    BACnetObjectId,
-} from '../core/types';
+import { BACnetObjectId } from '../core/bacnet/types';
 
-import {
-    ApiError,
-} from '../core/errors';
+import { ApiError } from '../core/errors';
 
-import {
-    NativeModule,
-} from '../units/native/native.module';
+import { NativeModule } from '../units/native/native.module';
+import { NativeUnit } from '../units/native/native.unit';
 
-import {
-    NativeUnit,
-} from '../units/native/native.unit';
-
-import {
-    CustomModule,
-} from '../units/custom/custom.module';
-
-import {
-    CustomUnit,
-} from '../units/custom/custom.unit';
+import { CustomModule } from '../units/custom/custom.module';
+import { CustomUnit } from '../units/custom/custom.unit';
 
 type NativeUnitToken = string;
 type CustomUnitToken = string;
@@ -76,7 +59,7 @@ export class UnitStorageManager {
             customUnit.startSimulation();
         });
 
-        const deviceToken = this.getUnitToken(BACnetObjTypes.Device, edeUnits[0].deviceInst);
+        const deviceToken = this.getUnitToken(BACnetObjectType.Device, edeUnits[0].deviceInst);
         const device = this.nativeUnits.get(deviceToken);
         this.device = device;
     }
@@ -90,7 +73,7 @@ export class UnitStorageManager {
      */
     private initNativeUnit (edeUnit: IEDEUnit): NativeUnit {
         // Get name of the native unit
-        let unitType = BACnetObjTypes[edeUnit.objType];
+        let unitType = BACnetObjectType[edeUnit.objType];
 
         if (!NativeModule.has(unitType)) {
             logger.warn(`${this.className} - initNativeUnit: "${unitType}" native unit is not exist,`,
@@ -156,7 +139,7 @@ export class UnitStorageManager {
 
         logger.info(`${this.className} - initCustomUnit: Use "${unitType} (${unitToken})" custom unit`);
 
-        let unit: CustomUnit = this.customUnits.get(unitType);
+        let unit: CustomUnit = this.customUnits.get(unitToken);
         if (!unit) {
             let UnitClass = CustomModule.get(unitType);
             unit = new UnitClass();
@@ -213,7 +196,7 @@ export class UnitStorageManager {
      * setUnitProperty - sets the value of the object property by property ID.
      *
      * @param  {IBACnetTypeObjectId} objId - object identifier
-     * @param  {BACnetPropIds} propId - property ID
+     * @param  {BACnetPropertyId} propId - property ID
      * @param  {} value - property value
      * @return {void}
      */
@@ -230,11 +213,11 @@ export class UnitStorageManager {
      * getUnitProperty - return the clone value of the object property by property ID.
      *
      * @param  {IBACnetTypeObjectId} objId - object identifier
-     * @param  {BACnetPropIds} propId - property ID
+     * @param  {BACnetPropertyId} propId - property ID
      * @return {IBACnetObjectProperty}
      */
     public getUnitProperty (objId: BACnetObjectId,
-            propId: BACnetPropIds): IBACnetObjectProperty {
+            propId: BACnetPropertyId): IBACnetObjectProperty {
         const unit = this.getUnit(objId);
         if (!unit) {
             return null;

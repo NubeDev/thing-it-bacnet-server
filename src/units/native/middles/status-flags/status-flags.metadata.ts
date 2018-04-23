@@ -1,34 +1,34 @@
 import {
-    BACnetPropIds,
-    BACnetObjTypes,
+    BACnetPropertyId,
+    BACnetObjectType,
     BACnetPropTypes,
     BACnetBinaryPV,
     BACnetPolarity,
     BACnetEventState,
     BACnetReliability,
-} from '../../../../core/enums';
+} from '../../../../core/bacnet/enums';
 
 import {
     IBACnetObjectProperty,
-} from '../../../../core/interfaces';
+} from '../../../../core/bacnet/interfaces';
 
-import * as BACnetTypes from '../../../../core/types';
+import * as BACnetTypes from '../../../../core/bacnet/types';
 
 export const StatusFlagsMiddleMetadata: IBACnetObjectProperty[] = [
     {
-        id: BACnetPropIds.outOfService,
+        id: BACnetPropertyId.outOfService,
         payload: new BACnetTypes.BACnetBoolean(false),
     },
     {
-        id: BACnetPropIds.reliability,
+        id: BACnetPropertyId.reliability,
         payload: new BACnetTypes.BACnetEnumerated(BACnetReliability.NoFaultDetected),
     },
     {
-        id: BACnetPropIds.eventState,
+        id: BACnetPropertyId.eventState,
         payload: new BACnetTypes.BACnetEnumerated(BACnetEventState.Normal),
     },
     {
-        id: BACnetPropIds.statusFlags,
+        id: BACnetPropertyId.statusFlags,
         payload: new BACnetTypes.BACnetStatusFlags({
             inAlarm: false,
             fault: false,

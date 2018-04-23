@@ -1,12 +1,12 @@
 import * as _ from 'lodash';
 
 import {
-    BACnetPropIds,
+    BACnetPropertyId,
     BACnetBinaryPV,
     BACnetPolarity,
     BACnetUnitDataFlow,
     BACnetUnitFamily,
-} from '../../../core/enums';
+} from '../../../core/bacnet/enums';
 
 import {
     ApiError,
@@ -14,6 +14,9 @@ import {
 
 import {
     IBACnetObjectProperty,
+} from '../../../core/bacnet/interfaces';
+
+import {
     IEDEUnit,
 } from '../../../core/interfaces';
 
@@ -22,7 +25,7 @@ import { StatusFlagsMiddleUnit } from '../middles/status-flags/status-flags.midd
 
 import { NativeUnit } from '../native.unit';
 
-import * as BACnetTypes from '../../../core/types';
+import * as BACnetTypes from '../../../core/bacnet/types';
 
 export class BinaryUnit extends NativeUnit {
     public readonly className: string = 'BinaryUnit';
@@ -44,7 +47,7 @@ export class BinaryUnit extends NativeUnit {
     public sjHandler (): void {
         super.sjHandler();
 
-        this.storage.setFlowHandler(BACnetUnitDataFlow.Set, BACnetPropIds.polarity, (notif) => {
+        this.storage.setFlowHandler(BACnetUnitDataFlow.Set, BACnetPropertyId.polarity, (notif) => {
             this.shSetPolarity(notif);
         });
     }
@@ -58,14 +61,14 @@ export class BinaryUnit extends NativeUnit {
      * @return {void}
      */
     public shSetPolarity (notif: IBACnetObjectProperty): void {
-        const outOfServiceProp = this.storage.getProperty(BACnetPropIds.outOfService);
+        const outOfServiceProp = this.storage.getProperty(BACnetPropertyId.outOfService);
         const outOfService = outOfServiceProp.payload as BACnetTypes.BACnetBoolean;
 
         if (outOfService.value) {
             return;
         }
 
-        const polarityProp = this.storage.getProperty(BACnetPropIds.polarity);
+        const polarityProp = this.storage.getProperty(BACnetPropertyId.polarity);
         const polarity = polarityProp.payload as BACnetTypes.BACnetEnumerated;
         const newPolarity = notif.payload as BACnetTypes.BACnetEnumerated;
 
@@ -75,7 +78,7 @@ export class BinaryUnit extends NativeUnit {
 
         this.storage.updateProperty(notif);
 
-        const presentValueProp = this.storage.getProperty(BACnetPropIds.presentValue);
+        const presentValueProp = this.storage.getProperty(BACnetPropertyId.presentValue);
         const presentValue = presentValueProp.payload as BACnetTypes.BACnetEnumerated;
 
         let newPresentValue: BACnetTypes.BACnetEnumerated;
@@ -92,7 +95,7 @@ export class BinaryUnit extends NativeUnit {
         }
 
         this.storage.setProperty({
-            id: BACnetPropIds.presentValue,
+            id: BACnetPropertyId.presentValue,
             payload: newPresentValue,
         });
     }
@@ -103,8 +106,8 @@ export class BinaryUnit extends NativeUnit {
     * @return {IBACnetObjectProperty[]}
     */
    protected getReportedProperties (): IBACnetObjectProperty[] {
-       const presentValue = this.storage.getProperty(BACnetPropIds.presentValue);
-       const statusFlags = this.storage.getProperty(BACnetPropIds.statusFlags);
+       const presentValue = this.storage.getProperty(BACnetPropertyId.presentValue);
+       const statusFlags = this.storage.getProperty(BACnetPropertyId.statusFlags);
 
        return [ presentValue, statusFlags ];
    }

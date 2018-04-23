@@ -1,9 +1,9 @@
 import * as _ from 'lodash';
 
 import {
-    BACnetPropIds,
+    BACnetPropertyId,
     BACnetUnitDataFlow,
-} from '../../../../core/enums';
+} from '../../../../core/bacnet/enums';
 
 import {
     ApiError,
@@ -11,15 +11,16 @@ import {
 
 import {
     IBACnetObjectProperty,
-    IEDEUnit,
-} from '../../../../core/interfaces';
+} from '../../../../core/bacnet/interfaces';
+
+import { IEDEUnit } from '../../../../core/interfaces';
 
 import { AnalogValueMetadata } from './analog-value.metadata';
 
 import { AnalogUnit } from '../analog.unit';
 import { CommandableMiddleUnit } from '../../middles/commandable/commandable.middle';
 
-import * as BACnetTypes from '../../../../core/types';
+import * as BACnetTypes from '../../../../core/bacnet/types';
 
 export class AnalogValueUnit extends AnalogUnit {
     public readonly className: string = 'AnalogValueUnit';
@@ -42,7 +43,7 @@ export class AnalogValueUnit extends AnalogUnit {
     public sjHandler (): void {
         super.sjHandler();
 
-        this.storage.setFlowHandler(BACnetUnitDataFlow.Update, BACnetPropIds.presentValue, (notif) => {
+        this.storage.setFlowHandler(BACnetUnitDataFlow.Update, BACnetPropertyId.presentValue, (notif) => {
             this.shUpdatePresentValue(notif);
         });
     }

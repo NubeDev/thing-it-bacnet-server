@@ -1,12 +1,12 @@
 import * as _ from 'lodash';
 
 import {
-    BACnetPropIds,
+    BACnetPropertyId,
     BACnetBinaryPV,
     BACnetEventState,
     BACnetPolarity,
     BACnetUnitDataFlow,
-} from '../../../../core/enums';
+} from '../../../../core/bacnet/enums';
 
 import {
     ApiError,
@@ -15,15 +15,16 @@ import {
 import {
     IBACnetObjectProperty,
     IBACnetTypeStatusFlags,
-    IEDEUnit,
-} from '../../../../core/interfaces';
+} from '../../../../core/bacnet/interfaces';
+
+import { IEDEUnit } from '../../../../core/interfaces';
 
 import { BinaryOutputMetadata } from './binary-output.metadata';
 
 import { BinaryUnit } from '../binary.unit';
 import { CommandableMiddleUnit } from '../../middles/commandable/commandable.middle';
 
-import * as BACnetTypes from '../../../../core/types';
+import * as BACnetTypes from '../../../../core/bacnet/types';
 
 export class BinaryOutputUnit extends BinaryUnit {
     public readonly className: string = 'BinaryOutputUnit';
@@ -46,7 +47,7 @@ export class BinaryOutputUnit extends BinaryUnit {
     public sjHandler (): void {
         super.sjHandler();
 
-        this.storage.setFlowHandler(BACnetUnitDataFlow.Update, BACnetPropIds.presentValue, (notif) => {
+        this.storage.setFlowHandler(BACnetUnitDataFlow.Update, BACnetPropertyId.presentValue, (notif) => {
             this.shUpdatePresentValue(notif);
         });
     }
@@ -59,7 +60,7 @@ export class BinaryOutputUnit extends BinaryUnit {
      * @return {void}
      */
     private shUpdatePresentValue (notif: IBACnetObjectProperty): void {
-        const polarityProp = this.storage.getProperty(BACnetPropIds.polarity);
+        const polarityProp = this.storage.getProperty(BACnetPropertyId.polarity);
         const polarity = polarityProp.payload as BACnetTypes.BACnetEnumerated;
 
         if (polarity.value === BACnetPolarity.Reverse) {
@@ -78,7 +79,7 @@ export class BinaryOutputUnit extends BinaryUnit {
             }
 
             this.storage.updateProperty({
-                id: BACnetPropIds.presentValue,
+                id: BACnetPropertyId.presentValue,
                 payload: newPresentValue,
             }, false);
         }

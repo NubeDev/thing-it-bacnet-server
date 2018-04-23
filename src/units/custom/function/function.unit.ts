@@ -2,21 +2,18 @@ import * as _ from 'lodash';
 import { Observable } from 'rxjs';
 
 import {
-    BACnetPropIds,
+    BACnetPropertyId,
     BACnetUnitFamily,
-} from '../../../core/enums';
+} from '../../../core/bacnet/enums';
 
 import {
     ICustomFunction,
 } from '../../../core/interfaces';
 
-import { UnitStorage } from '../../unit.storage';
+import * as BACnetTypes from '../../../core/bacnet/types';
+
 import { FunctionMetadata } from './function.metadata';
-
-import * as BACnetTypes from '../../../core/types';
-
 import { CustomUnit } from '../custom.unit';
-
 import { NativeUnit } from '../../native/native.unit';
 
 import * as PRNG from '../../../core/prng';
@@ -125,7 +122,7 @@ export class FunctionUnit extends CustomUnit {
                 }
 
                 unit.storage.setProperty({
-                    id: BACnetPropIds.presentValue,
+                    id: BACnetPropertyId.presentValue,
                     payload: payload,
                 });
             });
