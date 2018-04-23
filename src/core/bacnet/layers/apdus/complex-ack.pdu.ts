@@ -17,12 +17,14 @@ import {
 } from '../../enums';
 
 import {
-    IComplexACK,
-    IComplexACKReadProperty,
-
     ILayerComplexACK,
     ILayerComplexACKService,
     ILayerComplexACKServiceReadProperty,
+} from '../../interfaces';
+
+import {
+    IWriteComplexACK,
+    IWriteComplexACKReadProperty,
 } from '../../interfaces';
 
 import {
@@ -127,7 +129,7 @@ export class ComplexACKPDU {
      * @param  {IComplexACK} params - ComplexACK params
      * @return {BACnetWriterUtil}
      */
-    public writeReq (params: IComplexACK): BACnetWriterUtil {
+    public writeReq (params: IWriteComplexACK): BACnetWriterUtil {
         const writer = new BACnetWriterUtil();
 
         // Write service meta
@@ -160,7 +162,7 @@ export class ComplexACKPDU {
      * @param  {IComplexACKReadProperty} params - ReadProperty params
      * @return {BACnetWriterUtil}
      */
-    public writeReadProperty (params: IComplexACKReadProperty): BACnetWriterUtil {
+    public writeReadProperty (params: IWriteComplexACKReadProperty): BACnetWriterUtil {
         const writer = new BACnetWriterUtil();
 
         // Write Service choice

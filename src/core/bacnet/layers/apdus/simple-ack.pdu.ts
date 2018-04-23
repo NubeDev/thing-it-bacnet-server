@@ -17,17 +17,17 @@ import {
 } from '../../interfaces';
 
 import {
+    IWriteSimpleACK,
+    IWriteSimpleACKSubscribeCOV,
+    IWriteSimpleACKWriteProperty,
+} from '../../interfaces';
+
+import {
     BACnetPropTypes,
     BACnetTagTypes,
     BACnetConfirmedService,
     BACnetServiceTypes,
 } from '../../enums';
-
-import {
-    ISimpleACK,
-    ISimpleACKSubscribeCOV,
-    ISimpleACKWriteProperty,
-} from '../../interfaces';
 
 import {
     BACnetUnsignedInteger,
@@ -84,8 +84,8 @@ export class SimpleACKPDU {
         return serviceMap;
     }
 
-    private getWriteProperty (reader: BACnetReaderUtil): ISimpleACKWriteProperty {
-        const serviceMap: ISimpleACKWriteProperty = {};
+    private getWriteProperty (reader: BACnetReaderUtil): ILayerSimpleACKServiceWriteProperty {
+        const serviceMap: ILayerSimpleACKServiceWriteProperty = {};
 
         return serviceMap;
     }
@@ -96,7 +96,7 @@ export class SimpleACKPDU {
      * @param  {ISimpleACK} params - SimpleACK params
      * @return {BACnetWriterUtil}
      */
-    public writeReq (params: ISimpleACK): BACnetWriterUtil {
+    public writeReq (params: IWriteSimpleACK): BACnetWriterUtil {
         const writer = new BACnetWriterUtil();
 
         // Write Service Type
@@ -117,7 +117,7 @@ export class SimpleACKPDU {
      * @param  {ISimpleACKSubscribeCOV} params - SubscribeCOV params
      * @return {BACnetWriterUtil}
      */
-    public writeSubscribeCOV (params: ISimpleACKSubscribeCOV): BACnetWriterUtil {
+    public writeSubscribeCOV (params: IWriteSimpleACKSubscribeCOV): BACnetWriterUtil {
         const writer = new BACnetWriterUtil();
 
         // Write Service choice
@@ -133,7 +133,7 @@ export class SimpleACKPDU {
      * @param  {ISimpleACKWriteProperty} params - WriteProperty params
      * @return {BACnetWriterUtil}
      */
-    public writeWriteProperty (params: ISimpleACKWriteProperty): BACnetWriterUtil {
+    public writeWriteProperty (params: IWriteSimpleACKWriteProperty): BACnetWriterUtil {
         const writer = new BACnetWriterUtil();
 
         // Write Service choice

@@ -1,12 +1,8 @@
-
 import {
-    BACnetPropTypes,
-    BLVCFunction,
     BACnetPropertyId,
-    BACnetObjectType,
     BACnetTagTypes,
 } from '../enums';
-import { BACnetWriterUtil } from '../utils';
+
 import * as BACnetTypes from '../types';
 
 export interface IBACnetObjectProperty {
@@ -20,30 +16,6 @@ export interface IBACnetTag {
     num: number;
     type: BACnetTagTypes;
     value: number;
-}
-
-export interface IBLVCReqLayer {
-    func: BLVCFunction;
-    npdu: BACnetWriterUtil;
-    apdu: BACnetWriterUtil;
-}
-
-export interface INPDUReqLayer {
-    control?: INPDULayerControl;
-    destNetworkAddress?: number;
-    destMacAddress?: string;
-    srcNetworkAddress?: number;
-    srcMacAddress?: string;
-    hopCount?: number;
-}
-
-export interface INPDULayerControl {
-    noApduMessageType?: boolean;
-    destSpecifier?: boolean;
-    srcSpecifier?: boolean;
-    expectingReply?: boolean;
-    priority1?: number;
-    priority2?: number;
 }
 
 

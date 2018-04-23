@@ -18,8 +18,8 @@ import {
     ILayerNPDUNetworkDest,
     ILayerNPDUNetworkSrc,
 
-    INPDUReqLayer,
-    INPDULayerControl,
+    IWriteNPDU,
+    IWriteNPDUControl,
 } from '../interfaces';
 
 export class NPDU {
@@ -138,7 +138,7 @@ export class NPDU {
      * @param  {INPDULayer} params - NPDU layer params
      * @return {BACnetWriterUtil}
      */
-    public writeNPDULayer (params: INPDUReqLayer): BACnetWriterUtil {
+    public writeNPDULayer (params: IWriteNPDU): BACnetWriterUtil {
         let writer = new BACnetWriterUtil();
 
         // Write NPDU version
@@ -191,7 +191,7 @@ export class NPDU {
      * @param  {INPDULayerControl} params - NPDU layer control params
      * @return {BACnetWriterUtil}
      */
-    public writeNPDULayerControl (params: INPDULayerControl): BACnetWriterUtil {
+    public writeNPDULayerControl (params: IWriteNPDUControl): BACnetWriterUtil {
         const writer = new BACnetWriterUtil();
 
         // Write Service choice

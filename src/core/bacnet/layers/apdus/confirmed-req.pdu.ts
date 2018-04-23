@@ -10,16 +10,16 @@ import {
 } from '../../utils';
 
 import {
-    IConfirmedReq,
-    IConfirmedReqReadProperty,
-} from '../../interfaces';
-
-import {
     ILayerConfirmedReq,
     ILayerConfirmedReqService,
     ILayerConfirmedReqServiceReadProperty,
     ILayerConfirmedReqServiceSubscribeCOV,
     ILayerConfirmedReqServiceWriteProperty,
+} from '../../interfaces';
+
+import {
+    IWriteConfirmedReq,
+    IWriteConfirmedReqReadProperty,
 } from '../../interfaces';
 
 import {
@@ -191,7 +191,7 @@ export class ConfirmedReqPDU {
      * @param  {IConfirmedReq} params - ConfirmedReq params
      * @return {BACnetWriterUtil}
      */
-    public writeReq (params: IConfirmedReq): BACnetWriterUtil {
+    public writeReq (params: IWriteConfirmedReq): BACnetWriterUtil {
         const writer = new BACnetWriterUtil();
 
         // Write Service Type
@@ -216,7 +216,7 @@ export class ConfirmedReqPDU {
      * @param  {IConfirmedReqReadProperty} params - readProperty params
      * @return {BACnetWriterUtil}
      */
-    public writeReadProperty (params: IConfirmedReqReadProperty): BACnetWriterUtil {
+    public writeReadProperty (params: IWriteConfirmedReqReadProperty): BACnetWriterUtil {
         const writer = new BACnetWriterUtil();
 
         // Write Service choice

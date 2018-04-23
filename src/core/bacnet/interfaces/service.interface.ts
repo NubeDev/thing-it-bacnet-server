@@ -1,95 +1,118 @@
 import {
-    BACnetUnsignedInteger,
-    BACnetObjectId,
-    BACnetTypeBase,
-} from '../types';
-
-import {
     IBACnetObjectProperty,
 } from './bacnet.interface';
+
+import {
+    BLVCFunction,
+} from '../enums';
+
+import { BACnetWriterUtil } from '../utils';
+
+import * as BACnetTypes from '../types';
+
+export interface IWriteBLVC {
+    func: BLVCFunction;
+    npdu: BACnetWriterUtil;
+    apdu: BACnetWriterUtil;
+}
+
+export interface IWriteNPDU {
+    control?: IWriteNPDUControl;
+    destNetworkAddress?: number;
+    destMacAddress?: string;
+    srcNetworkAddress?: number;
+    srcMacAddress?: string;
+    hopCount?: number;
+}
+
+export interface IWriteNPDUControl {
+    noApduMessageType?: boolean;
+    destSpecifier?: boolean;
+    srcSpecifier?: boolean;
+    expectingReply?: boolean;
+    priority1?: number;
+    priority2?: number;
+}
 
 /**
  * Unconfirmed Request
  */
-export interface IUnconfirmedReq {
+export interface IWriteUnconfirmedReq {
 }
-export interface IUnconfirmedReqWhoIs {
+export interface IWriteUnconfirmedReqWhoIs {
 }
-export interface IUnconfirmedReqWhoIsOptions
-    extends IUnconfirmedReq, IUnconfirmedReqWhoIs {
-}
-export interface IUnconfirmedReqIAm {
+export interface IWriteUnconfirmedReqIAm {
     objId: IBACnetObjectProperty;
     vendorId: IBACnetObjectProperty;
 }
-export interface IUnconfirmedReqCOVNotification {
-    processId: BACnetUnsignedInteger;
-    devObjId: BACnetObjectId;
-    unitObjId: BACnetObjectId;
+export interface IWriteUnconfirmedReqCOVNotification {
+    processId: BACnetTypes.BACnetUnsignedInteger;
+    devObjId: BACnetTypes.BACnetObjectId;
+    unitObjId: BACnetTypes.BACnetObjectId;
     reportedProps: IBACnetObjectProperty[];
 }
 
 export interface IServiceUnconfirmedReqCOVNotification
-    extends IUnconfirmedReq, IUnconfirmedReqCOVNotification {
+    extends IWriteUnconfirmedReq, IWriteUnconfirmedReqCOVNotification {
 }
 export interface IServiceUnconfirmedReqWhoIs
-    extends IUnconfirmedReq, IUnconfirmedReqWhoIs {
+    extends IWriteUnconfirmedReq, IWriteUnconfirmedReqWhoIs {
 }
 export interface IServiceUnconfirmedReqIAm
-    extends IUnconfirmedReq, IUnconfirmedReqIAm {
+    extends IWriteUnconfirmedReq, IWriteUnconfirmedReqIAm {
 }
 
 
 /**
  * Confirmed Request
  */
-export interface IConfirmedReq {
+export interface IWriteConfirmedReq {
     segAccepted?: boolean;
     invokeId: number;
 }
-export interface IConfirmedReqReadProperty {
-    unitObjId: BACnetObjectId;
+export interface IWriteConfirmedReqReadProperty {
+    unitObjId: BACnetTypes.BACnetObjectId;
     propId: number;
     propArrayIndex?: number;
 }
 
 export interface IServiceConfirmedReqReadProperty
-    extends IConfirmedReq, IConfirmedReqReadProperty {
+    extends IWriteConfirmedReq, IWriteConfirmedReqReadProperty {
 }
 
 
 /**
  * Simple ACK
  */
-export interface ISimpleACK {
+export interface IWriteSimpleACK {
     invokeId: number;
 }
-export interface ISimpleACKSubscribeCOV {
+export interface IWriteSimpleACKSubscribeCOV {
 }
-export interface ISimpleACKWriteProperty {
+export interface IWriteSimpleACKWriteProperty {
 }
 
 export interface IServiceSimpleACKSubscribeCOV
-    extends ISimpleACK, ISimpleACKSubscribeCOV {
+    extends IWriteSimpleACK, IWriteSimpleACKSubscribeCOV {
 }
 export interface IServiceSimpleACKWriteProperty
-    extends ISimpleACK, ISimpleACKWriteProperty {
+    extends IWriteSimpleACK, IWriteSimpleACKWriteProperty {
 }
 
 
 /**
  * Complex ACK
  */
-export interface IComplexACK {
+export interface IWriteComplexACK {
     seg?: boolean;
     mor?: boolean;
     invokeId: number;
 }
-export interface IComplexACKReadProperty {
-    unitObjId: BACnetObjectId;
+export interface IWriteComplexACKReadProperty {
+    unitObjId: BACnetTypes.BACnetObjectId;
     unitProp: IBACnetObjectProperty;
 }
 
 export interface IServiceComplexACKReadProperty
-    extends IComplexACK, IComplexACKReadProperty {
+    extends IWriteComplexACK, IWriteComplexACKReadProperty {
 }

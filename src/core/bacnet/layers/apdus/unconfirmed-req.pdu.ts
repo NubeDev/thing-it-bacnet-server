@@ -17,20 +17,19 @@ import {
 } from '../../interfaces';
 
 import {
+    IWriteUnconfirmedReq,
+    IWriteUnconfirmedReqIAm,
+    IWriteUnconfirmedReqCOVNotification,
+    IWriteUnconfirmedReqWhoIs,
+} from '../../interfaces';
+
+import {
     BACnetPropTypes,
     BACnetPropertyId,
     BACnetTagTypes,
     BACnetUnconfirmedService,
     BACnetServiceTypes,
 } from '../../enums';
-
-import {
-    IUnconfirmedReq,
-    IUnconfirmedReqIAm,
-    IUnconfirmedReqCOVNotification,
-    IUnconfirmedReqWhoIs,
-    IBACnetTypeObjectId,
-} from '../../interfaces';
 
 import {
     BACnetUnsignedInteger,
@@ -118,7 +117,7 @@ export class UnconfirmedReqPDU {
      * @param  {IUnconfirmReq} params - UnconfirmReq params
      * @return {BACnetWriterUtil}
      */
-    public writeReq (params: IUnconfirmedReq): BACnetWriterUtil {
+    public writeReq (params: IWriteUnconfirmedReq): BACnetWriterUtil {
         const writer = new BACnetWriterUtil();
 
         // Write Service Type
@@ -136,7 +135,7 @@ export class UnconfirmedReqPDU {
      * @param  {IUnconfirmReqWhoIs} params - whoIs params
      * @return {BACnetWriterUtil}
      */
-    public writeWhoIs (params: IUnconfirmedReqWhoIs): BACnetWriterUtil {
+    public writeWhoIs (params: IWriteUnconfirmedReqWhoIs): BACnetWriterUtil {
         const writer = new BACnetWriterUtil();
 
         // Write Service choice
@@ -152,7 +151,7 @@ export class UnconfirmedReqPDU {
      * @param  {IUnconfirmReqIAm} params - iAm params
      * @return {BACnetWriterUtil}
      */
-    public writeIAm (params: IUnconfirmedReqIAm): BACnetWriterUtil {
+    public writeIAm (params: IWriteUnconfirmedReqIAm): BACnetWriterUtil {
         const writer = new BACnetWriterUtil();
 
         // Write Service choice
@@ -190,7 +189,7 @@ export class UnconfirmedReqPDU {
      * @param  {IUnconfirmReqCOVNotification} params - COVNotification params
      * @return {BACnetWriterUtil}
      */
-    public writeCOVNotification (params: IUnconfirmedReqCOVNotification): BACnetWriterUtil {
+    public writeCOVNotification (params: IWriteUnconfirmedReqCOVNotification): BACnetWriterUtil {
         const writer = new BACnetWriterUtil();
 
         // Write Service choice
