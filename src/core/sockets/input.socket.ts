@@ -16,7 +16,12 @@ export class InputSocket {
 
     constructor (msg: Buffer) {
         logger.debug(`${this.className} - message: ${msg.toString('hex')}`);
-        this.blvc = blvc.getFromBuffer(msg);
+
+        try {
+            this.blvc = blvc.getFromBuffer(msg);
+        } catch (error) {
+            logger.error(error);
+        }
 
         try {
             this.npdu = this.blvc.npdu;
