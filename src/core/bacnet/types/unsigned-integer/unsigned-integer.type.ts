@@ -23,10 +23,19 @@ export class BACnetUnsignedInteger extends BACnetTypeBase {
 
     constructor (defValue?: number) {
         super();
-        this.data = defValue;
+
+        this.data = _.isUndefined(defValue)
+            ? 0 : this.checkAndGetValue(defValue);
     }
 
-    public readValue (reader: BACnetReaderUtil, changeOffset: boolean = true) {
+    /**
+     * readValue - parses the message with BACnet "unsigned integer" value.
+     *
+     * @param  {BACnetReaderUtil} reader - BACnet reader with "unsigned integer" BACnet value
+     * @param  {type} [changeOffset = true] - change offset in the buffer of reader
+     * @return {void}
+     */
+    public readValue (reader: BACnetReaderUtil, changeOffset: boolean = true): void {
         const tag = reader.readTag(changeOffset);
         this.tag = tag;
 
@@ -46,22 +55,65 @@ export class BACnetUnsignedInteger extends BACnetTypeBase {
         this.data = value;
     }
 
-    public writeValue (writer: BACnetWriterUtil) {
+    /**
+     * writeValue - writes the BACnet "unsigned integer" value.
+     *
+     * @param  {BACnetWriterUtil} writer - BACnet writer
+     * @return {void}
+     */
+    public writeValue (writer: BACnetWriterUtil): void {
         writer.writeParam(this.data, BACnetPropTypes.unsignedInt, 0);
     }
 
+    /**
+     * setValue - sets the new BACnet "unsigned integer" value as internal state.
+     *
+     * @param  {number} newValue - new "unsigned integer" value
+     * @return {void}
+     */
     public setValue (newValue: number): void {
         this.data = newValue;
     }
 
+    /**
+     * getValue - returns the internal state as current BACnet "unsigned integer" value.
+     *
+     * @return {number}
+     */
     public getValue (): number {
         return this.data;
     }
 
+    /**
+     * value - sets the new BACnet "unsigned integer" value as internal state
+     *
+     * @type {number}
+     */
     public set value (newValue: number) {
         this.setValue(newValue);
     }
+
+    /**
+     * value - returns the internal state as current BACnet "unsigned integer" value.
+     *
+     * @type {number}
+     */
     public get value (): number {
         return this.getValue();
+    }
+
+    /**
+     * checkAndGetValue - checks if "value" is a correct "unsigned integer" value, throws
+     * the error if "value" has incorrect type.
+     *
+     * @param  {number} value - "unsigned integer" value
+     * @return {number}
+     */
+    private checkAndGetValue (value: number): number {
+        if (!_.isNumber(value) || !_.isFinite(value)) {
+            throw new BACnetError('BACnetUnsignedInteger - updateValue: Value must be of type "unsigned integer"!');
+        }
+
+        return value;
     }
 }

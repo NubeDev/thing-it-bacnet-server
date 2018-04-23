@@ -24,11 +24,19 @@ export class BACnetCharacterString extends BACnetTypeBase {
 
     constructor (defValue?: string) {
         super();
-        this.data = _.isNil(defValue)
-            ? '' : `${defValue}`;
+
+        this.data = _.isUndefined(defValue)
+            ? '' : this.checkAndGetValue(defValue);
     }
 
-    public readValue (reader: BACnetReaderUtil, changeOffset: boolean = true) {
+    /**
+     * readValue - parses the message with BACnet "character string" value.
+     *
+     * @param  {BACnetReaderUtil} reader - BACnet reader with "character string" BACnet value
+     * @param  {type} [changeOffset = true] - change offset in the buffer of reader
+     * @return {void}
+     */
+    public readValue (reader: BACnetReaderUtil, changeOffset: boolean = true): void {
         const tag = reader.readTag(changeOffset);
         this.tag = tag;
 
@@ -43,7 +51,13 @@ export class BACnetCharacterString extends BACnetTypeBase {
         this.data = value;
     }
 
-    public writeValue (writer: BACnetWriterUtil) {
+    /**
+     * writeValue - writes the BACnet "character string" value.
+     *
+     * @param  {BACnetWriterUtil} writer - BACnet writer
+     * @return {void}
+     */
+    public writeValue (writer: BACnetWriterUtil): void {
         // DataType - Application tag - Extended value (5)
         writer.writeTag(BACnetPropTypes.characterString, 0, 5);
 
@@ -58,24 +72,69 @@ export class BACnetCharacterString extends BACnetTypeBase {
         writer.writeString(this.data);
     }
 
-    public setValue (newValue: string) {
-        this.data = newValue;
+    /**
+     * setValue - sets the new BACnet "character string" value as internal state.
+     *
+     * @param  {string} newValue - new "character string" value
+     * @return {void}
+     */
+    public setValue (newValue: string): void {
+        this.data = this.checkAndGetValue(newValue);
     }
+
+    /**
+     * getValue - returns the internal state as current BACnet "character string" value.
+     *
+     * @return {string}
+     */
     public getValue (): string {
         return this.data;
     }
 
+    /**
+     * value - sets the new BACnet "character string" value as internal state
+     *
+     * @type {string}
+     */
     public set value (newValue: string) {
         this.setValue(newValue);
     }
+
+    /**
+     * value - returns the internal state as current BACnet "character string" value.
+     *
+     * @type {string}
+     */
     public get value (): string {
         return this.getValue();
+    }
+
+    /**
+     * checkAndGetValue - checks if "value" is a correct "character string" value, throws
+     * the error if "value" has incorrect type.
+     *
+     * @param  {string} value - "character string" value
+     * @return {string}
+     */
+    private checkAndGetValue (value: string): string {
+        if (!_.isString(value)) {
+            throw new BACnetError('BACnetCharacterString - updateValue: Value must be of type "character string"!');
+        }
+
+        return value;
     }
 
     /**
      * HELPERs
      */
 
+    /**
+     * getStringEncode - returns the "string" representation of the character
+     * encoding.
+     *
+     * @param  {number} charSet - character encoding
+     * @return {string}
+     */
     private getStringEncode (charSet: number): string {
         switch (charSet) {
             case 0:

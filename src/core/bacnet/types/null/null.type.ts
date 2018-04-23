@@ -24,24 +24,60 @@ export class BACnetNull extends BACnetTypeBase {
         super();
     }
 
-    public readValue (reader: BACnetReaderUtil, changeOffset: boolean = true) {
+    /**
+     * readValue - parses the message with BACnet "null" value.
+     *
+     * @param  {BACnetReaderUtil} reader - BACnet reader with "null" BACnet value
+     * @param  {type} [changeOffset = true] - change offset in the buffer of reader
+     * @return {void}
+     */
+    public readValue (reader: BACnetReaderUtil, changeOffset: boolean = true): void {
         const tag = reader.readTag(changeOffset);
         this.tag = tag;
     }
 
-    public writeValue (writer: BACnetWriterUtil) {
+    /**
+     * writeValue - writes the BACnet "null" value.
+     *
+     * @param  {BACnetWriterUtil} writer - BACnet writer
+     * @return {void}
+     */
+    public writeValue (writer: BACnetWriterUtil): void {
         writer.writeTag(BACnetPropTypes.nullData, 0, 0);
     }
 
+    /**
+     * setValue - sets the new BACnet "null" value as internal state.
+     *
+     * @param  {null} newValue - new "null" value
+     * @return {void}
+     */
     public setValue (newValue: null): void {
     }
+
+    /**
+     * getValue - returns the internal state as current BACnet "null" value.
+     *
+     * @return {null}
+     */
     public getValue (): null {
         return null;
     }
 
+    /**
+     * value - sets the new BACnet "null" value as internal state
+     *
+     * @type {null}
+     */
     public set value (newValue: null) {
         this.setValue(newValue);
     }
+
+    /**
+     * value - returns the internal state as current BACnet "null" value.
+     *
+     * @type {null}
+     */
     public get value (): null {
         return this.getValue();
     }
