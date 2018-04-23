@@ -47,6 +47,6 @@ export class PRNGBase {
      * @return {number} - integer random value
      */
     public nextInteger (): number {
-        return this.opts.min + Math.floor(this.getOffsetInRange());
+        return this.opts.min + Math.round(this.getOffsetInRange());
     }
 }
