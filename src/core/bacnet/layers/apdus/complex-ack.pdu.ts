@@ -20,9 +20,9 @@ import {
     IComplexACK,
     IComplexACKReadProperty,
 
-    IComplexACKLayer,
-    IComplexACKService,
-    IComplexACKReadPropertyService,
+    ILayerComplexACK,
+    ILayerComplexACKService,
+    ILayerComplexACKServiceReadProperty,
 } from '../../interfaces';
 
 import {
@@ -34,11 +34,11 @@ import {
 export class ComplexACKPDU {
     public readonly className: string = 'ComplexACKPDU';
 
-    private getFromBuffer (buf: Buffer): IComplexACKLayer {
+    private getFromBuffer (buf: Buffer): ILayerComplexACK {
         const reader = new BACnetReaderUtil(buf);
 
-        let reqMap: IComplexACKLayer;
-        let serviceChoice: BACnetConfirmedService, serviceData: IComplexACKService;
+        let reqMap: ILayerComplexACK;
+        let serviceChoice: BACnetConfirmedService, serviceData: ILayerComplexACKService;
         let pduType: number, pduSeg: boolean, pduMor: boolean;
         let invokeId: number, sequenceNumber: number, proposedWindowSize: number;
 
@@ -86,8 +86,8 @@ export class ComplexACKPDU {
         return reqMap;
     }
 
-    private getReadProperty (reader: BACnetReaderUtil): IComplexACKReadPropertyService {
-        let serviceData: IComplexACKReadPropertyService;
+    private getReadProperty (reader: BACnetReaderUtil): ILayerComplexACKServiceReadProperty {
+        let serviceData: ILayerComplexACKServiceReadProperty;
 
         let objId: BACnetObjectId,
             propId: BACnetUnsignedInteger,

@@ -46,6 +46,11 @@ export interface INPDULayerControl {
     priority2?: number;
 }
 
+
+/**
+ * Types
+ */
+
 export interface IBACnetTypeObjectId {
     type: number; // enum
     instance: number;

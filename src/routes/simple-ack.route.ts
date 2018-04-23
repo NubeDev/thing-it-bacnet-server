@@ -1,7 +1,7 @@
 import { logger } from '../core/utils';
 
 import {
-    ISimpleACKLayer,
+    ILayerSimpleACK,
 } from '../core/bacnet/interfaces';
 
 import {
@@ -12,7 +12,7 @@ import { InputSocket, OutputSocket, ServiceSocket } from '../core/sockets';
 
 export function SimpleACKRouter (
         inputSoc: InputSocket, outputSoc: OutputSocket, serviceSocket: ServiceSocket) {
-    const apduMessage = inputSoc.apdu as ISimpleACKLayer;
+    const apduMessage = inputSoc.apdu as ILayerSimpleACK;
     const serviceChoice = apduMessage.serviceChoice;
 
     logger.debug(`MainRouter - Request Service: ${BACnetConfirmedService[serviceChoice]}`);

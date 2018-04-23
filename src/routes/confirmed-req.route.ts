@@ -1,7 +1,7 @@
 import { logger } from '../core/utils';
 
 import {
-    IConfirmedReqLayer,
+    ILayerConfirmedReq,
 } from '../core/bacnet/interfaces';
 
 import {
@@ -14,7 +14,7 @@ import { InputSocket, OutputSocket, ServiceSocket } from '../core/sockets';
 
 export function ConfirmedReqRouter (
         inputSoc: InputSocket, outputSoc: OutputSocket, serviceSocket: ServiceSocket) {
-        const apduMessage = inputSoc.apdu as IConfirmedReqLayer;
+        const apduMessage = inputSoc.apdu as ILayerConfirmedReq;
         const serviceChoice = apduMessage.serviceChoice;
 
     logger.debug(`MainRouter - Request Service: ${BACnetConfirmedService[serviceChoice]}`);

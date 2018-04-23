@@ -10,10 +10,10 @@ import {
 } from '../../utils';
 
 import {
-    ISimpleACKLayer,
-    ISimpleACKService,
-    ISimpleACKSubscribeCOVService,
-    ISimpleACKWritePropertyService,
+    ILayerSimpleACK,
+    ILayerSimpleACKService,
+    ILayerSimpleACKServiceSubscribeCOV,
+    ILayerSimpleACKServiceWriteProperty,
 } from '../../interfaces';
 
 import {
@@ -38,11 +38,11 @@ import {
 export class SimpleACKPDU {
     public readonly className: string = 'SimpleACKPDU';
 
-    public getFromBuffer (buf: Buffer): ISimpleACKLayer {
+    public getFromBuffer (buf: Buffer): ILayerSimpleACK {
         const reader = new BACnetReaderUtil(buf);
 
-        let reqMap: ISimpleACKLayer;
-        let serviceChoice: BACnetConfirmedService, serviceData: ISimpleACKService;
+        let reqMap: ILayerSimpleACK;
+        let serviceChoice: BACnetConfirmedService, serviceData: ILayerSimpleACKService;
         let pduType: number, invokeId: number;
 
         try {
@@ -78,8 +78,8 @@ export class SimpleACKPDU {
         return reqMap;
     }
 
-    private getSubscribeCOV (reader: BACnetReaderUtil): ISimpleACKSubscribeCOVService {
-        const serviceMap: ISimpleACKSubscribeCOVService = {};
+    private getSubscribeCOV (reader: BACnetReaderUtil): ILayerSimpleACKServiceSubscribeCOV {
+        const serviceMap: ILayerSimpleACKServiceSubscribeCOV = {};
 
         return serviceMap;
     }

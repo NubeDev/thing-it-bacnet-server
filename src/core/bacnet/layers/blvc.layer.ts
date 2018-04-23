@@ -13,8 +13,8 @@ import { npdu, NPDU } from './npdu.layer';
 
 import {
     IBLVCReqLayer,
-    IBLVCLayer,
-    INPDULayer,
+    ILayerBLVC,
+    ILayerNPDU,
 } from '../interfaces';
 
 export class BLVC {
@@ -25,11 +25,11 @@ export class BLVC {
         this.npdu = npduInst;
     }
 
-    public getFromBuffer (buf: Buffer): IBLVCLayer {
+    public getFromBuffer (buf: Buffer): ILayerBLVC {
         const readerUtil = new BACnetReaderUtil(buf);
 
         let mType: number, mFunction: number, mLenght: number;
-        let NPDUMessage: INPDULayer;
+        let NPDUMessage: ILayerNPDU;
 
         try {
             mType = readerUtil.readUInt8();
@@ -44,7 +44,7 @@ export class BLVC {
             throw new BACnetError(`${this.className} - getFromBuffer: Parse - ${error}`);
         }
 
-        const BLVCMessage: IBLVCLayer = {
+        const BLVCMessage: ILayerBLVC = {
             type: mType,
             func: mFunction,
             length: mLenght,

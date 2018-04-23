@@ -14,25 +14,25 @@ import {
 /*
  * BLVC Layer
  */
-export interface IBLVCLayer {
+export interface ILayerBLVC {
     type: number;
     func: BLVCFunction;
     length: number;
-    npdu: INPDULayer;
+    npdu: ILayerNPDU;
 }
 
 /*
  * NPDU Layer
  */
-export interface INPDULayer {
+export interface ILayerNPDU {
     version: number;
-    control: INPDUControl;
-    dest: INPDUDestNetwork;
-    src: INPDUSrcNetwork;
-    apdu: IAPDULayer;
+    control: ILayerNPDUControl;
+    dest: ILayerNPDUNetworkDest;
+    src: ILayerNPDUNetworkSrc;
+    apdu: ILayerAPDU;
 }
 
-export interface INPDUControl {
+export interface ILayerNPDUControl {
     noApduMessageType: boolean;
     reserved1: number;
     destSpecifier: boolean;
@@ -43,32 +43,32 @@ export interface INPDUControl {
     priority2: number;
 }
 
-export interface INPDUNetworkLayer {
+export interface ILayerNPDUNetwork {
     networkAddress: number;
     macAddressLen: number;
     macAddress?: string;
 }
 
-export interface INPDUDestNetwork
-        extends INPDUNetworkLayer {
+export interface ILayerNPDUNetworkDest
+        extends ILayerNPDUNetwork {
     hopCount?: number;
 }
 
-export interface INPDUSrcNetwork
-        extends INPDUNetworkLayer {
+export interface ILayerNPDUNetworkSrc
+        extends ILayerNPDUNetwork {
 }
 
 
 /*
  * APDU Layer
  */
-export type IAPDULayer = IConfirmedReqLayer | IUnconfirmedReqLayer
-    | IComplexACKLayer | ISimpleACKLayer;
+export type ILayerAPDU = ILayerConfirmedReq | ILayerUnconfirmedReq
+    | ILayerComplexACK | ILayerSimpleACK;
 
 /*
  * Confirmed Request APDU Layer
  */
-export interface IConfirmedReqLayer {
+export interface ILayerConfirmedReq {
     type: BACnetServiceTypes;
     seg: boolean;
     mor: boolean;
@@ -77,26 +77,26 @@ export interface IConfirmedReqLayer {
     maxResp: number;
     invokeId: number;
     serviceChoice: BACnetConfirmedService;
-    service: IConfirmedReqService;
+    service: ILayerConfirmedReqService;
 }
 
-export type IConfirmedReqService = IConfirmedReqReadPropertyService
-    | IConfirmedReqSubscribeCOVService
-    | IConfirmedReqWritePropertyService;
+export type ILayerConfirmedReqService = ILayerConfirmedReqServiceReadProperty
+    | ILayerConfirmedReqServiceSubscribeCOV
+    | ILayerConfirmedReqServiceWriteProperty;
 
-export interface IConfirmedReqReadPropertyService {
+export interface ILayerConfirmedReqServiceReadProperty {
     objId: BACnetObjectId;
     propId: BACnetUnsignedInteger;
 }
 
-export interface IConfirmedReqSubscribeCOVService {
+export interface ILayerConfirmedReqServiceSubscribeCOV {
     objId: BACnetObjectId;
     subscriberProcessId: BACnetUnsignedInteger;
     issConfNotif: BACnetUnsignedInteger;
     lifeTime: BACnetUnsignedInteger;
 }
 
-export interface IConfirmedReqWritePropertyService {
+export interface ILayerConfirmedReqServiceWriteProperty {
     objId: BACnetObjectId;
     propId: BACnetUnsignedInteger;
     propValues: BACnetTypeBase[];
@@ -106,29 +106,29 @@ export interface IConfirmedReqWritePropertyService {
 /*
  * Unconfirmed Request APDU Layer
  */
-export interface IUnconfirmedReqLayer {
+export interface ILayerUnconfirmedReq {
     type: BACnetServiceTypes;
     serviceChoice: BACnetUnconfirmedService;
-    service: IUnconfirmedReqService;
+    service: ILayerUnconfirmedReqService;
 }
 
-export type IUnconfirmedReqService = IUnconfirmedReqIAmService
-    | IUnconfirmedReqWhoIsService;
+export type ILayerUnconfirmedReqService = ILayerUnconfirmedReqServiceIAm
+    | ILayerUnconfirmedReqServiceWhoIs;
 
-export interface IUnconfirmedReqIAmService {
+export interface ILayerUnconfirmedReqServiceIAm {
     objId: BACnetObjectId;
     maxAPDUlength: BACnetUnsignedInteger;
     segmSupported: BACnetUnsignedInteger;
     vendorId: BACnetUnsignedInteger;
 }
 
-export interface IUnconfirmedReqWhoIsService {
+export interface ILayerUnconfirmedReqServiceWhoIs {
 }
 
 /*
  * Complex ACK APDU Layer
  */
-export interface IComplexACKLayer {
+export interface ILayerComplexACK {
     type: BACnetServiceTypes;
     seg: boolean;
     mor: boolean;
@@ -136,12 +136,12 @@ export interface IComplexACKLayer {
     sequenceNumber: number;
     proposedWindowSize: number;
     serviceChoice: BACnetConfirmedService;
-    service: IComplexACKService;
+    service: ILayerComplexACKService;
 }
 
-export type IComplexACKService = IComplexACKReadPropertyService;
+export type ILayerComplexACKService = ILayerComplexACKServiceReadProperty;
 
-export interface IComplexACKReadPropertyService {
+export interface ILayerComplexACKServiceReadProperty {
     objId: BACnetObjectId;
     propId: BACnetUnsignedInteger;
     propArrayIndex?: BACnetUnsignedInteger;
@@ -151,17 +151,17 @@ export interface IComplexACKReadPropertyService {
 /*
  * Simple ACK APDU Layer
  */
-export interface ISimpleACKLayer {
+export interface ILayerSimpleACK {
     type: BACnetServiceTypes;
     invokeId: number;
     serviceChoice: BACnetConfirmedService;
-    service: ISimpleACKService;
+    service: ILayerSimpleACKService;
 }
 
-export type ISimpleACKService = ISimpleACKSubscribeCOVService
-    | ISimpleACKWritePropertyService;
+export type ILayerSimpleACKService = ILayerSimpleACKServiceSubscribeCOV
+    | ILayerSimpleACKServiceWriteProperty;
 
-export interface ISimpleACKSubscribeCOVService {
+export interface ILayerSimpleACKServiceSubscribeCOV {
 }
-export interface ISimpleACKWritePropertyService {
+export interface ILayerSimpleACKServiceWriteProperty {
 }

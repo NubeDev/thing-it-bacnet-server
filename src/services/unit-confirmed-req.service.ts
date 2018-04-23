@@ -5,10 +5,11 @@ import {
 } from '../core/bacnet/enums';
 
 import {
-    IConfirmedReqLayer,
-    IConfirmedReqSubscribeCOVService,
-    IConfirmedReqWritePropertyService,
-    IConfirmedReqReadPropertyService,
+    ILayerConfirmedReq,
+    ILayerConfirmedReqService,
+    ILayerConfirmedReqServiceReadProperty,
+    ILayerConfirmedReqServiceSubscribeCOV,
+    ILayerConfirmedReqServiceWriteProperty,
 } from '../core/bacnet/interfaces';
 
 import {
@@ -32,8 +33,8 @@ export class UnitConfirmedReqService {
      */
     public readProperty (inputSoc: InputSocket, outputSoc: OutputSocket,
             serviceSocket: ServiceSocket): Bluebird<any> {
-        const apduMessage = inputSoc.apdu as IConfirmedReqLayer;
-        const apduService = apduMessage.service as IConfirmedReqReadPropertyService;
+        const apduMessage = inputSoc.apdu as ILayerConfirmedReq;
+        const apduService = apduMessage.service as ILayerConfirmedReqServiceReadProperty;
 
         const invokeId = apduMessage.invokeId;
 
@@ -69,8 +70,8 @@ export class UnitConfirmedReqService {
      */
     public subscribeCOV (inputSoc: InputSocket, outputSoc: OutputSocket,
             serviceSocket: ServiceSocket): Bluebird<any> {
-        const apduMessage = inputSoc.apdu as IConfirmedReqLayer;
-        const apduService = apduMessage.service as IConfirmedReqSubscribeCOVService;
+        const apduMessage = inputSoc.apdu as ILayerConfirmedReq;
+        const apduService = apduMessage.service as ILayerConfirmedReqServiceSubscribeCOV;
         const unitStorage: UnitStorageManager = serviceSocket.getService('unitStorage');
 
         // --- Sends response "subscribeCOV"
@@ -121,8 +122,8 @@ export class UnitConfirmedReqService {
      */
     public writeProperty (inputSoc: InputSocket, outputSoc: OutputSocket,
             serviceSocket: ServiceSocket): Bluebird<any> {
-        const apduMessage = inputSoc.apdu as IConfirmedReqLayer;
-        const apduService = apduMessage.service as IConfirmedReqWritePropertyService;
+        const apduMessage = inputSoc.apdu as ILayerConfirmedReq;
+        const apduService = apduMessage.service as ILayerConfirmedReqServiceWriteProperty;
         const invokeId = apduMessage.invokeId;
 
         // Get unit Object identifier

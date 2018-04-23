@@ -12,11 +12,11 @@ import {
 import { apdu, APDU } from './apdu.layer';
 
 import {
-    IAPDULayer,
-    INPDULayer,
-    INPDUControl,
-    INPDUDestNetwork,
-    INPDUSrcNetwork,
+    ILayerAPDU,
+    ILayerNPDU,
+    ILayerNPDUControl,
+    ILayerNPDUNetworkDest,
+    ILayerNPDUNetworkSrc,
 
     INPDUReqLayer,
     INPDULayerControl,
@@ -30,7 +30,7 @@ export class NPDU {
         this.apdu = apduInst;
     }
 
-    public getControlFlags (mControl: number): INPDUControl {
+    public getControlFlags (mControl: number): ILayerNPDUControl {
         const noApduMessageType = !!TyperUtil.getBit(mControl, 7);
 
         const reserved1 = TyperUtil.getBit(mControl, 6);
@@ -47,7 +47,7 @@ export class NPDU {
 
         const priority2 = TyperUtil.getBit(mControl, 0);
 
-        const mControlMap: INPDUControl = {
+        const mControlMap: ILayerNPDUControl = {
             noApduMessageType: noApduMessageType,
             reserved1: reserved1,
             destSpecifier: destSpecifier,
@@ -61,13 +61,13 @@ export class NPDU {
         return mControlMap;
     }
 
-    public getFromBuffer (buf: Buffer): INPDULayer {
+    public getFromBuffer (buf: Buffer): ILayerNPDU {
         const readerUtil = new BACnetReaderUtil(buf);
 
-        let mVersion: number, mControl: INPDUControl;
-        let destNetwork: INPDUDestNetwork,
-            srcNetwork: INPDUSrcNetwork;
-        let APDUMessage: IAPDULayer;
+        let mVersion: number, mControl: ILayerNPDUControl;
+        let destNetwork: ILayerNPDUNetworkDest,
+            srcNetwork: ILayerNPDUNetworkSrc;
+        let APDUMessage: ILayerAPDU;
 
         try {
             mVersion = readerUtil.readUInt8();
@@ -120,7 +120,7 @@ export class NPDU {
             throw new BACnetError(`${this.className} - getFromBuffer: Parse - ${error}`);
         }
 
-        const NPDUMessage: INPDULayer = {
+        const NPDUMessage: ILayerNPDU = {
             version: mVersion,
             control: mControl,
             dest: destNetwork,

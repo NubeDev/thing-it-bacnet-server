@@ -6,13 +6,13 @@ import { blvc } from '../bacnet/layers';
 
 import { logger } from '../utils';
 
-import { IBLVCLayer, INPDULayer, IAPDULayer } from '../bacnet/interfaces';
+import { ILayerBLVC, ILayerNPDU, ILayerAPDU } from '../bacnet/interfaces';
 
 export class InputSocket {
     public readonly className: string = 'InputSocket';
-    public blvc: IBLVCLayer;
-    public npdu: INPDULayer;
-    public apdu: IAPDULayer;
+    public blvc: ILayerBLVC;
+    public npdu: ILayerNPDU;
+    public apdu: ILayerAPDU;
 
     constructor (msg: Buffer) {
         logger.debug(`${this.className} - message: ${msg.toString('hex')}`);

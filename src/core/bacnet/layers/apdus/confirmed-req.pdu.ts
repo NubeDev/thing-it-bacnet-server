@@ -15,11 +15,11 @@ import {
 } from '../../interfaces';
 
 import {
-    IConfirmedReqLayer,
-    IConfirmedReqService,
-    IConfirmedReqReadPropertyService,
-    IConfirmedReqSubscribeCOVService,
-    IConfirmedReqWritePropertyService,
+    ILayerConfirmedReq,
+    ILayerConfirmedReqService,
+    ILayerConfirmedReqServiceReadProperty,
+    ILayerConfirmedReqServiceSubscribeCOV,
+    ILayerConfirmedReqServiceWriteProperty,
 } from '../../interfaces';
 
 import {
@@ -38,11 +38,11 @@ import {
 export class ConfirmedReqPDU {
     public readonly className: string = 'ConfirmReqPDU';
 
-    public getFromBuffer (buf: Buffer): IConfirmedReqLayer {
+    public getFromBuffer (buf: Buffer): ILayerConfirmedReq {
         const reader = new BACnetReaderUtil(buf);
 
-        let reqMap: IConfirmedReqLayer;
-        let serviceChoice: BACnetConfirmedService, serviceData: IConfirmedReqService;
+        let reqMap: ILayerConfirmedReq;
+        let serviceChoice: BACnetConfirmedService, serviceData: ILayerConfirmedReqService;
         let pduType: number, pduSeg: boolean, pduMor: boolean, pduSa: boolean;
         let invokeId: number, sequenceNumber: number, proposedWindowSize: number;
         let maxResp: number, maxSegs: number;
@@ -107,8 +107,8 @@ export class ConfirmedReqPDU {
         return reqMap;
     }
 
-    private getReadProperty (reader: BACnetReaderUtil): IConfirmedReqReadPropertyService {
-        let serviceData: IConfirmedReqReadPropertyService;
+    private getReadProperty (reader: BACnetReaderUtil): ILayerConfirmedReqServiceReadProperty {
+        let serviceData: ILayerConfirmedReqServiceReadProperty;
         let objId: BACnetObjectId, propId: BACnetUnsignedInteger;
 
         try {
@@ -127,8 +127,8 @@ export class ConfirmedReqPDU {
         return serviceData;
     }
 
-    private getSubscribeCOV (reader: BACnetReaderUtil): IConfirmedReqSubscribeCOVService {
-        let serviceData: IConfirmedReqSubscribeCOVService;
+    private getSubscribeCOV (reader: BACnetReaderUtil): ILayerConfirmedReqServiceSubscribeCOV {
+        let serviceData: ILayerConfirmedReqServiceSubscribeCOV;
         let objId: BACnetObjectId,
             subscriberProcessId: BACnetUnsignedInteger,
             issConfNotif: BACnetUnsignedInteger,
@@ -156,8 +156,8 @@ export class ConfirmedReqPDU {
         return serviceData;
     }
 
-    private getWriteProperty (reader: BACnetReaderUtil): IConfirmedReqWritePropertyService {
-        let serviceData: IConfirmedReqWritePropertyService;
+    private getWriteProperty (reader: BACnetReaderUtil): ILayerConfirmedReqServiceWriteProperty {
+        let serviceData: ILayerConfirmedReqServiceWriteProperty;
         let objId: BACnetObjectId,
             propId: BACnetUnsignedInteger,
             propValues: BACnetTypeBase[],

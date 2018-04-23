@@ -10,10 +10,10 @@ import {
 } from '../../utils';
 
 import {
-    IUnconfirmedReqLayer,
-    IUnconfirmedReqService,
-    IUnconfirmedReqIAmService,
-    IUnconfirmedReqWhoIsService,
+    ILayerUnconfirmedReq,
+    ILayerUnconfirmedReqService,
+    ILayerUnconfirmedReqServiceIAm,
+    ILayerUnconfirmedReqServiceWhoIs,
 } from '../../interfaces';
 
 import {
@@ -41,11 +41,11 @@ import {
 export class UnconfirmedReqPDU {
     public readonly className: string = 'UnconfirmReqPDU';
 
-    public getFromBuffer (buf: Buffer): IUnconfirmedReqLayer {
+    public getFromBuffer (buf: Buffer): ILayerUnconfirmedReq {
         const reader = new BACnetReaderUtil(buf);
 
-        let reqMap: IUnconfirmedReqLayer;
-        let serviceChoice: BACnetUnconfirmedService, serviceData: IUnconfirmedReqService;
+        let reqMap: ILayerUnconfirmedReq;
+        let serviceChoice: BACnetUnconfirmedService, serviceData: ILayerUnconfirmedReqService;
         let pduType: number;
 
         try {
@@ -77,8 +77,8 @@ export class UnconfirmedReqPDU {
         return reqMap;
     }
 
-    private getIAm (reader: BACnetReaderUtil): IUnconfirmedReqIAmService {
-        let serviceData: IUnconfirmedReqIAmService;
+    private getIAm (reader: BACnetReaderUtil): ILayerUnconfirmedReqServiceIAm {
+        let serviceData: ILayerUnconfirmedReqServiceIAm;
         let objId: BACnetObjectId,
             maxAPDUlength: BACnetUnsignedInteger,
             segmSupported: BACnetUnsignedInteger,
@@ -106,8 +106,8 @@ export class UnconfirmedReqPDU {
         return serviceData;
     }
 
-    private getWhoIs (reader: BACnetReaderUtil): IUnconfirmedReqWhoIsService {
-        const serviceData: IUnconfirmedReqWhoIsService = {};
+    private getWhoIs (reader: BACnetReaderUtil): ILayerUnconfirmedReqServiceWhoIs {
+        const serviceData: ILayerUnconfirmedReqServiceWhoIs = {};
 
         return serviceData;
     }

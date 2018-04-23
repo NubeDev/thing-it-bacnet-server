@@ -7,8 +7,7 @@ import { spy, SinonSpy } from 'sinon';
 import { confirmedReqPDU } from './confirmed-req.pdu';
 
 import {
-    IBACnetTypeObjectId,
-    IConfirmedReqReadPropertyService,
+    ILayerConfirmedReqServiceReadProperty,
 } from '../../interfaces';
 
 describe('ConfirmedReqPDU', () => {
@@ -30,7 +29,7 @@ describe('ConfirmedReqPDU', () => {
             expect(newBuf.maxResp).to.equal(0x05);
             expect(newBuf.invokeId).to.equal(0x01);
             expect(newBuf.serviceChoice).to.equal(0x0c);
-            const service = newBuf.service as IConfirmedReqReadPropertyService;
+            const service = newBuf.service as ILayerConfirmedReqServiceReadProperty;
 
             const objId = service.objId;
             const objTag = objId.getTag();
