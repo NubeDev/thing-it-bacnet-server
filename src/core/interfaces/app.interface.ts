@@ -4,7 +4,7 @@ export interface IBACnetAddressInfo {
     port: number;
 }
 
-/*
+/**
  * Configuration
  */
 
@@ -29,6 +29,15 @@ export interface IServerConfig {
 export interface ISequenceConfig {
     thread: number;
     delay: number;
+}
+
+/**
+ * Alias
+ */
+
+export interface IAliasMapElement <T> {
+    alias: string|string[];
+    value?: T;
 }
 
 /**

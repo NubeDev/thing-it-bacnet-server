@@ -1,15 +1,8 @@
-import { OutputSocket } from '../sockets';
 
-export interface IEDEHeaderData {
-    projectName: string;
-    versionOfRefFile: number;
-    authorOfLastChange: string;
-    versionOfLayout: number;
-}
+/**
+ * EDE
+ */
 
-export interface IEDEDevice {
-    outputSoc: OutputSocket;
-}
 export interface IEDEUnit {
     keyname: string;
     deviceInst: number;
@@ -34,4 +27,27 @@ export interface IEDEUnit {
     custUnitMax: number;
     custUnitMin: number;
     custUnitFreq: number;
+}
+
+/**
+ * Custom Units
+ */
+
+export interface ICustomMetadata {
+    alias: string|string[];
+    config: ICustomFunctionConfig;
+}
+
+export interface ICustomFunction <T> {
+    unit: T;
+    config: ICustomFunctionConfig;
+}
+
+export interface ICustomFunctionConfig {
+    // Min value
+    min: number;
+    // Max value
+    max: number;
+    // Frequency
+    freq: number;
 }

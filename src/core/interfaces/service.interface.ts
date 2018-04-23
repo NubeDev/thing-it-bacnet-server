@@ -11,23 +11,23 @@ import {
 /**
  * Unconfirmed Request
  */
- export interface IUnconfirmReq {
- }
- export interface IUnconfirmReqWhoIs {
- }
- export interface IUnconfirmReqWhoIsOptions
-     extends IUnconfirmReq, IUnconfirmReqWhoIs {
- }
- export interface IUnconfirmReqIAm {
-     objId: IBACnetObjectProperty;
-     vendorId: IBACnetObjectProperty;
- }
- export interface IUnconfirmReqCOVNotification {
-     processId: BACnetUnsignedInteger;
-     devObjId: BACnetObjectId;
-     unitObjId: BACnetObjectId;
-     reportedProps: IBACnetObjectProperty[];
- }
+export interface IUnconfirmReq {
+}
+export interface IUnconfirmReqWhoIs {
+}
+export interface IUnconfirmReqWhoIsOptions
+    extends IUnconfirmReq, IUnconfirmReqWhoIs {
+}
+export interface IUnconfirmReqIAm {
+    objId: IBACnetObjectProperty;
+    vendorId: IBACnetObjectProperty;
+}
+export interface IUnconfirmReqCOVNotification {
+    processId: BACnetUnsignedInteger;
+    devObjId: BACnetObjectId;
+    unitObjId: BACnetObjectId;
+    reportedProps: IBACnetObjectProperty[];
+}
 
 
 export interface IServiceUnconfirmReqCOVNotification
