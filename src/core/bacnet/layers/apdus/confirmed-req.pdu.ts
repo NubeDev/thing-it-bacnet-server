@@ -36,8 +36,14 @@ import {
 } from '../../types';
 
 export class ConfirmedReqPDU {
-    public readonly className: string = 'ConfirmReqPDU';
+    public readonly className: string = 'ConfirmedReqPDU';
 
+    /**
+     * getFromBuffer - parses the "APDU Confirmed Request" message.
+     *
+     * @param  {Buffer} buf - js Buffer with "APDU Confirmed Request" message
+     * @return {ILayerConfirmedReq}
+     */
     public getFromBuffer (buf: Buffer): ILayerConfirmedReq {
         const reader = new BACnetReaderUtil(buf);
 
@@ -107,6 +113,12 @@ export class ConfirmedReqPDU {
         return reqMap;
     }
 
+    /**
+     * getReadProperty - parses the "APDU Confirmed Request Read Property" message.
+     *
+     * @param  {BACnetReaderUtil} reader - BACnet reader with "APDU Confirmed Request Read Property" message
+     * @return {ILayerConfirmedReqServiceReadProperty}
+     */
     private getReadProperty (reader: BACnetReaderUtil): ILayerConfirmedReqServiceReadProperty {
         let serviceData: ILayerConfirmedReqServiceReadProperty;
         let objId: BACnetObjectId, propId: BACnetUnsignedInteger;
@@ -127,6 +139,12 @@ export class ConfirmedReqPDU {
         return serviceData;
     }
 
+    /**
+     * getSubscribeCOV - parses the "APDU Confirmed Request Subscribe CoV" message.
+     *
+     * @param  {BACnetReaderUtil} reader - BACnet reader with "APDU Confirmed Request Subscribe CoV" message
+     * @return {ILayerConfirmedReqServiceSubscribeCOV}
+     */
     private getSubscribeCOV (reader: BACnetReaderUtil): ILayerConfirmedReqServiceSubscribeCOV {
         let serviceData: ILayerConfirmedReqServiceSubscribeCOV;
         let objId: BACnetObjectId,
@@ -156,6 +174,12 @@ export class ConfirmedReqPDU {
         return serviceData;
     }
 
+    /**
+     * getWriteProperty - parses the "APDU Confirmed Request Write Property" message.
+     *
+     * @param  {BACnetReaderUtil} reader - BACnet reader with "APDU Confirmed Request Write Property" message
+     * @return {ILayerConfirmedReqServiceWriteProperty}
+     */
     private getWriteProperty (reader: BACnetReaderUtil): ILayerConfirmedReqServiceWriteProperty {
         let serviceData: ILayerConfirmedReqServiceWriteProperty;
         let objId: BACnetObjectId,
@@ -186,9 +210,9 @@ export class ConfirmedReqPDU {
     }
 
     /**
-     * writeReq - writes the massage for confirmed request (header).
+     * writeReq - writes the "APDU Confirmed Request" header.
      *
-     * @param  {IConfirmedReq} params - ConfirmedReq params
+     * @param  {IWriteConfirmedReq} params - "APDU Confirmed Request" write params
      * @return {BACnetWriterUtil}
      */
     public writeReq (params: IWriteConfirmedReq): BACnetWriterUtil {
@@ -210,10 +234,9 @@ export class ConfirmedReqPDU {
     }
 
     /**
-     * writeReadProperty - writes the message for "readProperty" service and returns
-     * the instance of the writer utility.
+     * writeReadProperty - writes the "APDU Confirmed Request Read Property" message.
      *
-     * @param  {IConfirmedReqReadProperty} params - readProperty params
+     * @param  {IWriteConfirmedReqReadProperty} params - "APDU Confirmed Request Read Property" write params
      * @return {BACnetWriterUtil}
      */
     public writeReadProperty (params: IWriteConfirmedReqReadProperty): BACnetWriterUtil {

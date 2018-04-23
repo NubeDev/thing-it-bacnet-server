@@ -30,6 +30,12 @@ export class NPDU {
         this.apdu = apduInst;
     }
 
+    /**
+     * getControlFlags - parses the NPDU control byte.
+     *
+     * @param  {number} mControl - NPDU control byte
+     * @return {ILayerNPDUControl}
+     */
     public getControlFlags (mControl: number): ILayerNPDUControl {
         const noApduMessageType = !!TyperUtil.getBit(mControl, 7);
 
@@ -61,6 +67,12 @@ export class NPDU {
         return mControlMap;
     }
 
+    /**
+     * getFromBuffer - parses the NPDU message.
+     *
+     * @param  {Buffer} buf - js Buffer with NPDU message
+     * @return {ILayerNPDU}
+     */
     public getFromBuffer (buf: Buffer): ILayerNPDU {
         const readerUtil = new BACnetReaderUtil(buf);
 
@@ -132,11 +144,10 @@ export class NPDU {
     }
 
     /**
-     * writeNPDULayer - writes the message for NPDU layer and returns the instance
-     * of the writer utility.
+     * writeNPDULayer - writes the "NPDU" layer message.
      *
-     * @param  {INPDULayer} params - NPDU layer params
-     * @return {BACnetWriterUtil}
+     * @param  {IWriteNPDU} params - "NPDU" write params
+     * @return {BACnetWriterUtil} - instance of the writer utility
      */
     public writeNPDULayer (params: IWriteNPDU): BACnetWriterUtil {
         let writer = new BACnetWriterUtil();
@@ -185,11 +196,10 @@ export class NPDU {
     }
 
     /**
-     * writeNPDULayerControl - writes the message for NPDU layer control byte and
-     * returns the instance of the writer utility.
+     * writeNPDULayerControl - writes the "control byte" of "NPDU" layer.
      *
-     * @param  {INPDULayerControl} params - NPDU layer control params
-     * @return {BACnetWriterUtil}
+     * @param  {IWriteNPDUControl} params - "NPDU" write params for "control byte"
+     * @return {BACnetWriterUtil} - instance of the writer utility
      */
     public writeNPDULayerControl (params: IWriteNPDUControl): BACnetWriterUtil {
         const writer = new BACnetWriterUtil();

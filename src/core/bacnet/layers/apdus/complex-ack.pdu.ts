@@ -36,6 +36,12 @@ import {
 export class ComplexACKPDU {
     public readonly className: string = 'ComplexACKPDU';
 
+    /**
+     * getFromBuffer - parses the "APDU Complex ACK" message.
+     *
+     * @param  {Buffer} buf - js Buffer with "APDU Complex ACK" message
+     * @return {ILayerComplexACK}
+     */
     private getFromBuffer (buf: Buffer): ILayerComplexACK {
         const reader = new BACnetReaderUtil(buf);
 
@@ -88,6 +94,12 @@ export class ComplexACKPDU {
         return reqMap;
     }
 
+    /**
+     * getReadProperty - parses the "APDU Complex ACK Read Property" message.
+     *
+     * @param  {BACnetReaderUtil} reader - BACnet reader with "APDU Complex ACK Read Property" message
+     * @return {ILayerComplexACKServiceReadProperty}
+     */
     private getReadProperty (reader: BACnetReaderUtil): ILayerComplexACKServiceReadProperty {
         let serviceData: ILayerComplexACKServiceReadProperty;
 
@@ -124,9 +136,9 @@ export class ComplexACKPDU {
     }
 
     /**
-     * writeReq - writes the massage for complex ack (header).
+     * writeReq - writes the "APDU Complex ACK" header.
      *
-     * @param  {IComplexACK} params - ComplexACK params
+     * @param  {IWriteComplexACK} params - "APDU Complex ACK" write params
      * @return {BACnetWriterUtil}
      */
     public writeReq (params: IWriteComplexACK): BACnetWriterUtil {
@@ -156,10 +168,9 @@ export class ComplexACKPDU {
     }
 
     /**
-     * writeReadProperty - writes the message for ReadProperty service and
-     * returns the instance of the writer utility.
+     * writeReq - writes the "APDU Complex ACK Read Property" message.
      *
-     * @param  {IComplexACKReadProperty} params - ReadProperty params
+     * @param  {IWriteComplexACKReadProperty} params - "APDU Complex ACK Read Property" write params
      * @return {BACnetWriterUtil}
      */
     public writeReadProperty (params: IWriteComplexACKReadProperty): BACnetWriterUtil {

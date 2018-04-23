@@ -25,6 +25,12 @@ export class BLVC {
         this.npdu = npduInst;
     }
 
+    /**
+     * getFromBuffer - parses the "BLVC" message.
+     *
+     * @param  {Buffer} buf - js Buffer with "BLVC" message
+     * @return {ILayerBLVC}
+     */
     public getFromBuffer (buf: Buffer): ILayerBLVC {
         const readerUtil = new BACnetReaderUtil(buf);
 
@@ -55,11 +61,10 @@ export class BLVC {
     }
 
     /**
-     * writeBLVCLayer - writes the message for BLVC layer and
-     * returns the instance of the writer utility.
+     * writeBLVCLayer - writes the "BLVC" layer message.
      *
-     * @param  {IBLVCLayer} params - BLVC layer params
-     * @return {BACnetWriterUtil}
+     * @param  {IWriteBLVC} params - "BLVC" write params
+     * @return {BACnetWriterUtil} - instance of the writer utility
      */
     public writeBLVCLayer (params: IWriteBLVC): BACnetWriterUtil {
         let writer = new BACnetWriterUtil();

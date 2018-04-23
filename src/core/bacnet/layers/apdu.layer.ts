@@ -24,6 +24,12 @@ import {
 export class APDU {
     public readonly className: string = 'APDU';
 
+    /**
+     * getFromBuffer - parses the "APDU" message.
+     *
+     * @param  {Buffer} buf - js Buffer with "APDU" message
+     * @return {ILayerAPDU}
+     */
     public getFromBuffer (buf: Buffer): ILayerAPDU {
         const reader = new BACnetReaderUtil(buf);
 
