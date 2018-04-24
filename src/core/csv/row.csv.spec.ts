@@ -33,6 +33,8 @@ describe('CSVRow', () => {
         it('should destroy cell storage', () => {
             const row = new CSVRow();
 
+            row.destroy();
+
             expect(row['storage']).to.be.null;
         });
     });
