@@ -35,6 +35,20 @@ export class AliasMap <T> {
     }
 
     /**
+     * destroy - destroys the current map of aliases. Steps:
+     * - call "clear" method
+     * - remove value storage
+     * - remove alias storage
+     *
+     * @return {void}
+     */
+    public destroy (): void {
+        this.clear();
+        this.storage = null;
+        this.aliases = null;
+    }
+
+    /**
      * size - size of value storage.
      *
      * @type {number}
