@@ -91,37 +91,69 @@ export class CSVRow {
      * @return {void}
      */
     public fromString (strRow: string) {
-        const rgxValid1 = /^\s*(?:'[^'\\]*(?:\\[\S\s][^'\\]*)*'|"[^"\\]*(?:\\[\S\s][^"\\]*)*"|[^,'"\s\\]*(?:\s+[^,'"\s\\]+)*)\s*(?:,\s*(?:'[^'\\]*(?:\\[\S\s][^'\\]*)*'|"[^"\\]*(?:\\[\S\s][^"\\]*)*"|[^,'"\s\\]*(?:\s+[^,'"\s\\]+)*)\s*)*$/;
-        const rgxValid2 = /^\s*(?:'[^'\\]*(?:\\[\S\s][^'\\]*)*'|"[^"\\]*(?:\\[\S\s][^"\\]*)*"|[^;'"\s\\]*(?:\s+[^;'"\s\\]+)*)\s*(?:;\s*(?:'[^'\\]*(?:\\[\S\s][^'\\]*)*'|"[^"\\]*(?:\\[\S\s][^"\\]*)*"|[^;'"\s\\]*(?:\s+[^;'"\s\\]+)*)\s*)*$/;
+        const isValid = _.some(CSVCellSeparators, (separator) => {
+            return this.validateCSV(strRow, separator);
+        });
 
-        if (!rgxValid1.test(strRow) && !rgxValid2.test(strRow)) {
+        if (!isValid) {
             throw new ApiError('CSVRow - fromString: Input string must have valid format');
         }
 
-        const rgxValue1 = /(?!\s*$)\s*(?:'([^'\\]*(?:\\[\S\s][^'\\]*)*)'|"([^"\\]*(?:\\[\S\s][^"\\]*)*)"|([^,'"\s\\]*(?:\s+[^,'"\s\\]+)*))\s*(?:,|$)/g;
-        const cells1 = this.CSVtoArray(strRow, rgxValue1);
+        // Get rows (sets of cells) for all separators
+        const rows = _.map(CSVCellSeparators, (separator) => {
+            return this.CSVToArray(strRow, separator);
+        });
 
-        const rgxValue2 = /(?!\s*$)\s*(?:'([^'\\]*(?:\\[\S\s][^'\\]*)*)'|"([^"\\]*(?:\\[\S\s][^"\\]*)*)"|([^;'"\s\\]*(?:\s+[^;'"\s\\]+)*))\s*(?:;|$)/g;
-        const cells2 = this.CSVtoArray(strRow, rgxValue2);
+        let cells: string[], maxCells: number = 0;
+        // Select row (set of cells) with the largest number of cells
+        _.map(rows, (row) => {
+            if (maxCells > row.length) {
+                return;
+            }
 
-        const cells = cells1.length > cells2.length ? cells1 : cells2;
+            maxCells = row.length;
+            cells = row;
+        });
 
+        // Set cells in cell storage
         _.map(cells, (value, index) => {
             this.storage.set(`${index}`, value);
         });
     }
 
     /**
-     * CSVtoArray - parses the CSV row by specific CSV regular expression and
+     * validateCSV - validates CSV row (string representation).
+     *
+     * @param  {string} strRow - CSV row
+     * @param  {string} separator - CSV separator
+     * @return {boolean} - result of validation
+     */
+    private validateCSV (strRow: string, separator: string): boolean {
+        const rgxValidStr = `^\\s*(?:'[^'\\\\]*(?:\\\\[\\S\\s][^'\\\\]*)*'|\\"[^\\"\\\\]*`
+            + `(?:\\\\[\\S\\s][^\\"\\\\]*)*\\"|[^${separator}'\\"\\s\\\\]*(?:\\s+[^${separator}'\\"\\s\\\\]+)*)\\s*`
+            + `(?:${separator}\\s*(?:'[^'\\\\]*(?:\\\\[\\S\\s][^'\\\\]*)*'|\\"[^\\"\\\\]*`
+            + `(?:\\\\[\\S\\s][^\\"\\\\]*)*\\"|[^${separator}'\\"\\s\\\\]*(?:\\s+[^${separator}'\\"\\s\\\\]+)*)\\s*)*$`;
+        const rgxValid = new RegExp(rgxValidStr);
+
+        return rgxValid.test(strRow);
+    }
+
+    /**
+     * CSVToArray - parses the CSV row by specific CSV regular expression and
      * creates an array of CSV cells from result of parsing.
      *
      * @param  {string} strRow - CSV row
-     * @param  {RegExp} rgxValue - CSV regular expression
+     * @param  {string} separator - CSV separator
      * @return {string[]} - array of CSV cells
      */
-    private CSVtoArray (strRow: string, rgxValue: RegExp): string[] {
+    private CSVToArray (strRow: string, separator: string): string[] {
+        const rgxCSVStr = `(?!\\s*$)\\s*(?:'([^'\\\\]*(?:\\\\[\\S\\s][^'\\\\]*)*)'|`
+            + `\\"([^\\"\\\\]*(?:\\\\[\\S\\s][^\\"\\\\]*)*)\\"|([^${separator}'`
+            + `\\"\\s\\\\]*(?:\\s+[^${separator}'\\"\\s\\\\]+)*))\\s*(?:${separator}|$)`;
+        const rgxCSV = new RegExp(rgxCSVStr, 'g');
+
         const cells = [];
-        strRow.replace(rgxValue, (m0, m1, m2, m3) => {
+        strRow.replace(rgxCSV, (m0, m1, m2, m3) => {
             if (m1) {
                 const value = m1.replace(/\\'/g, `'`);
                 cells.push(value);
@@ -134,9 +166,9 @@ export class CSVRow {
         });
 
         // Handle special case of empty last value.
-        if (/,\s*$/.test(strRow)) {
+        if (new RegExp(`${separator}\\s*$`).test(strRow)) {
             cells.push('');
-        };
+        }
 
         return cells;
     }
