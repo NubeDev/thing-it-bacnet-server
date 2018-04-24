@@ -355,4 +355,42 @@ describe('Alias', () => {
             expect(aliasStorage['aliases']).to.be.null;
         });
     });
+
+    describe('size', () => {
+        it('should return 0 if value storage is empty', () => {
+            const aliasStorage = new AliasMap<string>([
+                {
+                    alias: 'el1',
+                },
+                {
+                    alias: ['el4', 'el5'],
+                },
+            ]);
+
+            expect(aliasStorage['storage'].size).to.equal(0);
+            expect(aliasStorage['aliases'].length).to.equal(2);
+
+            expect(aliasStorage.size).to.equal(0);
+        });
+
+        it('should return size of value storage if value storage is not empty', () => {
+            const aliasStorage = new AliasMap<string>([
+                {
+                    alias: 'el1',
+                    value: 'value 1',
+                },
+                {
+                    alias: ['el4', 'el5'],
+                },
+                {
+                    alias: ['el6'],
+                },
+            ]);
+
+            expect(aliasStorage['storage'].size).to.equal(1);
+            expect(aliasStorage['aliases'].length).to.equal(3);
+
+            expect(aliasStorage.size).to.equal(1);
+        });
+    });
 });
