@@ -127,7 +127,7 @@ describe('Alias', () => {
     });
 
     describe('set', () => {
-        it('should throw error if alias is not exist', () => {
+        it('should create new alias and set value if alias is not exist', () => {
             const aliasStorage = new AliasMap<string>([
                 {
                     alias: 'el1',
@@ -137,12 +137,12 @@ describe('Alias', () => {
                 },
             ]);
 
-            try {
-                aliasStorage.set('el2', 'hello!');
-            } catch (error) {
-                expect(error.name).to.equal('ApiError');
-                expect(error.message).to.equal('AliasMap - set: Alias is not exist!');
-            }
+            expect(aliasStorage.get('el2')).to.be.undefined;
+            expect(aliasStorage.has('el2')).to.be.false;
+
+            aliasStorage.set('el2', 'New alias!');
+            expect(aliasStorage['aliases'].length).to.equal(3);
+            expect(aliasStorage.get('el2')).to.equal('New alias!');
         });
 
         it('should set value in empty data storage with multitag', () => {
