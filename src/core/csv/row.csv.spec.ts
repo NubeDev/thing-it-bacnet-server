@@ -28,4 +28,12 @@ describe('CSVRow', () => {
             expect(row['storage'].size).to.equal(3);
         });
     });
+
+    describe('destroy', () => {
+        it('should destroy cell storage', () => {
+            const row = new CSVRow();
+
+            expect(row['storage']).to.be.null;
+        });
+    });
 });
