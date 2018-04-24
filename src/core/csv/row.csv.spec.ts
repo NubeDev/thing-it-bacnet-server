@@ -188,4 +188,30 @@ describe('CSVRow', () => {
             expect(row.size).to.equal(3);
         });
     });
+
+    describe('validateCSV', () => {
+        it('should return true if CSV string is valid (separator - comma)', () => {
+            const row = new CSVRow();
+            const separator = `,`;
+
+            const csvRowStr1 = `1_Default device name_DeviceManager_HmiLWeb_segCommStatusFb,1,`
+                + `DeviceManager_HmiLWeb_segCommStatusFb,2,0,"0:OK, 1: left not ok, 2: `
+                + `right not ok, 3: l+r not ok, 4: device ",,,,,,,,,,,,,,200,800,`;
+            expect(row['validateCSV'](csvRowStr1, separator), `CSV string 1`).to.be.true;
+
+            const csvRowStr2 = `# Proposal_Engineering-Data-Exchange - B.I.G.-EU,,,,,,,,,,,,,,,,,,,,,`;
+            expect(row['validateCSV'](csvRowStr2, separator), `CSV string 2`).to.be.true;
+
+            const csvRowStr3 = `Project_Name,Thing-it,,,,,,,,,,,,,,,,,,,,`;
+            expect(row['validateCSV'](csvRowStr3, separator), `CSV string 3`).to.be.true;
+
+            const csvRowStr4 = `# keyname,device obj.-instance,object-name,object-type,object-instance,description,`
+                + `present-value-default,min-present-value,max-present-value,commandable,supports COV,hi-limit,`
+                + `low-limit,state-text-reference,unit-code,vendor-specific-address,cust.-unit-type,`
+                + `cust.-unit-id,cust.-unit-fn,cust.-min.-value,cust.-max.-value,cust.-freq`;
+            expect(row['validateCSV'](csvRowStr3, separator), `CSV string 4`).to.be.true;
+
+            expect(row.size).to.equal(0);
+        });
+    });
 });
