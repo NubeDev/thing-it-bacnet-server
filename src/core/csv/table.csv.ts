@@ -132,7 +132,7 @@ export class CSVTable {
      */
     public toString (): string {
         const maxLength: number = _.reduce(this.rows, (max, cur) => {
-            return max >= cur.lenght ? max : cur.lenght;
+            return max >= cur.size ? max : cur.size;
         }, 0);
 
         const rowString = _.map(this.rows, (row) => {

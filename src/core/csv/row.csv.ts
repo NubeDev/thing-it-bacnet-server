@@ -64,11 +64,11 @@ export class CSVRow {
     }
 
     /**
-     * lenght - returns the lenght of the row.
+     * suze - returns the size of the cell storage.
      *
-     * @return {number}
+     * @type {number}
      */
-    public get lenght (): number {
+    public get size (): number {
         return this.storage.size;
     }
 
