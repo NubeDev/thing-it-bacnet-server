@@ -116,7 +116,7 @@ export class AliasMap <T> {
      * @param  {string} aliasTag - alias
      * @return {AliasUtil} - alias instance
      */
-    private getAlias (aliasTag: string): Alias {
+    public getAlias (aliasTag: string): Alias {
         return _.find(this.aliases, (alias) => alias.has(aliasTag));
     }
 
