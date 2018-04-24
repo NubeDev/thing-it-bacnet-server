@@ -8,6 +8,7 @@ export const CSVCellSeparatorMain = ';';
 export const CSVCellSeparators = [ CSVCellSeparatorMain, ',' ];
 
 export class CSVRow {
+    public readonly className: string = 'CSVRow';
     private storage: AliasMap<string>;
 
     constructor (strRow: string = '') {
@@ -47,6 +48,11 @@ export class CSVRow {
      */
     public setCellValue (cellAlias: number|string, cellValue: string): CSVRow {
         const newCellValue: string = this.escapeString(cellValue);
+
+        if (!this.storage.has(`${cellAlias}`)) {
+            throw new ApiError(`${this.className} - setCellValue: Alias does not exist!`);
+        }
+
         this.storage.set(`${cellAlias}`, newCellValue);
         return this;
     }
