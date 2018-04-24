@@ -35,6 +35,29 @@ export class AliasMap <T> {
     }
 
     /**
+     * destroy - destroys the current map of aliases. Steps:
+     * - call "clear" method
+     * - remove value storage
+     * - remove alias storage
+     *
+     * @return {void}
+     */
+    public destroy (): void {
+        this.clear();
+        this.storage = null;
+        this.aliases = null;
+    }
+
+    /**
+     * size - size of value storage.
+     *
+     * @type {number}
+     */
+    get size () {
+        return this.storage.size;
+    }
+
+    /**
      * has - returns "true" if value from internal storage exists.
      *
      * @param  {string} aliasTag - alias
@@ -64,13 +87,29 @@ export class AliasMap <T> {
      * @return {void}
      */
     public set (aliasTag: string, value: T): void {
-        const aliasId = this.getAliasId(aliasTag);
+        let aliasId = this.getAliasId(aliasTag);
 
         if (_.isNil(aliasId)) {
-            throw new ApiError('AliasMap - set: Alias is not exist!');
+            const newAlias = this.addAlias(`${aliasTag}`);
+            aliasId = newAlias.id;
         }
 
         this.storage.set(aliasId, value);
+    }
+
+    /**
+     * set - sets the value in internal storage by alias tag.
+     *
+     * @return {void}
+     */
+    public clear (): void {
+        this.storage.clear();
+
+        _.map(this.aliases, (alias) => {
+            alias.destroy();
+        });
+
+        this.aliases = [];
     }
 
     /**
@@ -78,11 +117,12 @@ export class AliasMap <T> {
      * internal aliases array.
      *
      * @param  {string|string[]} aliases - alias or lias of aliases
-     * @return {void}
+     * @return {Alias} - new alias
      */
-    public addAlias (aliases: string|string[]): void {
+    public addAlias (aliases: string|string[]): Alias {
         const alias = new Alias(aliases);
         this.aliases.push(alias);
+        return alias;
     }
 
     /**
@@ -91,7 +131,7 @@ export class AliasMap <T> {
      * @param  {string} aliasTag - alias
      * @return {AliasUtil} - alias instance
      */
-    private getAlias (aliasTag: string): Alias {
+    public getAlias (aliasTag: string): Alias {
         return _.find(this.aliases, (alias) => alias.has(aliasTag));
     }
 
