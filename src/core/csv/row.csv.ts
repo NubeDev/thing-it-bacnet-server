@@ -2,15 +2,16 @@ import * as _ from 'lodash';
 
 import { ApiError } from '../errors';
 
+import { AliasMap } from '../alias';
+
 export const CSVCellSeparatorMain = ';';
 export const CSVCellSeparators = [ CSVCellSeparatorMain, ',' ];
 
 export class CSVRow {
-    private aliases: Map<string, number>;
-    private cells: Array<string>;
+    private storage: AliasMap<string>;
 
     constructor (strRow: string = '') {
-        this.aliases = new Map();
+        this.storage = new AliasMap();
         this.fromString(strRow);
     }
 
@@ -20,46 +21,33 @@ export class CSVRow {
      * @return {void}
      */
     public destroy (): void {
-        this.aliases.clear();
-        this.aliases = null;
-        this.cells = null;
+        this.storage.destroy();
+        this.storage = null;
     }
 
     /**
-     * setCellAlias - sets the alias to the specific cell.
+     * setCellAlias - sets the new alias by cell alias.
      *
-     * @param  {number} cellNumber - cell ID
-     * @param  {string} cellAlias - cell alias
+     * @param  {number} cellAlias - cell alias
+     * @param  {string} newCellAlias - new cell alias
      * @return {CSVRow}
      */
-    public setCellAlias (cellNumber: number, cellAlias: string): CSVRow {
-        if (this.aliases.has(cellAlias)) {
-            throw new ApiError(`CSVRow - setAlias: Alias ${cellAlias} is already exist!`);
-        }
-
-        this.aliases.set(cellAlias, cellNumber);
+    public setCellAlias (cellAlias: number|string, newCellAlias: string): CSVRow {
+        const alias = this.storage.getAlias(`${cellAlias}`);
+        alias.add(newCellAlias);
         return this;
     }
 
     /**
-     * setCellValue - sets the values in a cell by the cell ID or cell alias.
+     * setCellValue - sets the values in a cell by the cell alias.
      *
-     * @param  {number|string} cellInst - cell ID of cell alias
-     * @param  {number|string} cellValue - new valuse of cell
+     * @param  {number|string} cellAlias - cell alias
+     * @param  {string} cellValue - new value of cell
      * @return {CSVRow}
      */
-    public setCellValue (cellInst: number|string, cellValue: string): CSVRow {
-        let cellNumber: number = _.isString(cellInst)
-            ? this.aliases.get(cellInst)
-            : cellInst;
-
-        if (!_.isNumber(cellNumber) || !_.isFinite(cellNumber)) {
-            throw new ApiError(`CSVRow - setValue: Cell "${cellInst}" is not exist!`);
-        }
-
+    public setCellValue (cellAlias: number|string, cellValue: string): CSVRow {
         const newCellValue: string = this.escapeString(cellValue);
-
-        this.cells[cellNumber] = newCellValue;
+        this.storage.set(`${cellAlias}`, newCellValue);
         return this;
     }
 
@@ -67,15 +55,11 @@ export class CSVRow {
      * getCellValue - returns the values by cell ID or cell alias. If cell is empty
      * method will return the empty string value.
      *
-     * @param  {number|string} cellInst - cell ID of cell alias
+     * @param  {number|string} cellAlias - cell alias
      * @return {number|string}
      */
-    public getCellValue (cellInst: number|string): string {
-        let cellNumber: number = _.isString(cellInst)
-            ? this.aliases.get(cellInst)
-            : cellInst;
-
-        const cellValue = this.cells[cellNumber];
+    public getCellValue (cellAlias: number|string): string {
+        const cellValue = this.storage.get(`${cellAlias}`);
         return _.isNil(cellValue) ? '' : cellValue;
     }
 
@@ -85,7 +69,7 @@ export class CSVRow {
      * @return {number}
      */
     public get lenght (): number {
-        return this.cells.length;
+        return this.storage.size;
     }
 
     /**
@@ -110,7 +94,9 @@ export class CSVRow {
 
         const cells = cells1.length > cells2.length ? cells1 : cells2;
 
-        this.cells = cells;
+        _.map(cells, (value, index) => {
+            this.storage.set(`${index}`, value);
+        });
     }
 
     /**
@@ -152,9 +138,14 @@ export class CSVRow {
     public toString (numOfCells: number): string {
         const rowArray: Array<number|string> = new Array(numOfCells).fill('');
 
-        for (const arrIndex in this.cells) {
-            if (!this.cells.hasOwnProperty(arrIndex)) { continue; }
-            rowArray[arrIndex] = this.cells[arrIndex];
+        for (let i = 0; i < numOfCells; i++) {
+            const cellValue = this.storage.get(`${i}`);
+
+            if (_.isNil(cellValue)) {
+                continue;
+            }
+
+            rowArray[i] = cellValue;
         }
 
         return rowArray.join(CSVCellSeparatorMain);
