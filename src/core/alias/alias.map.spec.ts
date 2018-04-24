@@ -271,4 +271,46 @@ describe('Alias', () => {
             expect(aliasStorage['aliases'].length).to.equal(3);
         });
     });
+
+    describe('clear', () => {
+        it('should clear alias map if it has aliases but does not have values', () => {
+            const aliasStorage = new AliasMap<string>([
+                {
+                    alias: 'el1',
+                },
+                {
+                    alias: ['el4', 'el5'],
+                },
+            ]);
+
+            expect(aliasStorage['storage'].size).to.equal(0);
+            expect(aliasStorage['aliases'].length).to.equal(2);
+
+            aliasStorage.clear();
+            expect(aliasStorage['storage'].size).to.equal(0);
+            expect(aliasStorage['aliases'].length).to.equal(0);
+        });
+
+        it('should clear alias map if it has values and aliases', () => {
+            const aliasStorage = new AliasMap<string>([
+                {
+                    alias: 'el1',
+                    value: 'value 1',
+                },
+                {
+                    alias: ['el4', 'el5'],
+                },
+                {
+                    alias: ['el6'],
+                },
+            ]);
+
+            expect(aliasStorage['storage'].size).to.equal(1);
+            expect(aliasStorage['aliases'].length).to.equal(3);
+
+            aliasStorage.clear();
+            expect(aliasStorage['storage'].size).to.equal(0);
+            expect(aliasStorage['aliases'].length).to.equal(0);
+        });
+    });
 });
