@@ -162,4 +162,30 @@ describe('CSVRow', () => {
             expect(row.getCellValue('alias2')).to.equal('cell4');
         });
     });
+
+    describe('size', () => {
+        it('should return 0 if value storage is empty', () => {
+            const row = new CSVRow();
+
+            expect(row['storage'].size).to.equal(0);
+
+            expect(row.size).to.equal(0);
+        });
+
+        it('should return size of cell storage if value storage is not empty (separator - comma)', () => {
+            const row = new CSVRow('cell1,cell2');
+
+            expect(row['storage'].size).to.equal(2);
+
+            expect(row.size).to.equal(2);
+        });
+
+        it('should return size of cell storage if value storage is not empty (separator - semicolon)', () => {
+            const row = new CSVRow('cell3;cell4;cell5');
+
+            expect(row['storage'].size).to.equal(3);
+
+            expect(row.size).to.equal(3);
+        });
+    });
 });
