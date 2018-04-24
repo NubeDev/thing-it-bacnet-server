@@ -73,10 +73,11 @@ export class AliasMap <T> {
      * @return {void}
      */
     public set (aliasTag: string, value: T): void {
-        const aliasId = this.getAliasId(aliasTag);
+        let aliasId = this.getAliasId(aliasTag);
 
         if (_.isNil(aliasId)) {
-            throw new ApiError('AliasMap - set: Alias is not exist!');
+            const newAlias = this.addAlias(`${aliasTag}`);
+            aliasId = newAlias.id;
         }
 
         this.storage.set(aliasId, value);
