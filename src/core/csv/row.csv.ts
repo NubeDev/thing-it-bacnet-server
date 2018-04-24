@@ -35,7 +35,13 @@ export class CSVRow {
      */
     public setCellAlias (cellAlias: number|string, newCellAlias: string): CSVRow {
         const alias = this.storage.getAlias(`${cellAlias}`);
+
+        if (_.isNil(alias)) {
+            throw new ApiError(`${this.className} - setCellAlias: Alias does not exist!`);
+        }
+
         alias.add(newCellAlias);
+
         return this;
     }
 
@@ -47,11 +53,11 @@ export class CSVRow {
      * @return {CSVRow}
      */
     public setCellValue (cellAlias: number|string, cellValue: string): CSVRow {
-        const newCellValue: string = this.escapeString(cellValue);
-
         if (!this.storage.has(`${cellAlias}`)) {
             throw new ApiError(`${this.className} - setCellValue: Alias does not exist!`);
         }
+
+        const newCellValue: string = this.escapeString(cellValue);
 
         this.storage.set(`${cellAlias}`, newCellValue);
         return this;
