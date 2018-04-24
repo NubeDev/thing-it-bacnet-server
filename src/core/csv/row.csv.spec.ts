@@ -73,4 +73,41 @@ describe('CSVRow', () => {
             expect(row.getCellValue(2)).to.equal('cell5');
         });
     });
+
+    describe('setCellValue', () => {
+        it('should throw error if alias is not exist', () => {
+            const row = new CSVRow();
+
+            let testError: any = {};
+
+            try {
+                row.setCellValue(2, 'hello!');
+            } catch (error) {
+                testError = error;
+            }
+
+            expect(testError.name).to.equal('ApiError');
+            expect(testError.message).to.equal('CSVRow - setCellValue: Alias does not exist!');
+        });
+
+        it('should set new value if value exist in cell storage (separator - comma)', () => {
+            const row = new CSVRow('cell1,cell2');
+
+            expect(row.getCellValue(0)).to.equal('cell1');
+
+            row.setCellValue(0, 'new cell value');
+
+            expect(row.getCellValue(0)).to.equal('new cell value');
+        });
+
+        it('should set new value if value exist in cell storage (separator - semicolon)', () => {
+            const row = new CSVRow('cell3;cell4;cell5');
+
+            expect(row.getCellValue(0)).to.equal('cell3');
+
+            row.setCellValue(0, 'very new cell value');
+
+            expect(row.getCellValue(0)).to.equal('very new cell value');
+        });
+    });
 });
