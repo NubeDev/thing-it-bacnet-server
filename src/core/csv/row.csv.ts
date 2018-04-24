@@ -2,15 +2,17 @@ import * as _ from 'lodash';
 
 import { ApiError } from '../errors';
 
+import { AliasMap } from '../alias';
+
 export const CSVCellSeparatorMain = ';';
 export const CSVCellSeparators = [ CSVCellSeparatorMain, ',' ];
 
 export class CSVRow {
-    private aliases: Map<string, number>;
-    private cells: Array<string>;
+    public readonly className: string = 'CSVRow';
+    private storage: AliasMap<string>;
 
     constructor (strRow: string = '') {
-        this.aliases = new Map();
+        this.storage = new AliasMap();
         this.fromString(strRow);
     }
 
@@ -20,46 +22,44 @@ export class CSVRow {
      * @return {void}
      */
     public destroy (): void {
-        this.aliases.clear();
-        this.aliases = null;
-        this.cells = null;
+        this.storage.destroy();
+        this.storage = null;
     }
 
     /**
-     * setCellAlias - sets the alias to the specific cell.
+     * setCellAlias - sets the new alias by cell alias.
      *
-     * @param  {number} cellNumber - cell ID
-     * @param  {string} cellAlias - cell alias
+     * @param  {number} cellAlias - cell alias
+     * @param  {string} newCellAlias - new cell alias
      * @return {CSVRow}
      */
-    public setCellAlias (cellNumber: number, cellAlias: string): CSVRow {
-        if (this.aliases.has(cellAlias)) {
-            throw new ApiError(`CSVRow - setAlias: Alias ${cellAlias} is already exist!`);
+    public setCellAlias (cellAlias: number|string, newCellAlias: string): CSVRow {
+        const alias = this.storage.getAlias(`${cellAlias}`);
+
+        if (_.isNil(alias)) {
+            throw new ApiError(`${this.className} - setCellAlias: Alias does not exist!`);
         }
 
-        this.aliases.set(cellAlias, cellNumber);
+        alias.add(newCellAlias);
+
         return this;
     }
 
     /**
-     * setCellValue - sets the values in a cell by the cell ID or cell alias.
+     * setCellValue - sets the values in a cell by the cell alias.
      *
-     * @param  {number|string} cellInst - cell ID of cell alias
-     * @param  {number|string} cellValue - new valuse of cell
+     * @param  {number|string} cellAlias - cell alias
+     * @param  {string} cellValue - new value of cell
      * @return {CSVRow}
      */
-    public setCellValue (cellInst: number|string, cellValue: string): CSVRow {
-        let cellNumber: number = _.isString(cellInst)
-            ? this.aliases.get(cellInst)
-            : cellInst;
-
-        if (!_.isNumber(cellNumber) || !_.isFinite(cellNumber)) {
-            throw new ApiError(`CSVRow - setValue: Cell "${cellInst}" is not exist!`);
+    public setCellValue (cellAlias: number|string, cellValue: string): CSVRow {
+        if (!this.storage.has(`${cellAlias}`)) {
+            throw new ApiError(`${this.className} - setCellValue: Alias does not exist!`);
         }
 
         const newCellValue: string = this.escapeString(cellValue);
 
-        this.cells[cellNumber] = newCellValue;
+        this.storage.set(`${cellAlias}`, newCellValue);
         return this;
     }
 
@@ -67,25 +67,21 @@ export class CSVRow {
      * getCellValue - returns the values by cell ID or cell alias. If cell is empty
      * method will return the empty string value.
      *
-     * @param  {number|string} cellInst - cell ID of cell alias
+     * @param  {number|string} cellAlias - cell alias
      * @return {number|string}
      */
-    public getCellValue (cellInst: number|string): string {
-        let cellNumber: number = _.isString(cellInst)
-            ? this.aliases.get(cellInst)
-            : cellInst;
-
-        const cellValue = this.cells[cellNumber];
+    public getCellValue (cellAlias: number|string): string {
+        const cellValue = this.storage.get(`${cellAlias}`);
         return _.isNil(cellValue) ? '' : cellValue;
     }
 
     /**
-     * lenght - returns the lenght of the row.
+     * suze - returns the size of the cell storage.
      *
-     * @return {number}
+     * @type {number}
      */
-    public get lenght (): number {
-        return this.cells.length;
+    public get size (): number {
+        return this.storage.size;
     }
 
     /**
@@ -95,35 +91,69 @@ export class CSVRow {
      * @return {void}
      */
     public fromString (strRow: string) {
-        const rgxValid1 = /^\s*(?:'[^'\\]*(?:\\[\S\s][^'\\]*)*'|"[^"\\]*(?:\\[\S\s][^"\\]*)*"|[^,'"\s\\]*(?:\s+[^,'"\s\\]+)*)\s*(?:,\s*(?:'[^'\\]*(?:\\[\S\s][^'\\]*)*'|"[^"\\]*(?:\\[\S\s][^"\\]*)*"|[^,'"\s\\]*(?:\s+[^,'"\s\\]+)*)\s*)*$/;
-        const rgxValid2 = /^\s*(?:'[^'\\]*(?:\\[\S\s][^'\\]*)*'|"[^"\\]*(?:\\[\S\s][^"\\]*)*"|[^;'"\s\\]*(?:\s+[^;'"\s\\]+)*)\s*(?:;\s*(?:'[^'\\]*(?:\\[\S\s][^'\\]*)*'|"[^"\\]*(?:\\[\S\s][^"\\]*)*"|[^;'"\s\\]*(?:\s+[^;'"\s\\]+)*)\s*)*$/;
+        const isValid = _.some(CSVCellSeparators, (separator) => {
+            return this.validateCSV(strRow, separator);
+        });
 
-        if (!rgxValid1.test(strRow) && !rgxValid2.test(strRow)) {
+        if (!isValid) {
             throw new ApiError('CSVRow - fromString: Input string must have valid format');
         }
 
-        const rgxValue1 = /(?!\s*$)\s*(?:'([^'\\]*(?:\\[\S\s][^'\\]*)*)'|"([^"\\]*(?:\\[\S\s][^"\\]*)*)"|([^,'"\s\\]*(?:\s+[^,'"\s\\]+)*))\s*(?:,|$)/g;
-        const cells1 = this.CSVtoArray(strRow, rgxValue1);
+        // Get rows (sets of cells) for all separators
+        const rows = _.map(CSVCellSeparators, (separator) => {
+            return this.CSVToArray(strRow, separator);
+        });
 
-        const rgxValue2 = /(?!\s*$)\s*(?:'([^'\\]*(?:\\[\S\s][^'\\]*)*)'|"([^"\\]*(?:\\[\S\s][^"\\]*)*)"|([^;'"\s\\]*(?:\s+[^;'"\s\\]+)*))\s*(?:;|$)/g;
-        const cells2 = this.CSVtoArray(strRow, rgxValue2);
+        let cells: string[], maxCells: number = 0;
+        // Select row (set of cells) with the largest number of cells
+        _.map(rows, (row) => {
+            if (maxCells > row.length) {
+                return;
+            }
 
-        const cells = cells1.length > cells2.length ? cells1 : cells2;
+            maxCells = row.length;
+            cells = row;
+        });
 
-        this.cells = cells;
+        // Set cells in cell storage
+        _.map(cells, (value, index) => {
+            this.storage.set(`${index}`, value);
+        });
     }
 
     /**
-     * CSVtoArray - parses the CSV row and creates an array of CSV cells by
-     * specific CSV regular expression.
+     * validateCSV - validates CSV row (string representation).
      *
      * @param  {string} strRow - CSV row
-     * @param  {RegExp} rgxValue - CSV regular expression
+     * @param  {string} separator - CSV separator
+     * @return {boolean} - result of validation
+     */
+    private validateCSV (strRow: string, separator: string): boolean {
+        const rgxValidStr = `^\\s*(?:'[^'\\\\]*(?:\\\\[\\S\\s][^'\\\\]*)*'|\\"[^\\"\\\\]*`
+            + `(?:\\\\[\\S\\s][^\\"\\\\]*)*\\"|[^${separator}'\\"\\s\\\\]*(?:\\s+[^${separator}'\\"\\s\\\\]+)*)\\s*`
+            + `(?:${separator}\\s*(?:'[^'\\\\]*(?:\\\\[\\S\\s][^'\\\\]*)*'|\\"[^\\"\\\\]*`
+            + `(?:\\\\[\\S\\s][^\\"\\\\]*)*\\"|[^${separator}'\\"\\s\\\\]*(?:\\s+[^${separator}'\\"\\s\\\\]+)*)\\s*)*$`;
+        const rgxValid = new RegExp(rgxValidStr);
+
+        return rgxValid.test(strRow);
+    }
+
+    /**
+     * CSVToArray - parses the CSV row by specific CSV regular expression and
+     * creates an array of CSV cells from result of parsing.
+     *
+     * @param  {string} strRow - CSV row
+     * @param  {string} separator - CSV separator
      * @return {string[]} - array of CSV cells
      */
-    private CSVtoArray (strRow: string, rgxValue: RegExp): string[] {
+    private CSVToArray (strRow: string, separator: string): string[] {
+        const rgxCSVStr = `(?!\\s*$)\\s*(?:'([^'\\\\]*(?:\\\\[\\S\\s][^'\\\\]*)*)'|`
+            + `\\"([^\\"\\\\]*(?:\\\\[\\S\\s][^\\"\\\\]*)*)\\"|([^${separator}'`
+            + `\\"\\s\\\\]*(?:\\s+[^${separator}'\\"\\s\\\\]+)*))\\s*(?:${separator}|$)`;
+        const rgxCSV = new RegExp(rgxCSVStr, 'g');
+
         const cells = [];
-        strRow.replace(rgxValue, (m0, m1, m2, m3) => {
+        strRow.replace(rgxCSV, (m0, m1, m2, m3) => {
             if (m1) {
                 const value = m1.replace(/\\'/g, `'`);
                 cells.push(value);
@@ -136,9 +166,9 @@ export class CSVRow {
         });
 
         // Handle special case of empty last value.
-        if (/,\s*$/.test(strRow)) {
+        if (new RegExp(`${separator}\\s*$`).test(strRow)) {
             cells.push('');
-        };
+        }
 
         return cells;
     }
@@ -152,9 +182,14 @@ export class CSVRow {
     public toString (numOfCells: number): string {
         const rowArray: Array<number|string> = new Array(numOfCells).fill('');
 
-        for (const arrIndex in this.cells) {
-            if (!this.cells.hasOwnProperty(arrIndex)) { continue; }
-            rowArray[arrIndex] = this.cells[arrIndex];
+        for (let i = 0; i < numOfCells; i++) {
+            const cellValue = this.storage.get(`${i}`);
+
+            if (_.isNil(cellValue)) {
+                continue;
+            }
+
+            rowArray[i] = cellValue;
         }
 
         return rowArray.join(CSVCellSeparatorMain);

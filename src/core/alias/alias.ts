@@ -21,6 +21,20 @@ export class Alias {
     }
 
     /**
+     * destroy - destroys the current instance of alias. Steps:
+     * - clear alias storage
+     * - remove alias storage
+     * - remove alias ID
+     *
+     * @return {void}
+     */
+    public destroy (): void {
+        this.aliases.clear();
+        this.aliases = null;
+        this._id = null;
+    }
+
+    /**
      * add - adds the alias or aliases to internal "Set" store.
      *
      * @param  {string|string[]} aliases - list of aliases

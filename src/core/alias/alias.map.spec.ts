@@ -127,7 +127,7 @@ describe('Alias', () => {
     });
 
     describe('set', () => {
-        it('should throw error if alias is not exist', () => {
+        it('should create new alias and set value if alias is not exist', () => {
             const aliasStorage = new AliasMap<string>([
                 {
                     alias: 'el1',
@@ -137,12 +137,12 @@ describe('Alias', () => {
                 },
             ]);
 
-            try {
-                aliasStorage.set('el2', 'hello!');
-            } catch (error) {
-                expect(error.name).to.equal('ApiError');
-                expect(error.message).to.equal('AliasMap - set: Alias is not exist!');
-            }
+            expect(aliasStorage.get('el2')).to.be.undefined;
+            expect(aliasStorage.has('el2')).to.be.false;
+
+            aliasStorage.set('el2', 'New alias!');
+            expect(aliasStorage['aliases'].length).to.equal(3);
+            expect(aliasStorage.get('el2')).to.equal('New alias!');
         });
 
         it('should set value in empty data storage with multitag', () => {
@@ -269,6 +269,128 @@ describe('Alias', () => {
 
             aliasStorage.addAlias('0');
             expect(aliasStorage['aliases'].length).to.equal(3);
+        });
+    });
+
+    describe('clear', () => {
+        it('should clear alias map if it has aliases but does not have values', () => {
+            const aliasStorage = new AliasMap<string>([
+                {
+                    alias: 'el1',
+                },
+                {
+                    alias: ['el4', 'el5'],
+                },
+            ]);
+
+            expect(aliasStorage['storage'].size).to.equal(0);
+            expect(aliasStorage['aliases'].length).to.equal(2);
+
+            aliasStorage.clear();
+            expect(aliasStorage['storage'].size).to.equal(0);
+            expect(aliasStorage['aliases'].length).to.equal(0);
+        });
+
+        it('should clear alias map if it has values and aliases', () => {
+            const aliasStorage = new AliasMap<string>([
+                {
+                    alias: 'el1',
+                    value: 'value 1',
+                },
+                {
+                    alias: ['el4', 'el5'],
+                },
+                {
+                    alias: ['el6'],
+                },
+            ]);
+
+            expect(aliasStorage['storage'].size).to.equal(1);
+            expect(aliasStorage['aliases'].length).to.equal(3);
+
+            aliasStorage.clear();
+            expect(aliasStorage['storage'].size).to.equal(0);
+            expect(aliasStorage['aliases'].length).to.equal(0);
+        });
+    });
+
+    describe('destroy', () => {
+        it('should destroy alias map if it has aliases but does not have values', () => {
+            const aliasStorage = new AliasMap<string>([
+                {
+                    alias: 'el1',
+                },
+                {
+                    alias: ['el4', 'el5'],
+                },
+            ]);
+
+            expect(aliasStorage['storage'].size).to.equal(0);
+            expect(aliasStorage['aliases'].length).to.equal(2);
+
+            aliasStorage.destroy();
+            expect(aliasStorage['storage']).to.be.null;
+            expect(aliasStorage['aliases']).to.be.null;
+        });
+
+        it('should destroy alias map if it has values and aliases', () => {
+            const aliasStorage = new AliasMap<string>([
+                {
+                    alias: 'el1',
+                    value: 'value 1',
+                },
+                {
+                    alias: ['el4', 'el5'],
+                },
+                {
+                    alias: ['el6'],
+                },
+            ]);
+
+            expect(aliasStorage['storage'].size).to.equal(1);
+            expect(aliasStorage['aliases'].length).to.equal(3);
+
+            aliasStorage.destroy();
+            expect(aliasStorage['storage']).to.be.null;
+            expect(aliasStorage['aliases']).to.be.null;
+        });
+    });
+
+    describe('size', () => {
+        it('should return 0 if value storage is empty', () => {
+            const aliasStorage = new AliasMap<string>([
+                {
+                    alias: 'el1',
+                },
+                {
+                    alias: ['el4', 'el5'],
+                },
+            ]);
+
+            expect(aliasStorage['storage'].size).to.equal(0);
+            expect(aliasStorage['aliases'].length).to.equal(2);
+
+            expect(aliasStorage.size).to.equal(0);
+        });
+
+        it('should return size of value storage if value storage is not empty', () => {
+            const aliasStorage = new AliasMap<string>([
+                {
+                    alias: 'el1',
+                    value: 'value 1',
+                },
+                {
+                    alias: ['el4', 'el5'],
+                },
+                {
+                    alias: ['el6'],
+                },
+            ]);
+
+            expect(aliasStorage['storage'].size).to.equal(1);
+            expect(aliasStorage['aliases'].length).to.equal(3);
+
+            expect(aliasStorage.size).to.equal(1);
         });
     });
 });
