@@ -75,7 +75,7 @@ describe('CSVRow', () => {
     });
 
     describe('setCellValue', () => {
-        it('should throw error if alias is not exist', () => {
+        it('should throw error if alias does not exist', () => {
             const row = new CSVRow();
 
             let testError: any = {};
@@ -108,6 +108,58 @@ describe('CSVRow', () => {
             row.setCellValue(0, 'very new cell value');
 
             expect(row.getCellValue(0)).to.equal('very new cell value');
+        });
+    });
+
+    describe('setCellAlias', () => {
+        it('should throw error if alias storage is empty', () => {
+            const row = new CSVRow();
+
+            let testError: any = {};
+
+            try {
+                row.setCellAlias(2, 'hello!');
+            } catch (error) {
+                testError = error;
+            }
+
+            expect(testError.name).to.equal('ApiError');
+            expect(testError.message).to.equal('CSVRow - setCellAlias: Alias does not exist!');
+        });
+
+        it('should throw error if alias does not exist', () => {
+            const row = new CSVRow('cell1,cell2');
+
+            let testError: any = {};
+
+            try {
+                row.setCellAlias(2, 'hello!');
+            } catch (error) {
+                testError = error;
+            }
+
+            expect(testError.name).to.equal('ApiError');
+            expect(testError.message).to.equal('CSVRow - setCellAlias: Alias does not exist!');
+        });
+
+        it('should set new alias (separator - comma)', () => {
+            const row = new CSVRow('cell1,cell2');
+
+            expect(row.getCellValue(0)).to.equal('cell1');
+
+            row.setCellAlias(0, 'alias1');
+
+            expect(row.getCellValue('alias1')).to.equal('cell1');
+        });
+
+        it('should set new alias (separator - semicolon)', () => {
+            const row = new CSVRow('cell3;cell4;cell5');
+
+            expect(row.getCellValue(1)).to.equal('cell4');
+
+            row.setCellAlias(1, 'alias2');
+
+            expect(row.getCellValue('alias2')).to.equal('cell4');
         });
     });
 });
