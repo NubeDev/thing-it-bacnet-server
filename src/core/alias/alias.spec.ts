@@ -26,6 +26,38 @@ describe('Alias', () => {
         });
     });
 
+    describe('destroy', () => {
+        it('should destroy alias identifier', () => {
+            const alias = new Alias();
+
+            expect(alias.id).to.not.be.null;
+
+            alias.destroy();
+
+            expect(alias.id).to.be.null;
+        });
+
+        it('should destroy alias storage if alias storage is empty', () => {
+            const alias = new Alias();
+
+            expect(alias['aliases'].size).to.equal(0);
+
+            alias.destroy();
+
+            expect(alias['aliases']).to.be.null;
+        });
+
+        it('should destroy alias storage if alias storage is not empty', () => {
+            const alias = new Alias([ 'default', 'hello' ]);
+
+            expect(alias['aliases'].size).to.equal(2);
+
+            alias.destroy();
+
+            expect(alias['aliases']).to.be.null;
+        });
+    });
+
     describe('add', () => {
         let alias: Alias;
 
