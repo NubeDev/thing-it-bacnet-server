@@ -83,6 +83,21 @@ export class AliasMap <T> {
     }
 
     /**
+     * set - sets the value in internal storage by alias tag.
+     *
+     * @return {void}
+     */
+    public clear (): void {
+        this.storage.clear();
+
+        _.map(this.aliases, (alias) => {
+            alias.destroy();
+        });
+
+        this.aliases = [];
+    }
+
+    /**
      * addAlias - creates the instance of Alias class and adds this instance to
      * internal aliases array.
      *
