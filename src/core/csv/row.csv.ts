@@ -112,8 +112,8 @@ export class CSVRow {
     }
 
     /**
-     * CSVtoArray - parses the CSV row and creates an array of CSV cells by
-     * specific CSV regular expression.
+     * CSVtoArray - parses the CSV row by specific CSV regular expression and
+     * creates an array of CSV cells from result of parsing.
      *
      * @param  {string} strRow - CSV row
      * @param  {RegExp} rgxValue - CSV regular expression
