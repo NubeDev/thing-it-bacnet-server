@@ -7,11 +7,11 @@ import { NoopUnit } from './noop/noop.unit';
 
 export const CustomModule: AliasMap<any> = new AliasMap<any>([
     {
-        alias: [ '0', 'func', 'function' ],
-        value: FunctionUnit,
+        alias: [ BACnetUnitAbbr.Default, '0', 'noop' ],
+        value: NoopUnit,
     },
     {
-        alias: [ BACnetUnitAbbr.Default, 'noop' ],
-        value: NoopUnit,
+        alias: [ '1', 'fn', 'func', 'function' ],
+        value: FunctionUnit,
     },
 ]);
