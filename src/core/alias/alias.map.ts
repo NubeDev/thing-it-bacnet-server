@@ -35,6 +35,15 @@ export class AliasMap <T> {
     }
 
     /**
+     * size - size of value storage.
+     *
+     * @type {number}
+     */
+    get size () {
+        return this.storage.size;
+    }
+
+    /**
      * has - returns "true" if value from internal storage exists.
      *
      * @param  {string} aliasTag - alias
