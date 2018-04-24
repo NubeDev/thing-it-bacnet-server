@@ -26,6 +26,27 @@ Application implements two types of units:
 - `native` units - implements simulation logic to change properties of the `BACnet Object`s by the algorithms of the `BACnet` protocol.
 - `custom` units - implements simulation logic of `custom` devices. Eg: `noop`, `function`, `termostat`, `jalousie` etc.
 
+## Custom units
+
+### Noop
+
+Implements the `No operation` logic. It sets as default value for `cust.-unit-type` column in EDE files.
+
+Aliases: `''`, `default`, `0`, `noop`.
+
+Functions:
+- `default` (aliasses: `''`, `default`): implements the `No operation` logic.
+
+### Function
+
+Implements the `distribution (mathematics)` logic.
+
+Aliases: `1`, `fn`, `func`, `function`.
+
+Functions:
+- `uniform` (aliases: `''`, `default`, `0`, `unif`, `uniform`, `uniformDistribution`): implements the logic of changes of `Present Value` property by `uniform` distribution.
+- `normal` (aliases: `1`, `gaus`, `gaussian`, `norm`, `normal`, `normalDistribution`): implements the logic of changes of `Present Value` property by `normal` distribution.
+
 # EDE file
 
 Application processed next optional EDE columns:
