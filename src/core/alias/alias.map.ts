@@ -102,11 +102,12 @@ export class AliasMap <T> {
      * internal aliases array.
      *
      * @param  {string|string[]} aliases - alias or lias of aliases
-     * @return {void}
+     * @return {Alias} - new alias
      */
-    public addAlias (aliases: string|string[]): void {
+    public addAlias (aliases: string|string[]): Alias {
         const alias = new Alias(aliases);
         this.aliases.push(alias);
+        return alias;
     }
 
     /**
