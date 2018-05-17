@@ -53,6 +53,9 @@ export class StatusFlagsMiddleUnit extends MiddleUnit {
         this.storage.setFlowHandler(BACnetUnitDataFlow.Set, BACnetPropertyId.statusFlags, (notif) => {
             this.shSetStatusFlags(notif);
         });
+        this.storage.setFlowHandler(BACnetUnitDataFlow.Update, BACnetPropertyId.statusFlags, (notif) => {
+            this.shUpdateStatusFlags(notif);
+        });
     }
 
     /**
@@ -154,11 +157,6 @@ export class StatusFlagsMiddleUnit extends MiddleUnit {
             || statusFlags.value.outOfService
             || statusFlags.value.inAlarm;
 
-        if (!!overridden === statusFlags.value.overridden) {
-            this.storage.dispatch();
-            return;
-        }
-
         const newStatusFlagsValue: IBACnetTypeStatusFlags = _.assign({}, statusFlags.value, {
             overridden: !!overridden,
         });
@@ -168,5 +166,16 @@ export class StatusFlagsMiddleUnit extends MiddleUnit {
             id: BACnetPropertyId.statusFlags,
             payload: newStatusFlags,
         });
+    }
+
+    /**
+     * Handles the changes of 'Status Flags' property.
+     * - Method emits `cov` event.
+     *
+     * @param  {IBACnetObjectProperty} notif - notification object for statusFlags
+     * @return {void}
+     */
+    private shUpdateStatusFlags (notif: IBACnetObjectProperty): void {
+        this.storage.dispatch();
     }
 }
