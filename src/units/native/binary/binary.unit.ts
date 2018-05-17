@@ -81,22 +81,9 @@ export class BinaryUnit extends NativeUnit {
         const presentValueProp = this.storage.getProperty(BACnetPropertyId.presentValue);
         const presentValue = presentValueProp.payload as BACnetTypes.BACnetEnumerated;
 
-        let newPresentValue: BACnetTypes.BACnetEnumerated;
-        switch (presentValue.value) {
-            case BACnetBinaryPV.Active:
-                newPresentValue = new BACnetTypes.BACnetEnumerated(BACnetBinaryPV.Inactive);
-                break;
-            case BACnetBinaryPV.Inactive:
-                newPresentValue = new BACnetTypes.BACnetEnumerated(BACnetBinaryPV.Active);
-                break;
-            default:
-                newPresentValue = new BACnetTypes.BACnetEnumerated(BACnetBinaryPV.Inactive);
-                break;
-        }
-
-        this.storage.setProperty({
+        this.storage.updateProperty({
             id: BACnetPropertyId.presentValue,
-            payload: newPresentValue,
+            payload: presentValue,
         });
     }
 
