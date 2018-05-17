@@ -72,40 +72,6 @@ export class NativeUnit {
     }
 
     /**
-     * getCommandablePropertyValue - return the value of the commandable property.
-     *
-     * @return {IBACnetType}
-     */
-    public getCommandablePropertyValue (): BACnetTypes.BACnetTypeBase {
-        const priorityArrayProp = this.storage.getProperty(BACnetPropertyId.priorityArray);
-        const priorityArray = priorityArrayProp.payload as BACnetTypes.BACnetTypeBase[];
-
-        let priorityArrayValue: BACnetTypes.BACnetTypeBase, i: number;
-        for (i = 0; i < priorityArray.length; i++) {
-            if (TyperUtil.isNil(priorityArray[i])) {
-                continue;
-            }
-            priorityArrayValue = priorityArray[i];
-            break;
-        }
-
-        const priorityIndex: BACnetTypes.BACnetTypeBase = i === priorityArray.length
-            ? new BACnetTypes.BACnetNull()
-            : new BACnetTypes.BACnetUnsignedInteger(i);
-        this.storage.setProperty({
-            id: BACnetPropertyId.currentCommandPriority,
-            payload: priorityIndex,
-        });
-
-        if (_.isNil(priorityArrayValue)) {
-            const relinquishDefaultProp = this.storage.getProperty(BACnetPropertyId.relinquishDefault);
-            const relinquishDefault = relinquishDefaultProp.payload as BACnetTypes.BACnetTypeBase;
-            priorityArrayValue = relinquishDefault;
-        }
-        return _.cloneDeep(priorityArrayValue);
-    }
-
-    /**
      * subscribe - subscribes to the changes for all properties.
      *
      * @return {Observable<IBACnetObjectProperty>}
