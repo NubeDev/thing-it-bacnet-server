@@ -7,7 +7,8 @@
     "test": "gulp watch:test:unit",
     "start": "npm run build && node ./dist/index.js",
     "build": "gulp build:code",
-    "build-docker": "npm run build && docker build -t bacnet-server ."
+    "build-docker": "npm run build && docker build -t bacnet-server .",
+    "start-docker": "docker run --rm --name $FILE -p $PORT:47808/udp -e FILE=$FILE bacnet-server"
   },
   "repository": {
     "type": "git",
