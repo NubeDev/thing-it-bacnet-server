@@ -6,7 +6,8 @@
   "scripts": {
     "test": "gulp watch:test:unit",
     "start": "npm run build && node ./dist/index.js",
-    "build": "gulp build:code"
+    "build": "gulp build:code",
+    "build-docker": " npm install && npm run build && docker build -t bacnet-server ."
   },
   "repository": {
     "type": "git",
