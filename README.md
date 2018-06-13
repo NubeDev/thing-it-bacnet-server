@@ -49,9 +49,40 @@ Functions:
 
 # EDE file
 
-Application processed next optional EDE columns:
+## Restrictions
 
-`cust.-unit-type` | `cust.-unit-id` | `cust.-unit-fn` | `cust.-min.-value` | `cust.-max.-value` | `cust.-freq`
+Aplication processes a specific set of columns. Increasing, decreasing or changing an order in the list of columns provided below will cause errors and unstable work of the application
+
+### Native units
+
+Here is a set of `native` units columns which are correctly processed by the app
+1. `#keyname`
+2. `device obj.-instance`
+3. `object-name`
+4. `object-type`
+5. `object-instance`
+6. `description`
+7. `present-value-default`
+8. `min-present-value`
+9. `max-present-value`
+10. `commandable`
+11. `supports COV`
+12. `hi-limit`
+13. `low-limit`
+14. `state-text-reference`
+15. `unit-code`
+16. `vendor-specific-address`
+
+### Custom units
+
+Application processes next optional EDE columns:
+
+17. `cust.-unit-type` 
+18. `cust.-unit-id`
+19. `cust.-unit-fn`
+20. `cust.-min.-value`
+21. `cust.-max.-value`
+22. `cust.-freq`
 - `cust.-unit-type` (default: `noop`): type of the `custom` unit.
 - `cust.-unit-id` (default: `auto`): ID of the `custom` unit.
 - `cust.-unit-fn` (default: `''`): function of the `native` unit in the `custom` unit.
@@ -59,3 +90,6 @@ Application processed next optional EDE columns:
 - `cust.-max.-value` (default: get from `cust.-unit-fn`): max value for simulation algorithm.
 - `cust.-freq` (default: get from `cust.-unit-fn`): frequency of changes of values.
 
+### File references
+
+Currently, application is unable to process additional file references inside the main EDE file. Entries with object type 10 will be processed as `default` native units
