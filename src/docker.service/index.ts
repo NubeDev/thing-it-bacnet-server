@@ -74,10 +74,10 @@ dockerMulticastServer.on('error', (err) => {
 dockerContainersPromise.then(() => {
     dockerMulticastServer.on('message', (msg, rinfo) => {
 
-        if (rinfo.port > DEFAULTS.INPUT_PORT && rinfo.port < DEFAULTS.INPUT_PORT + 1000) {
+        if (rinfo.port > DEFAULTS.INPUT_PORT && rinfo.port < DEFAULTS.INPUT_PORT + 1000 && rinfo.address === DEFAULTS.INPUT_ADDR) {
           console.log(`server1 got: ${msg.toString('hex')} from ${rinfo.address}:${rinfo.port}`);
           dockerMulticastServer.send(msg, outputPort, outputAddr)
-        } else  if (rinfo.port === outputPort) {
+        } else  if (rinfo.port === outputPort && rinfo.address === outputAddr) {
           console.log(`server1 got: ${msg.toString('hex')} from ${rinfo.address}:${rinfo.port}`);
           dockerContainersPorts.forEach((port) => {
               dockerMulticastServer.send(msg, port, DEFAULTS.INPUT_ADDR)
