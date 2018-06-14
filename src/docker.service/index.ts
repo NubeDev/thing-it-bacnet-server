@@ -88,5 +88,5 @@ dockerContainersPromise.then(() => {
         const address = dockerMulticastServer.address();
         console.log(`dockerMulticastServer listening ${address.address}:${address.port}`);
       });
-      dockerMulticastServer.bind(DEFAULTS.INPUT_PORT, DEFAULTS.INPUT_ADDR);
+      dockerMulticastServer.bind(DEFAULTS.INPUT_PORT);
 })
