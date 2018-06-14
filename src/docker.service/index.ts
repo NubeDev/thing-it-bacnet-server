@@ -14,7 +14,7 @@ enum DEFAULTS {
     OUTPUT_PORT = 47808,
     EDEDIR = './edefiles'
 }
-const dirPath = argv.dirPath ? argv.dirPath : DEFAULTS.EDEDIR;
+const dirPath = argv.dirPath ? argv.dirPath : path.resolve(DEFAULTS.EDEDIR);
 let nextPort = +DEFAULTS.DOCKER_CONTAINERS_FIRST_PORT;
 let dockerContainersPorts = [];
 
