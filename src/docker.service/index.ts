@@ -31,7 +31,7 @@ if (dirStat.isFile()) {
     dockerContainersPromise = new Bluebird((resolve, reject) => {
         const fileName = dirPath.split('/').pop();
         const port = nextPort++;
-        runContainer(fileName, port);
+        runContainer(fileName, port, dirPath);
         dockerContainersPorts.push(port);
         resolve();
     })
@@ -47,7 +47,7 @@ if (dirStat.isDirectory()) {
                 files.forEach((filePath) => {
                     const fileName = filePath.split('/').pop();
                     const port = nextPort++;
-                    runContainer(fileName, port);
+                    runContainer(fileName, port, dirPath);
                     dockerContainersPorts.push(port);
                 });
                 resolve();
