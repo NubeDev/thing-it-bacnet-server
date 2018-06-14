@@ -7,9 +7,9 @@ import * as _ from 'lodash';
 import { runContainer } from './runContainer';
 
 enum DEFAULTS {
-    INPUT_ADDR = 'localhost',
+    INPUT_ADDR = '127.0.0.1',
     INPUT_PORT = 8000,
-    OUTPUT_ADDR = 'localhost',
+    OUTPUT_ADDR = '127.0.0.1',
     OUTPUT_PORT = 47808,
     EDEDIR = './edefiles'
 }
@@ -80,7 +80,7 @@ dockerContainersPromise.then(() => {
         } else  if (rinfo.port === outputPort) {
           console.log(`server1 got: ${msg.toString('hex')} from ${rinfo.address}:${rinfo.port}`);
           dockerContainersPorts.forEach((port) => {
-              dockerMulticastServer.send(msg, port, 'localhost')
+              dockerMulticastServer.send(msg, port, DEFAULTS.INPUT_ADDR)
           })
         }
       });
