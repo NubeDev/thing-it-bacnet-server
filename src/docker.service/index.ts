@@ -24,28 +24,35 @@ if (!_.isString(dirPath) || !dirPath) {
 //     throw new Error('DockerService - Path to the EDE directory must be absolute!');
 // }
 const dirStat = fs.statSync(dirPath);
+let dockerContainersPromise;
 if (dirStat.isFile()) {
     console.error('DockerService - Path is not a directory, attempt to start bacnet server from it');
-    const fileName = dirPath.split('/').pop();
-    const port = nextPort++;
-    runContainer(fileName, port);
-    dockerContainersPorts.push(port);
+    dockerContainersPromise = new Bluebird((resolve, reject) => {
+        const fileName = dirPath.split('/').pop();
+        const port = nextPort++;
+        runContainer(fileName, port);
+        dockerContainersPorts.push(port);
+        resolve();
+    })
 }
 
 if (dirStat.isDirectory()) {
 
+    dockerContainersPromise = new Bluebird((resolve, reject) => {
         fs.readdir(dirPath, (err, files) => {
             if (err) {
-                throw err;
+                reject(err);
             } else {
                 files.forEach((filePath) => {
                     const fileName = filePath.split('/').pop();
                     const port = nextPort++;
                     runContainer(fileName, port);
                     dockerContainersPorts.push(port);
-                })
+                });
+                resolve();
             }
         })
+    })
 
 
 }
@@ -64,22 +71,23 @@ dockerMulticastServer.on('error', (err) => {
   dockerMulticastServer.close();
 });
 
-dockerMulticastServer.on('message', (msg, rinfo) => {
+dockerContainersPromise.then(() => {
+    console.log(dockerContainersPorts);
+    dockerMulticastServer.on('message', (msg, rinfo) => {
 
-  if (rinfo.port > DEFAULTS.INPUT_PORT && rinfo.port < DEFAULTS.INPUT_PORT + 1000) {
-    console.log(`server1 got: ${msg.toString('hex')} from ${rinfo.address}:${rinfo.port}`);
-    dockerMulticastServer.send(msg, outputPort, outputAddr)
-  } else  if (rinfo.address === outputAddr && rinfo.port === outputPort) {
-    console.log(`server1 got: ${msg.toString('hex')} from ${rinfo.address}:${rinfo.port}`);
-    dockerContainersPorts.forEach((port) => {
-        dockerMulticastServer.send(msg, port, 'localhost')
-    })
-  }
-
-});
-
-dockerMulticastServer.on('listening', () => {
-  const address = dockerMulticastServer.address();
-  console.log(`dockerMulticastServer listening ${address.address}:${address.port}`);
-});
-dockerMulticastServer.bind(DEFAULTS.INPUT_PORT, DEFAULTS.INPUT_ADDR);
+        if (rinfo.port > DEFAULTS.INPUT_PORT && rinfo.port < DEFAULTS.INPUT_PORT + 1000) {
+          console.log(`server1 got: ${msg.toString('hex')} from ${rinfo.address}:${rinfo.port}`);
+          dockerMulticastServer.send(msg, outputPort, outputAddr)
+        } else {
+          console.log(`server1 got: ${msg.toString('hex')} from ${rinfo.address}:${rinfo.port}`);
+          dockerContainersPorts.forEach((port) => {
+              dockerMulticastServer.send(msg, port, 'localhost')
+          })
+        }
+      });
+      dockerMulticastServer.on('listening', () => {
+        const address = dockerMulticastServer.address();
+        console.log(`dockerMulticastServer listening ${address.address}:${address.port}`);
+      });
+      dockerMulticastServer.bind(DEFAULTS.INPUT_PORT, DEFAULTS.INPUT_ADDR);
+})
