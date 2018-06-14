@@ -31,7 +31,7 @@ if (dirStat.isFile()) {
     dockerContainersPromise = new Bluebird((resolve, reject) => {
         const fileName = dirPath.split('/').pop();
         const port = nextPort++;
-        runContainer(fileName, port, dirPath);
+        runContainer(fileName, port, path.resolve(dirPath, '../'));
         dockerContainersPorts.push(port);
         resolve();
     })
