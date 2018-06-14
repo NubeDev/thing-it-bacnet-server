@@ -8,13 +8,14 @@ import { runContainer } from './runContainer';
 
 enum DEFAULTS {
     DOCKER_CONTAINERS_ADDR = '127.0.0.1',
+    DOCKER_CONTAINERS_FIRST_PORT = 8001,
     THIS_PORT = 8000,
     OUTPUT_ADDR = '127.0.0.1',
     OUTPUT_PORT = 47808,
     EDEDIR = './edefiles'
 }
 const dirPath = argv.dirPath ? argv.dirPath : DEFAULTS.EDEDIR;
-let nextPort = DEFAULTS.THIS_PORT + 1;
+let nextPort = +DEFAULTS.DOCKER_CONTAINERS_FIRST_PORT;
 let dockerContainersPorts = [];
 
 if (!_.isString(dirPath) || !dirPath) {
@@ -74,7 +75,7 @@ dockerMulticastServer.on('error', (err) => {
 dockerContainersPromise.then(() => {
     dockerMulticastServer.on('message', (msg, rinfo) => {
 
-        if (rinfo.port > DEFAULTS.THIS_PORT && rinfo.port < DEFAULTS.THIS_PORT + 1000 && rinfo.address === DEFAULTS.DOCKER_CONTAINERS_ADDR) {
+        if (rinfo.port >= DEFAULTS.DOCKER_CONTAINERS_FIRST_PORT && rinfo.port < DEFAULTS.DOCKER_CONTAINERS_FIRST_PORT + 1000 && rinfo.address === DEFAULTS.DOCKER_CONTAINERS_ADDR) {
           console.log(`server1 got: ${msg.toString('hex')} from ${rinfo.address}:${rinfo.port}`);
           dockerMulticastServer.send(msg, outputPort, outputAddr)
         } else  if (rinfo.port === outputPort && rinfo.address === outputAddr) {
