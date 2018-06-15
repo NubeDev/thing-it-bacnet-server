@@ -126,4 +126,20 @@ function stopDockerContainers(): Bluebird<any> {
     });
 }
 
+process.on('SIGINT', () => {
+    stopDockerContainers().then(() => {
+        process.exit(0);
+    })
+});
+
+process.on('SIGTERM', () => {
+    stopDockerContainers().then(() => {
+        process.exit(0);
+    })
+});
+process.on('SIGABRT', () => {
+    stopDockerContainers().then(() => {
+        process.exit(0);
+    })
+});
 process.on('beforeExit', stopDockerContainers);
