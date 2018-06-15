@@ -26,12 +26,15 @@ if (!path.isAbsolute(dirPath)) {
 }
 const dirStat = fs.statSync(dirPath);
 let dockerContainersPromise;
+const dockerContainersProcesses = [];
+
 if (dirStat.isFile()) {
     console.error('DockerService - Path is not a directory, attempt to start bacnet server from it');
     dockerContainersPromise = new Bluebird((resolve, reject) => {
         const fileName = dirPath.split('/').pop();
         const port = nextPort++;
-        runContainer(fileName, port, path.resolve(dirPath, '../'));
+        const containerProcess = runContainer(fileName, port, path.resolve(dirPath, '../'));
+        dockerContainersProcesses.push(containerProcess);
         dockerContainersPorts.push(port);
         resolve();
     })
@@ -47,7 +50,8 @@ if (dirStat.isDirectory()) {
                 files.forEach((filePath) => {
                     const fileName = filePath.split('/').pop();
                     const port = nextPort++;
-                    runContainer(fileName, port, dirPath);
+                    const containerProcess = runContainer(fileName, port, dirPath);
+                    dockerContainersProcesses.push(containerProcess);
                     dockerContainersPorts.push(port);
                 });
                 resolve();
