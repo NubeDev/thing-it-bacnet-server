@@ -28,6 +28,9 @@ if (!path.isAbsolute(dirPath)) {
 const dirStat = fs.statSync(dirPath);
 let dockerContainersPromise;
 const dockerContainersProcesses: Map<string, ChildProcess> = new Map();
+if (!fs.existsSync('./logs') || fs.statSync('./logs').isFile()) {
+    fs.mkdirSync('./logs');
+}
 
 if (dirStat.isFile()) {
     console.error('DockerService - Path is a file, attempt to start bacnet server from it...');
