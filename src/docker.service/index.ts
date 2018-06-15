@@ -27,7 +27,7 @@ if (!path.isAbsolute(dirPath)) {
 }
 const dirStat = fs.statSync(dirPath);
 let dockerContainersPromise;
-const dockerContainersProcesses: ChildProcess[] = [];
+const dockerContainersProcesses: Map<string, ChildProcess> = new Map();
 
 if (dirStat.isFile()) {
     console.error('DockerService - Path is not a directory, attempt to start bacnet server from it');
@@ -35,7 +35,7 @@ if (dirStat.isFile()) {
         const fileName = dirPath.split('/').pop();
         const port = nextPort++;
         const containerProcess: ChildProcess = runContainer(fileName, port, path.resolve(dirPath, '../'));
-        dockerContainersProcesses.push(containerProcess);
+        dockerContainersProcesses.set(fileName, containerProcess);
         dockerContainersPorts.push(port);
         resolve();
     })
@@ -52,7 +52,7 @@ if (dirStat.isDirectory()) {
                     const fileName = filePath.split('/').pop();
                     const port = nextPort++;
                     const containerProcess: ChildProcess = runContainer(fileName, port, dirPath);
-                    dockerContainersProcesses.push(containerProcess);
+                    dockerContainersProcesses.set(fileName, containerProcess);
                     dockerContainersPorts.push(port);
                 });
                 resolve();
