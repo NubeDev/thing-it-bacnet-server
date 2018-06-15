@@ -10,7 +10,7 @@ import { exec, ChildProcess } from 'child_process';
 enum DEFAULTS {
     DOCKER_CONTAINERS_ADDR = '127.0.0.1',
     DOCKER_CONTAINERS_FIRST_PORT = 8001,
-    THIS_PORT = 8000,
+    THIS_PORT = 47808,
     OUTPUT_ADDR = '127.0.0.1',
     OUTPUT_PORT = 47808,
     EDEDIR = './edefiles'
