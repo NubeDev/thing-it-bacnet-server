@@ -101,8 +101,8 @@ dockerContainersPromise.then(() => {
     dockerMulticastServer.bind(DEFAULTS.THIS_PORT);
 });
 
-process.on('beforeExit', () => {
-    Bluebird.map(dockerContainersProcesses.values(), (childProcess) => {
+function stopDockerContainers(): Bluebird<any> {
+    return Bluebird.map(dockerContainersProcesses.values(), (childProcess) => {
         childProcess.kill('SIGKILL');
     }, { concurrency: 1})
     .then(() => {
@@ -123,8 +123,7 @@ process.on('beforeExit', () => {
                   });
             })
         }, { concurrency: 1});
-    })
-    .then(() => {
-        process.exit(0);
     });
-})
+}
+
+process.on('beforeExit', stopDockerContainers);
