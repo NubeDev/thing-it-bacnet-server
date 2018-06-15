@@ -5,7 +5,7 @@ import { argv } from 'yargs';
 import * as Bluebird from 'bluebird';
 import * as _ from 'lodash';
 import { runContainer } from './runContainer';
-import { ChildProcess } from 'child_process';
+import { exec, ChildProcess } from 'child_process';
 
 enum DEFAULTS {
     DOCKER_CONTAINERS_ADDR = '127.0.0.1',
@@ -30,7 +30,7 @@ let dockerContainersPromise;
 const dockerContainersProcesses: Map<string, ChildProcess> = new Map();
 
 if (dirStat.isFile()) {
-    console.error('DockerService - Path is not a directory, attempt to start bacnet server from it');
+    console.error('DockerService - Path is a file, attempt to start bacnet server from it...');
     dockerContainersPromise = new Bluebird((resolve, reject) => {
         const fileName = dirPath.split('/').pop();
         const port = nextPort++;
@@ -80,19 +80,48 @@ dockerMulticastServer.on('error', (err) => {
 dockerContainersPromise.then(() => {
     dockerMulticastServer.on('message', (msg, rinfo) => {
 
-        if (rinfo.port >= DEFAULTS.DOCKER_CONTAINERS_FIRST_PORT && rinfo.port < DEFAULTS.DOCKER_CONTAINERS_FIRST_PORT + 1000 && rinfo.address === DEFAULTS.DOCKER_CONTAINERS_ADDR) {
-          console.log(`dockerMulticastServer got: ${msg.toString('hex')} from ${rinfo.address}:${rinfo.port}`);
-          dockerMulticastServer.send(msg, outputPort, outputAddr)
+        if (rinfo.port >= DEFAULTS.DOCKER_CONTAINERS_FIRST_PORT && rinfo.port < DEFAULTS.DOCKER_CONTAINERS_FIRST_PORT + 1000
+            && rinfo.address === DEFAULTS.DOCKER_CONTAINERS_ADDR) {
+            console.log(`dockerMulticastServer got: ${msg.toString('hex')} from ${rinfo.address}:${rinfo.port}`);
+            dockerMulticastServer.send(msg, outputPort, outputAddr)
         } else  if (rinfo.port === outputPort && rinfo.address === outputAddr) {
-          console.log(`dockerMulticastServer got: ${msg.toString('hex')} from ${rinfo.address}:${rinfo.port}`);
-          dockerContainersPorts.forEach((port) => {
-              dockerMulticastServer.send(msg, port, DEFAULTS.DOCKER_CONTAINERS_ADDR)
-          })
+            console.log(`dockerMulticastServer got: ${msg.toString('hex')} from ${rinfo.address}:${rinfo.port}`);
+            dockerContainersPorts.forEach((port) => {
+                dockerMulticastServer.send(msg, port, DEFAULTS.DOCKER_CONTAINERS_ADDR)
+            })
         }
-      });
-      dockerMulticastServer.on('listening', () => {
+    });
+    dockerMulticastServer.on('listening', () => {
         const address = dockerMulticastServer.address();
         console.log(`dockerMulticastServer listening ${address.address}:${address.port}`);
-      });
-      dockerMulticastServer.bind(DEFAULTS.THIS_PORT);
+    });
+    dockerMulticastServer.bind(DEFAULTS.THIS_PORT);
 });
+
+process.on('beforeExit', () => {
+    Bluebird.map(dockerContainersProcesses.values(), (childProcess) => {
+        childProcess.kill('SIGKILL');
+    }, { concurrency: 1})
+    .then(() => {
+        return Bluebird.map(dockerContainersProcesses.keys(), (containerName) => {
+            console.log(`Stopping docker container ${containerName}... `)
+            return new Bluebird((resolve, reject) => {
+                exec(`docker stop ${containerName}`, (error, stdout, stderr) => {
+                    if (error) {
+                      console.error(`Unable to execute stop command for ${containerName}: ${error}`)
+                    }
+                    if (stderr) {
+                        console.error(`An error occured while stoping ${containerName}: ${stderr}`);
+                    }
+                    if (stdout) {
+                        console.log(`Docker container ${stdout} successfully stopped`);
+                    }
+                    resolve();
+                  });
+            })
+        }, { concurrency: 1});
+    })
+    .then(() => {
+        process.exit(0);
+    });
+})
