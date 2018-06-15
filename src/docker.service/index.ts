@@ -16,6 +16,7 @@ enum DEFAULTS {
     EDEDIR = './edefiles'
 }
 const dirPath = argv.dirPath ? argv.dirPath : path.resolve(DEFAULTS.EDEDIR);
+const thisPort: number = +argv.port ? +argv.port : +DEFAULTS.THIS_PORT;
 let nextPort = +DEFAULTS.DOCKER_CONTAINERS_FIRST_PORT;
 let dockerContainersPorts = [];
 
@@ -98,7 +99,7 @@ dockerContainersPromise.then(() => {
         const address = dockerMulticastServer.address();
         console.log(`dockerMulticastServer listening ${address.address}:${address.port}`);
     });
-    dockerMulticastServer.bind(DEFAULTS.THIS_PORT);
+    dockerMulticastServer.bind(thisPort);
 });
 
 function stopDockerContainers(): Bluebird<any> {
