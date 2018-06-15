@@ -5,6 +5,7 @@ import { argv } from 'yargs';
 import * as Bluebird from 'bluebird';
 import * as _ from 'lodash';
 import { runContainer } from './runContainer';
+import { ChildProcess } from 'child_process';
 
 enum DEFAULTS {
     DOCKER_CONTAINERS_ADDR = '127.0.0.1',
@@ -26,14 +27,14 @@ if (!path.isAbsolute(dirPath)) {
 }
 const dirStat = fs.statSync(dirPath);
 let dockerContainersPromise;
-const dockerContainersProcesses = [];
+const dockerContainersProcesses: ChildProcess[] = [];
 
 if (dirStat.isFile()) {
     console.error('DockerService - Path is not a directory, attempt to start bacnet server from it');
     dockerContainersPromise = new Bluebird((resolve, reject) => {
         const fileName = dirPath.split('/').pop();
         const port = nextPort++;
-        const containerProcess = runContainer(fileName, port, path.resolve(dirPath, '../'));
+        const containerProcess: ChildProcess = runContainer(fileName, port, path.resolve(dirPath, '../'));
         dockerContainersProcesses.push(containerProcess);
         dockerContainersPorts.push(port);
         resolve();
@@ -50,7 +51,7 @@ if (dirStat.isDirectory()) {
                 files.forEach((filePath) => {
                     const fileName = filePath.split('/').pop();
                     const port = nextPort++;
-                    const containerProcess = runContainer(fileName, port, dirPath);
+                    const containerProcess: ChildProcess = runContainer(fileName, port, dirPath);
                     dockerContainersProcesses.push(containerProcess);
                     dockerContainersPorts.push(port);
                 });
@@ -94,4 +95,4 @@ dockerContainersPromise.then(() => {
         console.log(`dockerMulticastServer listening ${address.address}:${address.port}`);
       });
       dockerMulticastServer.bind(DEFAULTS.THIS_PORT);
-})
+});
