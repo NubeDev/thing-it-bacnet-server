@@ -1,4 +1,5 @@
 import { spawn, ChildProcess } from 'child_process';
+import * as fs from 'fs';
 
 export function runContainer(fileName: string, port: number, edeDir: string): ChildProcess {
     let process: ChildProcess;
@@ -10,6 +11,10 @@ export function runContainer(fileName: string, port: number, edeDir: string): Ch
         process.stderr.on('data', (data) => {
             console.log(`${fileName}: ${data}`)
         });
+        const containerLog = fs.createWriteStream(`./logs/${fileName}.container.log`);
+        process.stdout.pipe(containerLog);
+        const containerErrorsLog = fs.createWriteStream(`./logs/${fileName}.container.errors.log`);
+        process.stderr.pipe(containerErrorsLog);
     } catch (error) {
         throw error;
     };
