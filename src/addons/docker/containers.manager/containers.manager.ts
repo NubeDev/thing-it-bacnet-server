@@ -1,6 +1,7 @@
 import * as fs from 'fs';
 import { Container } from './container';
 import * as Bluebird from 'bluebird';
+import * as colors from 'colors';
 
 export class ContainersManager {
     private containers: Container[] = [];
@@ -45,10 +46,10 @@ export class ContainersManager {
         const containerErrorsLog = fs.createWriteStream(`./logs/${container.name}.container.errors.log`);
 
         container.process.stdout.on('data', (data) => {
-            console.log(`${container.name}: ${data}`)
+            console.log(colors.yellow(`${container.name}:`), ` ${data}`)
         });
         container.process.stderr.on('data', (data: string) => {
-            console.log(`${container.name}: ${data}`);
+            console.log(colors.yellow(`${container.name}:`) + ` ${data}`);
             if (data.includes('error')) {
                 containerErrorsLog.write(data)
             } else {
