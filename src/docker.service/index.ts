@@ -6,6 +6,7 @@ import * as Bluebird from 'bluebird';
 import * as _ from 'lodash';
 import { runContainer } from './runContainer';
 import { exec, ChildProcess } from 'child_process';
+import { AddressInfo } from 'net';
 
 enum DEFAULTS {
     DOCKER_CONTAINERS_ADDR = '127.0.0.1',
@@ -96,7 +97,7 @@ dockerContainersPromise.then(() => {
         }
     });
     dockerMulticastServer.on('listening', () => {
-        const address = dockerMulticastServer.address();
+        const address = dockerMulticastServer.address() as AddressInfo;
         console.log(`dockerMulticastServer listening ${address.address}:${address.port}`);
     });
     dockerMulticastServer.bind(thisPort);

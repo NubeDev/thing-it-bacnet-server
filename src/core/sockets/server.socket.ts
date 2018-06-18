@@ -15,6 +15,7 @@ import { OutputSocket } from './output.socket';
 import { ServiceSocket } from './service.socket';
 
 import { SequenceManager } from '../../managers/sequence.manager';
+import { AddressInfo } from 'net';
 
 export class Server {
     private className: string = 'Server';
@@ -57,7 +58,7 @@ export class Server {
             logger.error(`${this.className} - startServer: UDP Error - ${error}`);
         });
 
-        this.sock.on('message', (msg: Buffer, rinfo: dgram.AddressInfo) => {
+        this.sock.on('message', (msg: Buffer, rinfo: dgram.RemoteInfo) => {
             // Generate Request instance
             const inputSoc = new InputSocket(msg);
             // Generate Response instance
@@ -74,7 +75,7 @@ export class Server {
 
         const startPromise = new Bluebird((resolve, reject) => {
             this.sock.on('listening', () => {
-                const addrInfo = this.sock.address();
+                const addrInfo = this.sock.address() as AddressInfo;
                 logger.info(`${this.className} - startServer: UDP Server listening ${addrInfo.address}:${addrInfo.port}`);
                 resolve(addrInfo);
             });
