@@ -7,8 +7,8 @@ export class ContainersManager {
     public containersPorts: number[] = [];
     constructor(private edeDir: string) {}
 
-    initContainer(fileName: string, port: number) {
-        const container: Container = new Container (fileName, port, this.edeDir);
+    initContainer(name: string, port: number) {
+        const container: Container = new Container (name, port, this.edeDir);
         container.start();
         this.containers.push(container);
         this.containersPorts.push(port);

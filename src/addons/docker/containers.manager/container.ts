@@ -14,7 +14,7 @@ export class Container {
             '--name', `${this.name}`,
             '-v', `${this.edeDir}:/edefiles`,
             '-p', `${this.port}:47808/udp`,
-            '-e', `FILE=${this.name}`,
+            '-e', `FILE=${this.name}.csv`,
             'bacnet-server'
         ]);
     }
