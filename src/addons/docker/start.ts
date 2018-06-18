@@ -15,7 +15,6 @@ if (!path.isAbsolute(dirPath)) {
     throw new Error('DockerService - Path to the EDE directory must be absolute!');
 }
 const dirStat = fs.statSync(dirPath);
-let dockerContainersPromise;
 if (!fs.existsSync('./logs') || fs.statSync('./logs').isFile()) {
     fs.mkdirSync('./logs');
 }
