@@ -9,7 +9,7 @@
     "build": "gulp build:code",
     "build-docker": "npm run build && docker build -t bacnet-server .",
     "start-docker": "docker run --rm --name $FILE -v $EDEDIR:/edefiles -p $PORT:47808/udp -e FILE=$FILE bacnet-server",
-    "start-docker-service": "npm run build && node ./dist/docker.service/index"
+    "start-docker-service": "npm run build && node ./dist/addons/docker/start"
   },
   "repository": {
     "type": "git",
