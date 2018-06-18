@@ -74,8 +74,8 @@ const dockerMulticastServer = dgram.createSocket({
     reuseAddr: true
 });
 
-const outputAddr = process.env.OUTPUT_ADDR ? process.env.OUTPUT_ADDR : DEFAULTS.OUTPUT_ADDR;
-const outputPort = process.env.OUTPUT_PORT ? +process.env.OUTPUT_PORT : DEFAULTS.OUTPUT_PORT;
+const outputAddr = argv.outputAddr ? argv.outputAddr : DEFAULTS.OUTPUT_ADDR;
+const outputPort = argv.outputPort ? +argv.outputPort : DEFAULTS.OUTPUT_PORT;
 
 dockerMulticastServer.on('error', (err) => {
   console.log(`dockerMulticastServer error:\n${err.stack}`);
