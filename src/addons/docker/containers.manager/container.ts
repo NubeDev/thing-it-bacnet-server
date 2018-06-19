@@ -27,7 +27,8 @@ export class Container {
     }
 
     /**
-     *
+     * stop - runs docker stop command for the container,
+     * destroys file logging streams
      *
      * @param {Function} callback - callback to process exec output
      */
