@@ -10,6 +10,13 @@ export class ProxyUDPServer {
         this.udpSocket = dgram.createSocket('udp4');
     }
 
+    /**
+     *start - start listening messages from thing-it-bacnet-device and forward them to docker containers ports
+     *
+     * @param {string} [outputAddr=DEFAULTS.OUTPUT_ADDR] - address of remote thing-it-bacnet-device to connect
+     * @param {number} [outputPort=DEFAULTS.OUTPUT_PORT] - port of the remote thing-it-bacnet-device to connect
+     * @param {number[]} containersPorts - ports of docker containers with simulaed ede-files
+     */
     start(outputAddr: string = DEFAULTS.OUTPUT_ADDR, outputPort: number = DEFAULTS.OUTPUT_PORT, containersPorts: number[]) {
         this.udpSocket.on('message', (msg, rinfo) => {
 

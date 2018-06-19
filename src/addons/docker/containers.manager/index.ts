@@ -8,7 +8,13 @@ export class ContainersManager {
     public containersPorts: number[] = [];
     constructor(private edeDir: string) {}
 
-    initContainer(name: string, port: number) {
+    /**
+     *initCntainer - creates and starts docker container for specified ede-file name and port
+     *
+     * @param {string} name
+     * @param {number} port
+     */
+    initContainer(name: string, port: number): void {
         const container: Container = new Container (name, port, this.edeDir);
         container.start();
         this.containers.push(container);
@@ -16,6 +22,11 @@ export class ContainersManager {
         this.logContainer(container);
     }
 
+    /**
+     * destroy - kills all docker containers processes and sends command to stop containers to docker
+     *
+     * @returns {Bluebird<any>}
+     */
     destroy(): Bluebird<any> {
         this.containers.forEach((container) => {
             container.process.kill('SIGKILL');
@@ -40,6 +51,12 @@ export class ContainersManager {
         }, { concurrency: 1});
     }
 
+    /**
+     * logContainer - creates file Streams for writing container common and errors log,
+     * adds event listener to container child processes to log output into console
+     *
+     * @param {Container} container
+     */
     logContainer(container: Container): void {
         container.fileLog = fs.createWriteStream(`./logs/${container.name}.container.log`);
         container.process.stdout.pipe(container.fileLog);

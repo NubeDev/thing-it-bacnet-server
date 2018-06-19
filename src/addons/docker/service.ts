@@ -13,6 +13,12 @@ export class Service {
         private portsStart: number = DEFAULTS.DOCKER_CONTAINERS_FIRST_PORT
     ) {}
 
+    /**
+     * start - inits containers manager and starts proxy UDP Server
+     *
+     * @param {string} [dirPath=DEFAULTS.EDEDIR] - path to ede files directory
+     * @param {string[]} files - array of filenames of ede-files to simulate
+     */
     start(dirPath: string = DEFAULTS.EDEDIR, files: string[]) {
         let nextPort = this.portsStart
         this.containersManager = new ContainersManager(dirPath);
@@ -28,6 +34,11 @@ export class Service {
         })
     }
 
+    /**
+     *stop - stops proxy server and destroys containers manager
+     *
+     * @returns {Bluebird<any>}
+     */
     stop(): Bluebird<any> {
         this.proxyServer.stop();
         return this.containersManager.destroy();

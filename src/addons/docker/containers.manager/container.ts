@@ -5,11 +5,15 @@ export class Container {
     public process: ChildProcess;
     public fileLog: stream.Writable;
     public fileErrorsLog: stream.Writable;
+
     constructor (public name: string,
         public port: number,
         private edeDir: string) { }
 
-    start() {
+    /**
+     * start runs docker container with specified options
+     */
+    start(): void {
         this.process = spawn( 'docker', [
             'run',
             '-i',
@@ -22,8 +26,15 @@ export class Container {
         ]);
     }
 
-    stop(callback) {
-        exec(`docker stop ${this.name}`, callback);
+    /**
+     *
+     *
+     * @param {Function} callback - callback to process exec output
+     */
+    stop(callback: Function): void {
+        exec(`docker stop ${this.name}`, () => {
+            callback();
+        });
         this.fileLog.destroy();
         this.fileErrorsLog.destroy();
     }
