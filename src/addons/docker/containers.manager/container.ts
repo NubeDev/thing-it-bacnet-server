@@ -23,6 +23,8 @@ export class Container {
     }
 
     stop(callback) {
-        exec(`docker stop ${this.name}`, callback)
+        exec(`docker stop ${this.name}`, callback);
+        this.fileLog.destroy();
+        this.fileErrorsLog.destroy();
     }
 }
