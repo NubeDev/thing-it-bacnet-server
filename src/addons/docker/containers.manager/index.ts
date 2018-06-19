@@ -41,19 +41,19 @@ export class ContainersManager {
     }
 
     logContainer(container: Container): void {
-        const containerLog = fs.createWriteStream(`./logs/${container.name}.container.log`);
-        container.process.stdout.pipe(containerLog);
-        const containerErrorsLog = fs.createWriteStream(`./logs/${container.name}.container.errors.log`);
-
+        container.fileLog = fs.createWriteStream(`./logs/${container.name}.container.log`);
+        container.process.stdout.pipe(container.fileLog);
         container.process.stdout.on('data', (data) => {
             console.log(colors.yellow(`${container.name}:`), ` ${data}`)
         });
+
+        container.fileErrorsLog = fs.createWriteStream(`./logs/${container.name}.container.errors.log`);
         container.process.stderr.on('data', (data: string) => {
             console.log(colors.yellow(`${container.name}:`) + ` ${data}`);
             if (data.includes('error')) {
-                containerErrorsLog.write(data)
+                container.fileErrorsLog.write(data)
             } else {
-                containerLog.write(data);
+                container.fileLog.write(data);
             }
         });
     }

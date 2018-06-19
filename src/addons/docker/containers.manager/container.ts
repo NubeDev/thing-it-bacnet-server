@@ -1,7 +1,10 @@
 import { spawn, exec, ChildProcess } from 'child_process';
+import * as stream from 'stream';
 
 export class Container {
     public process: ChildProcess;
+    public fileLog: stream.Writable;
+    public fileErrorsLog: stream.Writable;
     constructor (public name: string,
         public port: number,
         private edeDir: string) { }
