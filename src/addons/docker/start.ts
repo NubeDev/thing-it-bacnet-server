@@ -12,10 +12,10 @@ logger.info('Starting Docker Service...');
 const dirPath = argv.dirPath ? argv.dirPath : DEFAULTS.EDEDIR;
 
 if (!_.isString(dirPath) || !dirPath) {
-    throw new Error('DockerService - Path to the EDE directory is required!');
+    throw new Error('[Docker addon]: Path to the EDE directory is required!');
 }
 if (!path.isAbsolute(dirPath)) {
-    throw new Error('DockerService - Path to the EDE directory must be absolute!');
+    throw new Error('[Docker addon]: Path to the EDE directory must be absolute!');
 }
 const dirStat = fs.statSync(dirPath);
 if (!fs.existsSync('./logs') || fs.statSync('./logs').isFile()) {
@@ -24,7 +24,7 @@ if (!fs.existsSync('./logs') || fs.statSync('./logs').isFile()) {
 
 const dockerService = new Docker.Service(argv.port, argv.outputAddr, argv.outputPort, logger)
 if (dirStat.isFile()) {
-    logger.error('[Docker addon] :DockerService - Path is a file, attempt to start bacnet server from it...');
+    logger.error('[Docker addon]: Path is a file, attempt to start bacnet server from it...');
     const fileName = dirPath.split('/').pop().split('.').slice(0, -1).join('.');
     const parentPath = path.resolve(dirPath, '../');
     dockerService.start(parentPath, [ fileName ]);
