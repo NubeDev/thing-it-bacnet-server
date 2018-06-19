@@ -21,6 +21,7 @@ export class ProxyUDPServer {
      * @param {number[]} containersPorts - ports of docker containers with simulaed ede-files
      */
     start(outputAddr: string = DEFAULTS.OUTPUT_ADDR, outputPort: number = DEFAULTS.OUTPUT_PORT, containersPorts: number[]) {
+        this.logger.info('Starting proxy UDP Server...')
         this.udpSocket.on('message', (msg, rinfo) => {
 
             if (rinfo.port >= DEFAULTS.DOCKER_CONTAINERS_FIRST_PORT && rinfo.port < DEFAULTS.DOCKER_CONTAINERS_FIRST_PORT + 1000
@@ -39,6 +40,7 @@ export class ProxyUDPServer {
             this.logger.info(`listening ${address.address}:${address.port}`);
         });
         this.udpSocket.bind(this.port);
+        this.logger.info('Successfully started')
     }
 
     stop() {

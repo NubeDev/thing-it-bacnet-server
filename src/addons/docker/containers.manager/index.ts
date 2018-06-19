@@ -21,11 +21,12 @@ export class ContainersManager {
      * @param {number} port
      */
     initContainer(name: string, port: number): void {
+        this.logger.info(`Initializing container for ${name}.csv on port ${port}...`)
         const container: Container = new Container (name, port, this.edeDir);
         container.start();
+        this.logContainer(container);
         this.containers.push(container);
         this.containersPorts.push(port);
-        this.logContainer(container);
     }
 
     /**

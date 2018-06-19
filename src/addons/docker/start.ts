@@ -6,8 +6,10 @@ import * as Docker from './index';
 import * as DEFAULTS from './defaults';
 import { initLogger } from './logger';
 
-const dirPath = argv.dirPath ? argv.dirPath : DEFAULTS.EDEDIR;
+const logger = initLogger('Docker addon');
+logger.info('Starting Docker Service...');
 
+const dirPath = argv.dirPath ? argv.dirPath : DEFAULTS.EDEDIR;
 
 if (!_.isString(dirPath) || !dirPath) {
     throw new Error('DockerService - Path to the EDE directory is required!');
@@ -19,13 +21,13 @@ const dirStat = fs.statSync(dirPath);
 if (!fs.existsSync('./logs') || fs.statSync('./logs').isFile()) {
     fs.mkdirSync('./logs');
 }
-const logger = initLogger('Start Docker Service');
+
 const dockerService = new Docker.Service(argv.port, argv.outputAddr, argv.outputPort)
 if (dirStat.isFile()) {
     logger.error('DockerService - Path is a file, attempt to start bacnet server from it...');
     const fileName = dirPath.split('/').pop().split('.').slice(0, -1).join('.');
     const parentPath = path.resolve(dirPath, '../');
-    dockerService.start(parentPath, [ fileName ])
+    dockerService.start(parentPath, [ fileName ]);
 }
 if (dirStat.isDirectory()) {
 

@@ -24,7 +24,8 @@ export class Service {
      * @param {string[]} files - array of filenames of ede-files to simulate
      */
     start(dirPath: string = DEFAULTS.EDEDIR, files: string[]) {
-        let nextPort = this.portsStart
+        let nextPort = this.portsStart;
+        this.logger.info('Initializing Containers Manager...');
         this.containersManager = new ContainersManager(dirPath);
         Bluebird.resolve().then(() => {
             files.forEach((fileName) => {
@@ -34,7 +35,8 @@ export class Service {
         })
         .then(() => {
             this.proxyServer = new ProxyUDPServer(this.port);
-            this.proxyServer.start(this.outputAddr, this.outputPort, this.containersManager.containersPorts)
+            this.proxyServer.start(this.outputAddr, this.outputPort, this.containersManager.containersPorts);
+            this.logger.info('Docker Service successfully started');
         })
     }
 
