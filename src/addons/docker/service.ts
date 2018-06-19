@@ -31,8 +31,9 @@ export class Service {
             });
         })
         .then(() => {
+            const containersPorts: number[] = Array.from(this.containersManager.containersInfo.keys());
             this.proxyServer = new ProxyUDPServer(this.port, this.logger);
-            this.proxyServer.start(this.outputAddr, this.outputPort, this.containersManager.containersPorts);
+            this.proxyServer.start(this.outputAddr, this.outputPort, containersPorts);
             this.logger.info('[Docker Service]: successfully started');
         })
     }

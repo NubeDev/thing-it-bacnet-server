@@ -5,7 +5,7 @@ import * as colors from 'colors';
 
 export class ContainersManager {
     private containers: Container[] = [];
-    public containersPorts: number[] = [];
+    public containersInfo: Map<number, any> = new Map();
     constructor(
         private edeDir: string,
         public logger: any
@@ -23,7 +23,7 @@ export class ContainersManager {
         container.start();
         this.logContainer(container);
         this.containers.push(container);
-        this.containersPorts.push(port);
+        this.containersInfo.set(port, { port, name });
     }
 
     /**
