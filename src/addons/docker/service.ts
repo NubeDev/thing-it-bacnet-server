@@ -1,10 +1,11 @@
 import * as Bluebird from 'bluebird';
-import * as Docker from './index';
+import { ProxyUDPServer } from './proxy.server';
+import { ContainersManager } from './containers.manager';
 import * as DEFAULTS from './defaults';
 
 export class Service {
-    private containersManager: Docker.ContainersManager;
-    private proxyServer: Docker.ProxyUDPServer;
+    private containersManager: ContainersManager;
+    private proxyServer: ProxyUDPServer;
     constructor(
         private port: number = DEFAULTS.THIS_PORT,
         private outputAddr: string = DEFAULTS.OUTPUT_ADDR,
@@ -14,7 +15,7 @@ export class Service {
 
     start(dirPath: string = DEFAULTS.EDEDIR, files: string[]) {
         let nextPort = this.portsStart
-        this.containersManager = new Docker.ContainersManager(dirPath);
+        this.containersManager = new ContainersManager(dirPath);
         Bluebird.resolve().then(() => {
             files.forEach((fileName) => {
                 const port = nextPort++;
@@ -22,7 +23,7 @@ export class Service {
             });
         })
         .then(() => {
-            this.proxyServer = new Docker.ProxyUDPServer(this.port);
+            this.proxyServer = new ProxyUDPServer(this.port);
             this.proxyServer.start(this.outputAddr, this.outputPort, this.containersManager.containersPorts)
         })
     }
