@@ -43,7 +43,7 @@ export class ContainersManager {
                         console.error(`An error occured while stoping ${container.name}: ${stderr}`);
                     }
                     if (stdout) {
-                        console.log(`Docker container ${stdout} successfully stopped`);
+                        console.log(`Docker container ${stdout} has successfully stopped`);
                     }
                     resolve();
                   });
