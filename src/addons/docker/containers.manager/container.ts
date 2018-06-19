@@ -32,8 +32,8 @@ export class Container {
      * @param {Function} callback - callback to process exec output
      */
     stop(callback: Function): void {
-        exec(`docker stop ${this.name}`, () => {
-            callback();
+        exec(`docker stop ${this.name}`, (error, stdout, stderr) => {
+            callback(error, stdout, stderr);
         });
         this.fileLog.destroy();
         this.fileErrorsLog.destroy();
