@@ -7,7 +7,7 @@ import * as DEFAULTS from './defaults';
 import { logger } from './logger';
 
 
-logger.info('Starting Docker Service...');
+logger.info('[Docker addon]: Starting Docker Service...');
 
 const dirPath = argv.dirPath ? argv.dirPath : DEFAULTS.EDEDIR;
 
