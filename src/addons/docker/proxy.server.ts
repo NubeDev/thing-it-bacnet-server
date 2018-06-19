@@ -25,9 +25,10 @@ export class ProxyUDPServer {
             if (rinfo.port >= DEFAULTS.DOCKER_CONTAINERS_FIRST_PORT && rinfo.port < DEFAULTS.DOCKER_CONTAINERS_FIRST_PORT + 1000
                 && rinfo.address === DEFAULTS.DOCKER_CONTAINERS_ADDR) {
                 this.logger.info(`[Proxy UDP Server]: got: ${msg.toString('hex')} from  ${containersInfo.get(rinfo.port).name} running on ${rinfo.address}:${rinfo.port}`);
+                this.logger.info(`[Proxy UDP Server]: sending ${msg.toString('hex')} to remote thing-it-bacnet-device running on ${outputAddr}:${outputPort}`)
                 this.udpSocket.send(msg, outputPort, outputAddr)
             } else  if (rinfo.port === outputPort && rinfo.address === outputAddr) {
-                this.logger.info(`[Proxy UDP Server]: got: ${msg.toString('hex')} from ${rinfo.address}:${rinfo.port}`);
+                this.logger.info(`[Proxy UDP Server]: got: ${msg.toString('hex')} from remote thing-it-bacnet-device running on ${rinfo.address}:${rinfo.port}`);
                 containersInfo.forEach((info, port) => {
                     this.logger.info(`[Proxy UDP Server]: sending ${msg.toString('hex')} to docker container ${info.name} running on ${DEFAULTS.DOCKER_CONTAINERS_ADDR}:${port}`)
                     this.udpSocket.send(msg, port, DEFAULTS.DOCKER_CONTAINERS_ADDR)
