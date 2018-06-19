@@ -40,7 +40,7 @@ export class ProxyUDPServer {
         });
         this.udpSocket.on('listening', () => {
             const address = this.udpSocket.address() as AddressInfo;
-            this.logger.info(`listening ${address.address}:${address.port}`);
+            this.logger.info(`[Proxy UDP Server]: listening ${address.address}:${address.port}`);
         });
         this.udpSocket.bind(this.port);
         this.logger.info('[Proxy UDP Server]: Successfully started')
