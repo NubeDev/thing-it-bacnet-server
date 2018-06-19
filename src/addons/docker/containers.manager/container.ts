@@ -1,7 +1,7 @@
 import { spawn, exec, ChildProcess } from 'child_process';
 
 export class Container {
-    process: ChildProcess;
+    public process: ChildProcess;
     constructor (public name: string,
         public port: number,
         private edeDir: string) { }
