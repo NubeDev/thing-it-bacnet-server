@@ -18,8 +18,8 @@ export class ProxyUDPServer {
      * @param {number} [outputPort=DEFAULTS.OUTPUT_PORT] - port of the remote thing-it-bacnet-device to connect
      * @param {number[]} containersPorts - ports of docker containers with simulaed ede-files
      */
-    start(outputAddr: string = DEFAULTS.OUTPUT_ADDR, outputPort: number = DEFAULTS.OUTPUT_PORT, containersPorts: number[]) {
-        this.logger.info('[Proxy UDP Server]: Starting proxy UDP Server...')
+    start(outputAddr: string = DEFAULTS.OUTPUT_ADDR, outputPort: number = DEFAULTS.OUTPUT_PORT, containersInfo: Map<number, any>) {
+        this.logger.info('[Proxy UDP Server]: Starting proxy UDP Server...');
         this.udpSocket.on('message', (msg, rinfo) => {
 
             if (rinfo.port >= DEFAULTS.DOCKER_CONTAINERS_FIRST_PORT && rinfo.port < DEFAULTS.DOCKER_CONTAINERS_FIRST_PORT + 1000
@@ -28,7 +28,7 @@ export class ProxyUDPServer {
                 this.udpSocket.send(msg, outputPort, outputAddr)
             } else  if (rinfo.port === outputPort && rinfo.address === outputAddr) {
                 this.logger.info(`[Proxy UDP Server]: got: ${msg.toString('hex')} from ${rinfo.address}:${rinfo.port}`);
-                containersPorts.forEach((port) => {
+                containersInfo.forEach((info, port) => {
                     this.udpSocket.send(msg, port, DEFAULTS.DOCKER_CONTAINERS_ADDR)
                 })
             }
