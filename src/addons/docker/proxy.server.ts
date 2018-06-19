@@ -35,6 +35,11 @@ export class ProxyUDPServer {
                 })
             }
         });
+        this.udpSocket.on('error', (err) => {
+            this.logger.error(`UDP socket error: ${err}`);
+            this.logger.error(`Closing UDP socket...`);
+            this.udpSocket.close()
+        });
         this.udpSocket.on('listening', () => {
             const address = this.udpSocket.address() as AddressInfo;
             this.logger.info(`listening ${address.address}:${address.port}`);
