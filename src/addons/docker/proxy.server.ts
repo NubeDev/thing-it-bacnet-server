@@ -16,7 +16,7 @@ export class ProxyUDPServer {
      *
      * @param {string} [outputAddr=DEFAULTS.OUTPUT_ADDR] - address of remote thing-it-bacnet-device to connect
      * @param {number} [outputPort=DEFAULTS.OUTPUT_PORT] - port of the remote thing-it-bacnet-device to connect
-     * @param {number[]} containersPorts - ports of docker containers with simulaed ede-files
+     * @param {Map<number, any>} containersInfo - info of docker containers with simulaed ede-files
      */
     start(outputAddr: string = DEFAULTS.OUTPUT_ADDR, outputPort: number = DEFAULTS.OUTPUT_PORT, containersInfo: Map<number, any>) {
         this.logger.info('[Proxy UDP Server]: Starting proxy UDP Server...');
