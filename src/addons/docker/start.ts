@@ -4,9 +4,9 @@ import { argv } from 'yargs';
 import * as _ from 'lodash';
 import * as Docker from './index';
 import * as DEFAULTS from './defaults';
-import { initLogger } from './logger';
+import { logger } from './logger';
 
-const logger = initLogger('Docker addon');
+
 logger.info('Starting Docker Service...');
 
 const dirPath = argv.dirPath ? argv.dirPath : DEFAULTS.EDEDIR;
@@ -22,9 +22,9 @@ if (!fs.existsSync('./logs') || fs.statSync('./logs').isFile()) {
     fs.mkdirSync('./logs');
 }
 
-const dockerService = new Docker.Service(argv.port, argv.outputAddr, argv.outputPort)
+const dockerService = new Docker.Service(argv.port, argv.outputAddr, argv.outputPort, logger)
 if (dirStat.isFile()) {
-    logger.error('DockerService - Path is a file, attempt to start bacnet server from it...');
+    logger.error('[Docker addon] :DockerService - Path is a file, attempt to start bacnet server from it...');
     const fileName = dirPath.split('/').pop().split('.').slice(0, -1).join('.');
     const parentPath = path.resolve(dirPath, '../');
     dockerService.start(parentPath, [ fileName ]);
