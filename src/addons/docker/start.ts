@@ -10,13 +10,13 @@ const logger = new Logger('Docker addon');
 
 logger.info('Starting Docker Service...');
 
-const dirPath = argv.dirPath ? argv.dirPath : DEFAULTS.EDEDIR;
+let dirPath = argv.dirPath ? argv.dirPath : DEFAULTS.EDEDIR;
 
 if (!_.isString(dirPath) || !dirPath) {
     throw new Error('Path to the EDE directory is required!');
 }
 if (!path.isAbsolute(dirPath)) {
-    throw new Error('Path to the EDE directory must be absolute!');
+    dirPath = path.resolve(dirPath);
 }
 const dirStat = fs.statSync(dirPath);
 if (!fs.existsSync('./logs') || fs.statSync('./logs').isFile()) {
