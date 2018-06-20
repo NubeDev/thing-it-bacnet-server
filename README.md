@@ -25,7 +25,7 @@ npm run start-docker-service -- <options...> - start simulation for a folder of 
 
 ### Docker service options
 - `--port <port>` (by default `47808`): port of the server.
-- `--dirPath <dir_path>`: path to the `EDE` files directory.
+- `--dirPath <dir_path>` (by default `./edefiles`): path to the `EDE` files directory.
 - `--outputAddr <output_address>`: ip address of the remote thing-it-bacnet-device to connect.
 - `--outputPort <output_port` (by default `47808`): port of remote thing-it-bacnet-device to connect.
 
