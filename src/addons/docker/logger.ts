@@ -25,7 +25,7 @@ const LoggerConfig = {
 };
 
 export class Logger {
-    private _logger: winston.Logger = winston.createLogger(LoggerConfig);;
+    private _logger: winston.Logger = winston.createLogger(LoggerConfig);
     constructor (public label: string) { }
 
     info( message: string) {
