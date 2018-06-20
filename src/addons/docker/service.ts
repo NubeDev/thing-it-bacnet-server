@@ -11,7 +11,7 @@ export class Service {
     public logger: Logger = new Logger('Docker Service')
     constructor(
         private port: number = DEFAULTS.THIS_PORT,
-        private outputAddr: string = DEFAULTS.OUTPUT_ADDR,
+        private outputAddr: string,
         private outputPort: number = DEFAULTS.OUTPUT_PORT,
         private portsStart: number = DEFAULTS.DOCKER_CONTAINERS_FIRST_PORT
     ) { }
