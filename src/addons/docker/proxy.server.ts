@@ -7,7 +7,7 @@ export class ProxyUDPServer {
     private udpSocket: dgram.Socket;
     public logger = new Logger('Proxy UDP Server');
     constructor (
-        public port: number = DEFAULTS.THIS_PORT
+        public port: number
     ) {
         this.udpSocket = dgram.createSocket('udp4');
     }
@@ -19,7 +19,7 @@ export class ProxyUDPServer {
      * @param {number} [outputPort=DEFAULTS.OUTPUT_PORT] - port of the remote thing-it-bacnet-device to connect
      * @param {Map<number, any>} containersInfo - info of docker containers with simulaed ede-files
      */
-    start(outputAddr: string, outputPort: number = DEFAULTS.OUTPUT_PORT, containersInfo: Map<number, any>) {
+    start(outputAddr: string, outputPort: number, containersInfo: Map<number, any>) {
         this.logger.info('Starting proxy UDP Server...');
         this.udpSocket.on('message', (msg, rinfo) => {
 
