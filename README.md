@@ -12,12 +12,13 @@ npm install
 ```
 npm start -- <options...> - start bacnet-server for single ede-file
 npm run build-docker - build docker image of bacnet-server
-npm run start-docker-service -- <options...> - start simulation for a folder of ede-files, with wrapping each bacnet-server instance with docker container
+npm run start-docker-service -- <options...> - start simulation for a folder of ede-files, 
+with wrapping each bacnet-server instance with docker container
 ```
 
 ## Options
 
-### start options
+### Start options
 - `--port <port>` (by default `47808`): port of the server.
 - `--filePath <file_path>`: path to the `EDE` file.
 - `--reqDelay <delay>` (by default `20 ms`): timeout between end of old request and start of new request.
