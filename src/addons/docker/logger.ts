@@ -1,31 +1,26 @@
 import * as winston from 'winston';
-const { combine, timestamp, colorize, printf } = winston.format;
 
 const LoggerConfig = {
     level: 'debug',
     transports: [
         new (winston.transports.Console)({
             stderrLevels: ['error'],
-            format: combine(
-                timestamp(),
-                colorize(),
-                printf(data => ` ${data.timestamp} - ${data.level}: ${data.message}`)
-            ),
+            timestamp: true,
+            colorize: true,
         }),
         new (winston.transports.File)({
             filename: './logs/docker-service.log',
             maxFiles: 1,
-            format: combine(
-                timestamp(),
-                printf(data => ` ${data.timestamp} - ${data.level}: ${data.message}`)
-            ),
+            timestamp: true,
+            colorize: false,
             options: { flags: 'w' },
         }),
     ]
 };
+winston.configure(LoggerConfig);
 
 export class Logger {
-    private _logger: winston.Logger = winston.createLogger(LoggerConfig);
+    private _logger = winston
     constructor (public label: string) { }
 
     info( message: string) {
