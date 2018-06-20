@@ -11,7 +11,8 @@ npm install
 
 ```
 npm start -- <options...> - start bacnet-server for single ede-file
-npm run start-docker -- <options...> - start simulation for a folder of ede-files, with wrapping each bacnet-server instance with docker container
+npm run build-docker - build docker image of bacnet-server
+npm run start-docker-service -- <options...> - start simulation for a folder of ede-files, with wrapping each bacnet-server instance with docker container
 ```
 
 ## Options
