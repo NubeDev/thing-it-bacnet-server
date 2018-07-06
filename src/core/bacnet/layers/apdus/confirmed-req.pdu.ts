@@ -157,11 +157,16 @@ export class ConfirmedReqPDU {
 
             objId = reader.readObjectIdentifier();
 
-            issConfNotif = reader.readParam();
-
-            lifeTime = reader.readParam();
         } catch (error) {
             throw new BACnetError(`${this.className} - getSubscribeCOV: Parse - ${error}`);
+        }
+
+        try {
+            issConfNotif = reader.readParam();
+            lifeTime = reader.readParam();
+        } catch (error) {
+            issConfNotif = null;
+            lifeTime = null
         }
 
         serviceData = {
