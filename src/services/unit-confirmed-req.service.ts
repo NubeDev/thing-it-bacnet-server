@@ -81,6 +81,10 @@ export class UnitConfirmedReqService {
         // Get issue Confirmation Notification flag
         const issConfNotif = apduService.issConfNotif;
 
+        if (_.isNil(lifetime) && _.isNil(issConfNotif)) {
+            return this.unsubscribeCOV(inputSoc, outputSoc, serviceSocket);
+        }
+
         // --- Sends response "subscribeCOV"
 
         // Get invoke ID
@@ -124,6 +128,36 @@ export class UnitConfirmedReqService {
 
         return Bluebird.resolve();
     }
+
+    /**
+     * unsubscribeCOV - handles the "subscribeCOV" cancelation confirmed request .
+     * Method unsubscribes from the COV notification for specific BACnet object (unit)
+     * and sends the "subscribeCOV" simple ack response.
+     *
+     * @param  {RequestSocket} req - request object (socket)
+     * @param  {ResponseSocket} resp - response object (socket)
+     * @return {Bluebird<any>}
+     */
+    public unsubscribeCOV (inputSoc: InputSocket, outputSoc: OutputSocket,
+         serviceSocket: ServiceSocket): Bluebird<any> {
+    // const apduMessage = inputSoc.apdu as ILayerConfirmedReq;
+    // const apduService = apduMessage.service as ILayerConfirmedReqServiceSubscribeCOV;
+    // const unitStorage: UnitStorageManager = serviceSocket.getService('unitStorage');
+    // // Get process ID
+    // const subProcessId = apduService.subscriberProcessId;
+
+    // // Get unit Object identifier
+    // const unitObjId = apduService.objId;
+
+    // // Get device Object identifier
+    // const device = unitStorage.getDevice();
+    // const devObjIdProp = device.storage.getProperty(BACnetPropertyId.objectIdentifier);
+    // const devObjId = devObjIdProp.payload as BACnetObjectId;
+
+    throw new Error('Not implemented yet!')
+
+    // return Bluebird.resolve();
+}
 
     /**
      * writeProperty - handles the "writeProperty" confirmed request.
