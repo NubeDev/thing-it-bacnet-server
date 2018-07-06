@@ -1,4 +1,6 @@
 import * as Bluebird from 'bluebird';
+import { timer as RxTimer } from 'rxjs/observable/timer';
+import * as _ from 'lodash';
 
 import {
     BACnetPropertyId,
@@ -74,6 +76,11 @@ export class UnitConfirmedReqService {
         const apduService = apduMessage.service as ILayerConfirmedReqServiceSubscribeCOV;
         const unitStorage: UnitStorageManager = serviceSocket.getService('unitStorage');
 
+        // Get subscription lifetime
+        const lifetime = apduService.lifeTime;
+        // Get issue Confirmation Notification flag
+        const issConfNotif = apduService.issConfNotif;
+
         // --- Sends response "subscribeCOV"
 
         // Get invoke ID
@@ -97,7 +104,7 @@ export class UnitConfirmedReqService {
         const devObjIdProp = device.storage.getProperty(BACnetPropertyId.objectIdentifier);
         const devObjId = devObjIdProp.payload as BACnetObjectId;
 
-        unitStorage
+        let COVSubscription = unitStorage
             .subscribeToUnit(unitObjId)
             .subscribe((reportedProps) => {
                 const msgCovNotification = unconfirmedReqService.covNotification({
@@ -108,6 +115,12 @@ export class UnitConfirmedReqService {
                 });
                 outputSoc.send(msgCovNotification, `Unconfirmed Request - covNotification`);
             });
+
+        if (lifetime.value > 0) {
+            RxTimer(lifetime.value).subscribe(() => {
+                COVSubscription.unsubscribe();
+            })
+        }
 
         return Bluebird.resolve();
     }
