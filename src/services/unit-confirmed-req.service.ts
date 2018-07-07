@@ -131,7 +131,6 @@ export class UnitConfirmedReqService {
         if (lifetime.value > 0) {
             RxTimer(lifetime.value).subscribe(() => {
                 COVSubscription.unsubscribe();
-                this.subManager.delete(subId);
             })
         }
 
