@@ -29,7 +29,7 @@ export class SubscriptionManager {
      *
      * @return {void}
      */
-    public async initManager (): Promise<void> {
+    public initManager (): void {
         this.subscription = new Map();
     }
 
