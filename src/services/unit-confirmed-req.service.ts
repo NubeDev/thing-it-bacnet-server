@@ -15,7 +15,7 @@ import {
 } from '../core/bacnet/interfaces';
 
 import {
-    BACnetObjectId,
+    BACnetObjectId, BACnetUnsignedInteger,
 } from '../core/bacnet/types';
 
 import { InputSocket, OutputSocket, ServiceSocket } from '../core/sockets';
@@ -133,6 +133,10 @@ export class UnitConfirmedReqService {
         }
 
         return Bluebird.resolve();
+    }
+
+    private getSubId(objId: BACnetObjectId, subProcessId: BACnetUnsignedInteger) {
+        return `${objId.value}:${subProcessId.value}`;
     }
 
     /**
