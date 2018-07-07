@@ -153,23 +153,21 @@ export class UnitConfirmedReqService {
      */
     public unsubscribeCOV (inputSoc: InputSocket, outputSoc: OutputSocket,
          serviceSocket: ServiceSocket): Bluebird<any> {
-    // const apduMessage = inputSoc.apdu as ILayerConfirmedReq;
-    // const apduService = apduMessage.service as ILayerConfirmedReqServiceSubscribeCOV;
+    const apduMessage = inputSoc.apdu as ILayerConfirmedReq;
+    const apduService = apduMessage.service as ILayerConfirmedReqServiceSubscribeCOV;
     // const unitStorage: UnitStorageManager = serviceSocket.getService('unitStorage');
-    // // Get process ID
-    // const subProcessId = apduService.subscriberProcessId;
+    // Get process ID
+    const subProcessId = apduService.subscriberProcessId;
 
-    // // Get unit Object identifier
-    // const unitObjId = apduService.objId;
+    // Get unit Object identifier
+    const unitObjId = apduService.objId;
 
-    // // Get device Object identifier
-    // const device = unitStorage.getDevice();
-    // const devObjIdProp = device.storage.getProperty(BACnetPropertyId.objectIdentifier);
-    // const devObjId = devObjIdProp.payload as BACnetObjectId;
+    const subId = this.getSubId(unitObjId, subProcessId);
 
-    throw new Error('Not implemented yet!')
+    this.subManager.get(subId).unsubscribe();
+    this.subManager.delete(subId);
 
-    // return Bluebird.resolve();
+    return Bluebird.resolve();
 }
 
     /**
