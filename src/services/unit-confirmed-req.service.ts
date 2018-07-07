@@ -139,7 +139,7 @@ export class UnitConfirmedReqService {
     }
 
     private getSubId(objId: BACnetObjectId, subProcessId: BACnetUnsignedInteger) {
-        return `${objId.value}:${subProcessId.value}`;
+        return `${objId.value.type}:${objId.value.instance}:${subProcessId.value}`;
     }
 
     /**
