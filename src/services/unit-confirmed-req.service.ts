@@ -21,10 +21,16 @@ import {
 import { InputSocket, OutputSocket, ServiceSocket } from '../core/sockets';
 
 import { UnitStorageManager } from '../managers/unit-storage.manager';
+import { SubscriptionManager } from '../managers/subscription.manager';
 
 import { unconfirmedReqService, simpleACKService, complexACKService } from '../core/bacnet/services';
 
 export class UnitConfirmedReqService {
+    private subManager: SubscriptionManager;
+    constructor() {
+        this.subManager = new SubscriptionManager();
+        this.subManager.initManager();
+    }
 
     /**
      * readProperty - handles the "readProperty" confirmed request.
