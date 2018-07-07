@@ -12,6 +12,15 @@ export class SubscriptionManager {
         this.subscription.set(subId, sub);
     }
 
+    /**
+     * Gets the instance of the `Subscription` from the Map with subscriptions
+     *
+     * @type {Subscription}
+     */
+    public get (subId: string): Subscription {
+        return this.subscription.get(subId);
+    }
+
     public delete (subId: string) {
         this.subscription.delete(subId)
     }
