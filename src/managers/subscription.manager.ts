@@ -12,6 +12,9 @@ export class SubscriptionManager {
         this.subscription.set(subId, sub);
     }
 
+    public delete (subId: string) {
+        this.subscription.delete(subId)
+    }
     /**
      * Inits the subscription storage
      *
