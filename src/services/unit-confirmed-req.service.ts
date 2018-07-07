@@ -125,10 +125,13 @@ export class UnitConfirmedReqService {
                 });
                 outputSoc.send(msgCovNotification, `Unconfirmed Request - covNotification`);
             });
+        const subId = this.getSubId(unitObjId, subProcessId);
+        this.subManager.add(subId, COVSubscription);
 
         if (lifetime.value > 0) {
             RxTimer(lifetime.value).subscribe(() => {
                 COVSubscription.unsubscribe();
+                this.subManager.delete(subId);
             })
         }
 
