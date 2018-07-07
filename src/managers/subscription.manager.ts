@@ -9,6 +9,9 @@ export class SubscriptionManager {
      * @type {Subscription}
      */
     public add (subId: string, sub: Subscription) {
+        if (this.subscription.has(subId)) {
+            this.subscription.get(subId).unsubscribe();
+        }
         this.subscription.set(subId, sub);
     }
 
