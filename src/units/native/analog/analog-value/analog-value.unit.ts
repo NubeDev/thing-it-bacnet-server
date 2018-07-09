@@ -31,6 +31,18 @@ export class AnalogValueUnit extends AnalogUnit {
         CommandableMiddleUnit.createAndBind(this.storage);
         this.storage.addUnitStorage(AnalogValueMetadata);
 
+        if (!_.isNil(edeUnit.defPresentValue)) {
+            this.storage.updateProperty({
+                id: BACnetPropertyId.relinquishDefault,
+                payload: new BACnetTypes.BACnetReal(edeUnit.defPresentValue),
+            });
+
+            this.storage.updateProperty({
+                id: BACnetPropertyId.presentValue,
+                payload: new BACnetTypes.BACnetReal(edeUnit.defPresentValue),
+            });
+        }
+
         this.storage.dispatch();
     }
 
