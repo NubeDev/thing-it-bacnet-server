@@ -24,4 +24,12 @@ export const AnalogMetadata: IBACnetObjectProperty[] = [
         id: BACnetPropertyId.covIncrement,
         payload: new BACnetTypes.BACnetReal(1.0),
     },
+    {
+        id: BACnetPropertyId.minPresValue,
+        payload: new BACnetTypes.BACnetReal(0),
+    },
+    {
+        id: BACnetPropertyId.maxPresValue,
+        payload: new BACnetTypes.BACnetReal(100),
+    }
 ];
