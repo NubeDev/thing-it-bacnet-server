@@ -20,4 +20,8 @@ export const AnalogOutputMetadata: IBACnetObjectProperty[] = [
         id: BACnetPropertyId.relinquishDefault,
         payload: new BACnetTypes.BACnetReal(0.0),
     },
+    {
+        id: BACnetPropertyId.presentValue,
+        payload: new BACnetTypes.BACnetReal(0.0),
+    },
 ];
