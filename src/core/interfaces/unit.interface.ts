@@ -51,3 +51,14 @@ export interface ICustomFunctionConfig {
     // Frequency
     freq: number;
 }
+
+/**
+ * State texts
+ */
+
+export interface IStateTextsUnit {
+    referenceNumber: number;
+    inactiveText?: string;
+    activeText?: string;
+    stateTextsArray: string[];
+}
