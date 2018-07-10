@@ -16,10 +16,27 @@ import {
 
 import {
     ConverterUtil,
+    AsyncUtil
 } from '../utils';
+
+import { statePostfix } from '../../module';
 
 export class StateTextReader {
     private csvTable: CSVTable;
+
+    static checkAndReadStateTextsFile (fileName: string): Bluebird<Buffer|void> {
+        return Bluebird.any(statePostfix.map((postfix) => {
+            return AsyncUtil.readFile(fileName + `_${postfix}.csv`)
+        }))
+        .catch(() => {
+            return Bluebird.any(statePostfix.map((postfix) => {
+                return AsyncUtil.readFile(fileName + `-${postfix}.csv`)
+            }))
+        })
+        .catch((err) => {
+            console.warn('State texts sheet is not provided, state-texts references will be ignored')
+        })
+    }
 
     constructor (fileData: Buffer) {
         this.fromBuffer(fileData);
