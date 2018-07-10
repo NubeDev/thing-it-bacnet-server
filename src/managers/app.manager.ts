@@ -70,14 +70,15 @@ export class AppManager {
             .then((fileData) => {
                 const edeReader = new EDEReaderUtil(fileData.EDE);
                 const edeDataPoint = edeReader.readDataPointTable();
-
+                let statesDataPoint = null;
                 if (fileData.stateTexts) {
                     const stateTextsReader = new StateTextReader(fileData.stateTexts)
-                    const statesDataPoint = stateTextsReader.readDataPointTable();
+                    statesDataPoint = stateTextsReader.readDataPointTable();
+
                 }
 
                 const unitStorageManager = new UnitStorageManager();
-                unitStorageManager.initUnits(edeDataPoint);
+                unitStorageManager.initUnits(edeDataPoint, statesDataPoint);
 
                 this.server.registerService('unitStorage', unitStorageManager);
             })
