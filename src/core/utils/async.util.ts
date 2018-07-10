@@ -34,7 +34,7 @@ export class AsyncUtil {
         return new Bluebird((resolve, reject) => {
             fs.readFile(filePath, (error, data) => {
                 if (error) {
-                    throw new ApiError(`EDEStorageManager - readFile: ${error}`);
+                    reject(new ApiError(`EDEStorageManager - readFile: ${error}`));
                 }
                 resolve(data);
             });
