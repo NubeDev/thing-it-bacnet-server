@@ -19,6 +19,7 @@ import {
     logger,
     AsyncUtil,
     EDEReaderUtil,
+    StateTextReader
 } from '../core/utils';
 
 import { UnitStorageManager } from './unit-storage.manager';
@@ -56,9 +57,24 @@ export class AppManager {
     public start () {
         return Bluebird.resolve()
             .then(() => AsyncUtil.readFile(this.appConfig.bacnet.edeFilePath))
+            .then((EDEData) => {
+                const fileName = this.appConfig.bacnet.edeFilePath.slice(0, -4);
+                return StateTextReader.checkAndReadStateTextsFile(fileName)
+                    .then((stateTextsData) => {
+                        return {
+                            EDE: EDEData,
+                            stateTexts: stateTextsData
+                        };
+                    });
+            })
             .then((fileData) => {
-                const edeReader = new EDEReaderUtil(fileData);
+                const edeReader = new EDEReaderUtil(fileData.EDE);
                 const edeDataPoint = edeReader.readDataPointTable();
+
+                if (fileData.stateTexts) {
+                    const stateTextsReader = new StateTextReader(fileData.stateTexts)
+                    const statesDataPoint = stateTextsReader.readDataPointTable();
+                }
 
                 const unitStorageManager = new UnitStorageManager();
                 unitStorageManager.initUnits(edeDataPoint);
