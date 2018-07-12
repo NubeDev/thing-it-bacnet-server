@@ -33,7 +33,7 @@ export class Container {
      * adds event listener to container child processes to log output into console
      *
      */
-    logContainer(): void {
+    startLogging(): void {
         this.fileLog = fs.createWriteStream(`./logs/${this.name}.container.log`);
         this.process.stdout.pipe(this.fileLog);
         this.process.stdout.on('data', (data) => {
