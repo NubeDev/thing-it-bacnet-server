@@ -26,6 +26,7 @@ export class Container {
             '-e', `FILE=${this.name}.csv`,
             'bacnet-server'
         ]);
+        this.startLogging();
     }
 
     /**

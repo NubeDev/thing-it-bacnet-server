@@ -20,7 +20,6 @@ export class ContainersManager {
         this.logger.info(`Initializing container for ${name}.csv on port ${port}...`)
         const container: Container = new Container (name, port, this.edeDir);
         container.start();
-        this.logContainer(container);
         this.containers.push(container);
         this.containersInfo.set(port, { port, name });
     }
