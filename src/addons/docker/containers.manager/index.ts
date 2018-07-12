@@ -1,7 +1,5 @@
-import * as fs from 'fs';
 import { Container } from './container';
 import * as Bluebird from 'bluebird';
-import * as colors from 'colors';
 import { Logger } from '../logger';
 
 export class ContainersManager {
@@ -54,29 +52,5 @@ export class ContainersManager {
                   });
             });
         }, { concurrency: 1});
-    }
-
-    /**
-     * logContainer - creates file Streams for writing container common and errors log,
-     * adds event listener to container child processes to log output into console
-     *
-     * @param {Container} container
-     */
-    logContainer(container: Container): void {
-        container.fileLog = fs.createWriteStream(`./logs/${container.name}.container.log`);
-        container.process.stdout.pipe(container.fileLog);
-        container.process.stdout.on('data', (data) => {
-            console.log(colors.yellow(`${container.name}:`), ` ${data}`)
-        });
-
-        container.fileErrorsLog = fs.createWriteStream(`./logs/${container.name}.container.errors.log`);
-        container.process.stderr.on('data', (data: string) => {
-            console.log(colors.yellow(`${container.name}:`) + ` ${data}`);
-            if (data.includes('error')) {
-                container.fileErrorsLog.write(data)
-            } else {
-                container.fileLog.write(data);
-            }
-        });
     }
 }

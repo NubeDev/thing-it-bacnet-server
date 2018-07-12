@@ -1,5 +1,7 @@
 import { spawn, exec, ChildProcess } from 'child_process';
 import * as stream from 'stream';
+import * as colors from 'colors';
+import * as fs from 'fs';
 
 export class Container {
     public process: ChildProcess;
@@ -24,6 +26,29 @@ export class Container {
             '-e', `FILE=${this.name}.csv`,
             'bacnet-server'
         ]);
+    }
+
+    /**
+     * logContainer - creates file Streams for writing container common and errors log,
+     * adds event listener to container child processes to log output into console
+     *
+     */
+    logContainer(): void {
+        this.fileLog = fs.createWriteStream(`./logs/${this.name}.container.log`);
+        this.process.stdout.pipe(this.fileLog);
+        this.process.stdout.on('data', (data) => {
+            console.log(colors.yellow(`${this.name}:`), ` ${data}`)
+        });
+
+        this.fileErrorsLog = fs.createWriteStream(`./logs/${this.name}.container.errors.log`);
+        this.process.stderr.on('data', (data: string) => {
+            console.log(colors.yellow(`${this.name}:`) + ` ${data}`);
+            if (data.includes('error')) {
+                this.fileErrorsLog.write(data)
+            } else {
+                this.fileLog.write(data);
+            }
+        });
     }
 
     /**
