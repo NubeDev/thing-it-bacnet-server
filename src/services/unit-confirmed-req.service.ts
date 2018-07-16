@@ -1,4 +1,6 @@
 import * as Bluebird from 'bluebird';
+import { timer as RxTimer } from 'rxjs/observable/timer';
+import * as _ from 'lodash';
 
 import {
     BACnetPropertyId,
@@ -13,16 +15,22 @@ import {
 } from '../core/bacnet/interfaces';
 
 import {
-    BACnetObjectId,
+    BACnetObjectId, BACnetUnsignedInteger,
 } from '../core/bacnet/types';
 
 import { InputSocket, OutputSocket, ServiceSocket } from '../core/sockets';
 
 import { UnitStorageManager } from '../managers/unit-storage.manager';
+import { SubscriptionManager } from '../managers/subscription.manager';
 
 import { unconfirmedReqService, simpleACKService, complexACKService } from '../core/bacnet/services';
 
 export class UnitConfirmedReqService {
+    private subManager: SubscriptionManager;
+    constructor() {
+        this.subManager = new SubscriptionManager();
+        this.subManager.initManager();
+    }
 
     /**
      * readProperty - handles the "readProperty" confirmed request.
@@ -74,6 +82,15 @@ export class UnitConfirmedReqService {
         const apduService = apduMessage.service as ILayerConfirmedReqServiceSubscribeCOV;
         const unitStorage: UnitStorageManager = serviceSocket.getService('unitStorage');
 
+        // Get subscription lifetime
+        const lifetime = apduService.lifeTime;
+        // Get issue Confirmation Notification flag
+        const issConfNotif = apduService.issConfNotif;
+
+        if (_.isNil(lifetime) && _.isNil(issConfNotif)) {
+            return this.unsubscribeCOV(inputSoc, outputSoc, serviceSocket);
+        }
+
         // --- Sends response "subscribeCOV"
 
         // Get invoke ID
@@ -97,7 +114,7 @@ export class UnitConfirmedReqService {
         const devObjIdProp = device.storage.getProperty(BACnetPropertyId.objectIdentifier);
         const devObjId = devObjIdProp.payload as BACnetObjectId;
 
-        unitStorage
+        let COVSubscription = unitStorage
             .subscribeToUnit(unitObjId)
             .subscribe((reportedProps) => {
                 const msgCovNotification = unconfirmedReqService.covNotification({
@@ -108,9 +125,49 @@ export class UnitConfirmedReqService {
                 });
                 outputSoc.send(msgCovNotification, `Unconfirmed Request - covNotification`);
             });
+        const subId = this.getSubId(unitObjId, subProcessId);
+        this.subManager.add(subId, COVSubscription);
+
+        if (lifetime.value > 0) {
+            RxTimer(lifetime.value).subscribe(() => {
+                COVSubscription.unsubscribe();
+            })
+        }
 
         return Bluebird.resolve();
     }
+
+    private getSubId(objId: BACnetObjectId, subProcessId: BACnetUnsignedInteger) {
+        return `${objId.value.type}:${objId.value.instance}:${subProcessId.value}`;
+    }
+
+    /**
+     * unsubscribeCOV - handles the "subscribeCOV" cancelation confirmed request .
+     * Method unsubscribes from the COV notification for specific BACnet object (unit)
+     * and sends the "subscribeCOV" simple ack response.
+     *
+     * @param  {RequestSocket} req - request object (socket)
+     * @param  {ResponseSocket} resp - response object (socket)
+     * @return {Bluebird<any>}
+     */
+    public unsubscribeCOV (inputSoc: InputSocket, outputSoc: OutputSocket,
+         serviceSocket: ServiceSocket): Bluebird<any> {
+    const apduMessage = inputSoc.apdu as ILayerConfirmedReq;
+    const apduService = apduMessage.service as ILayerConfirmedReqServiceSubscribeCOV;
+    // const unitStorage: UnitStorageManager = serviceSocket.getService('unitStorage');
+    // Get process ID
+    const subProcessId = apduService.subscriberProcessId;
+
+    // Get unit Object identifier
+    const unitObjId = apduService.objId;
+
+    const subId = this.getSubId(unitObjId, subProcessId);
+
+    this.subManager.get(subId).unsubscribe();
+    this.subManager.delete(subId);
+
+    return Bluebird.resolve();
+}
 
     /**
      * writeProperty - handles the "writeProperty" confirmed request.

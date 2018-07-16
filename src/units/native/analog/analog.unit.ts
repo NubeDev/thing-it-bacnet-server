@@ -3,6 +3,7 @@ import * as _ from 'lodash';
 import {
     BACnetPropertyId,
     BACnetUnitFamily,
+    BACnetUnitDataFlow,
 } from '../../../core/bacnet/enums';
 
 import {
@@ -31,6 +32,44 @@ export class AnalogUnit extends NativeUnit {
 
         StatusFlagsMiddleUnit.createAndBind(this.storage);
         this.storage.addUnitStorage(AnalogMetadata);
+
+        if (!_.isNil(edeUnit.unitCode)) {
+            this.storage.setProperty({
+                id: BACnetPropertyId.units,
+                payload: new BACnetTypes.BACnetEnumerated(edeUnit.unitCode),
+            });
+        }
+
+        if (!_.isNil(edeUnit.minPresentValue)) {
+            this.storage.setProperty({
+                id: BACnetPropertyId.minPresValue,
+                payload: new BACnetTypes.BACnetReal(edeUnit.minPresentValue),
+            });
+        }
+
+        if (!_.isNil(edeUnit.maxPresentValue)) {
+            this.storage.setProperty({
+                id: BACnetPropertyId.maxPresValue,
+                payload: new BACnetTypes.BACnetReal(edeUnit.maxPresentValue),
+            });
+        }
+
+    }
+
+    /**
+     * sjHandler - handles the changes of properties.
+     *
+     * @param  {IBACnetObjectProperty} notif - notification object
+     * @return {void}
+     */
+    public sjHandler (): void {
+        super.sjHandler();
+
+        this.storage.setFlowHandler(BACnetUnitDataFlow.Set,
+            [ BACnetPropertyId.maxPresValue, BACnetPropertyId.minPresValue,
+                BACnetPropertyId.units ], (notif) => {
+            this.storage.updateProperty(notif);
+        });
     }
 
     /**

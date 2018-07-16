@@ -3,3 +3,6 @@
 /dist
 /tests
 /all-logs.log
+/edefiles
+/logs
+*.log

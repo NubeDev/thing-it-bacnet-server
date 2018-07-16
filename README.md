@@ -10,15 +10,25 @@ npm install
 ## Start
 
 ```
-npm start -- <options...>
+npm start -- <options...> - start bacnet-server for single ede-file
+npm run build-docker - build docker image of bacnet-server
+npm run start-docker-service -- <options...> - start simulation for a folder of ede-files, 
+with wrapping each bacnet-server instance with docker container
 ```
 
 ## Options
 
+### Start options
 - `--port <port>` (by default `47808`): port of the server.
 - `--filePath <file_path>`: path to the `EDE` file.
 - `--reqDelay <delay>` (by default `20 ms`): timeout between end of old request and start of new request.
 - `--reqThread <thread>` (by default `1`): number of concurrent unicast requests to the one `IP:PORT`.
+
+### Docker service options
+- `--port <port>` (by default `47808`): port of the server.
+- `--dirPath <dir_path>` (by default `./edefiles`): path to the `EDE` files directory.
+- `--outputAddr <output_address>`: ip address of the remote thing-it-bacnet-device to connect.
+- `--outputPort <output_port` (by default `47808`): port of remote thing-it-bacnet-device to connect.
 
 # Units
 
