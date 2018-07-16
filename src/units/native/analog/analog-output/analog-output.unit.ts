@@ -20,6 +20,8 @@ import { CommandableMiddleUnit } from '../../middles/commandable/commandable.mid
 
 import { AnalogUnit } from '../analog.unit';
 
+import * as BACnetTypes from '../../../../core/bacnet/types';
+
 export class AnalogOutputUnit extends AnalogUnit {
     public readonly className: string = 'AnalogOutputUnit';
 
@@ -28,6 +30,18 @@ export class AnalogOutputUnit extends AnalogUnit {
 
         CommandableMiddleUnit.createAndBind(this.storage);
         this.storage.addUnitStorage(AnalogOutputMetadata);
+
+        if (!_.isNil(edeUnit.defPresentValue)) {
+            this.storage.updateProperty({
+                id: BACnetPropertyId.relinquishDefault,
+                payload: new BACnetTypes.BACnetReal(edeUnit.defPresentValue),
+            });
+
+            this.storage.updateProperty({
+                id: BACnetPropertyId.presentValue,
+                payload: new BACnetTypes.BACnetReal(edeUnit.defPresentValue),
+            });
+        }
 
         this.storage.dispatch();
     }
