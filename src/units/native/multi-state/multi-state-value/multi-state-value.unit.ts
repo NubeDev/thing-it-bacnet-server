@@ -1,22 +1,19 @@
 import * as _ from 'lodash';
 
 import {
-    BACnetPropertyId,
-} from '../../../../core/bacnet/enums';
-
-import {
     ApiError,
 } from '../../../../core/errors';
 
 import {
-    IBACnetObjectProperty,
-} from '../../../../core/bacnet/interfaces';
+    UnitPropertyObject,
+} from '../../../../core/interfaces';
 
 import { IEDEUnit } from '../../../../core/interfaces';
 
 import { MultiStateValueMetadata } from './multi-state-value.metadata';
 
 import { MultiStateUnit } from '../multi-state.unit';
+import * as BACNet from 'tid-bacnet-logic';
 
 export class MultiStateValueUnit extends MultiStateUnit {
     public readonly className: string = 'MultiStateValueUnit';
