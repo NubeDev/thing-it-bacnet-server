@@ -1,35 +1,36 @@
-import {
-    BACnetPropertyId,
-    BACnetObjectType,
-    BACnetPropTypes,
-    BACnetBinaryPV,
-    BACnetPolarity,
-    BACnetEventState,
-    BACnetReliability,
-} from '../../../../core/bacnet/enums';
+// import {
+//     BACnetPropertyId,
+//     BACnetObjectType,
+//     BACnetPropTypes,
+//     BACnetBinaryPV,
+//     BACnetPolarity,
+//     BACnetEventState,
+//     BACnetReliability,
+// } from '../../../../core/bacnet/enums';
 
 import {
-    IBACnetObjectProperty,
-} from '../../../../core/bacnet/interfaces';
+    UnitPropertyObject,
+} from '../../../../core/interfaces';
 
-import * as BACnetTypes from '../../../../core/bacnet/types';
+// import * as BACnetTypes from '../../../../core/bacnet/types';
+import * as BACNet from 'tid-bacnet-logic';
 
-export const StatusFlagsMiddleMetadata: IBACnetObjectProperty[] = [
+export const StatusFlagsMiddleMetadata: UnitPropertyObject[] = [
     {
-        id: BACnetPropertyId.outOfService,
-        payload: new BACnetTypes.BACnetBoolean(false),
+        id: BACNet.Enums.PropertyId.outOfService,
+        payload: new BACNet.Types.BACnetBoolean(false),
     },
     {
-        id: BACnetPropertyId.reliability,
-        payload: new BACnetTypes.BACnetEnumerated(BACnetReliability.NoFaultDetected),
+        id: BACNet.Enums.PropertyId.reliability,
+        payload: new BACNet.Types.BACnetEnumerated(BACNet.Enums.Reliability.NoFaultDetected),
     },
     {
-        id: BACnetPropertyId.eventState,
-        payload: new BACnetTypes.BACnetEnumerated(BACnetEventState.Normal),
+        id: BACNet.Enums.PropertyId.eventState,
+        payload: new BACNet.Types.BACnetEnumerated(BACNet.Enums.EventState.Normal),
     },
     {
-        id: BACnetPropertyId.statusFlags,
-        payload: new BACnetTypes.BACnetStatusFlags({
+        id: BACNet.Enums.PropertyId.statusFlags,
+        payload: new BACNet.Types.BACnetStatusFlags({
             inAlarm: false,
             fault: false,
             overridden: false,
