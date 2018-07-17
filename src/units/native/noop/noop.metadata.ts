@@ -1,11 +1,6 @@
-import {
-    BACnetPropertyId,
-    BACnetObjectType,
-    BACnetPropTypes,
-} from '../../../core/bacnet/enums';
 
 import {
-    IBACnetObjectProperty,
-} from '../../../core/bacnet/interfaces';
+    UnitPropertyObject,
+} from '../../../core/interfaces';
 
-export const NoopMetadata: IBACnetObjectProperty[] = [];
+export const NoopMetadata: UnitPropertyObject[] = [];
