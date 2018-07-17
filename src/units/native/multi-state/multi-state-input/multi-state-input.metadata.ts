@@ -1,18 +1,19 @@
-import {
-    BACnetPropertyId,
-    BACnetObjectType,
-    BACnetPropTypes,
-} from '../../../../core/bacnet/enums';
+// import {
+//     BACnetPropertyId,
+//     BACnetObjectType,
+//     BACnetPropTypes,
+// } from '../../../../core/bacnet/enums';
 
 import {
-    IBACnetObjectProperty,
-} from '../../../../core/bacnet/interfaces';
+    UnitPropertyObject,
+} from '../../../../core/interfaces';
 
-import * as BACnetTypes from '../../../../core/bacnet/types';
+// import * as BACnetTypes from '../../../../core/bacnet/types';
+import * as BACNet from 'tid-bacnet-logic';
 
-export const MultiStateInputMetadata: IBACnetObjectProperty[] = [
+export const MultiStateInputMetadata: UnitPropertyObject[] = [
     {
-        id: BACnetPropertyId.objectType,
-        payload: new BACnetTypes.BACnetEnumerated(BACnetObjectType.MultiStateInput),
+        id: BACNet.Enums.PropertyId.objectType,
+        payload: new BACNet.Types.BACnetEnumerated(BACNet.Enums.ObjectType.MultiStateInput),
     },
 ];
