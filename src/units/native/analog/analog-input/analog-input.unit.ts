@@ -1,7 +1,7 @@
 import * as _ from 'lodash';
 
 import {
-    BACnetPropertyId,
+    // BACnetPropertyId,
     BACnetUnitDataFlow,
 } from '../../../../core/bacnet/enums';
 
@@ -10,14 +10,15 @@ import {
 } from '../../../../core/errors';
 
 import {
-    IBACnetObjectProperty,
-} from '../../../../core/bacnet/interfaces';
+    UnitPropertyObject,
+} from '../../../../core/interfaces';
 
 import { IEDEUnit } from '../../../../core/interfaces';
 
 import { AnalogInputMetadata } from './analog-input.metadata';
 
 import { AnalogUnit } from '../analog.unit';
+import * as BACNet from 'tid-bacnet-logic';
 
 export class AnalogInputUnit extends AnalogUnit {
     public readonly className: string = 'AnalogInputUnit';
@@ -31,13 +32,13 @@ export class AnalogInputUnit extends AnalogUnit {
     /**
      * sjHandler - handles the changes of properties.
      *
-     * @param  {IBACnetObjectProperty} notif - notification object
+     * @param  {UnitPropertyObject} notif - notification object
      * @return {void}
      */
     public sjHandler (): void {
         super.sjHandler();
 
-        this.storage.setFlowHandler(BACnetUnitDataFlow.Set, BACnetPropertyId.presentValue, (notif) => {
+        this.storage.setFlowHandler(BACnetUnitDataFlow.Set, BACNet.Enums.PropertyId.presentValue, (notif) => {
             this.shSetPresentValue(notif);
         });
     }
@@ -45,10 +46,10 @@ export class AnalogInputUnit extends AnalogUnit {
     /**
      * shSetPresentValue - handles the changes of 'Present Value' property.
      *
-     * @param  {IBACnetObjectProperty} notif - notification object for presentValue
+     * @param  {UnitPropertyObject} notif - notification object for presentValue
      * @return {void}
      */
-    private shSetPresentValue (notif: IBACnetObjectProperty): void {
+    private shSetPresentValue (notif: UnitPropertyObject): void {
         this.storage.updateProperty(notif);
         this.storage.dispatch();
     }

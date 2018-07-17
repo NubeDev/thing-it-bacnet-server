@@ -1,23 +1,24 @@
-import {
-    BACnetPropertyId,
-    BACnetObjectType,
-    BACnetPropTypes,
-    BACnetEngineeringUnits,
-} from '../../../../core/bacnet/enums';
+// import {
+//     BACnetPropertyId,
+//     BACnetObjectType,
+//     BACnetPropTypes,
+//     BACnetEngineeringUnits,
+// } from '../../../../core/bacnet/enums';
 
 import {
-    IBACnetObjectProperty,
-} from '../../../../core/bacnet/interfaces';
+    UnitPropertyObject,
+} from '../../../../core/interfaces';
 
-import * as BACnetTypes from '../../../../core/bacnet/types';
+// import * as BACnetTypes from '../../../../core/bacnet/types';
+import * as BACNet from 'tid-bacnet-logic';
 
-export const AnalogInputMetadata: IBACnetObjectProperty[] = [
+export const AnalogInputMetadata: UnitPropertyObject[] = [
     {
-        id: BACnetPropertyId.objectType,
-        payload: new BACnetTypes.BACnetEnumerated(BACnetObjectType.AnalogInput),
+        id: BACNet.Enums.PropertyId.objectType,
+        payload: new BACNet.Types.BACnetEnumerated(BACNet.Enums.ObjectType.AnalogInput),
     },
     {
-        id: BACnetPropertyId.presentValue,
-        payload: new BACnetTypes.BACnetReal(0.0),
+        id: BACNet.Enums.PropertyId.presentValue,
+        payload: new BACNet.Types.BACnetReal(0.0),
     },
 ];
