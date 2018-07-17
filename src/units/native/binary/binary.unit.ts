@@ -1,9 +1,9 @@
 import * as _ from 'lodash';
 
 import {
-    BACnetPropertyId,
-    BACnetBinaryPV,
-    BACnetPolarity,
+    // BACnetPropertyId,
+    // BACnetBinaryPV,
+    // BACnetPolarity,
     BACnetUnitDataFlow,
     BACnetUnitFamily,
 } from '../../../core/bacnet/enums';
@@ -13,8 +13,8 @@ import {
 } from '../../../core/errors';
 
 import {
-    IBACnetObjectProperty,
-} from '../../../core/bacnet/interfaces';
+    UnitPropertyObject,
+} from '../../../core/interfaces';
 
 import {
     IEDEUnit,
@@ -25,7 +25,8 @@ import { StatusFlagsMiddleUnit } from '../middles/status-flags/status-flags.midd
 
 import { NativeUnit } from '../native.unit';
 
-import * as BACnetTypes from '../../../core/bacnet/types';
+// import * as BACnetTypes from '../../../core/bacnet/types';
+import * as BACNet from 'tid-bacnet-logic';
 
 export class BinaryUnit extends NativeUnit {
     public readonly className: string = 'BinaryUnit';
@@ -41,13 +42,13 @@ export class BinaryUnit extends NativeUnit {
     /**
      * sjHandler - handles the changes of properties.
      *
-     * @param  {IBACnetObjectProperty} notif - notification object
+     * @param  {UnitPropertyObject} notif - notification object
      * @return {void}
      */
     public sjHandler (): void {
         super.sjHandler();
 
-        this.storage.setFlowHandler(BACnetUnitDataFlow.Set, BACnetPropertyId.polarity, (notif) => {
+        this.storage.setFlowHandler(BACnetUnitDataFlow.Set, BACNet.Enums.PropertyId.polarity, (notif) => {
             this.shSetPolarity(notif);
         });
     }
@@ -57,20 +58,20 @@ export class BinaryUnit extends NativeUnit {
      * Method checks the "outOfService" BACnet property and if it equals "FALSE"
      * then method will change the "presentValue" BACnet property.
      *
-     * @param  {IBACnetObjectProperty} notif - notification object for Polarity
+     * @param  {UnitPropertyObject} notif - notification object for Polarity
      * @return {void}
      */
-    public shSetPolarity (notif: IBACnetObjectProperty): void {
-        const outOfServiceProp = this.storage.getProperty(BACnetPropertyId.outOfService);
-        const outOfService = outOfServiceProp.payload as BACnetTypes.BACnetBoolean;
+    public shSetPolarity (notif: UnitPropertyObject): void {
+        const outOfServiceProp = this.storage.getProperty(BACNet.Enums.PropertyId.outOfService);
+        const outOfService = outOfServiceProp.payload as BACNet.Types.BACnetBoolean;
 
         if (outOfService.value) {
             return;
         }
 
-        const polarityProp = this.storage.getProperty(BACnetPropertyId.polarity);
-        const polarity = polarityProp.payload as BACnetTypes.BACnetEnumerated;
-        const newPolarity = notif.payload as BACnetTypes.BACnetEnumerated;
+        const polarityProp = this.storage.getProperty(BACNet.Enums.PropertyId.polarity);
+        const polarity = polarityProp.payload as BACNet.Types.BACnetEnumerated;
+        const newPolarity = notif.payload as BACNet.Types.BACnetEnumerated;
 
         if (polarity.value === newPolarity.value) {
             return;
@@ -78,11 +79,11 @@ export class BinaryUnit extends NativeUnit {
 
         this.storage.updateProperty(notif);
 
-        const presentValueProp = this.storage.getProperty(BACnetPropertyId.presentValue);
-        const presentValue = presentValueProp.payload as BACnetTypes.BACnetEnumerated;
+        const presentValueProp = this.storage.getProperty(BACNet.Enums.PropertyId.presentValue);
+        const presentValue = presentValueProp.payload as BACNet.Types.BACnetEnumerated;
 
         this.storage.updateProperty({
-            id: BACnetPropertyId.presentValue,
+            id: BACNet.Enums.PropertyId.presentValue,
             payload: presentValue,
         });
     }
@@ -90,11 +91,11 @@ export class BinaryUnit extends NativeUnit {
     /**
     * getReportedProperties - returns the reported properties for COV notification.
     *
-    * @return {IBACnetObjectProperty[]}
+    * @return {UnitPropertyObject[]}
     */
-   protected getReportedProperties (): IBACnetObjectProperty[] {
-       const presentValue = this.storage.getProperty(BACnetPropertyId.presentValue);
-       const statusFlags = this.storage.getProperty(BACnetPropertyId.statusFlags);
+   protected getReportedProperties (): UnitPropertyObject[] {
+       const presentValue = this.storage.getProperty(BACNet.Enums.PropertyId.presentValue);
+       const statusFlags = this.storage.getProperty(BACNet.Enums.PropertyId.statusFlags);
 
        return [ presentValue, statusFlags ];
    }
