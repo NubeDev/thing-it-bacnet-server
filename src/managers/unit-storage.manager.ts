@@ -23,6 +23,7 @@ import { NativeUnit } from '../units/native/native.unit';
 
 import { CustomModule } from '../units/custom/custom.module';
 import { CustomUnit } from '../units/custom/custom.unit';
+import * as BACNet from 'tid-bacnet-logic';
 
 type NativeUnitToken = string;
 type CustomUnitToken = string;
@@ -237,5 +238,11 @@ export class UnitStorageManager {
             return null;
         }
         return unit.subscribe();
+
+    public storageToServicePropertyAdapter(prop: UnitPropertyObject): BACNet.Interfaces.PropertyValue {
+        return _.assign({}, {
+            id: new BACNet.Types.BACnetEnumerated(prop.id),
+            values: _.isArray(prop.payload) ? prop.payload : [ prop.payload ]
+        })
     }
 }
