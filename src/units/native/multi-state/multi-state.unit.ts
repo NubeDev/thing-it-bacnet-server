@@ -1,7 +1,7 @@
 import * as _ from 'lodash';
 
 import {
-    BACnetPropertyId,
+    //BACnetPropertyId,
     BACnetUnitFamily,
 } from '../../../core/bacnet/enums';
 
@@ -10,8 +10,8 @@ import {
 } from '../../../core/errors';
 
 import {
-    IBACnetObjectProperty,
-} from '../../../core/bacnet/interfaces';
+    UnitPropertyObject,
+} from '../../../core/interfaces';
 
 import { IEDEUnit } from '../../../core/interfaces';
 
@@ -20,7 +20,8 @@ import { StatusFlagsMiddleUnit } from '../middles/status-flags/status-flags.midd
 
 import { NativeUnit } from '../native.unit';
 
-import * as BACnetTypes from '../../../core/bacnet/types';
+// import * as BACnetTypes from '../../../core/bacnet/types';
+import * as BACNet from 'tid-bacnet-logic';
 
 export class MultiStateUnit extends NativeUnit {
     public readonly className: string = 'MultiStateUnit';
@@ -36,11 +37,11 @@ export class MultiStateUnit extends NativeUnit {
     /**
     * getReportedProperties - returns the reported properties for COV notification.
     *
-    * @return {IBACnetObjectProperty[]}
+    * @return {UnitPropertyObject[]}
     */
-   protected getReportedProperties (): IBACnetObjectProperty[] {
-       const presentValue = this.storage.getProperty(BACnetPropertyId.presentValue);
-       const statusFlags = this.storage.getProperty(BACnetPropertyId.statusFlags);
+   protected getReportedProperties (): UnitPropertyObject[] {
+       const presentValue = this.storage.getProperty(BACNet.Enums.PropertyId.presentValue);
+       const statusFlags = this.storage.getProperty(BACNet.Enums.PropertyId.statusFlags);
 
        return [ presentValue, statusFlags ];
    }
