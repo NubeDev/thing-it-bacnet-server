@@ -21,7 +21,7 @@ import { BinaryInputMetadata } from './binary-input.metadata';
 
 import { BinaryUnit } from '../../binary/binary.unit';
 
-import * as BACnetTypes from '../../../../core/bacnet/types';
+// import * as BACnetTypes from '../../../../core/bacnet/types';
 import * as BACNet from 'tid-bacnet-logic';
 
 export class BinaryInputUnit extends BinaryUnit {

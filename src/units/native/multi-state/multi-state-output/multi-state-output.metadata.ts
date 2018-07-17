@@ -1,8 +1,8 @@
-import {
-    BACnetPropertyId,
-    BACnetObjectType,
-    BACnetPropTypes,
-} from '../../../../core/bacnet/enums';
+// import {
+//     BACnetPropertyId,
+//     BACnetObjectType,
+//     BACnetPropTypes,
+// } from '../../../../core/bacnet/enums';
 
 import {
     UnitPropertyObject,

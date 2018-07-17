@@ -14,6 +14,6 @@ import * as BACNet from 'tid-bacnet-logic';
 export const MultiStateValueMetadata: UnitPropertyObject[] = [
     {
         id: BACNet.Enums.PropertyId.objectType,
-        payload: new BACNet.Types.BACnetEnumerated(BACnetObjectType.MultiStateValue),
+        payload: new BACNet.Types.BACnetEnumerated(BACNet.Enums.ObjectType.MultiStateValue),
     },
 ];
