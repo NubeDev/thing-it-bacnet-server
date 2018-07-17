@@ -11,9 +11,10 @@ import {
     IBACnetAddressInfo,
 } from '../interfaces';
 
-import {
-    OffsetUtil,
-} from '../bacnet/utils';
+// import {
+//     OffsetUtil,
+// } from '../bacnet/utils';
+import * as BACNet from 'tid-bacnet-logic';
 
 import {
     ConverterUtil,
@@ -44,7 +45,7 @@ export class EDEReaderUtil {
      * @return {void}
      */
     public readHeader (): void {
-        const offset = new OffsetUtil(0);
+        const offset = new BACNet.IO.Offset(0);
 
         const fileType =
             this.csvTable.getRowByIndex(offset.inc());
@@ -78,7 +79,7 @@ export class EDEReaderUtil {
      * @return {IEDEUnit}
      */
     public readDataPointRow (index: number): IEDEUnit {
-        const offset = new OffsetUtil(0);
+        const offset = new BACNet.IO.Offset(0);
         const dataPointRow = this.csvTable.getRowByIndex(index);
         // <Device Instance>_<Device Name>_<Object Name>
         const keyname = dataPointRow.getCellValue(offset.inc());
@@ -159,7 +160,7 @@ export class EDEReaderUtil {
      */
     public readDataPointTable (): IEDEUnit[] {
         const tableLen = this.csvTable.lenght;
-        const offset = new OffsetUtil(8);
+        const offset = new BACNet.IO.Offset(8);
         const startIndex = offset.getVaule();
 
         const dataPointRows: IEDEUnit[] = [];
