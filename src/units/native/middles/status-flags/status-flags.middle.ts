@@ -4,7 +4,7 @@ import {
     // BACnetPropertyId,
     // BACnetEventState,
     BACnetUnitDataFlow,
-} from '../../../../core/bacnet/enums';
+} from '../../../../core/enums';
 
 import {
     UnitPropertyObject,

@@ -4,7 +4,7 @@ import * as _ from 'lodash';
 
 // import {
 //     BACNet.Enums.PropertyId,
-// } from '../core/bacnet/enums';
+// } from '../core/enums';
 
 // import {
 //     ILayerConfirmedReq,

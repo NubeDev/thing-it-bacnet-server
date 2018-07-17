@@ -7,7 +7,7 @@ import { logger } from '../core/utils';
 // import {
 //     BACnetConfirmedService,
 //     BACnetPropertyId,
-// } from '../core/bacnet/enums';
+// } from '../core/enums';
 
 import * as BACNet from 'tid-bacnet-logic';
 

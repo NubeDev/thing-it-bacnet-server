@@ -6,7 +6,7 @@
 //     BACnetPolarity,
 //     BACnetEventState,
 //     BACnetReliability,
-// } from '../../../../core/bacnet/enums';
+// } from '../../../../core/enums';
 
 import {
     UnitPropertyObject,

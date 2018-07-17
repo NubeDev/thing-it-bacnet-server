@@ -5,7 +5,7 @@ import {
     // BACnetBinaryPV,
     // BACnetEventState,
     BACnetUnitDataFlow,
-} from '../../../../core/bacnet/enums';
+} from '../../../../core/enums';
 
 import {
     ApiError,

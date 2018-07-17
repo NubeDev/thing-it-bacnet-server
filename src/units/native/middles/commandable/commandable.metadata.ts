@@ -2,7 +2,7 @@
 //     BACnetPropertyId,
 //     BACnetObjectType,
 //     BACnetPropTypes,
-// } from '../../../../core/bacnet/enums';
+// } from '../../../../core/enums';
 
 import {
     UnitPropertyObject,

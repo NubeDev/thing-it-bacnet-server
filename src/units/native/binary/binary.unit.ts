@@ -6,7 +6,7 @@ import {
     // BACnetPolarity,
     BACnetUnitDataFlow,
     BACnetUnitFamily,
-} from '../../../core/bacnet/enums';
+} from '../../../core/enums';
 
 import {
     ApiError,

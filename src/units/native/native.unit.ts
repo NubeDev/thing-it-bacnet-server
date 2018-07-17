@@ -5,7 +5,7 @@ import {
     //BACnetPropertyId,
     BACnetUnitDataFlow,
     BACnetUnitFamily,
-} from '../../core/bacnet/enums';
+} from '../../core/enums';
 
 import {
     UnitPropertyObject

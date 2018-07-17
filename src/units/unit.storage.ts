@@ -4,7 +4,7 @@ import { Subject, BehaviorSubject, Observable } from 'rxjs';
 import {
     // BACnetPropertyId,
     BACnetUnitDataFlow,
-} from '../core/bacnet/enums';
+} from '../core/enums';
 
 import {
     ApiError,

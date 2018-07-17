@@ -2,7 +2,7 @@ import * as _ from 'lodash';
 
 // import {
 //     BACnetPropertyId,
-// } from '../../../../core/bacnet/enums';
+// } from '../../../../core/enums';
 
 import { ApiError } from '../../../../core/errors';
 

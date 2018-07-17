@@ -2,7 +2,7 @@ import * as Bluebird from 'bluebird';
 
 // import {
 //     BACnetPropertyId,
-// } from '../core/bacnet/enums';
+// } from '../core/enums';
 
 import { InputSocket, OutputSocket, ServiceSocket } from '../core/sockets';
 

@@ -3,7 +3,7 @@
 //     BACnetObjectType,
 //     BACnetBinaryPV,
 //     BACnetPolarity,
-// } from '../../../../core/bacnet/enums';
+// } from '../../../../core/enums';
 
 import {
     UnitPropertyObject,

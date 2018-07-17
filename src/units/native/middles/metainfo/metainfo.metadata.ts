@@ -1,6 +1,6 @@
 // import {
 //     BACnetPropertyId,
-// } from '../../../../core/bacnet/enums';
+// } from '../../../../core/enums';
 
 import {
     UnitPropertyObject,

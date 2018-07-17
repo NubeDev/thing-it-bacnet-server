@@ -6,7 +6,7 @@ import { logger } from '../core/utils';
 
 // import {
 //     BACnetUnconfirmedService,
-// } from '../core/bacnet/enums';
+// } from '../core/enums';
 
 import { unitUnconfirmedReqService } from '../services';
 

@@ -6,7 +6,7 @@ import { logger } from '../core/utils';
 
 // import {
 //     BACnetConfirmedService,
-// } from '../core/bacnet/enums';
+// } from '../core/enums';
 
 import { InputSocket, OutputSocket, ServiceSocket } from '../core/sockets';
 

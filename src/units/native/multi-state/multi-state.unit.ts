@@ -3,7 +3,7 @@ import * as _ from 'lodash';
 import {
     //BACnetPropertyId,
     BACnetUnitFamily,
-} from '../../../core/bacnet/enums';
+} from '../../../core/enums';
 
 import {
     ApiError,

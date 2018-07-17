@@ -12,7 +12,7 @@ import {
     // BACnetObjectType,
     // BACnetPropertyId,
     BACnetUnitAbbr,
-} from '../core/bacnet/enums';
+} from '../core/enums';
 
 //import { BACnetObjectId } from '../core/bacnet/types';
 

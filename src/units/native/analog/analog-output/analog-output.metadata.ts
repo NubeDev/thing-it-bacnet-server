@@ -3,7 +3,7 @@
 //     BACnetObjectType,
 //     BACnetPropTypes,
 //     BACnetEngineeringUnits
-// } from '../../../../core/bacnet/enums';
+// } from '../../../../core/enums';
 
 import {
     UnitPropertyObject,

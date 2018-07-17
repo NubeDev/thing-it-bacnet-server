@@ -2,7 +2,7 @@ import { logger } from '../core/utils';
 
 // import {
 //     BACnetServiceTypes,
-// } from '../core/bacnet/enums';
+// } from '../core/enums';
 
 import { ConfirmedReqRouter } from './confirmed-req.route';
 import { UnconfirmedReqRouter } from './unconfirmed-req.route';

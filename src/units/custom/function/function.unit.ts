@@ -4,7 +4,7 @@ import { Observable } from 'rxjs';
 import {
     // BACnetPropertyId,
     BACnetUnitFamily,
-} from '../../../core/bacnet/enums';
+} from '../../../core/enums';
 
 import {
     ICustomFunction,
