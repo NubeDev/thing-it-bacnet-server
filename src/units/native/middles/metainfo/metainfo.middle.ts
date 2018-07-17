@@ -1,13 +1,13 @@
 import * as _ from 'lodash';
 
 import {
-    BACnetPropertyId,
+    // BACnetPropertyId,
     BACnetUnitDataFlow,
 } from '../../../../core/bacnet/enums';
 
 import {
-    IBACnetObjectProperty,
-} from '../../../../core/bacnet/interfaces';
+    UnitPropertyObject,
+} from '../../../../core/interfaces';
 
 import {
     IEDEUnit,
@@ -17,7 +17,8 @@ import { MetainfoMiddleMetadata } from './metainfo.metadata';
 
 import { MiddleUnit } from '../middle.unit';
 
-import * as BACnetTypes from '../../../../core/bacnet/types';
+// import * as BACnetTypes from '../../../../core/bacnet/types';
+import * as BACNet from 'tid-bacnet-logic';
 
 export class MetainfoMiddleUnit extends MiddleUnit {
     public readonly className: string = 'MetainfoMiddleUnit';
@@ -35,27 +36,27 @@ export class MetainfoMiddleUnit extends MiddleUnit {
 
         // --- Set default state in metainfo properties
         this.storage.setProperty({
-            id: BACnetPropertyId.objectIdentifier,
-            payload: new BACnetTypes.BACnetObjectId({
+            id: BACNet.Enums.PropertyId.objectIdentifier,
+            payload: new BACNet.Types.BACnetObjectId({
                 type: edeUnit.objType,
                 instance: edeUnit.objInst,
             }),
         });
 
         this.storage.setProperty({
-            id: BACnetPropertyId.objectName,
-            payload: new BACnetTypes.BACnetCharacterString(edeUnit.objName),
+            id: BACNet.Enums.PropertyId.objectName,
+            payload: new BACNet.Types.BACnetCharacterString(edeUnit.objName),
         });
 
         this.storage.setProperty({
-            id: BACnetPropertyId.objectType,
-            payload: new BACnetTypes.BACnetEnumerated(edeUnit.objType),
+            id: BACNet.Enums.PropertyId.objectType,
+            payload: new BACNet.Types.BACnetEnumerated(edeUnit.objType),
         });
 
         if (edeUnit.description) {
             this.storage.setProperty({
-                id: BACnetPropertyId.description,
-                payload: new BACnetTypes.BACnetCharacterString(edeUnit.description),
+                id: BACNet.Enums.PropertyId.description,
+                payload: new BACNet.Types.BACnetCharacterString(edeUnit.description),
             });
         }
     }
@@ -63,7 +64,7 @@ export class MetainfoMiddleUnit extends MiddleUnit {
     /**
      * sjHandler - handles the changes of properties.
      *
-     * @param  {IBACnetObjectProperty} notif - notification object
+     * @param  {UnitPropertyObject} notif - notification object
      * @return {void}
      */
     public sjHandler (): void {
