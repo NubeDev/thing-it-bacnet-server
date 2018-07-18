@@ -6,10 +6,6 @@ import {
 } from '../../core/errors';
 
 import {
-    BACnetPropertyId,
-} from '../../core/bacnet/enums';
-
-import {
     ICustomFunction,
     ICustomFunctionConfig,
     ICustomMetadata,

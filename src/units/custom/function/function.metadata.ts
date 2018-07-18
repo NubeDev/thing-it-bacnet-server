@@ -1,4 +1,4 @@
-import { BACnetUnitAbbr} from '../../../core/bacnet/enums';
+import { BACnetUnitAbbr} from '../../../core/enums';
 
 import { ICustomMetadata } from '../../../core/interfaces';
 

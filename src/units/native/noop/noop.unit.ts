@@ -1,10 +1,6 @@
 import * as _ from 'lodash';
 
 import {
-    BACnetPropertyId,
-} from '../../../core/bacnet/enums';
-
-import {
     ApiError,
 } from '../../../core/errors';
 

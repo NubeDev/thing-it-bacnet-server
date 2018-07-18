@@ -1,28 +1,24 @@
 import {
-    BACnetPropertyId,
-} from '../../../../core/bacnet/enums';
+    UnitStorageProperty,
+} from '../../../../core/interfaces';
 
-import {
-    IBACnetObjectProperty,
-} from '../../../../core/bacnet/interfaces';
+import * as BACNet from 'tid-bacnet-logic';
 
-import * as BACnetTypes from '../../../../core/bacnet/types';
-
-export const MetainfoMiddleMetadata: IBACnetObjectProperty[] = [
+export const MetainfoMiddleMetadata: UnitStorageProperty[] = [
     {
-        id: BACnetPropertyId.objectIdentifier,
-        payload: new BACnetTypes.BACnetObjectId(),
+        id: BACNet.Enums.PropertyId.objectIdentifier,
+        payload: new BACNet.Types.BACnetObjectId(),
     },
     {
-        id: BACnetPropertyId.objectName,
-        payload: new BACnetTypes.BACnetCharacterString('[thing-it] Test Device Name'),
+        id:  BACNet.Enums.PropertyId.objectName,
+        payload: new BACNet.Types.BACnetCharacterString('[thing-it] Test Device Name'),
     },
     {
-        id: BACnetPropertyId.objectType,
-        payload: new BACnetTypes.BACnetEnumerated(),
+        id: BACNet.Enums.PropertyId.objectType,
+        payload: new BACNet.Types.BACnetEnumerated(),
     },
     {
-        id: BACnetPropertyId.description,
-        payload: new BACnetTypes.BACnetCharacterString('[thing-it] Test Device Description'),
+        id: BACNet.Enums.PropertyId.description,
+        payload: new BACNet.Types.BACnetCharacterString('[thing-it] Test Device Description'),
     },
 ];
