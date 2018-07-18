@@ -109,7 +109,7 @@ export class CommandableMiddleUnit extends MiddleUnit {
         const priorityIndex: BACNet.Types.BACnetTypeBase = i === priorityArray.length
             ? new BACNet.Types.BACnetNull()
             : new BACNet.Types.BACnetUnsignedInteger(i);
-        this.storage.setProperty({
+        this.storage.updateProperty({
             id: BACNet.Enums.PropertyId.currentCommandPriority,
             payload: priorityIndex,
         });
