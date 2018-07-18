@@ -2,15 +2,12 @@ import * as _ from 'lodash';
 import { Observable } from 'rxjs';
 
 import {
-    // BACnetPropertyId,
     BACnetUnitFamily,
 } from '../../../core/enums';
 
 import {
     ICustomFunction,
 } from '../../../core/interfaces';
-
-// import * as BACnetTypes from '../../../core/bacnet/types';
 
 import { FunctionMetadata } from './function.metadata';
 import { CustomUnit } from '../custom.unit';

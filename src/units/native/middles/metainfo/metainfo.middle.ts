@@ -1,7 +1,6 @@
 import * as _ from 'lodash';
 
 import {
-    // BACnetPropertyId,
     BACnetUnitDataFlow,
 } from '../../../../core/enums';
 
@@ -17,7 +16,6 @@ import { MetainfoMiddleMetadata } from './metainfo.metadata';
 
 import { MiddleUnit } from '../middle.unit';
 
-// import * as BACnetTypes from '../../../../core/bacnet/types';
 import * as BACNet from 'tid-bacnet-logic';
 
 export class MetainfoMiddleUnit extends MiddleUnit {

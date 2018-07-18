@@ -1,13 +1,5 @@
 import { logger } from '../core/utils';
 
-// import {
-//     ILayerSimpleACK,
-// } from '../core/interfaces';
-
-// import {
-//     BACnetConfirmedService,
-// } from '../core/enums';
-
 import { InputSocket, OutputSocket, ServiceSocket } from '../core/sockets';
 
 import * as BACNet from 'tid-bacnet-logic';

@@ -11,9 +11,6 @@ import {
     IBACnetAddressInfo,
 } from '../interfaces';
 
-// import {
-//     OffsetUtil,
-// } from '../bacnet/utils';
 import * as BACNet from 'tid-bacnet-logic';
 
 import {

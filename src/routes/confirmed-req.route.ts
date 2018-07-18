@@ -1,13 +1,5 @@
 import { logger } from '../core/utils';
 
-// import {
-//     ILayerConfirmedReq,
-// } from '../core/interfaces';
-
-// import {
-//     BACnetConfirmedService,
-// } from '../core/enums';
-
 import { unitConfirmedReqService } from '../services';
 
 import { InputSocket, OutputSocket, ServiceSocket } from '../core/sockets';

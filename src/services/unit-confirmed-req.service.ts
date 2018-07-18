@@ -2,22 +2,6 @@ import * as Bluebird from 'bluebird';
 import { timer as RxTimer } from 'rxjs/observable/timer';
 import * as _ from 'lodash';
 
-// import {
-//     BACNet.Enums.PropertyId,
-// } from '../core/enums';
-
-// import {
-//     ILayerConfirmedReq,
-//     ILayerConfirmedReqService,
-//     ILayerConfirmedReqServiceReadProperty,
-//     ILayerConfirmedReqServiceSubscribeCOV,
-//     ILayerConfirmedReqServiceWriteProperty,
-// } from '../core/bacnet/interfaces';
-
-// import {
-//     BACnetObjectId, BACnetUnsignedInteger,
-// } from '../core/bacnet/types';
-
 import { InputSocket, OutputSocket, ServiceSocket } from '../core/sockets';
 
 import { UnitStorageManager } from '../managers/unit-storage.manager';

@@ -9,12 +9,8 @@ import { UnitPropertyObject } from '../core/interfaces';
 import { logger } from '../core/utils';
 
 import {
-    // BACnetObjectType,
-    // BACnetPropertyId,
     BACnetUnitAbbr,
 } from '../core/enums';
-
-//import { BACnetObjectId } from '../core/bacnet/types';
 
 import { ApiError } from '../core/errors';
 

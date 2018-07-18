@@ -1,14 +1,8 @@
 import * as Bluebird from 'bluebird';
 
-// import {
-//     BACnetPropertyId,
-// } from '../core/enums';
-
 import { InputSocket, OutputSocket, ServiceSocket } from '../core/sockets';
 
 import { UnitStorageManager } from '../managers/unit-storage.manager';
-
-//import { unconfirmedReqService, simpleACKService } from '../core/bacnet/services';
 
 import * as BACNet from 'tid-bacnet-logic';
 

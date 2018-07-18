@@ -1,7 +1,6 @@
 import * as _ from 'lodash';
 
 import {
-    //BACnetPropertyId,
     BACnetUnitDataFlow,
 } from '../../../../core/enums';
 
@@ -15,8 +14,6 @@ import { CommandableMiddleMetadata } from './commandable.metadata';
 
 import { MiddleUnit } from '../middle.unit';
 
-// import * as BACnetTypes from '../../../../core/bacnet/types';
-// import { TyperUtil } from '../../../../core/bacnet/utils';
 import * as BACNet from 'tid-bacnet-logic';
 
 export class CommandableMiddleUnit extends MiddleUnit {

@@ -1,10 +1,6 @@
 import * as _ from 'lodash';
 
 import {
-    // BACnetPropertyId,
-    // BACnetBinaryPV,
-    // BACnetEventState,
-    // BACnetPolarity,
     BACnetUnitDataFlow,
 } from '../../../../core/enums';
 
@@ -14,7 +10,6 @@ import {
 
 import {
     UnitPropertyObject,
-    // IBACnetTypeStatusFlags,
 } from '../../../../core/interfaces';
 
 import { IEDEUnit } from '../../../../core/interfaces';
@@ -24,7 +19,6 @@ import { BinaryValueMetadata } from './binary-value.metadata';
 import { BinaryUnit } from '../binary.unit';
 import { CommandableMiddleUnit } from '../../middles/commandable/commandable.middle';
 
-// import * as BACnetTypes from '../../../../core/bacnet/types';
 import * as BACNet from 'tid-bacnet-logic';
 
 export class BinaryValueUnit extends BinaryUnit {

@@ -2,7 +2,6 @@ import * as _ from 'lodash';
 import { Subject, BehaviorSubject, Observable } from 'rxjs';
 
 import {
-    // BACnetPropertyId,
     BACnetUnitDataFlow,
 } from '../core/enums';
 
@@ -13,8 +12,6 @@ import {
 import {
     UnitPropertyObject,
 } from '../core/interfaces';
-
-//import * as BACnetTypes from '../core/bacnet/types';
 
 import {
     logger,

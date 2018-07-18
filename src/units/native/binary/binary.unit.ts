@@ -1,9 +1,6 @@
 import * as _ from 'lodash';
 
 import {
-    // BACnetPropertyId,
-    // BACnetBinaryPV,
-    // BACnetPolarity,
     BACnetUnitDataFlow,
     BACnetUnitFamily,
 } from '../../../core/enums';
@@ -25,7 +22,6 @@ import { StatusFlagsMiddleUnit } from '../middles/status-flags/status-flags.midd
 
 import { NativeUnit } from '../native.unit';
 
-// import * as BACnetTypes from '../../../core/bacnet/types';
 import * as BACNet from 'tid-bacnet-logic';
 
 export class BinaryUnit extends NativeUnit {

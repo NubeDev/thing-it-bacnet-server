@@ -1,18 +1,7 @@
-// import {
-//     BACnetPropertyId,
-//     BACnetObjectType,
-//     BACnetPropTypes,
-//     BACnetBinaryPV,
-//     BACnetPolarity,
-//     BACnetEventState,
-//     BACnetReliability,
-// } from '../../../../core/enums';
-
 import {
     UnitPropertyObject,
 } from '../../../../core/interfaces';
 
-// import * as BACnetTypes from '../../../../core/bacnet/types';
 import * as BACNet from 'tid-bacnet-logic';
 
 export const StatusFlagsMiddleMetadata: UnitPropertyObject[] = [

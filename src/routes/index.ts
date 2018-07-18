@@ -1,9 +1,5 @@
 import { logger } from '../core/utils';
 
-// import {
-//     BACnetServiceTypes,
-// } from '../core/enums';
-
 import { ConfirmedReqRouter } from './confirmed-req.route';
 import { UnconfirmedReqRouter } from './unconfirmed-req.route';
 import { SimpleACKRouter } from './simple-ack.route';

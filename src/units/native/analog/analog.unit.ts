@@ -1,7 +1,6 @@
 import * as _ from 'lodash';
 
 import {
-    // BACnetPropertyId,
     BACnetUnitFamily,
     BACnetUnitDataFlow,
 } from '../../../core/enums';
@@ -20,8 +19,6 @@ import { AnalogMetadata } from './analog.metadata';
 import { StatusFlagsMiddleUnit } from '../middles/status-flags/status-flags.middle';
 
 import { NativeUnit } from '../native.unit';
-
-// import * as BACnetTypes from '../../../core/bacnet/types';
 
 import * as BACNet from 'tid-bacnet-logic';
 

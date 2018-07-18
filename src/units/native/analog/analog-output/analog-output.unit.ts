@@ -1,7 +1,6 @@
 import * as _ from 'lodash';
 
 import {
-    // BACnetPropertyId,
     BACnetUnitDataFlow,
 } from '../../../../core/enums';
 

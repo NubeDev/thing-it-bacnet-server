@@ -1,9 +1,6 @@
 import * as _ from 'lodash';
 
 import {
-    // BACnetPropertyId,
-    // BACnetBinaryPV,
-    // BACnetEventState,
     BACnetUnitDataFlow,
 } from '../../../../core/enums';
 
@@ -21,7 +18,6 @@ import { BinaryInputMetadata } from './binary-input.metadata';
 
 import { BinaryUnit } from '../../binary/binary.unit';
 
-// import * as BACnetTypes from '../../../../core/bacnet/types';
 import * as BACNet from 'tid-bacnet-logic';
 
 export class BinaryInputUnit extends BinaryUnit {
