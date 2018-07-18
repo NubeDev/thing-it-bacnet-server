@@ -14,7 +14,6 @@ import { StatusFlagsMiddleMetadata } from './status-flags.metadata';
 
 import { MiddleUnit } from '../middle.unit';
 
-//import * as BACNet.Types from '../../../../core/bacnet/types';
 import * as BACNet from 'tid-bacnet-logic';
 
 export class StatusFlagsMiddleUnit extends MiddleUnit {

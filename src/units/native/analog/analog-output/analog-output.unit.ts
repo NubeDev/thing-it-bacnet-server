@@ -19,7 +19,6 @@ import { CommandableMiddleUnit } from '../../middles/commandable/commandable.mid
 
 import { AnalogUnit } from '../analog.unit';
 
-// import * as BACnetTypes from '../../../../core/bacnet/types';
 import * as BACNet from 'tid-bacnet-logic';
 
 export class AnalogOutputUnit extends AnalogUnit {
