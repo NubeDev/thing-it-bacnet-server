@@ -52,7 +52,7 @@ export interface ICustomFunctionConfig {
     freq: number;
 }
 
-export interface UnitPropertyObject {
+export interface UnitStorageProperty {
     id: BACNet.Enums.PropertyId;
     payload: BACNet.Types.BACnetTypeBase | BACNet.Types.BACnetTypeBase[];
     writable?: boolean;

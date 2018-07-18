@@ -5,7 +5,7 @@ import {
 } from '../../../../core/enums';
 
 import {
-    UnitPropertyObject,
+    UnitStorageProperty,
 } from '../../../../core/interfaces';
 
 import { IEDEUnit } from '../../../../core/interfaces';
@@ -34,7 +34,7 @@ export class StatusFlagsMiddleUnit extends MiddleUnit {
     /**
      * sjHandler - handles the changes of properties.
      *
-     * @param  {UnitPropertyObject} notif - notification object
+     * @param  {UnitStorageProperty} notif - notification object
      * @return {void}
      */
     public sjHandler (): void {
@@ -59,10 +59,10 @@ export class StatusFlagsMiddleUnit extends MiddleUnit {
      * shSetEventState - handles the changes of 'Event State' property.
      * - Method changes the "shSetEventState" field in "statusFlags" BACnet property.
      *
-     * @param  {UnitPropertyObject} notif - notification object for eventState
+     * @param  {UnitStorageProperty} notif - notification object for eventState
      * @return {void}
      */
-    private shSetEventState (notif: UnitPropertyObject): void {
+    private shSetEventState (notif: UnitStorageProperty): void {
         this.storage.updateProperty(notif);
 
         const statusFlagsProp = this.storage.getProperty(BACNet.Enums.PropertyId.statusFlags);
@@ -90,10 +90,10 @@ export class StatusFlagsMiddleUnit extends MiddleUnit {
      * shSetOutOfService - handles the changes of 'Out of Service' property.
      * - Method changes the "outOfService" field in "statusFlags" BACnet property.
      *
-     * @param  {UnitPropertyObject} notif - notification object for outOfService
+     * @param  {UnitStorageProperty} notif - notification object for outOfService
      * @return {void}
      */
-    private shSetOutOfService (notif: UnitPropertyObject): void {
+    private shSetOutOfService (notif: UnitStorageProperty): void {
         this.storage.updateProperty(notif);
 
         const statusFlagsProp = this.storage.getProperty(BACNet.Enums.PropertyId.statusFlags);
@@ -116,10 +116,10 @@ export class StatusFlagsMiddleUnit extends MiddleUnit {
      * shSetReliability - handles the changes of 'Reliability' property.
      * - Method changes the "fault" field in "statusFlags" BACnet property.
      *
-     * @param  {UnitPropertyObject} notif - notification object for reliability
+     * @param  {UnitStorageProperty} notif - notification object for reliability
      * @return {void}
      */
-    private shSetReliability (notif: UnitPropertyObject): void {
+    private shSetReliability (notif: UnitStorageProperty): void {
         this.storage.updateProperty(notif);
 
         const statusFlagsProp = this.storage.getProperty(BACNet.Enums.PropertyId.statusFlags);
@@ -143,10 +143,10 @@ export class StatusFlagsMiddleUnit extends MiddleUnit {
      * - Method calculates the "overridden" status flag state and will set it if
      * old value does not equal to the calculated "overridden" state.
      *
-     * @param  {UnitPropertyObject} notif - notification object for statusFlags
+     * @param  {UnitStorageProperty} notif - notification object for statusFlags
      * @return {void}
      */
-    private shSetStatusFlags (notif: UnitPropertyObject): void {
+    private shSetStatusFlags (notif: UnitStorageProperty): void {
         const statusFlagsProp = this.storage.getProperty(BACNet.Enums.PropertyId.statusFlags);
         const statusFlags = statusFlagsProp.payload as BACNet.Types.BACnetStatusFlags;
 
@@ -169,10 +169,10 @@ export class StatusFlagsMiddleUnit extends MiddleUnit {
      * Handles the changes of 'Status Flags' property.
      * - Method emits `cov` event.
      *
-     * @param  {UnitPropertyObject} notif - notification object for statusFlags
+     * @param  {UnitStorageProperty} notif - notification object for statusFlags
      * @return {void}
      */
-    private shUpdateStatusFlags (notif: UnitPropertyObject): void {
+    private shUpdateStatusFlags (notif: UnitStorageProperty): void {
         this.storage.dispatch();
     }
 }

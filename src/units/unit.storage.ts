@@ -10,7 +10,7 @@ import {
 } from '../core/errors';
 
 import {
-    UnitPropertyObject,
+    UnitStorageProperty,
 } from '../core/interfaces';
 
 import {
@@ -19,11 +19,11 @@ import {
 
 import * as BACNet from 'tid-bacnet-logic';
 
-type TSjHandler = (notif: UnitPropertyObject) => void;
+type TSjHandler = (notif: UnitStorageProperty) => void;
 
 interface IDataFlow {
     type: BACnetUnitDataFlow;
-    value: UnitPropertyObject;
+    value: UnitStorageProperty;
 }
 
 export class UnitStorage {
@@ -31,7 +31,7 @@ export class UnitStorage {
     public readonly className: string = 'UnitStorage';
     public logHeader: string;
     // Unit metadata
-    public metadata: Map<BACNet.Enums.PropertyId, UnitPropertyObject>;
+    public metadata: Map<BACNet.Enums.PropertyId, UnitStorageProperty>;
     // Subject for data flow events
     public sjDataFlow: Subject<IDataFlow>;
     // Subject for BACnet "CoV" event
@@ -64,10 +64,10 @@ export class UnitStorage {
     /**
      * addUnitStorage - adds new unit metadata (properties) to the unit storage.
      *
-     * @param  {UnitPropertyObject[]} unitMetadata - unit metadata
+     * @param  {UnitStorageProperty[]} unitMetadata - unit metadata
      * @return {void}
      */
-    public addUnitStorage (unitMetadata: UnitPropertyObject[]): void {
+    public addUnitStorage (unitMetadata: UnitStorageProperty[]): void {
         _.map(unitMetadata, (prop) => {
             this.metadata.set(prop.id, prop);
         });
@@ -109,7 +109,7 @@ export class UnitStorage {
      * @param  {IBACnetType} value - property value
      * @return {void}
      */
-    public setProperty (newProp: UnitPropertyObject,
+    public setProperty (newProp: UnitStorageProperty,
             isWritable: boolean = true): void {
         const oldProp = this.getProperty(newProp.id);
 
@@ -131,7 +131,7 @@ export class UnitStorage {
      * @param  {boolean} isEmitted - emit the `update` event?
      * @return {void}
      */
-    public updateProperty (newProp: UnitPropertyObject, isEmitted: boolean = true): void {
+    public updateProperty (newProp: UnitStorageProperty, isEmitted: boolean = true): void {
         const prop = this.getProperty(newProp.id);
 
         prop.payload = newProp.payload;
@@ -150,9 +150,9 @@ export class UnitStorage {
      * getProperty - return the clone value of the unit property by property ID.
      *
      * @param  {BACNet.Enums.PropertyId} propId - property ID
-     * @return {UnitPropertyObject}
+     * @return {UnitStorageProperty}
      */
-    public getProperty (propId: BACNet.Enums.PropertyId): UnitPropertyObject {
+    public getProperty (propId: BACNet.Enums.PropertyId): UnitStorageProperty {
         const prop = this.metadata.get(propId);
 
         if (_.isNil(prop)) {

@@ -9,7 +9,7 @@ import {
 } from '../../../../core/errors';
 
 import {
-    UnitPropertyObject,
+    UnitStorageProperty,
 } from '../../../../core/interfaces';
 
 import { IEDEUnit } from '../../../../core/interfaces';
@@ -48,7 +48,7 @@ export class AnalogValueUnit extends AnalogUnit {
     /**
      * sjHandler - handles the changes of properties.
      *
-     * @param  {UnitPropertyObject} notif - notification object
+     * @param  {UnitStorageProperty} notif - notification object
      * @return {void}
      */
     public sjHandler (): void {
@@ -63,10 +63,10 @@ export class AnalogValueUnit extends AnalogUnit {
      * shUpdatePresentValue - handles the "update" flow event of 'Present Value' property.
      * - Method emits the "CoV" event.
      *
-     * @param  {UnitPropertyObject} notif - notification object for priorityArray
+     * @param  {UnitStorageProperty} notif - notification object for priorityArray
      * @return {void}
      */
-    private shUpdatePresentValue (notif: UnitPropertyObject): void {
+    private shUpdatePresentValue (notif: UnitStorageProperty): void {
         this.storage.dispatch();
     }
 }

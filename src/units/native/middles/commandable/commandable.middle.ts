@@ -5,7 +5,7 @@ import {
 } from '../../../../core/enums';
 
 import {
-    UnitPropertyObject,
+    UnitStorageProperty,
 } from '../../../../core/interfaces';
 
 import { IEDEUnit } from '../../../../core/interfaces';
@@ -34,7 +34,7 @@ export class CommandableMiddleUnit extends MiddleUnit {
     /**
      * sjHandler - handles the changes of properties.
      *
-     * @param  {UnitPropertyObject} notif - notification object
+     * @param  {UnitStorageProperty} notif - notification object
      * @return {void}
      */
     public sjHandler (): void {
@@ -51,10 +51,10 @@ export class CommandableMiddleUnit extends MiddleUnit {
      * shSetPresentValue - handles the changes of 'Present Value' property.
      * - Method sets new commandable value in "priorityArray" BACnet property by priority.
      *
-     * @param  {UnitPropertyObject} notif - notification object for presentValue
+     * @param  {UnitStorageProperty} notif - notification object for presentValue
      * @return {void}
      */
-    private shSetPresentValue (notif: UnitPropertyObject): void {
+    private shSetPresentValue (notif: UnitStorageProperty): void {
         const priorityArrayProp = this.storage.getProperty(BACNet.Enums.PropertyId.priorityArray);
         const priorityArray = priorityArrayProp.payload as BACNet.Types.BACnetTypeBase[];
 
@@ -75,10 +75,10 @@ export class CommandableMiddleUnit extends MiddleUnit {
      * - Method sets the new commandable value of "presentValue" BACnet property.
      * Commandable value will be got from "getCommandablePropertyValue" method.
      *
-     * @param  {UnitPropertyObject} notif - notification object for priorityArray
+     * @param  {UnitStorageProperty} notif - notification object for priorityArray
      * @return {void}
      */
-    private shSetPriorityArray (notif: UnitPropertyObject): void {
+    private shSetPriorityArray (notif: UnitStorageProperty): void {
         this.storage.updateProperty(notif);
         const newPresentValue = this.getCommandablePropertyValue() as BACNet.Types.BACnetTypeBase;
 

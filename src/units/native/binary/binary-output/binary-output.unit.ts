@@ -9,7 +9,7 @@ import {
 } from '../../../../core/errors';
 
 import {
-    UnitPropertyObject,
+    UnitStorageProperty,
 } from '../../../../core/interfaces';
 
 import { IEDEUnit } from '../../../../core/interfaces';
@@ -36,7 +36,7 @@ export class BinaryOutputUnit extends BinaryUnit {
     /**
      * sjHandler - handles the changes of properties.
      *
-     * @param  {UnitPropertyObject} notif - notification object
+     * @param  {UnitStorageProperty} notif - notification object
      * @return {void}
      */
     public sjHandler (): void {
@@ -51,10 +51,10 @@ export class BinaryOutputUnit extends BinaryUnit {
      * shUpdatePresentValue - handles the "update" flow event of 'Present Value' property.
      * - Method emits the "CoV" event.
      *
-     * @param  {UnitPropertyObject} notif - notification object for priorityArray
+     * @param  {UnitStorageProperty} notif - notification object for priorityArray
      * @return {void}
      */
-    private shUpdatePresentValue (notif: UnitPropertyObject): void {
+    private shUpdatePresentValue (notif: UnitStorageProperty): void {
         const polarityProp = this.storage.getProperty(BACNet.Enums.PropertyId.polarity);
         const polarity = polarityProp.payload as BACNet.Types.BACnetEnumerated;
 

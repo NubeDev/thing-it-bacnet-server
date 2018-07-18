@@ -7,7 +7,7 @@ import {
 } from '../../core/enums';
 
 import {
-    UnitPropertyObject
+    UnitStorageProperty
 } from '../../core/interfaces';
 
 import { IEDEUnit } from '../../core/interfaces';
@@ -55,7 +55,7 @@ export class NativeUnit {
     /**
      * sjHandler - handles the changes of properties.
      *
-     * @param  {UnitPropertyObject} notif - notification object
+     * @param  {UnitStorageProperty} notif - notification object
      * @return {void}
      */
     public sjHandler (): void {
@@ -71,9 +71,9 @@ export class NativeUnit {
     /**
      * subscribe - subscribes to the changes for all properties.
      *
-     * @return {Observable<UnitPropertyObject>}
+     * @return {Observable<UnitStorageProperty>}
      */
-    public subscribe (): Observable<UnitPropertyObject[]> {
+    public subscribe (): Observable<UnitStorageProperty[]> {
         return this.storage.sjCOV.map(() => {
             const reportedProps = this.getReportedProperties();
             logger.debug(`${this.logHeader} - subscribe (dispatch):`,
@@ -98,9 +98,9 @@ export class NativeUnit {
     /**
      * getReportedProperties - returns the reported properties for COV notification.
      *
-     * @return {UnitPropertyObject[]}
+     * @return {UnitStorageProperty[]}
      */
-    protected getReportedProperties (): UnitPropertyObject[] {
+    protected getReportedProperties (): UnitStorageProperty[] {
         return null;
     }
 

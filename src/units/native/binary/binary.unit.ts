@@ -10,7 +10,7 @@ import {
 } from '../../../core/errors';
 
 import {
-    UnitPropertyObject,
+    UnitStorageProperty,
 } from '../../../core/interfaces';
 
 import {
@@ -38,7 +38,7 @@ export class BinaryUnit extends NativeUnit {
     /**
      * sjHandler - handles the changes of properties.
      *
-     * @param  {UnitPropertyObject} notif - notification object
+     * @param  {UnitStorageProperty} notif - notification object
      * @return {void}
      */
     public sjHandler (): void {
@@ -54,10 +54,10 @@ export class BinaryUnit extends NativeUnit {
      * Method checks the "outOfService" BACnet property and if it equals "FALSE"
      * then method will change the "presentValue" BACnet property.
      *
-     * @param  {UnitPropertyObject} notif - notification object for Polarity
+     * @param  {UnitStorageProperty} notif - notification object for Polarity
      * @return {void}
      */
-    public shSetPolarity (notif: UnitPropertyObject): void {
+    public shSetPolarity (notif: UnitStorageProperty): void {
         const outOfServiceProp = this.storage.getProperty(BACNet.Enums.PropertyId.outOfService);
         const outOfService = outOfServiceProp.payload as BACNet.Types.BACnetBoolean;
 
@@ -87,9 +87,9 @@ export class BinaryUnit extends NativeUnit {
     /**
     * getReportedProperties - returns the reported properties for COV notification.
     *
-    * @return {UnitPropertyObject[]}
+    * @return {UnitStorageProperty[]}
     */
-   protected getReportedProperties (): UnitPropertyObject[] {
+   protected getReportedProperties (): UnitStorageProperty[] {
        const presentValue = this.storage.getProperty(BACNet.Enums.PropertyId.presentValue);
        const statusFlags = this.storage.getProperty(BACNet.Enums.PropertyId.statusFlags);
 

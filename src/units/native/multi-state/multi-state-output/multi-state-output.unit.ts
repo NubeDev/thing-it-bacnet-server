@@ -3,7 +3,7 @@ import * as _ from 'lodash';
 import { ApiError } from '../../../../core/errors';
 
 import {
-    UnitPropertyObject,
+    UnitStorageProperty,
 } from '../../../../core/interfaces';
 
 import { IEDEUnit } from '../../../../core/interfaces';

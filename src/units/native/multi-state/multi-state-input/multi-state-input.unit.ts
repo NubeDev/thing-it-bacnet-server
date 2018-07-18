@@ -5,7 +5,7 @@ import {
 } from '../../../../core/errors';
 
 import {
-    UnitPropertyObject,
+    UnitStorageProperty,
 } from '../../../../core/interfaces';
 import * as BACNet from 'tid-bacnet-logic';
 

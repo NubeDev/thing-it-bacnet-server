@@ -4,7 +4,7 @@ import { Observable } from 'rxjs';
 
 import { IEDEUnit } from '../core/interfaces';
 
-import { UnitPropertyObject } from '../core/interfaces';
+import { UnitStorageProperty } from '../core/interfaces';
 
 import { logger } from '../core/utils';
 
@@ -198,7 +198,7 @@ export class UnitStorageManager {
      * @return {void}
      */
     public setUnitProperty (objId: BACNet.Types.BACnetObjectId,
-            prop: UnitPropertyObject): void {
+            prop: UnitStorageProperty): void {
         const unit = this.getUnit(objId);
         if (!unit) {
             return;
@@ -211,7 +211,7 @@ export class UnitStorageManager {
      *
      * @param  {IBACnetTypeObjectId} objId - object identifier
      * @param  {BACNet.Enums.PropertyId} propId - property ID
-     * @return {UnitPropertyObject}
+     * @return {UnitStorageProperty}
      */
     public getUnitProperty (objId: BACNet.Types.BACnetObjectId,
             propId: BACNet.Enums.PropertyId): BACNet.Interfaces.PropertyValue {
@@ -227,7 +227,7 @@ export class UnitStorageManager {
      * subscribeToUnit - subscribes to the changes for all object properties.
      *
      * @param  {IBACnetTypeObjectId} objId - object identifier
-     * @return {Observable<UnitPropertyObject>}
+     * @return {Observable<UnitStorageProperty>}
      */
     public subscribeToUnit (objId: BACNet.Types.BACnetObjectId): Observable<BACNet.Interfaces.PropertyValue[]> {
         const unit = this.getUnit(objId);
@@ -239,7 +239,7 @@ export class UnitStorageManager {
         });
     }
 
-    public storageToServicePropertyAdapter(prop: UnitPropertyObject): BACNet.Interfaces.PropertyValue {
+    public storageToServicePropertyAdapter(prop: UnitStorageProperty): BACNet.Interfaces.PropertyValue {
         return _.assign({}, {
             id: new BACNet.Types.BACnetEnumerated(prop.id),
             values: _.isArray(prop.payload) ? prop.payload : [ prop.payload ]

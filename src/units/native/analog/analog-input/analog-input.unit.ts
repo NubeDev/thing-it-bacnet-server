@@ -9,7 +9,7 @@ import {
 } from '../../../../core/errors';
 
 import {
-    UnitPropertyObject,
+    UnitStorageProperty,
 } from '../../../../core/interfaces';
 
 import { IEDEUnit } from '../../../../core/interfaces';
@@ -31,7 +31,7 @@ export class AnalogInputUnit extends AnalogUnit {
     /**
      * sjHandler - handles the changes of properties.
      *
-     * @param  {UnitPropertyObject} notif - notification object
+     * @param  {UnitStorageProperty} notif - notification object
      * @return {void}
      */
     public sjHandler (): void {
@@ -45,10 +45,10 @@ export class AnalogInputUnit extends AnalogUnit {
     /**
      * shSetPresentValue - handles the changes of 'Present Value' property.
      *
-     * @param  {UnitPropertyObject} notif - notification object for presentValue
+     * @param  {UnitStorageProperty} notif - notification object for presentValue
      * @return {void}
      */
-    private shSetPresentValue (notif: UnitPropertyObject): void {
+    private shSetPresentValue (notif: UnitStorageProperty): void {
         this.storage.updateProperty(notif);
         this.storage.dispatch();
     }

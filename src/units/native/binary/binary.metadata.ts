@@ -1,7 +1,7 @@
 
 import {
-    UnitPropertyObject,
+    UnitStorageProperty,
 } from '../../../core/interfaces';
 
-export const BinaryMetadata: UnitPropertyObject[] = [
+export const BinaryMetadata: UnitStorageProperty[] = [
 ];

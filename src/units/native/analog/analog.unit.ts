@@ -10,7 +10,7 @@ import {
 } from '../../../core/errors';
 
 import {
-    UnitPropertyObject,
+    UnitStorageProperty,
 } from '../../../core/interfaces';
 
 import { IEDEUnit } from '../../../core/interfaces';
@@ -58,7 +58,7 @@ export class AnalogUnit extends NativeUnit {
     /**
      * sjHandler - handles the changes of properties.
      *
-     * @param  {UnitPropertyObject} notif - notification object
+     * @param  {UnitStorageProperty} notif - notification object
      * @return {void}
      */
     public sjHandler (): void {
@@ -74,9 +74,9 @@ export class AnalogUnit extends NativeUnit {
     /**
     * getReportedProperties - returns the reported properties for COV notification.
     *
-    * @return {UnitPropertyObject[]}
+    * @return {UnitStorageProperty[]}
     */
-   protected getReportedProperties (): UnitPropertyObject[] {
+   protected getReportedProperties (): UnitStorageProperty[] {
        const presentValue = this.storage.getProperty(BACNet.Enums.PropertyId.presentValue);
        const statusFlags = this.storage.getProperty(BACNet.Enums.PropertyId.statusFlags);
 

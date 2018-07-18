@@ -1,6 +1,6 @@
 
 import {
-    UnitPropertyObject,
+    UnitStorageProperty,
 } from '../../../core/interfaces';
 
-export const NoopMetadata: UnitPropertyObject[] = [];
+export const NoopMetadata: UnitStorageProperty[] = [];

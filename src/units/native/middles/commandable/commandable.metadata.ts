@@ -1,10 +1,10 @@
 import {
-    UnitPropertyObject,
+    UnitStorageProperty,
 } from '../../../../core/interfaces';
 
 import * as BACNet from 'tid-bacnet-logic';
 
-export const CommandableMiddleMetadata: UnitPropertyObject[] = [
+export const CommandableMiddleMetadata: UnitStorageProperty[] = [
     {
         id: BACNet.Enums.PropertyId.presentValue,
         payload: new BACNet.Types.BACnetNull(),

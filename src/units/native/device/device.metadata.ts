@@ -1,11 +1,11 @@
 
 import {
-    UnitPropertyObject,
+    UnitStorageProperty,
 } from '../../../core/interfaces';
 
 import * as BACNet from 'tid-bacnet-logic';
 
-export const DeviceMetadata: UnitPropertyObject[] = [
+export const DeviceMetadata: UnitStorageProperty[] = [
     {
         id: BACNet.Enums.PropertyId.objectType,
         payload: new BACNet.Types.BACnetEnumerated(BACNet.Enums.ObjectType.Device),

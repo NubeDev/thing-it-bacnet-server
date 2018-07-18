@@ -9,7 +9,7 @@ import {
 } from '../../../../core/errors';
 
 import {
-    UnitPropertyObject,
+    UnitStorageProperty,
 } from '../../../../core/interfaces';
 
 import { IEDEUnit } from '../../../../core/interfaces';
@@ -36,7 +36,7 @@ export class BinaryValueUnit extends BinaryUnit {
     /**
      * sjHandler - handles the changes of properties.
      *
-     * @param  {UnitPropertyObject} notif - notification object
+     * @param  {UnitStorageProperty} notif - notification object
      * @return {void}
      */
     public sjHandler (): void {
@@ -51,19 +51,19 @@ export class BinaryValueUnit extends BinaryUnit {
      * shUpdatePresentValue - handles the "update" flow event of 'Present Value' property.
      * - Method emits the "CoV" event.
      *
-     * @param  {UnitPropertyObject} notif - notification object for priorityArray
+     * @param  {UnitStorageProperty} notif - notification object for priorityArray
      * @return {void}
      */
-    public shUpdatePresentValue (notif: UnitPropertyObject): void {
+    public shUpdatePresentValue (notif: UnitStorageProperty): void {
         this.storage.dispatch();
     }
 
     /**
      * shSetPolarity - handles the changes of 'Polarity' property.
      *
-     * @param  {UnitPropertyObject} notif - notification object for Polarity
+     * @param  {UnitStorageProperty} notif - notification object for Polarity
      * @return {void}
      */
-    public shSetPolarity (notif: UnitPropertyObject): void {
+    public shSetPolarity (notif: UnitStorageProperty): void {
     }
 }
