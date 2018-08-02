@@ -99,7 +99,7 @@ export class CommandableMiddleUnit extends MiddleUnit {
 
         let priorityArrayValue: BACNet.Types.BACnetTypeBase, i: number;
         for (i = 0; i < priorityArray.length; i++) {
-            if (priorityArray[i].className === `BACnetNull`) {
+            if (BACNet.Utils.Typer.isNil(priorityArray[i])) {
                 continue;
             }
             priorityArrayValue = priorityArray[i];
