@@ -26,7 +26,10 @@ if (!fs.existsSync('./logs') || fs.statSync('./logs').isFile()) {
 const dockerService = new Docker.Service(argv.port, argv.outputAddr, argv.outputPort);
 if (dirStat.isFile()) {
     logger.error('Path is a file, attempt to start bacnet server from it...');
-    const fileName = dirPath.split('/').pop().split('.').slice(0, -1).join('.');
+    let fileName = dirPath.split('/').pop();
+    if (_.endsWith(fileName, '.csv')) {
+        fileName = fileName.slice(0, -4);
+    }
     const parentPath = path.resolve(dirPath, '../');
     dockerService.start(parentPath, [ fileName ]);
 }
@@ -36,7 +39,12 @@ if (dirStat.isDirectory()) {
         if (err) {
             throw err;
         } else {
-            const fileNames = files.map((file) => file.split('.').slice(0, -1).join('.'))
+            const fileNames = files.map((file) => {
+                if (_.endsWith(file, '.csv')) {
+                    return file.slice(0, -4);
+                }
+                return file;
+            })
             dockerService.start(dirPath, fileNames);
 
         }
