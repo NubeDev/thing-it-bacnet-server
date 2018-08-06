@@ -137,7 +137,7 @@ export class UnitConfirmedReqService {
     public unsubscribeCOV (inputSoc: InputSocket, outputSoc: OutputSocket,
          serviceSocket: ServiceSocket): Bluebird<any> {
     const apduMessage = inputSoc.apdu as BACNet.Interfaces.ConfirmedRequest.Read.Layer;
-    const apduService = apduMessage.service as BACNet.Interfaces.ConfirmedRequest.Service.SubscribeCOV;
+    const apduService = apduMessage.service as BACNet.Interfaces.ConfirmedRequest.Service.UnsubscribeCOV;
     // const unitStorage: UnitStorageManager = serviceSocket.getService('unitStorage');
     // Get process ID
     const subProcessId = apduService.subProcessId;
@@ -149,6 +149,16 @@ export class UnitConfirmedReqService {
 
     this.subManager.get(subId).unsubscribe();
     this.subManager.delete(subId);
+
+    // --- Sends response "subscribeCOV"
+
+    // Get invoke ID
+    const invokeId = apduMessage.invokeId;
+
+    const msgSubscribeCOV = BACNet.Services.SimpleACKService.subscribeCOV({
+        invokeId: invokeId
+    });
+    outputSoc.send(msgSubscribeCOV, `Simple ACK - unsubscribeCOV`);
 
     return Bluebird.resolve();
 }
