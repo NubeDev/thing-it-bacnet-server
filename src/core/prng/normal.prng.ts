@@ -19,7 +19,7 @@ export class NormalPRNG extends PRNGBase {
      * @return {number} - random value
      */
     protected random (): number {
-        const size = 12;
+        const size = 1000;
         const halfOfSize = size / 2;
 
         let randValue = 0;
@@ -27,7 +27,7 @@ export class NormalPRNG extends PRNGBase {
             randValue += Math.random();
         }
 
-        return (randValue - halfOfSize) / halfOfSize;
+        return (randValue - halfOfSize) / (Math.sqrt(size / 12 )) ;
     }
 
     /**
@@ -37,6 +37,26 @@ export class NormalPRNG extends PRNGBase {
      * @return {number} - offset
      */
     protected getOffsetInRange (): number {
-        return (this.opts.max - this.opts.min) * (this.random() + 1) / (this.opts.max + 1);
+        return  (this.opts.max - this.opts.min) * (this.random() / 3 + 0.5);
+    }
+
+    /**
+     * next - calculates new float random value in specific range.
+     *
+     * @return {number} - float random value
+     */
+    public next (): number {
+        const value = this.opts.min + this.getOffsetInRange()
+        return value >= this.opts.max ? this.opts.max : value <= this.opts.min ? this.opts.min : value;
+    }
+
+    /**
+     * nextInteger - calculates new integer random value in specific range.
+     *
+     * @return {number} - integer random value
+     */
+    public nextInteger (): number {
+        const value = this.opts.min + Math.round(this.getOffsetInRange());
+        return value >= this.opts.max ? this.opts.max : value <= this.opts.min ? this.opts.min : value;
     }
 }
