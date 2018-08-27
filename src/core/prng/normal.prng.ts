@@ -27,7 +27,7 @@ export class NormalPRNG extends PRNGBase {
             randValue += Math.random();
         }
 
-        return (randValue - halfOfSize) / (Math.sqrt(size / 12 )) ;
+        return (randValue - halfOfSize) / (Math.sqrt(size / 12 )) * 1 / 6 + 0.5;
     }
 
     /**
@@ -37,7 +37,7 @@ export class NormalPRNG extends PRNGBase {
      * @return {number} - offset
      */
     protected getOffsetInRange (): number {
-        return  (this.opts.max - this.opts.min) * (this.random() / 3 + 0.5);
+        return  (this.opts.max - this.opts.min) * this.random();
     }
 
     /**
