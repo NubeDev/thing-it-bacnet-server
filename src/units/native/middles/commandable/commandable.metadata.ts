@@ -1,47 +1,41 @@
 import {
-    BACnetPropertyId,
-    BACnetObjectType,
-    BACnetPropTypes,
-} from '../../../../core/bacnet/enums';
+    UnitStorageProperty,
+} from '../../../../core/interfaces';
 
-import {
-    IBACnetObjectProperty,
-} from '../../../../core/bacnet/interfaces';
+import * as BACNet from 'tid-bacnet-logic';
 
-import * as BACnetTypes from '../../../../core/bacnet/types';
-
-export const CommandableMiddleMetadata: IBACnetObjectProperty[] = [
+export const CommandableMiddleMetadata: UnitStorageProperty[] = [
     {
-        id: BACnetPropertyId.presentValue,
-        payload: new BACnetTypes.BACnetNull(),
+        id: BACNet.Enums.PropertyId.presentValue,
+        payload: new BACNet.Types.BACnetNull(),
     },
     {
-        id: BACnetPropertyId.relinquishDefault,
-        payload: new BACnetTypes.BACnetNull(),
+        id: BACNet.Enums.PropertyId.relinquishDefault,
+        payload: new BACNet.Types.BACnetNull(),
     },
     {
-        id: BACnetPropertyId.priorityArray,
+        id: BACNet.Enums.PropertyId.priorityArray,
         payload: [
-            new BACnetTypes.BACnetNull(), // #1
-            new BACnetTypes.BACnetNull(), // #2
-            new BACnetTypes.BACnetNull(), // #3
-            new BACnetTypes.BACnetNull(), // #4
-            new BACnetTypes.BACnetNull(), // #5
-            new BACnetTypes.BACnetNull(), // #6
-            new BACnetTypes.BACnetNull(), // #7
-            new BACnetTypes.BACnetNull(), // #8
-            new BACnetTypes.BACnetNull(), // #9
-            new BACnetTypes.BACnetNull(), // #10
-            new BACnetTypes.BACnetNull(), // #11
-            new BACnetTypes.BACnetNull(), // #12
-            new BACnetTypes.BACnetNull(), // #13
-            new BACnetTypes.BACnetNull(), // #14
-            new BACnetTypes.BACnetNull(), // #15
-            new BACnetTypes.BACnetNull(), // #16
+            new BACNet.Types.BACnetNull(), // #1
+            new BACNet.Types.BACnetNull(), // #2
+            new BACNet.Types.BACnetNull(), // #3
+            new BACNet.Types.BACnetNull(), // #4
+            new BACNet.Types.BACnetNull(), // #5
+            new BACNet.Types.BACnetNull(), // #6
+            new BACNet.Types.BACnetNull(), // #7
+            new BACNet.Types.BACnetNull(), // #8
+            new BACNet.Types.BACnetNull(), // #9
+            new BACNet.Types.BACnetNull(), // #10
+            new BACNet.Types.BACnetNull(), // #11
+            new BACNet.Types.BACnetNull(), // #12
+            new BACNet.Types.BACnetNull(), // #13
+            new BACNet.Types.BACnetNull(), // #14
+            new BACNet.Types.BACnetNull(), // #15
+            new BACNet.Types.BACnetNull(), // #16
         ],
     },
     {
-        id: BACnetPropertyId.currentCommandPriority,
-        payload: new BACnetTypes.BACnetNull(),
+        id: BACNet.Enums.PropertyId.currentCommandPriority,
+        payload: new BACNet.Types.BACnetNull(),
     },
 ];

@@ -1,14 +1,6 @@
 import {
-    BACnetPropertyId,
-    BACnetObjectType,
-    BACnetPropTypes,
-} from '../../core/bacnet/enums';
+    UnitStorageProperty,
+} from '../../core/interfaces';
 
-import {
-    IBACnetObjectProperty,
-} from '../../core/bacnet/interfaces';
-
-import * as BACnetTypes from '../../core/bacnet/types';
-
-export const NativeMetadata: IBACnetObjectProperty[] = [
+export const NativeMetadata: UnitStorageProperty[] = [
 ];

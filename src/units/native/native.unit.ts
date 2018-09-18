@@ -2,15 +2,13 @@ import * as _ from 'lodash';
 import { Subject, BehaviorSubject, Observable } from 'rxjs';
 
 import {
-    BACnetPropertyId,
     BACnetUnitDataFlow,
     BACnetUnitFamily,
-} from '../../core/bacnet/enums';
+} from '../../core/enums';
 
 import {
-    IBACnetObjectProperty,
-    IBACnetTypeObjectId,
-} from '../../core/bacnet/interfaces';
+    UnitStorageProperty
+} from '../../core/interfaces';
 
 import { IEDEUnit } from '../../core/interfaces';
 
@@ -19,10 +17,9 @@ import { UnitStorage } from '../unit.storage';
 
 import { MetainfoMiddleUnit } from './middles/metainfo/metainfo.middle';
 
-import * as BACnetTypes from '../../core/bacnet/types';
-
 import { logger } from '../../core/utils';
-import { TyperUtil } from '../../core/bacnet/utils';
+
+import * as BACNet from 'tid-bacnet-logic';
 
 export class NativeUnit {
     public readonly className: string = 'NativeUnit';
@@ -58,13 +55,13 @@ export class NativeUnit {
     /**
      * sjHandler - handles the changes of properties.
      *
-     * @param  {IBACnetObjectProperty} notif - notification object
+     * @param  {UnitStorageProperty} notif - notification object
      * @return {void}
      */
     public sjHandler (): void {
         this.storage.setFlowHandler(BACnetUnitDataFlow.Set,
-            [ BACnetPropertyId.objectIdentifier, BACnetPropertyId.objectType,
-                BACnetPropertyId.objectName, BACnetPropertyId.description ],
+            [ BACNet.Enums.PropertyId.objectIdentifier, BACNet.Enums.PropertyId.objectType,
+                BACNet.Enums.PropertyId.objectName, BACNet.Enums.PropertyId.description ],
             (notif) => {
                 this.storage.updateProperty(notif);
             }
@@ -74,9 +71,9 @@ export class NativeUnit {
     /**
      * subscribe - subscribes to the changes for all properties.
      *
-     * @return {Observable<IBACnetObjectProperty>}
+     * @return {Observable<UnitStorageProperty>}
      */
-    public subscribe (): Observable<IBACnetObjectProperty[]> {
+    public subscribe (): Observable<UnitStorageProperty[]> {
         return this.storage.sjCOV.map(() => {
             const reportedProps = this.getReportedProperties();
             logger.debug(`${this.logHeader} - subscribe (dispatch):`,
@@ -88,12 +85,12 @@ export class NativeUnit {
     /**
      * isBACnetObject - returns true if object has compatible id and type.
      *
-     * @param  {IBACnetTypeObjectId} objId - object identifier
+     * @param  {BACNet.Interfaces.Type.ObjectId} objId - object identifier
      * @return {boolean}
      */
-    public isBACnetObject (objId: IBACnetTypeObjectId): boolean {
-        const unitIdProp = this.storage.getProperty(BACnetPropertyId.objectIdentifier);
-        const unitId = unitIdProp.payload as BACnetTypes.BACnetObjectId;
+    public isBACnetObject (objId: BACNet.Interfaces.Type.ObjectId): boolean {
+        const unitIdProp = this.storage.getProperty(BACNet.Enums.PropertyId.objectIdentifier);
+        const unitId = unitIdProp.payload as BACNet.Types.BACnetObjectId;
         return unitId.value.type === objId.type
             && unitId.value.instance === objId.instance;
     }
@@ -101,9 +98,9 @@ export class NativeUnit {
     /**
      * getReportedProperties - returns the reported properties for COV notification.
      *
-     * @return {IBACnetObjectProperty[]}
+     * @return {UnitStorageProperty[]}
      */
-    protected getReportedProperties (): IBACnetObjectProperty[] {
+    protected getReportedProperties (): UnitStorageProperty[] {
         return null;
     }
 

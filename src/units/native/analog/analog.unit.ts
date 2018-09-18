@@ -1,18 +1,17 @@
 import * as _ from 'lodash';
 
 import {
-    BACnetPropertyId,
     BACnetUnitFamily,
     BACnetUnitDataFlow,
-} from '../../../core/bacnet/enums';
+} from '../../../core/enums';
 
 import {
     ApiError,
 } from '../../../core/errors';
 
 import {
-    IBACnetObjectProperty,
-} from '../../../core/bacnet/interfaces';
+    UnitStorageProperty,
+} from '../../../core/interfaces';
 
 import { IEDEUnit } from '../../../core/interfaces';
 
@@ -21,7 +20,7 @@ import { StatusFlagsMiddleUnit } from '../middles/status-flags/status-flags.midd
 
 import { NativeUnit } from '../native.unit';
 
-import * as BACnetTypes from '../../../core/bacnet/types';
+import * as BACNet from 'tid-bacnet-logic';
 
 export class AnalogUnit extends NativeUnit {
     public readonly className: string = 'AnalogUnit';
@@ -35,22 +34,22 @@ export class AnalogUnit extends NativeUnit {
 
         if (!_.isNil(edeUnit.unitCode)) {
             this.storage.setProperty({
-                id: BACnetPropertyId.units,
-                payload: new BACnetTypes.BACnetEnumerated(edeUnit.unitCode),
+                id: BACNet.Enums.PropertyId.units,
+                payload: new BACNet.Types.BACnetEnumerated(edeUnit.unitCode),
             });
         }
 
         if (!_.isNil(edeUnit.minPresentValue)) {
             this.storage.setProperty({
-                id: BACnetPropertyId.minPresValue,
-                payload: new BACnetTypes.BACnetReal(edeUnit.minPresentValue),
+                id: BACNet.Enums.PropertyId.minPresValue,
+                payload: new BACNet.Types.BACnetReal(edeUnit.minPresentValue),
             });
         }
 
         if (!_.isNil(edeUnit.maxPresentValue)) {
             this.storage.setProperty({
-                id: BACnetPropertyId.maxPresValue,
-                payload: new BACnetTypes.BACnetReal(edeUnit.maxPresentValue),
+                id: BACNet.Enums.PropertyId.maxPresValue,
+                payload: new BACNet.Types.BACnetReal(edeUnit.maxPresentValue),
             });
         }
 
@@ -59,15 +58,15 @@ export class AnalogUnit extends NativeUnit {
     /**
      * sjHandler - handles the changes of properties.
      *
-     * @param  {IBACnetObjectProperty} notif - notification object
+     * @param  {UnitStorageProperty} notif - notification object
      * @return {void}
      */
     public sjHandler (): void {
         super.sjHandler();
 
         this.storage.setFlowHandler(BACnetUnitDataFlow.Set,
-            [ BACnetPropertyId.maxPresValue, BACnetPropertyId.minPresValue,
-                BACnetPropertyId.units ], (notif) => {
+            [ BACNet.Enums.PropertyId.maxPresValue, BACNet.Enums.PropertyId.minPresValue,
+                BACNet.Enums.PropertyId.units ], (notif) => {
             this.storage.updateProperty(notif);
         });
     }
@@ -75,11 +74,11 @@ export class AnalogUnit extends NativeUnit {
     /**
     * getReportedProperties - returns the reported properties for COV notification.
     *
-    * @return {IBACnetObjectProperty[]}
+    * @return {UnitStorageProperty[]}
     */
-   protected getReportedProperties (): IBACnetObjectProperty[] {
-       const presentValue = this.storage.getProperty(BACnetPropertyId.presentValue);
-       const statusFlags = this.storage.getProperty(BACnetPropertyId.statusFlags);
+   protected getReportedProperties (): UnitStorageProperty[] {
+       const presentValue = this.storage.getProperty(BACNet.Enums.PropertyId.presentValue);
+       const statusFlags = this.storage.getProperty(BACNet.Enums.PropertyId.statusFlags);
 
        return [ presentValue, statusFlags ];
    }

@@ -1,16 +1,13 @@
 import * as _ from 'lodash';
 
 import {
-    BACnetPropertyId,
-} from '../../../../core/bacnet/enums';
-
-import {
     ApiError,
 } from '../../../../core/errors';
 
 import {
-    IBACnetObjectProperty,
-} from '../../../../core/bacnet/interfaces';
+    UnitStorageProperty,
+} from '../../../../core/interfaces';
+import * as BACNet from 'tid-bacnet-logic';
 
 import { IEDEUnit } from '../../../../core/interfaces';
 

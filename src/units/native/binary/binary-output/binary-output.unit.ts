@@ -1,21 +1,16 @@
 import * as _ from 'lodash';
 
 import {
-    BACnetPropertyId,
-    BACnetBinaryPV,
-    BACnetEventState,
-    BACnetPolarity,
     BACnetUnitDataFlow,
-} from '../../../../core/bacnet/enums';
+} from '../../../../core/enums';
 
 import {
     ApiError,
 } from '../../../../core/errors';
 
 import {
-    IBACnetObjectProperty,
-    IBACnetTypeStatusFlags,
-} from '../../../../core/bacnet/interfaces';
+    UnitStorageProperty,
+} from '../../../../core/interfaces';
 
 import { IEDEUnit } from '../../../../core/interfaces';
 
@@ -24,7 +19,7 @@ import { BinaryOutputMetadata } from './binary-output.metadata';
 import { BinaryUnit } from '../binary.unit';
 import { CommandableMiddleUnit } from '../../middles/commandable/commandable.middle';
 
-import * as BACnetTypes from '../../../../core/bacnet/types';
+import * as BACNet from 'tid-bacnet-logic';
 
 export class BinaryOutputUnit extends BinaryUnit {
     public readonly className: string = 'BinaryOutputUnit';
@@ -41,13 +36,13 @@ export class BinaryOutputUnit extends BinaryUnit {
     /**
      * sjHandler - handles the changes of properties.
      *
-     * @param  {IBACnetObjectProperty} notif - notification object
+     * @param  {UnitStorageProperty} notif - notification object
      * @return {void}
      */
     public sjHandler (): void {
         super.sjHandler();
 
-        this.storage.setFlowHandler(BACnetUnitDataFlow.Update, BACnetPropertyId.presentValue, (notif) => {
+        this.storage.setFlowHandler(BACnetUnitDataFlow.Update, BACNet.Enums.PropertyId.presentValue, (notif) => {
             this.shUpdatePresentValue(notif);
         });
     }
@@ -56,30 +51,30 @@ export class BinaryOutputUnit extends BinaryUnit {
      * shUpdatePresentValue - handles the "update" flow event of 'Present Value' property.
      * - Method emits the "CoV" event.
      *
-     * @param  {IBACnetObjectProperty} notif - notification object for priorityArray
+     * @param  {UnitStorageProperty} notif - notification object for priorityArray
      * @return {void}
      */
-    private shUpdatePresentValue (notif: IBACnetObjectProperty): void {
-        const polarityProp = this.storage.getProperty(BACnetPropertyId.polarity);
-        const polarity = polarityProp.payload as BACnetTypes.BACnetEnumerated;
+    private shUpdatePresentValue (notif: UnitStorageProperty): void {
+        const polarityProp = this.storage.getProperty(BACNet.Enums.PropertyId.polarity);
+        const polarity = polarityProp.payload as BACNet.Types.BACnetEnumerated;
 
-        if (polarity.value === BACnetPolarity.Reverse) {
-            const newPresentValue = _.cloneDeep(notif.payload) as BACnetTypes.BACnetEnumerated;
+        if (polarity.value === BACNet.Enums.Polarity.Reverse) {
+            const newPresentValue = _.cloneDeep(notif.payload) as BACNet.Types.BACnetEnumerated;
 
             switch (newPresentValue.value) {
-                case BACnetBinaryPV.Active:
-                    newPresentValue.value = BACnetBinaryPV.Inactive;
+                case BACNet.Enums.BinaryPV.Active:
+                    newPresentValue.value = BACNet.Enums.BinaryPV.Inactive;
                     break;
-                case BACnetBinaryPV.Inactive:
-                    newPresentValue.value = BACnetBinaryPV.Active;
+                case BACNet.Enums.BinaryPV.Inactive:
+                    newPresentValue.value = BACNet.Enums.BinaryPV.Active;
                     break;
                 default:
-                    newPresentValue.value = BACnetBinaryPV.Inactive;
+                    newPresentValue.value = BACNet.Enums.BinaryPV.Inactive;
                     break;
             }
 
             this.storage.updateProperty({
-                id: BACnetPropertyId.presentValue,
+                id: BACNet.Enums.PropertyId.presentValue,
                 payload: newPresentValue,
             }, false);
         }

@@ -1,5 +1,5 @@
 import { AliasMap } from '../../core/alias/alias.map';
-import { BACnetUnitAbbr } from '../../core/bacnet/enums';
+import { BACnetUnitAbbr } from '../../core/enums';
 import { CustomUnit } from './custom.unit';
 
 import { FunctionUnit } from './function/function.unit';
