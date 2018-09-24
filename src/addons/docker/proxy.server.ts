@@ -4,6 +4,8 @@ import * as DEFAULTS from './defaults';
 import { Logger } from './logger';
 import { ApiError } from '../../core/errors';
 import { ContainersInfo } from './containers.manager/containers.info.interface';
+import { InputSocket } from '../../core/sockets';
+import { Enums } from 'tid-bacnet-logic';
 
 export class ProxyUDPServer {
     private udpSocket: dgram.Socket;
@@ -27,36 +29,47 @@ export class ProxyUDPServer {
 
             if ((rinfo.port >= DEFAULTS.DOCKER_CONTAINERS_FIRST_PORT) && (rinfo.port < DEFAULTS.DOCKER_CONTAINERS_FIRST_PORT + 1000)
                 && (rinfo.address === DEFAULTS.DOCKER_CONTAINERS_ADDR)) {
-                const containerName = containersInfo.find((container) => container.port === rinfo.port).name;
-                let resp, bacnetMsg, output;
+                const containerInfo = containersInfo.find((info) => info.port === rinfo.port);
+                let resp, bacnetMsg, output: AddressInfo;
                 try {
                     resp = JSON.parse(msg.toString());
                     bacnetMsg = Buffer.from(resp.msg, 'hex');
                     output = resp.rinfo;
+                    this.logger.info(`got: ${bacnetMsg.toString('hex')} from  ${containerInfo.name} running on ${rinfo.address}:${rinfo.port}`);
+                    this.logger.info(`sending ${bacnetMsg.toString('hex')} to remote thing-it-bacnet-device running on ${output.address}:${output.port}`);
+
+                    if (!containerInfo.remoteTINOutput) {
+                        const inputSoc: InputSocket = new InputSocket(bacnetMsg);
+                        if (inputSoc.apdu.serviceChoice !== Enums.UnconfirmedServiceChoice.iAm) {
+                            this.logger.info(`binding ${containerInfo.name} to the remote TIN: ${output}`)
+                            containerInfo.remoteTINOutput = output;
+                        }
+                    }
+
+                    this.udpSocket.send(bacnetMsg, output.port, output.address);
 
                 } catch (error) {
-                    throw new ApiError(`Unable to parse message from ${containerName} as JSON, treating as BACNet message...`);
-                    bacnetMsg = msg;
-                    output = {
-                        address: outputAddr,
-                        port: outputPort
-                    }
+                    this.logger.error(`Unable to parse message from ${containerInfo.name} as JSON, original rinfo is lost!`);
                 }
-
-                this.logger.info(`got: ${bacnetMsg.toString('hex')} from  ${containerName} running on ${rinfo.address}:${rinfo.port}`);
-                this.logger.info(`sending ${bacnetMsg.toString('hex')} to remote thing-it-bacnet-device running on ${output.address}:${output.port}`);
-
-                this.udpSocket.send(bacnetMsg, output.port, output.address)
 
             } else {
                 this.logger.info(`got: ${msg.toString('hex')} from remote thing-it-bacnet-device running on ${rinfo.address}:${rinfo.port}`);
-                for (let container of containersInfo) {
-                    const message = JSON.stringify({
-                        msg: msg.toString('hex'),
-                        rinfo: rinfo
-                    });
-                    console.log(message);
-                    this.udpSocket.send(message, container.port, DEFAULTS.DOCKER_CONTAINERS_ADDR);
+                const message = JSON.stringify({
+                    msg: msg.toString('hex'),
+                    rinfo: rinfo
+                });
+                const bindedContainerInfo = containersInfo.find((info) => {
+                    if (info.remoteTINOutput) {
+                        return info.remoteTINOutput.address === rinfo.address && info.remoteTINOutput.port === rinfo.port;
+                    }
+                    return false;
+                });
+                if (bindedContainerInfo) {
+                    this.udpSocket.send(message, bindedContainerInfo.port, DEFAULTS.DOCKER_CONTAINERS_ADDR);
+                } else {
+                    for (let container of containersInfo) {
+                        this.udpSocket.send(message, container.port, DEFAULTS.DOCKER_CONTAINERS_ADDR);
+                    }
                 }
             }
         });
