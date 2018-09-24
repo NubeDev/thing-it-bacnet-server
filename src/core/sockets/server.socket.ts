@@ -86,7 +86,7 @@ export class Server {
             }
 
             // Generate Request instance
-            const inputSoc = new InputSocket(msg);
+            const inputSoc = new InputSocket(bacnetMsg);
             // Handle request
             try {
                 this.mainRouter(inputSoc, outputSoc, this.serviceSocket);
