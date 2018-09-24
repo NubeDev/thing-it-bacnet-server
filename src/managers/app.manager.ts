@@ -51,6 +51,10 @@ export class AppManager {
         if (argv.reqThread) {
             this.appConfig.server.outputSequence.thread = +argv.reqThread;
         }
+
+        if (argv.dockerized) {
+            this.appConfig.server.dockerized = true;
+        }
     }
 
     public start () {
