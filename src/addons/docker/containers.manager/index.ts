@@ -1,10 +1,11 @@
 import { Container } from './container';
 import * as Bluebird from 'bluebird';
 import { Logger } from '../logger';
+import { ContainersInfo } from './containers.info.interface';
 
 export class ContainersManager {
     private containers: Container[] = [];
-    public containersInfo: Map<number, any> = new Map();
+    public containersInfo: ContainersInfo[] = [];
     public logger = new Logger('Docker Containers Manager');
     constructor(
         private edeDir: string
@@ -21,7 +22,7 @@ export class ContainersManager {
         const container: Container = new Container (name, port, this.edeDir);
         container.start();
         this.containers.push(container);
-        this.containersInfo.set(port, { port, name });
+        this.containersInfo.push({ port, name });
     }
 
     /**
