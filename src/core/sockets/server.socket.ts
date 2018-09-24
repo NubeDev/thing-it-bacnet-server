@@ -71,7 +71,7 @@ export class Server {
                         port: rinfo.port, address: rinfo.address,
                     }, parsedMsg.rinfo);
                 } catch (error) {
-                    throw new ApiError ('Unable to treat message as JSON, trying to parse as bacnet message...');
+                    console.error('Unable to treat message as JSON, trying to parse as bacnet message...');
                     bacnetMsg = msg;
                     outputSoc = this.genOutputSocket({
                         port: rinfo.port, address: rinfo.address,
