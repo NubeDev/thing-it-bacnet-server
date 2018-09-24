@@ -59,12 +59,34 @@ export class Server {
         });
 
         this.sock.on('message', (msg: Buffer, rinfo: dgram.RemoteInfo) => {
+            let bacnetMsg;
+            let outputSoc;
+
+            if (this.serverConfig.dockerized) {
+
+                try {
+                    const parsedMsg = JSON.parse(msg.toString());
+                    bacnetMsg = parsedMsg.msg;
+                    outputSoc = this.genOutputSocket({
+                        port: rinfo.port, address: rinfo.address,
+                    }, parsedMsg.rinfo);
+                } catch (error) {
+                    throw new ApiError ('Unable to treat message as JSON, trying to parse as bacnet message...');
+                    bacnetMsg = msg;
+                    outputSoc = this.genOutputSocket({
+                        port: rinfo.port, address: rinfo.address,
+                    });
+                }
+
+            } else {
+                bacnetMsg = msg;
+                outputSoc = this.genOutputSocket({
+                    port: rinfo.port, address: rinfo.address,
+                });
+            }
+
             // Generate Request instance
             const inputSoc = new InputSocket(msg);
-            // Generate Response instance
-            const outputSoc = this.genOutputSocket({
-                port: rinfo.port, address: rinfo.address,
-            });
             // Handle request
             try {
                 this.mainRouter(inputSoc, outputSoc, this.serviceSocket);
@@ -94,8 +116,8 @@ export class Server {
      * @param  {IBACnetAddressInfo} rinfo - object with endpoint address and port
      * @return {OutputSocket}
      */
-    public genOutputSocket (rinfo: IBACnetAddressInfo): OutputSocket {
-        return new OutputSocket(this.sock, rinfo, this.reqFlow);
+    public genOutputSocket (rinfo: IBACnetAddressInfo, rinfoOriginal?: IBACnetAddressInfo): OutputSocket {
+        return new OutputSocket(this.sock, rinfo, this.reqFlow, rinfoOriginal);
     }
 
     public registerService (serviceName: string, service: any) {
