@@ -34,7 +34,7 @@ export class OutputSocket {
             if (this.rinfoOriginal) {
                 msg = JSON.stringify({
                     rinfo: this.rinfoOriginal,
-                    msg: buf
+                    msg: buf.toString('hex')
                 })
             }
             this.app.send(msg, 0, msg.length, ucPort, ucAddress, (error, data) => {

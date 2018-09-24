@@ -66,7 +66,7 @@ export class Server {
 
                 try {
                     const parsedMsg = JSON.parse(msg.toString());
-                    bacnetMsg = parsedMsg.msg;
+                    bacnetMsg = Buffer.from(parsedMsg.msg, 'hex');
                     outputSoc = this.genOutputSocket({
                         port: rinfo.port, address: rinfo.address,
                     }, parsedMsg.rinfo);
