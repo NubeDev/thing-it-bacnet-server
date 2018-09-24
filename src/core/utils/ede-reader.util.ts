@@ -116,10 +116,10 @@ export class EDEReaderUtil {
         const custUnitId = dataPointRow.getCellValue(offset.inc());
         // Function of the BACnet object in custom unit
         const custUnitFn = dataPointRow.getCellValue(offset.inc());
-        // Max value for simulation logic
-        const custUnitMax = dataPointRow.getCellValue(offset.inc());
         // Min value for simulation logic
         const custUnitMin = dataPointRow.getCellValue(offset.inc());
+        // Max value for simulation logic
+        const custUnitMax = dataPointRow.getCellValue(offset.inc());
         // Frequency of changes of the value for simulation logic
         const custUnitFreq = dataPointRow.getCellValue(offset.inc());
 
