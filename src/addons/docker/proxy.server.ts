@@ -2,7 +2,8 @@ import * as dgram from 'dgram';
 import { AddressInfo } from 'net';
 import * as DEFAULTS from './defaults';
 import { Logger } from './logger';
-import { portMappings } from './docker.proxy.config'
+import { ApiError } from '../../core/errors';
+import { ContainersInfo } from './containers.manager/containers.info.interface';
 
 export class ProxyUDPServer {
     private udpSocket: dgram.Socket;
@@ -20,31 +21,42 @@ export class ProxyUDPServer {
      * @param {number} [outputPort=DEFAULTS.OUTPUT_PORT] - port of the remote thing-it-bacnet-device to connect
      * @param {Map<number, any>} containersInfo - info of docker containers with simulaed ede-files
      */
-    start(outputAddr: string, outputPort: number, containersInfo: Map<number, any>) {
+    start(outputAddr: string, outputPort: number, containersInfo: ContainersInfo[]) {
         this.logger.info('Starting proxy UDP Server...');
         this.udpSocket.on('message', (msg, rinfo) => {
 
             if ((rinfo.port >= DEFAULTS.DOCKER_CONTAINERS_FIRST_PORT) && (rinfo.port < DEFAULTS.DOCKER_CONTAINERS_FIRST_PORT + 1000)
                 && (rinfo.address === DEFAULTS.DOCKER_CONTAINERS_ADDR)) {
-                const containerName = containersInfo.get(rinfo.port).name;
-                const port = portMappings[containerName];
-                this.logger.info(`got: ${msg.toString('hex')} from  ${containerName} running on ${rinfo.address}:${rinfo.port}`);
-                this.logger.info(`sending ${msg.toString('hex')} to remote thing-it-bacnet-device running on ${outputAddr}:${port}`);
+                const containerName = containersInfo.find((container) => container.port === rinfo.port).name;
+                let resp, bacnetMsg, output;
+                try {
+                    resp = JSON.parse(msg.toString());
+                    bacnetMsg = Buffer.from(resp.msg, 'hex');
+                    output = resp.rinfo;
 
-                this.udpSocket.send(msg, port, outputAddr)
+                } catch (error) {
+                    throw new ApiError(`Unable to parse message from ${containerName} as JSON, treating as BACNet message...`);
+                    bacnetMsg = msg;
+                    output = {
+                        address: outputAddr,
+                        port: outputPort
+                    }
+                }
+
+                this.logger.info(`got: ${bacnetMsg.toString('hex')} from  ${containerName} running on ${rinfo.address}:${rinfo.port}`);
+                this.logger.info(`sending ${bacnetMsg.toString('hex')} to remote thing-it-bacnet-device running on ${output.address}:${output.port}`);
+
+                this.udpSocket.send(bacnetMsg, output.port, output.address)
 
             } else {
-                console.log (msg.toString('hex'), rinfo.port);
-                for (const name in portMappings) {
-                    if (portMappings[name] === rinfo.port) {
-                        console.log (name, portMappings[name]);
-                        this.logger.info(`got: ${msg.toString('hex')} from remote thing-it-bacnet-device running on ${rinfo.address}:${rinfo.port}`);
-                        const info = Array.from(containersInfo.values()).find(item => item.name === name);
-                        console.log(info);
-                        this.logger.info(`sending ${msg.toString('hex')} to docker container ${info.name} running on ${DEFAULTS.DOCKER_CONTAINERS_ADDR}:${info.port}`)
-                        this.udpSocket.send(msg, info.port, DEFAULTS.DOCKER_CONTAINERS_ADDR);
-                        break;
-                    }
+                this.logger.info(`got: ${msg.toString('hex')} from remote thing-it-bacnet-device running on ${rinfo.address}:${rinfo.port}`);
+                for (let container of containersInfo) {
+                    const message = JSON.stringify({
+                        msg: msg.toString('hex'),
+                        rinfo: rinfo
+                    });
+                    console.log(message);
+                    this.udpSocket.send(message, container.port, DEFAULTS.DOCKER_CONTAINERS_ADDR);
                 }
             }
         });
