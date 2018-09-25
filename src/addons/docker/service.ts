@@ -10,7 +10,7 @@ export class Service {
     private proxyServer: ProxyUDPServer;
     public logger: Logger = new Logger('Docker Service')
     constructor(
-        private port: number = DEFAULTS.THIS_PORT,
+        private port: number = DEFAULTS.PORT,
         private portsStart: number = DEFAULTS.DOCKER_CONTAINERS_FIRST_PORT
     ) { }
 
