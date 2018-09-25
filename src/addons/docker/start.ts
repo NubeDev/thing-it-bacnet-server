@@ -23,7 +23,7 @@ if (!fs.existsSync('./logs') || fs.statSync('./logs').isFile()) {
     fs.mkdirSync('./logs');
 }
 
-const dockerService = new Docker.Service(argv.port, argv.outputAddr, argv.outputPort);
+const dockerService = new Docker.Service(argv.port);
 if (dirStat.isFile()) {
     logger.error('Path is a file, attempt to start bacnet server from it...');
     let fileName = dirPath.split('/').pop();

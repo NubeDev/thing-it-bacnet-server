@@ -19,11 +19,9 @@ export class ProxyUDPServer {
     /**
      *start - start listening messages from thing-it-bacnet-device and forward them to docker containers ports
      *
-     * @param {string} [outputAdd] - address of remote thing-it-bacnet-device to connect
-     * @param {number} [outputPort=DEFAULTS.OUTPUT_PORT] - port of the remote thing-it-bacnet-device to connect
      * @param {Map<number, any>} containersInfo - info of docker containers with simulaed ede-files
      */
-    start(outputAddr: string, outputPort: number, containersInfo: ContainersInfo[]) {
+    start(containersInfo: ContainersInfo[]) {
         this.logger.info('Starting proxy UDP Server...');
         this.udpSocket.on('message', (msg, rinfo) => {
 
