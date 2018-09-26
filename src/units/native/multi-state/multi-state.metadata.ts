@@ -11,7 +11,7 @@ export const MultiStateMetadata: UnitStorageProperty[] = [
     },
     {
         id: BACNet.Enums.PropertyId.numberOfStates,
-        payload: new BACNet.Types.BACnetUnsignedInteger(1),
+        payload: new BACNet.Types.BACnetUnsignedInteger(2),
     },
     {
         id: BACNet.Enums.PropertyId.stateText,
