@@ -66,7 +66,9 @@ export class StateTextReader {
         const stateTextsArray = [];
         for (let i = 0; i < dataPointRow.size; i++) {
             const text = dataPointRow.getCellValue(offset.inc());
-            stateTextsArray.push(text)
+            if (text !== '') {
+                stateTextsArray.push(text)
+            }
         }
         const stateTextsUnit: IStateTextsUnit = {
             referenceNumber: ConverterUtil.stringToNumber(referenceNumber),
