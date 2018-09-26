@@ -6,7 +6,6 @@ import { InputSocket, OutputSocket, ServiceSocket } from '../core/sockets';
 
 import { UnitStorageManager } from '../managers/unit-storage.manager';
 import { SubscriptionManager } from '../managers/subscription.manager';
-import * as moment from 'moment';
 import * as BACNet from 'tid-bacnet-logic';
 
 export class UnitConfirmedReqService {
@@ -100,7 +99,7 @@ export class UnitConfirmedReqService {
 
         let expirationMoment;
         if (lifetime.value > 0) {
-            expirationMoment = moment().add(lifetime.value, 'ms');
+            expirationMoment = Date.now() + lifetime.value;
         }
 
         let COVSubscription = unitStorage
@@ -113,7 +112,7 @@ export class UnitConfirmedReqService {
                     listOfValues: reportedProps,
                 };
                 if (expirationMoment) {
-                    const timeRemaining = moment.duration(expirationMoment.diff(moment())).asMilliseconds();
+                    const timeRemaining = expirationMoment - Date.now();
                     COVNotification.timeRemaining = new BACNet.Types.BACnetUnsignedInteger(timeRemaining);
                 }
                 const msgCovNotification = BACNet.Services.UnconfirmedReqService.covNotification(COVNotification);
