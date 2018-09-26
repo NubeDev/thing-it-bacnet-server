@@ -10,9 +10,7 @@ import {
     IStateTextsUnit,
 } from '../interfaces';
 
-import {
-    OffsetUtil,
-} from '../bacnet/utils';
+import { IO } from 'tid-bacnet-logic';
 
 import {
     ConverterUtil,
@@ -60,7 +58,7 @@ export class StateTextReader {
      * @return {IStateTextsUnit}
      */
     public readDataPointRow (index: number): IStateTextsUnit {
-        const offset = new OffsetUtil(0);
+        const offset = new IO.Offset(0);
         const dataPointRow = this.csvTable.getRowByIndex(index);
         // <Reference Number>
         const referenceNumber = dataPointRow.getCellValue(offset.inc());
@@ -90,7 +88,7 @@ export class StateTextReader {
      */
     public readDataPointTable (): IStateTextsUnit[] {
         const tableLen = this.csvTable.lenght;
-        const offset = new OffsetUtil(2);
+        const offset = new IO.Offset(2);
         const startIndex = offset.getVaule();
 
         const dataPointRows: IStateTextsUnit[] = [];
