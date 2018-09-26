@@ -2,21 +2,20 @@ import * as _ from 'lodash';
 import { Observable } from 'rxjs';
 
 import {
-    BACnetPropertyId,
     BACnetUnitFamily,
-} from '../../../core/bacnet/enums';
+} from '../../../core/enums';
 
 import {
     ICustomFunction,
 } from '../../../core/interfaces';
-
-import * as BACnetTypes from '../../../core/bacnet/types';
 
 import { FunctionMetadata } from './function.metadata';
 import { CustomUnit } from '../custom.unit';
 import { NativeUnit } from '../../native/native.unit';
 
 import * as PRNG from '../../../core/prng';
+
+import * as BACNet from 'tid-bacnet-logic';
 
 export class FunctionUnit extends CustomUnit {
     public readonly className: string = 'FunctionUnit';
@@ -84,17 +83,17 @@ export class FunctionUnit extends CustomUnit {
      * @return {void}
      */
     private genPayloadOfPresentValue (prng: PRNG.PRNGBase, unit: NativeUnit):
-            BACnetTypes.BACnetTypeBase {
+            BACNet.Types.BACnetTypeBase {
         let randomValue: number = 0;
 
         switch (unit.family) {
             case BACnetUnitFamily.Analog:
                 randomValue = prng.next();
-                return new BACnetTypes.BACnetReal(randomValue);
+                return new BACNet.Types.BACnetReal(randomValue);
             case BACnetUnitFamily.Binary:
             case BACnetUnitFamily.MultiState:
                 randomValue = prng.nextInteger();
-                return new BACnetTypes.BACnetUnsignedInteger(randomValue);
+                return new BACNet.Types.BACnetUnsignedInteger(randomValue);
             default:
                 return null;
         }
@@ -122,7 +121,7 @@ export class FunctionUnit extends CustomUnit {
                 }
 
                 unit.storage.setProperty({
-                    id: BACnetPropertyId.presentValue,
+                    id: BACNet.Enums.PropertyId.presentValue,
                     payload: payload,
                 });
             });

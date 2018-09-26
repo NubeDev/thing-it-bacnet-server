@@ -1,4 +1,4 @@
-
+import * as BACNet from 'tid-bacnet-logic';
 /**
  * EDE
  */
@@ -50,6 +50,13 @@ export interface ICustomFunctionConfig {
     max: number;
     // Frequency
     freq: number;
+}
+
+export interface UnitStorageProperty {
+    id: BACNet.Enums.PropertyId;
+    payload: BACNet.Types.BACnetTypeBase | BACNet.Types.BACnetTypeBase[];
+    writable?: boolean;
+    priority?: number;
 }
 
 /**

@@ -1,18 +1,24 @@
 import {
-    BACnetPropertyId,
-    BACnetObjectType,
-    BACnetPropTypes,
-    BACnetBinaryPV,
-    BACnetPolarity,
-    BACnetEventState,
-    BACnetReliability,
-} from '../../../core/bacnet/enums';
+    UnitStorageProperty,
+} from '../../../core/interfaces';
 
-import {
-    IBACnetObjectProperty,
-} from '../../../core/bacnet/interfaces';
+import * as BACNet from 'tid-bacnet-logic';
 
-import * as BACnetTypes from '../../../core/bacnet/types';
-
-export const AnalogMetadata: IBACnetObjectProperty[] = [
+export const AnalogMetadata: UnitStorageProperty[] = [
+    {
+        id: BACNet.Enums.PropertyId.units,
+        payload: new BACNet.Types.BACnetEnumerated(BACNet.Enums.EngineeringUnits.noUnits),
+    },
+    {
+        id: BACNet.Enums.PropertyId.covIncrement,
+        payload: new BACNet.Types.BACnetReal(1.0),
+    },
+    {
+        id: BACNet.Enums.PropertyId.minPresValue,
+        payload: new BACNet.Types.BACnetReal(0),
+    },
+    {
+        id: BACNet.Enums.PropertyId.maxPresValue,
+        payload: new BACNet.Types.BACnetReal(100),
+    }
 ];

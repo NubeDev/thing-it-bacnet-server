@@ -1,15 +1,12 @@
 import * as _ from 'lodash';
 
 import {
-    BACnetPropertyId,
-    BACnetEventState,
     BACnetUnitDataFlow,
-} from '../../../../core/bacnet/enums';
+} from '../../../../core/enums';
 
 import {
-    IBACnetObjectProperty,
-    IBACnetTypeStatusFlags,
-} from '../../../../core/bacnet/interfaces';
+    UnitStorageProperty,
+} from '../../../../core/interfaces';
 
 import { IEDEUnit } from '../../../../core/interfaces';
 
@@ -17,7 +14,7 @@ import { StatusFlagsMiddleMetadata } from './status-flags.metadata';
 
 import { MiddleUnit } from '../middle.unit';
 
-import * as BACnetTypes from '../../../../core/bacnet/types';
+import * as BACNet from 'tid-bacnet-logic';
 
 export class StatusFlagsMiddleUnit extends MiddleUnit {
     public readonly className: string = 'StatusFlagsMiddleUnit';
@@ -37,23 +34,23 @@ export class StatusFlagsMiddleUnit extends MiddleUnit {
     /**
      * sjHandler - handles the changes of properties.
      *
-     * @param  {IBACnetObjectProperty} notif - notification object
+     * @param  {UnitStorageProperty} notif - notification object
      * @return {void}
      */
     public sjHandler (): void {
-        this.storage.setFlowHandler(BACnetUnitDataFlow.Set, BACnetPropertyId.eventState, (notif) => {
+        this.storage.setFlowHandler(BACnetUnitDataFlow.Set, BACNet.Enums.PropertyId.eventState, (notif) => {
             this.shSetEventState(notif);
         });
-        this.storage.setFlowHandler(BACnetUnitDataFlow.Set, BACnetPropertyId.outOfService, (notif) => {
+        this.storage.setFlowHandler(BACnetUnitDataFlow.Set, BACNet.Enums.PropertyId.outOfService, (notif) => {
             this.shSetOutOfService(notif);
         });
-        this.storage.setFlowHandler(BACnetUnitDataFlow.Set, BACnetPropertyId.reliability, (notif) => {
+        this.storage.setFlowHandler(BACnetUnitDataFlow.Set, BACNet.Enums.PropertyId.reliability, (notif) => {
             this.shSetReliability(notif);
         });
-        this.storage.setFlowHandler(BACnetUnitDataFlow.Set, BACnetPropertyId.statusFlags, (notif) => {
+        this.storage.setFlowHandler(BACnetUnitDataFlow.Set, BACNet.Enums.PropertyId.statusFlags, (notif) => {
             this.shSetStatusFlags(notif);
         });
-        this.storage.setFlowHandler(BACnetUnitDataFlow.Update, BACnetPropertyId.statusFlags, (notif) => {
+        this.storage.setFlowHandler(BACnetUnitDataFlow.Update, BACNet.Enums.PropertyId.statusFlags, (notif) => {
             this.shUpdateStatusFlags(notif);
         });
     }
@@ -62,29 +59,29 @@ export class StatusFlagsMiddleUnit extends MiddleUnit {
      * shSetEventState - handles the changes of 'Event State' property.
      * - Method changes the "shSetEventState" field in "statusFlags" BACnet property.
      *
-     * @param  {IBACnetObjectProperty} notif - notification object for eventState
+     * @param  {UnitStorageProperty} notif - notification object for eventState
      * @return {void}
      */
-    private shSetEventState (notif: IBACnetObjectProperty): void {
+    private shSetEventState (notif: UnitStorageProperty): void {
         this.storage.updateProperty(notif);
 
-        const statusFlagsProp = this.storage.getProperty(BACnetPropertyId.statusFlags);
-        const statusFlags = statusFlagsProp.payload as BACnetTypes.BACnetStatusFlags;
+        const statusFlagsProp = this.storage.getProperty(BACNet.Enums.PropertyId.statusFlags);
+        const statusFlags = statusFlagsProp.payload as BACNet.Types.BACnetStatusFlags;
 
-        const eventState = notif.payload as BACnetTypes.BACnetEnumerated;
-        const newInAlarm = eventState.value !== BACnetEventState.Normal;
+        const eventState = notif.payload as BACNet.Types.BACnetEnumerated;
+        const newInAlarm = eventState.value !== BACNet.Enums.EventState.Normal;
 
         if (statusFlags.value.inAlarm === newInAlarm) {
             return;
         }
 
-        const newStatusFlagsValue: IBACnetTypeStatusFlags = _.assign({}, statusFlags.value, {
+        const newStatusFlagsValue: BACNet.Interfaces.Type.StatusFlags = _.assign({}, statusFlags.value, {
             inAlarm: newInAlarm,
         });
-        const newStatusFlags = new BACnetTypes.BACnetStatusFlags(newStatusFlagsValue);
+        const newStatusFlags = new BACNet.Types.BACnetStatusFlags(newStatusFlagsValue);
 
         this.storage.setProperty({
-            id: BACnetPropertyId.statusFlags,
+            id: BACNet.Enums.PropertyId.statusFlags,
             payload: newStatusFlags,
         });
     }
@@ -93,24 +90,24 @@ export class StatusFlagsMiddleUnit extends MiddleUnit {
      * shSetOutOfService - handles the changes of 'Out of Service' property.
      * - Method changes the "outOfService" field in "statusFlags" BACnet property.
      *
-     * @param  {IBACnetObjectProperty} notif - notification object for outOfService
+     * @param  {UnitStorageProperty} notif - notification object for outOfService
      * @return {void}
      */
-    private shSetOutOfService (notif: IBACnetObjectProperty): void {
+    private shSetOutOfService (notif: UnitStorageProperty): void {
         this.storage.updateProperty(notif);
 
-        const statusFlagsProp = this.storage.getProperty(BACnetPropertyId.statusFlags);
-        const statusFlags = statusFlagsProp.payload as BACnetTypes.BACnetStatusFlags;
+        const statusFlagsProp = this.storage.getProperty(BACNet.Enums.PropertyId.statusFlags);
+        const statusFlags = statusFlagsProp.payload as BACNet.Types.BACnetStatusFlags;
 
-        const outOfService = notif.payload as BACnetTypes.BACnetBoolean;
+        const outOfService = notif.payload as BACNet.Types.BACnetBoolean;
 
-        const newStatusFlagsValue: IBACnetTypeStatusFlags = _.assign({}, statusFlags.value, {
+        const newStatusFlagsValue: BACNet.Interfaces.Type.StatusFlags = _.assign({}, statusFlags.value, {
             outOfService: !!outOfService.value,
         });
-        const newStatusFlags = new BACnetTypes.BACnetStatusFlags(newStatusFlagsValue);
+        const newStatusFlags = new BACNet.Types.BACnetStatusFlags(newStatusFlagsValue);
 
         this.storage.setProperty({
-            id: BACnetPropertyId.statusFlags,
+            id: BACNet.Enums.PropertyId.statusFlags,
             payload: newStatusFlags,
         });
     }
@@ -119,24 +116,24 @@ export class StatusFlagsMiddleUnit extends MiddleUnit {
      * shSetReliability - handles the changes of 'Reliability' property.
      * - Method changes the "fault" field in "statusFlags" BACnet property.
      *
-     * @param  {IBACnetObjectProperty} notif - notification object for reliability
+     * @param  {UnitStorageProperty} notif - notification object for reliability
      * @return {void}
      */
-    private shSetReliability (notif: IBACnetObjectProperty): void {
+    private shSetReliability (notif: UnitStorageProperty): void {
         this.storage.updateProperty(notif);
 
-        const statusFlagsProp = this.storage.getProperty(BACnetPropertyId.statusFlags);
-        const statusFlags = statusFlagsProp.payload as BACnetTypes.BACnetStatusFlags;
+        const statusFlagsProp = this.storage.getProperty(BACNet.Enums.PropertyId.statusFlags);
+        const statusFlags = statusFlagsProp.payload as BACNet.Types.BACnetStatusFlags;
 
-        const reliability = notif.payload as BACnetTypes.BACnetEnumerated;
+        const reliability = notif.payload as BACNet.Types.BACnetEnumerated;
 
-        const newStatusFlagsValue: IBACnetTypeStatusFlags = _.assign({}, statusFlags.value, {
+        const newStatusFlagsValue: BACNet.Interfaces.Type.StatusFlags = _.assign({}, statusFlags.value, {
             fault: !!reliability.value,
         });
-        const newStatusFlags = new BACnetTypes.BACnetStatusFlags(newStatusFlagsValue);
+        const newStatusFlags = new BACNet.Types.BACnetStatusFlags(newStatusFlagsValue);
 
         this.storage.setProperty({
-            id: BACnetPropertyId.statusFlags,
+            id: BACNet.Enums.PropertyId.statusFlags,
             payload: newStatusFlags,
         });
     }
@@ -146,24 +143,24 @@ export class StatusFlagsMiddleUnit extends MiddleUnit {
      * - Method calculates the "overridden" status flag state and will set it if
      * old value does not equal to the calculated "overridden" state.
      *
-     * @param  {IBACnetObjectProperty} notif - notification object for statusFlags
+     * @param  {UnitStorageProperty} notif - notification object for statusFlags
      * @return {void}
      */
-    private shSetStatusFlags (notif: IBACnetObjectProperty): void {
-        const statusFlagsProp = this.storage.getProperty(BACnetPropertyId.statusFlags);
-        const statusFlags = statusFlagsProp.payload as BACnetTypes.BACnetStatusFlags;
+    private shSetStatusFlags (notif: UnitStorageProperty): void {
+        const statusFlagsProp = this.storage.getProperty(BACNet.Enums.PropertyId.statusFlags);
+        const statusFlags = statusFlagsProp.payload as BACNet.Types.BACnetStatusFlags;
 
         const overridden = statusFlags.value.fault
             || statusFlags.value.outOfService
             || statusFlags.value.inAlarm;
 
-        const newStatusFlagsValue: IBACnetTypeStatusFlags = _.assign({}, statusFlags.value, {
+        const newStatusFlagsValue: BACNet.Interfaces.Type.StatusFlags = _.assign({}, statusFlags.value, {
             overridden: !!overridden,
         });
-        const newStatusFlags = new BACnetTypes.BACnetStatusFlags(newStatusFlagsValue);
+        const newStatusFlags = new BACNet.Types.BACnetStatusFlags(newStatusFlagsValue);
 
         this.storage.updateProperty({
-            id: BACnetPropertyId.statusFlags,
+            id: BACNet.Enums.PropertyId.statusFlags,
             payload: newStatusFlags,
         });
     }
@@ -172,10 +169,10 @@ export class StatusFlagsMiddleUnit extends MiddleUnit {
      * Handles the changes of 'Status Flags' property.
      * - Method emits `cov` event.
      *
-     * @param  {IBACnetObjectProperty} notif - notification object for statusFlags
+     * @param  {UnitStorageProperty} notif - notification object for statusFlags
      * @return {void}
      */
-    private shUpdateStatusFlags (notif: IBACnetObjectProperty): void {
+    private shUpdateStatusFlags (notif: UnitStorageProperty): void {
         this.storage.dispatch();
     }
 }

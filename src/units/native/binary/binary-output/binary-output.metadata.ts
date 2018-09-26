@@ -1,32 +1,25 @@
 import {
-    BACnetPropertyId,
-    BACnetObjectType,
-    BACnetBinaryPV,
-    BACnetPolarity,
-} from '../../../../core/bacnet/enums';
+    UnitStorageProperty,
+} from '../../../../core/interfaces';
 
-import {
-    IBACnetObjectProperty,
-} from '../../../../core/bacnet/interfaces';
+import * as BACNet from 'tid-bacnet-logic';
 
-import * as BACnetTypes from '../../../../core/bacnet/types';
-
-export const BinaryOutputMetadata: IBACnetObjectProperty[] = [
+export const BinaryOutputMetadata: UnitStorageProperty[] = [
     {
-        id: BACnetPropertyId.objectType,
-        payload: new BACnetTypes.BACnetEnumerated(BACnetObjectType.BinaryOutput),
+        id: BACNet.Enums.PropertyId.objectType,
+        payload: new BACNet.Types.BACnetEnumerated(BACNet.Enums.ObjectType.BinaryOutput),
     },
 
     {
-        id: BACnetPropertyId.polarity,
-        payload: new BACnetTypes.BACnetEnumerated(BACnetPolarity.Normal),
+        id: BACNet.Enums.PropertyId.polarity,
+        payload: new BACNet.Types.BACnetEnumerated(BACNet.Enums.Polarity.Normal),
     },
     {
-        id: BACnetPropertyId.presentValue,
-        payload: new BACnetTypes.BACnetEnumerated(BACnetBinaryPV.Active),
+        id: BACNet.Enums.PropertyId.presentValue,
+        payload: new BACNet.Types.BACnetEnumerated(BACNet.Enums.BinaryPV.Active),
     },
     {
-        id: BACnetPropertyId.relinquishDefault,
-        payload: new BACnetTypes.BACnetEnumerated(BACnetBinaryPV.Active),
+        id: BACNet.Enums.PropertyId.relinquishDefault,
+        payload: new BACNet.Types.BACnetEnumerated(BACNet.Enums.BinaryPV.Active),
     },
 ];

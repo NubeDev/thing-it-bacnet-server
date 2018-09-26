@@ -4,17 +4,13 @@ import { Observable } from 'rxjs';
 
 import { IEDEUnit, IStateTextsUnit } from '../core/interfaces';
 
-import { IBACnetObjectProperty } from '../core/bacnet/interfaces';
+import { UnitStorageProperty } from '../core/interfaces';
 
 import { logger } from '../core/utils';
 
 import {
-    BACnetObjectType,
-    BACnetPropertyId,
     BACnetUnitAbbr,
-} from '../core/bacnet/enums';
-
-import { BACnetObjectId } from '../core/bacnet/types';
+} from '../core/enums';
 
 import { ApiError } from '../core/errors';
 
@@ -23,6 +19,7 @@ import { NativeUnit } from '../units/native/native.unit';
 
 import { CustomModule } from '../units/custom/custom.module';
 import { CustomUnit } from '../units/custom/custom.unit';
+import * as BACNet from 'tid-bacnet-logic';
 
 type NativeUnitToken = string;
 type CustomUnitToken = string;
@@ -59,7 +56,7 @@ export class UnitStorageManager {
             customUnit.startSimulation();
         });
 
-        const deviceToken = this.getUnitToken(BACnetObjectType.Device, edeUnits[0].deviceInst);
+        const deviceToken = this.getUnitToken(BACNet.Enums.ObjectType.Device, edeUnits[0].deviceInst);
         const device = this.nativeUnits.get(deviceToken);
         this.device = device;
     }
@@ -73,7 +70,7 @@ export class UnitStorageManager {
      */
     private initNativeUnit (edeUnit: IEDEUnit, stateTextUnits?: IStateTextsUnit[]): NativeUnit {
         // Get name of the native unit
-        let unitType = BACnetObjectType[edeUnit.objType];
+        let unitType = BACNet.Enums.ObjectType[edeUnit.objType];
 
         if (!NativeModule.has(unitType)) {
             logger.warn(`${this.className} - initNativeUnit: "${unitType}" native unit is not exist,`,
@@ -186,7 +183,7 @@ export class UnitStorageManager {
      * @param  {number} objType - object type
      * @return {NativeUnit}
      */
-    public getUnit (objId: BACnetObjectId): NativeUnit {
+    public getUnit (objId: BACNet.Types.BACnetObjectId): NativeUnit {
         const objIdValue = objId.getValue();
         const unitToken = this.getUnitToken(objIdValue.type, objIdValue.instance);
         return this.nativeUnits.get(unitToken);
@@ -196,46 +193,56 @@ export class UnitStorageManager {
      * setUnitProperty - sets the value of the object property by property ID.
      *
      * @param  {IBACnetTypeObjectId} objId - object identifier
-     * @param  {BACnetPropertyId} propId - property ID
+     * @param  {BACNet.Enums.PropertyId} propId - property ID
      * @param  {} value - property value
      * @return {void}
      */
-    public setUnitProperty (objId: BACnetObjectId,
-            prop: IBACnetObjectProperty): void {
+    public setUnitProperty (objId: BACNet.Types.BACnetObjectId,
+            prop: UnitStorageProperty): void {
         const unit = this.getUnit(objId);
         if (!unit) {
             return;
         }
-        unit.storage.setProperty(prop, false);
+        unit.storage.setProperty(prop);
     }
 
     /**
      * getUnitProperty - return the clone value of the object property by property ID.
      *
      * @param  {IBACnetTypeObjectId} objId - object identifier
-     * @param  {BACnetPropertyId} propId - property ID
-     * @return {IBACnetObjectProperty}
+     * @param  {BACNet.Enums.PropertyId} propId - property ID
+     * @return {UnitStorageProperty}
      */
-    public getUnitProperty (objId: BACnetObjectId,
-            propId: BACnetPropertyId): IBACnetObjectProperty {
+    public getUnitProperty (objId: BACNet.Types.BACnetObjectId,
+            propId: BACNet.Enums.PropertyId): BACNet.Interfaces.PropertyValue {
         const unit = this.getUnit(objId);
         if (!unit) {
             return null;
         }
-        return unit.storage.getProperty(propId);
+        const prop = unit.storage.getProperty(propId);
+        return this.storageToServicePropertyAdapter(prop);
     }
 
     /**
      * subscribeToUnit - subscribes to the changes for all object properties.
      *
      * @param  {IBACnetTypeObjectId} objId - object identifier
-     * @return {Observable<IBACnetObjectProperty>}
+     * @return {Observable<UnitStorageProperty>}
      */
-    public subscribeToUnit (objId: BACnetObjectId): Observable<IBACnetObjectProperty[]> {
+    public subscribeToUnit (objId: BACNet.Types.BACnetObjectId): Observable<BACNet.Interfaces.PropertyValue[]> {
         const unit = this.getUnit(objId);
         if (!unit) {
             return null;
         }
-        return unit.subscribe();
+        return unit.subscribe().map((props) => {
+            return props.map(prop => this.storageToServicePropertyAdapter(prop))
+        });
+    }
+
+    public storageToServicePropertyAdapter(prop: UnitStorageProperty): BACNet.Interfaces.PropertyValue {
+        return _.assign({}, {
+            id: new BACNet.Types.BACnetEnumerated(prop.id),
+            values: _.isArray(prop.payload) ? prop.payload : [ prop.payload ]
+        })
     }
 }

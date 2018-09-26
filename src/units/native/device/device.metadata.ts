@@ -1,34 +1,29 @@
-import {
-    BACnetPropertyId,
-    BACnetObjectType,
-    BACnetPropTypes,
-} from '../../../core/bacnet/enums';
 
 import {
-    IBACnetObjectProperty,
-} from '../../../core/bacnet/interfaces';
+    UnitStorageProperty,
+} from '../../../core/interfaces';
 
-import * as BACnetTypes from '../../../core/bacnet/types';
+import * as BACNet from 'tid-bacnet-logic';
 
-export const DeviceMetadata: IBACnetObjectProperty[] = [
+export const DeviceMetadata: UnitStorageProperty[] = [
     {
-        id: BACnetPropertyId.objectType,
-        payload: new BACnetTypes.BACnetEnumerated(BACnetObjectType.Device),
+        id: BACNet.Enums.PropertyId.objectType,
+        payload: new BACNet.Types.BACnetEnumerated(BACNet.Enums.ObjectType.Device),
     },
     {
-        id: BACnetPropertyId.vendorIdentifier,
-        payload: new BACnetTypes.BACnetCharacterString('[thing-it] Test Device Name'),
+        id: BACNet.Enums.PropertyId.vendorIdentifier,
+        payload: new BACNet.Types.BACnetCharacterString('[thing-it] Test Device Name'),
     },
     {
-        id: BACnetPropertyId.vendorName,
-        payload: new BACnetTypes.BACnetCharacterString('THING TECHNOLOGIES GmbH Test'),
+        id: BACNet.Enums.PropertyId.vendorName,
+        payload: new BACNet.Types.BACnetCharacterString('THING TECHNOLOGIES GmbH Test'),
     },
     {
-        id: BACnetPropertyId.modelName,
-        payload: new BACnetTypes.BACnetCharacterString('[thing-it] BACnet Test Server'),
+        id: BACNet.Enums.PropertyId.modelName,
+        payload: new BACNet.Types.BACnetCharacterString('[thing-it] BACnet Test Server'),
     },
     {
-        id: BACnetPropertyId.applicationSoftwareVersion,
-        payload: new BACnetTypes.BACnetCharacterString('V1.0.0'),
+        id: BACNet.Enums.PropertyId.applicationSoftwareVersion,
+        payload: new BACNet.Types.BACnetCharacterString('V1.0.0'),
     },
 ];

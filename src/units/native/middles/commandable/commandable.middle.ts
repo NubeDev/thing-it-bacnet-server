@@ -1,13 +1,12 @@
 import * as _ from 'lodash';
 
 import {
-    BACnetPropertyId,
     BACnetUnitDataFlow,
-} from '../../../../core/bacnet/enums';
+} from '../../../../core/enums';
 
 import {
-    IBACnetObjectProperty,
-} from '../../../../core/bacnet/interfaces';
+    UnitStorageProperty,
+} from '../../../../core/interfaces';
 
 import { IEDEUnit } from '../../../../core/interfaces';
 
@@ -15,8 +14,7 @@ import { CommandableMiddleMetadata } from './commandable.metadata';
 
 import { MiddleUnit } from '../middle.unit';
 
-import * as BACnetTypes from '../../../../core/bacnet/types';
-import { TyperUtil } from '../../../../core/bacnet/utils';
+import * as BACNet from 'tid-bacnet-logic';
 
 export class CommandableMiddleUnit extends MiddleUnit {
     public readonly className: string = 'StatusFlagsMiddleUnit';
@@ -36,15 +34,15 @@ export class CommandableMiddleUnit extends MiddleUnit {
     /**
      * sjHandler - handles the changes of properties.
      *
-     * @param  {IBACnetObjectProperty} notif - notification object
+     * @param  {UnitStorageProperty} notif - notification object
      * @return {void}
      */
     public sjHandler (): void {
-        this.storage.setFlowHandler(BACnetUnitDataFlow.Set, BACnetPropertyId.presentValue, (notif) => {
+        this.storage.setFlowHandler(BACnetUnitDataFlow.Set, BACNet.Enums.PropertyId.presentValue, (notif) => {
             this.shSetPresentValue(notif);
         });
 
-        this.storage.setFlowHandler(BACnetUnitDataFlow.Set, BACnetPropertyId.priorityArray, (notif) => {
+        this.storage.setFlowHandler(BACnetUnitDataFlow.Set, BACNet.Enums.PropertyId.priorityArray, (notif) => {
             this.shSetPriorityArray(notif);
         });
     }
@@ -53,21 +51,21 @@ export class CommandableMiddleUnit extends MiddleUnit {
      * shSetPresentValue - handles the changes of 'Present Value' property.
      * - Method sets new commandable value in "priorityArray" BACnet property by priority.
      *
-     * @param  {IBACnetObjectProperty} notif - notification object for presentValue
+     * @param  {UnitStorageProperty} notif - notification object for presentValue
      * @return {void}
      */
-    private shSetPresentValue (notif: IBACnetObjectProperty): void {
-        const priorityArrayProp = this.storage.getProperty(BACnetPropertyId.priorityArray);
-        const priorityArray = priorityArrayProp.payload as BACnetTypes.BACnetTypeBase[];
+    private shSetPresentValue (notif: UnitStorageProperty): void {
+        const priorityArrayProp = this.storage.getProperty(BACNet.Enums.PropertyId.priorityArray);
+        const priorityArray = priorityArrayProp.payload as BACNet.Types.BACnetTypeBase[];
 
-        const newPriorityArrayEl = notif.payload as BACnetTypes.BACnetTypeBase;
+        const newPriorityArrayEl = notif.payload as BACNet.Types.BACnetTypeBase;
         const priority = _.isNumber(notif.priority) ? notif.priority - 1 : 15;
 
         const newPriorityArray = [ ...priorityArray ];
         newPriorityArray[priority] = newPriorityArrayEl;
 
         this.storage.setProperty({
-            id: BACnetPropertyId.priorityArray,
+            id: BACNet.Enums.PropertyId.priorityArray,
             payload: newPriorityArray,
         });
     }
@@ -77,15 +75,15 @@ export class CommandableMiddleUnit extends MiddleUnit {
      * - Method sets the new commandable value of "presentValue" BACnet property.
      * Commandable value will be got from "getCommandablePropertyValue" method.
      *
-     * @param  {IBACnetObjectProperty} notif - notification object for priorityArray
+     * @param  {UnitStorageProperty} notif - notification object for priorityArray
      * @return {void}
      */
-    private shSetPriorityArray (notif: IBACnetObjectProperty): void {
+    private shSetPriorityArray (notif: UnitStorageProperty): void {
         this.storage.updateProperty(notif);
-        const newPresentValue = this.getCommandablePropertyValue() as BACnetTypes.BACnetTypeBase;
+        const newPresentValue = this.getCommandablePropertyValue() as BACNet.Types.BACnetTypeBase;
 
         this.storage.updateProperty({
-            id: BACnetPropertyId.presentValue,
+            id: BACNet.Enums.PropertyId.presentValue,
             payload: newPresentValue,
         });
     }
@@ -95,30 +93,30 @@ export class CommandableMiddleUnit extends MiddleUnit {
      *
      * @return {IBACnetType}
      */
-    private getCommandablePropertyValue (): BACnetTypes.BACnetTypeBase {
-        const priorityArrayProp = this.storage.getProperty(BACnetPropertyId.priorityArray);
-        const priorityArray = priorityArrayProp.payload as BACnetTypes.BACnetTypeBase[];
+    private getCommandablePropertyValue (): BACNet.Types.BACnetTypeBase {
+        const priorityArrayProp = this.storage.getProperty(BACNet.Enums.PropertyId.priorityArray);
+        const priorityArray = priorityArrayProp.payload as BACNet.Types.BACnetTypeBase[];
 
-        let priorityArrayValue: BACnetTypes.BACnetTypeBase, i: number;
+        let priorityArrayValue: BACNet.Types.BACnetTypeBase, i: number;
         for (i = 0; i < priorityArray.length; i++) {
-            if (TyperUtil.isNil(priorityArray[i])) {
+            if (BACNet.Utils.Typer.isNil(priorityArray[i])) {
                 continue;
             }
             priorityArrayValue = priorityArray[i];
             break;
         }
 
-        const priorityIndex: BACnetTypes.BACnetTypeBase = i === priorityArray.length
-            ? new BACnetTypes.BACnetNull()
-            : new BACnetTypes.BACnetUnsignedInteger(i);
-        this.storage.setProperty({
-            id: BACnetPropertyId.currentCommandPriority,
+        const priorityIndex: BACNet.Types.BACnetTypeBase = i === priorityArray.length
+            ? new BACNet.Types.BACnetNull()
+            : new BACNet.Types.BACnetUnsignedInteger(i);
+        this.storage.updateProperty({
+            id: BACNet.Enums.PropertyId.currentCommandPriority,
             payload: priorityIndex,
         });
 
         if (_.isNil(priorityArrayValue)) {
-            const relinquishDefaultProp = this.storage.getProperty(BACnetPropertyId.relinquishDefault);
-            const relinquishDefault = relinquishDefaultProp.payload as BACnetTypes.BACnetTypeBase;
+            const relinquishDefaultProp = this.storage.getProperty(BACNet.Enums.PropertyId.relinquishDefault);
+            const relinquishDefault = relinquishDefaultProp.payload as BACNet.Types.BACnetTypeBase;
             priorityArrayValue = relinquishDefault;
         }
         return _.cloneDeep(priorityArrayValue);

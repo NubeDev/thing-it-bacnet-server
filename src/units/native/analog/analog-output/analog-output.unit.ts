@@ -1,17 +1,16 @@
 import * as _ from 'lodash';
 
 import {
-    BACnetPropertyId,
     BACnetUnitDataFlow,
-} from '../../../../core/bacnet/enums';
+} from '../../../../core/enums';
 
 import {
     ApiError,
 } from '../../../../core/errors';
 
 import {
-    IBACnetObjectProperty,
-} from '../../../../core/bacnet/interfaces';
+    UnitStorageProperty,
+} from '../../../../core/interfaces';
 
 import { IEDEUnit } from '../../../../core/interfaces';
 
@@ -19,6 +18,8 @@ import { AnalogOutputMetadata } from './analog-output.metadata';
 import { CommandableMiddleUnit } from '../../middles/commandable/commandable.middle';
 
 import { AnalogUnit } from '../analog.unit';
+
+import * as BACNet from 'tid-bacnet-logic';
 
 export class AnalogOutputUnit extends AnalogUnit {
     public readonly className: string = 'AnalogOutputUnit';
@@ -29,19 +30,31 @@ export class AnalogOutputUnit extends AnalogUnit {
         CommandableMiddleUnit.createAndBind(this.storage);
         this.storage.addUnitStorage(AnalogOutputMetadata);
 
+        if (!_.isNil(edeUnit.defPresentValue)) {
+            this.storage.updateProperty({
+                id: BACNet.Enums.PropertyId.relinquishDefault,
+                payload: new BACNet.Types.BACnetReal(edeUnit.defPresentValue),
+            });
+
+            this.storage.updateProperty({
+                id: BACNet.Enums.PropertyId.presentValue,
+                payload: new BACNet.Types.BACnetReal(edeUnit.defPresentValue),
+            });
+        }
+
         this.storage.dispatch();
     }
 
     /**
      * sjHandler - handles the changes of properties.
      *
-     * @param  {IBACnetObjectProperty} notif - notification object
+     * @param  {UnitStorageProperty} notif - notification object
      * @return {void}
      */
     public sjHandler (): void {
         super.sjHandler();
 
-        this.storage.setFlowHandler(BACnetUnitDataFlow.Update, BACnetPropertyId.presentValue, (notif) => {
+        this.storage.setFlowHandler(BACnetUnitDataFlow.Update, BACNet.Enums.PropertyId.presentValue, (notif) => {
             this.shUpdatePresentValue(notif);
         });
     }
@@ -50,10 +63,10 @@ export class AnalogOutputUnit extends AnalogUnit {
      * shUpdatePresentValue - handles the "update" flow event of 'Present Value' property.
      * - Method emits the "CoV" event.
      *
-     * @param  {IBACnetObjectProperty} notif - notification object for priorityArray
+     * @param  {UnitStorageProperty} notif - notification object for priorityArray
      * @return {void}
      */
-    private shUpdatePresentValue (notif: IBACnetObjectProperty): void {
+    private shUpdatePresentValue (notif: UnitStorageProperty): void {
         this.storage.dispatch();
     }
 }
