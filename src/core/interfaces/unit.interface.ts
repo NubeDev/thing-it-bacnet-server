@@ -35,15 +35,36 @@ export interface IEDEUnit {
 
 export interface ICustomMetadata {
     alias: string|string[];
-    config: ICustomFunctionConfig|ITemperatureFunctionConfig|ISetpointFunctionConfig|IModeFunctionConfig;
+    config: ICustomFunctionConfigDefault|ITemperatureFunctionConfig|ISetpointFunctionConfig|IModeFunctionConfig;
 }
 
 export interface ICustomFunction <T> {
     unit: T;
-    config: ICustomFunctionConfig;
+    config: ICustomFunctionConfigDefault|ISetpointFunctionConfig|IModeFunctionConfig|ITemperatureFunctionConfig;
 }
 
 export interface ICustomFunctionConfig {
+    // Min value
+    min?: number;
+    // Max value
+    max?: number;
+    // Frequency
+    freq?: number;
+    staeteText?: string[];
+}
+
+export interface ICustomMetadataDefault {
+    alias: string|string[];
+    config: ICustomFunctionConfigDefault;
+}
+
+export interface ICustomFunctionDefault <T> {
+    unit: T;
+    config: ICustomFunctionConfigDefault;
+}
+
+
+export interface ICustomFunctionConfigDefault {
     // Min value
     min: number;
     // Max value
@@ -57,17 +78,34 @@ export interface IThermostatMetadata {
     config: ISetpointFunctionConfig|ITemperatureFunctionConfig|IModeFunctionConfig;
 }
 
+export type IThermostatFunction<T> = ISetpointFunction<T>|ITemperatureFunction<T>|IModeFunction<T>;
+
 export interface ISetpointFunctionConfig {
     min: number;
     max: number;
+}
+
+export interface ISetpointFunction <T> {
+    unit: T;
+    config: ISetpointFunctionConfig;
 }
 
 export interface ITemperatureFunctionConfig extends ICustomFunctionConfig {
 
 }
 
+export interface ITemperatureFunction <T> {
+    unit: T;
+    config: ITemperatureFunctionConfig;
+}
+
 export interface IModeFunctionConfig {
     stateText: string[];
+}
+
+export interface IModeFunction <T> {
+    unit: T;
+    config: IModeFunctionConfig;
 }
 
 export interface UnitStorageProperty {

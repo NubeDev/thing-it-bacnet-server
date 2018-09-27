@@ -71,21 +71,10 @@ export class CustomUnit {
      * getConfigWithEDE - concatenates the default unit configuration with EDE
      * configuration.
      *
-     * @param  {ICustomFunctionConfig} unitConfig - default unit configuration
-     * @param  {IEDEUnit} edeUnit - EDE configuration
-     * @return {ICustomFunctionConfig} - unit configuration
+     * @return {void} - unit configuration
      */
-    public getConfigWithEDE (unitConfig: ICustomFunctionConfig, edeUnit: IEDEUnit): ICustomFunctionConfig {
-        let max: number = _.isNumber(edeUnit.custUnitMax) && _.isFinite(edeUnit.custUnitMax)
-            ? edeUnit.custUnitMax : unitConfig.max;
+    public getConfigWithEDE (unitConfig, edeUnit): void {
 
-        let min: number = _.isNumber(edeUnit.custUnitMin) && _.isFinite(edeUnit.custUnitMin)
-            ? edeUnit.custUnitMin : unitConfig.min;
-
-        let freq: number = _.isNumber(edeUnit.custUnitFreq) && _.isFinite(edeUnit.custUnitFreq)
-            ? edeUnit.custUnitFreq : unitConfig.freq;
-
-        return { min, max, freq };
     }
 
     /**

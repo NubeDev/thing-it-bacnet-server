@@ -6,8 +6,11 @@ import {
 } from '../../../core/enums';
 
 import {
-    ICustomFunction,
+    IEDEUnit,
+    ICustomFunctionDefault,
+    ICustomFunctionConfigDefault,
 } from '../../../core/interfaces';
+import { AliasMap } from '../../../core/alias/alias.map';
 
 import { FunctionMetadata } from './function.metadata';
 import { CustomUnit } from '../custom.unit';
@@ -19,6 +22,7 @@ import * as BACNet from 'tid-bacnet-logic';
 
 export class FunctionUnit extends CustomUnit {
     public readonly className: string = 'FunctionUnit';
+    public storage: AliasMap<ICustomFunctionDefault<NativeUnit>>;
 
     /**
      * initUnit - inits the custom unit.
@@ -54,7 +58,7 @@ export class FunctionUnit extends CustomUnit {
      * @param  {ICustomFunction<NativeUnit>} unitFn - option of the unit function
      * @return {void}
      */
-    private uniformDistribution (unitFn: ICustomFunction<NativeUnit>): void {
+    private uniformDistribution (unitFn: ICustomFunctionDefault<NativeUnit>): void {
         const config = unitFn.config;
         const uniformPRNG = new PRNG.UniformPRNG(config);
 
@@ -67,7 +71,7 @@ export class FunctionUnit extends CustomUnit {
      * @param  {ICustomFunction<NativeUnit>} unitFn - option of the unit function
      * @return {void}
      */
-    private normalDistribution (unitFn: ICustomFunction<NativeUnit>): void {
+    private normalDistribution (unitFn: ICustomFunctionDefault<NativeUnit>): void {
         const config = unitFn.config;
         const normalPRNG = new PRNG.NormalPRNG(config);
 
@@ -108,7 +112,7 @@ export class FunctionUnit extends CustomUnit {
      * @param  {NativeUnit} unit - instance of a native unit
      * @return {void}
      */
-    private simulateDistribution (unitFn: ICustomFunction<NativeUnit>, prng: PRNG.PRNGBase): void {
+    private simulateDistribution (unitFn: ICustomFunctionDefault<NativeUnit>, prng: PRNG.PRNGBase): void {
         const unit = unitFn.unit;
         const config = unitFn.config;
 
@@ -125,5 +129,26 @@ export class FunctionUnit extends CustomUnit {
                     payload: payload,
                 });
             });
+    }
+
+    /**
+     * getConfigWithEDE - concatenates the default unit configuration with EDE
+     * configuration.
+     *
+     * @param  {ICustomFunctionConfig} unitConfig - default unit configuration
+     * @param  {IEDEUnit} edeUnit - EDE configuration
+     * @return {ICustomFunctionConfig} - unit configuration
+     */
+    public getConfigWithEDE (unitConfig: ICustomFunctionConfigDefault, edeUnit: IEDEUnit): ICustomFunctionConfigDefault {
+        let max: number = _.isNumber(edeUnit.custUnitMax) && _.isFinite(edeUnit.custUnitMax)
+            ? edeUnit.custUnitMax : unitConfig.max;
+
+        let min: number = _.isNumber(edeUnit.custUnitMin) && _.isFinite(edeUnit.custUnitMin)
+            ? edeUnit.custUnitMin : unitConfig.min;
+
+        let freq: number = _.isNumber(edeUnit.custUnitFreq) && _.isFinite(edeUnit.custUnitFreq)
+            ? edeUnit.custUnitFreq : unitConfig.freq;
+
+        return { min, max, freq };
     }
 }
