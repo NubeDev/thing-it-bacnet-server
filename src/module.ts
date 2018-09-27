@@ -14,3 +14,5 @@ export const appConfig: IAppConfig = {
         edeFilePath: '',
     }
 }
+
+export const statePostfix: string[] = [ 'states', 'state-texts', 'stateTexts', 'States', 'State-Texts', 'StateTexts' ];

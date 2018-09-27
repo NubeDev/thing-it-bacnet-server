@@ -58,3 +58,14 @@ export interface UnitStorageProperty {
     writable?: boolean;
     priority?: number;
 }
+
+/**
+ * State texts
+ */
+
+export interface IStateTextsUnit {
+    referenceNumber: number;
+    inactiveText?: string;
+    activeText?: string;
+    stateTextsArray: string[];
+}
