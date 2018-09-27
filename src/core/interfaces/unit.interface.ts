@@ -35,7 +35,7 @@ export interface IEDEUnit {
 
 export interface ICustomMetadata {
     alias: string|string[];
-    config: ICustomFunctionConfig;
+    config: ICustomFunctionConfig|ITemperatureFunctionConfig|ISetpointFunctionConfig|IModeFunctionConfig;
 }
 
 export interface ICustomFunction <T> {
@@ -54,19 +54,19 @@ export interface ICustomFunctionConfig {
 
 export interface IThermostatMetadata {
     alias: string|string[];
-    config: ISetpointConfig|ITemperatureConfig|IModeConfig;
+    config: ISetpointFunctionConfig|ITemperatureFunctionConfig|IModeFunctionConfig;
 }
 
-export interface ISetpointConfig {
+export interface ISetpointFunctionConfig {
     min: number;
     max: number;
 }
 
-export interface ITemperatureConfig extends ICustomFunctionConfig {
+export interface ITemperatureFunctionConfig extends ICustomFunctionConfig {
 
 }
 
-export interface IModeConfig {
+export interface IModeFunctionConfig {
     stateText: string[];
 }
 
