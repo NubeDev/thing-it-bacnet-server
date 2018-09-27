@@ -52,6 +52,24 @@ export interface ICustomFunctionConfig {
     freq: number;
 }
 
+export interface IThermostatMetadata {
+    alias: string|string[];
+    config: ISetpointConfig|ITemperatureConfig|IModeConfig;
+}
+
+export interface ISetpointConfig {
+    min: number;
+    max: number;
+}
+
+export interface ITemperatureConfig extends ICustomFunctionConfig {
+
+}
+
+export interface IModeConfig {
+    stateText: string[];
+}
+
 export interface UnitStorageProperty {
     id: BACNet.Enums.PropertyId;
     payload: BACNet.Types.BACnetTypeBase | BACNet.Types.BACnetTypeBase[];
