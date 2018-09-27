@@ -14,7 +14,8 @@ import { IO } from 'tid-bacnet-logic';
 
 import {
     ConverterUtil,
-    AsyncUtil
+    AsyncUtil,
+    logger
 } from '../utils';
 
 import { statePostfix } from '../../module';
@@ -32,7 +33,7 @@ export class StateTextReader {
             }))
         })
         .catch((err) => {
-            console.warn('State texts sheet is not provided, state-texts references will be ignored')
+            logger.warn('State texts sheet is not provided, state-texts references will be ignored')
         })
     }
 
