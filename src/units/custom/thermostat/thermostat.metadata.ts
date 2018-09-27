@@ -1,17 +1,17 @@
-
+import { BACnetThermostatUnitFunctions } from '../../../core/enums';
 import { IThermostatMetadata } from '../../../core/interfaces';
 
 export const ThermostatMetadata: IThermostatMetadata[] = [
     {
-        alias: [ 'setpoint', 'set' ],
+        alias: [ BACnetThermostatUnitFunctions.Setpoint ],
         config: { min: 18, max: 26 },
     },
     {
-        alias: [ 'temperature', 'temp' ],
+        alias: [ BACnetThermostatUnitFunctions.Temperature],
         config: { min: 0, max: 40, freq: 1000 },
     },
     {
-        alias: [ 'mode' ],
+        alias: [ BACnetThermostatUnitFunctions.Mode ],
         config: { stateText: [ 'HEAT', 'COOL'] },
     }
 ];
