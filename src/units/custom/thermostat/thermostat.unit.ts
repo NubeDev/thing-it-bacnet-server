@@ -66,6 +66,19 @@ export class FunctionUnit extends CustomUnit {
     }
 
     /**
+     * genPayloadOfPresentValue - generates payload for "Present Value" BACnet property.
+     * Method uses PRNG from arguments to get values for "Present Value" property.
+     *
+     * @param  {NativeUnit} unit - instance of a native unit
+     * @return {void}
+     */
+    private genStartPresentValue (unitFn: ITemperatureFunction<AnalogValueUnit>|ISetpointFunction<AnalogValueUnit>): BACNet.Types.BACnetTypeBase {
+        const config = unitFn.config;
+        const value = config.min + (config.max - config.min) / 2
+        return new BACNet.Types.BACnetReal(value);
+    }
+
+    /**
      * simulateDistribution - gets new payload for "Present Value" BACnet property,
      * creates the periodic timer to update the payload of the "Present Value",
      * sets new payload in "Present Value" property.
@@ -76,6 +89,11 @@ export class FunctionUnit extends CustomUnit {
     private simulateTemperature (unitFn: ITemperatureFunction<AnalogValueUnit>): void {
         const unit = unitFn.unit;
         const config = unitFn.config;
+        const startPayload = this.genStartPresentValue(unitFn);
+        unit.storage.setProperty({
+            id: BACNet.Enums.PropertyId.presentValue,
+            payload: startPayload,
+        });
 
         Observable.timer(0, config.freq)
             .subscribe(() => {
@@ -95,6 +113,11 @@ export class FunctionUnit extends CustomUnit {
     private simulateSetpoint(unitFn: ISetpointFunction<AnalogValueUnit>): void {
         const unit = unitFn.unit;
         const config = unitFn.config;
+        const startPayload = this.genStartPresentValue(unitFn);
+        unit.storage.setProperty({
+            id: BACNet.Enums.PropertyId.presentValue,
+            payload: startPayload,
+        });
         throw new Error ('Not implemented yet');
     }
 
