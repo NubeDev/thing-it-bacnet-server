@@ -20,6 +20,7 @@ import { AliasMap } from '../../../core/alias/alias.map';
 
 import * as BACNet from 'tid-bacnet-logic';
 import { BACnetThermostatUnitFunctions } from '../../../core/enums';
+import { AnalogValueUnit } from '../../native/analog/analog-value/analog-value.unit';
 
 export class FunctionUnit extends CustomUnit {
     public readonly className: string = 'FunctionUnit';
@@ -42,27 +43,25 @@ export class FunctionUnit extends CustomUnit {
      * @return {void}
      */
     public startSimulation (): void {
-        const setpointFn = this.storage.get(BACnetThermostatUnitFunctions.Setpoint) as ISetpointFunction<NativeUnit>;
+        const setpointFn = this.storage.get(BACnetThermostatUnitFunctions.Setpoint) as ISetpointFunction<AnalogValueUnit>;
         if (setpointFn.unit) {
             this.simulateSetpoint(setpointFn)
         }
 
-        const temperatureFn = this.storage.get(BACnetThermostatUnitFunctions.Temperature) as ITemperatureFunction<NativeUnit>;
+        const temperatureFn = this.storage.get(BACnetThermostatUnitFunctions.Temperature) as ITemperatureFunction<AnalogValueUnit>;
         if (setpointFn.unit) {
             this.simulateTemperature(temperatureFn)
         }
     }
 
-
     /**
      * genPayloadOfPresentValue - generates payload for "Present Value" BACnet property.
      * Method uses PRNG from arguments to get values for "Present Value" property.
      *
-     * @param  {PRNG.PRNGBase} prng - instance of a PRNG
      * @param  {NativeUnit} unit - instance of a native unit
      * @return {void}
      */
-    private genPayloadOfPresentValue (unit: NativeUnit): BACNet.Types.BACnetTypeBase {
+    private genPayloadOfPresentValue (unit: AnalogValueUnit): BACNet.Types.BACnetTypeBase {
         throw new Error ('Not implemented yet');
     }
 
@@ -74,7 +73,7 @@ export class FunctionUnit extends CustomUnit {
      * @param  {NativeUnit} unit - instance of a native unit
      * @return {void}
      */
-    private simulateTemperature (unitFn: ITemperatureFunction<NativeUnit>): void {
+    private simulateTemperature (unitFn: ITemperatureFunction<AnalogValueUnit>): void {
         const unit = unitFn.unit;
         const config = unitFn.config;
 
@@ -93,7 +92,7 @@ export class FunctionUnit extends CustomUnit {
             });
     }
 
-    private simulateSetpoint(unitFn: ISetpointFunction<NativeUnit>): void {
+    private simulateSetpoint(unitFn: ISetpointFunction<AnalogValueUnit>): void {
         const unit = unitFn.unit;
         const config = unitFn.config;
         throw new Error ('Not implemented yet');
