@@ -106,9 +106,9 @@ export class FunctionUnit extends CustomUnit {
         });
         this.sTempFlow = new BehaviorSubject<number>(tempStartPayload.value);
 
+        let temperature = this.getUnitValue(tempUnit);
         Observable.timer(0, tempConfig.freq)
             .subscribe(() => {
-                let temperature = this.getUnitValue(tempUnit);
                 const setpointUnit = this.storage.get(BACnetThermostatUnitFunctions.Setpoint).unit as AnalogValueUnit;
                 const setpoint = this.getUnitValue(setpointUnit);
                 if (_.isNil(setpoint)) {
