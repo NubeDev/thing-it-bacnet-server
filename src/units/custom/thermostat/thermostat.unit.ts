@@ -1,5 +1,5 @@
 import * as _ from 'lodash';
-import { Observable } from 'rxjs';
+import { Observable, BehaviorSubject } from 'rxjs';
 
 import {
     BACnetUnitFamily,
@@ -11,20 +11,22 @@ import {
     ITemperatureFunction,
     IThermostatFunction,
     ISetpointFunction,
+    IModeFunction,
 } from '../../../core/interfaces';
 
 import { ThermostatMetadata } from './thermostat.metadata';
 import { CustomUnit } from '../custom.unit';
-import { NativeUnit } from '../../native/native.unit';
 import { AliasMap } from '../../../core/alias/alias.map';
 
 import * as BACNet from 'tid-bacnet-logic';
 import { BACnetThermostatUnitFunctions } from '../../../core/enums';
 import { AnalogValueUnit } from '../../native/analog/analog-value/analog-value.unit';
+import { MultiStateValueUnit } from '../../native/multi-state/multi-state-value/multi-state-value.unit';
 
 export class FunctionUnit extends CustomUnit {
     public readonly className: string = 'FunctionUnit';
-    public storage: AliasMap<IThermostatFunction<NativeUnit>>;
+    public storage: AliasMap<IThermostatFunction<AnalogValueUnit|MultiStateValueUnit>>;
+    private sTempFlow: BehaviorSubject<number>;
 
     /**
      * initUnit - inits the custom unit.
@@ -52,25 +54,33 @@ export class FunctionUnit extends CustomUnit {
         if (setpointFn.unit) {
             this.simulateTemperature(temperatureFn)
         }
+
+        const modeFn = this.storage.get(BACnetThermostatUnitFunctions.Mode) as IModeFunction<MultiStateValueUnit>;
+        if (modeFn.unit) {
+            this.simulateMode(modeFn)
+        }
     }
 
     /**
-     * genPayloadOfPresentValue - generates payload for "Present Value" BACnet property.
-     * Method uses PRNG from arguments to get values for "Present Value" property.
+     * getUnitValue - gets value of the AnalogValueUnit.
      *
-     * @param  {NativeUnit} unit - instance of a native unit
-     * @return {void}
+     * @param  {AnalogValueUnit} unit - instance of a analog value unit
+     * @return {number}
      */
-    private genPayloadOfPresentValue (unit: AnalogValueUnit): BACNet.Types.BACnetTypeBase {
-        throw new Error ('Not implemented yet');
+    private getUnitValue (unit: AnalogValueUnit): number {
+        const prValueProperty = unit.storage.getProperty(BACNet.Enums.PropertyId.presentValue);
+        if (_.isNil(prValueProperty.payload)) {
+            return null;
+        }
+        const prValuePayload = prValueProperty.payload as BACNet.Types.BACnetReal;
+        return prValuePayload.value;
     }
 
     /**
-     * genPayloadOfPresentValue - generates payload for "Present Value" BACnet property.
-     * Method uses PRNG from arguments to get values for "Present Value" property.
+     * genStartPresentValue - generates start value payload for "Present Value" BACnet property.
      *
-     * @param  {NativeUnit} unit - instance of a native unit
-     * @return {void}
+     * @param  {ITemperatureFunction<AnalogValueUnit>|ISetpointFunction<AnalogValueUnit>} unitFn - instance of a native unit
+     * @return {BACNet.Types.BACnetReal} - payload of present valye property
      */
     private genStartPresentValue (unitFn: ITemperatureFunction<AnalogValueUnit>|ISetpointFunction<AnalogValueUnit>): BACNet.Types.BACnetTypeBase {
         const config = unitFn.config;
@@ -79,34 +89,44 @@ export class FunctionUnit extends CustomUnit {
     }
 
     /**
-     * simulateDistribution - gets new payload for "Present Value" BACnet property,
+     * simulateTemperature - gets new payload for "Present Value" BACnet property,
      * creates the periodic timer to update the payload of the "Present Value",
      * sets new payload in "Present Value" property.
      *
-     * @param  {NativeUnit} unit - instance of a native unit
+     * @param  {ITemperatureFunction<AnalogValueUnit>} unit - instance of a native unit
      * @return {void}
      */
     private simulateTemperature (unitFn: ITemperatureFunction<AnalogValueUnit>): void {
-        const unit = unitFn.unit;
-        const config = unitFn.config;
-        const startPayload = this.genStartPresentValue(unitFn);
-        unit.storage.setProperty({
+        const tempUnit = unitFn.unit;
+        const tempConfig = unitFn.config;
+        const tempStartPayload = this.genStartPresentValue(unitFn);
+        tempUnit.storage.setProperty({
             id: BACNet.Enums.PropertyId.presentValue,
-            payload: startPayload,
+            payload: tempStartPayload,
         });
+        this.sTempFlow = new BehaviorSubject<number>(tempStartPayload.value);
 
-        Observable.timer(0, config.freq)
+        Observable.timer(0, tempConfig.freq)
             .subscribe(() => {
-                let payload = this.genPayloadOfPresentValue(unit);
-
-                if (_.isNil(payload)) {
+                let temperature = this.getUnitValue(tempUnit);
+                const setpointUnit = this.storage.get(BACnetThermostatUnitFunctions.Setpoint).unit as AnalogValueUnit;
+                const setpoint = this.getUnitValue(setpointUnit);
+                if (_.isNil(setpoint)) {
                     return;
                 }
 
-                unit.storage.setProperty({
+                if (temperature > setpoint) {
+                    temperature += 0.1;
+
+                } else if (setpoint < temperature) {
+                    temperature -= 0.1;
+                }
+                tempUnit.storage.setProperty({
                     id: BACNet.Enums.PropertyId.presentValue,
-                    payload: payload,
-                });
+                    payload: new BACNet.Types.BACnetReal(temperature)
+                })
+                this.sTempFlow.next(temperature);
+
             });
     }
 
@@ -118,9 +138,34 @@ export class FunctionUnit extends CustomUnit {
             id: BACNet.Enums.PropertyId.presentValue,
             payload: startPayload,
         });
-        throw new Error ('Not implemented yet');
     }
 
+    private simulateMode(unitFn: IModeFunction<MultiStateValueUnit>): void {
+        const modeUnit = unitFn.unit;
+        const modeConfig = unitFn.config;
+        const stateTextPayload = modeConfig.stateText.map( text => new BACNet.Types.BACnetCharacterString(text))
+        modeUnit.storage.updateProperty({
+            id: BACNet.Enums.PropertyId.stateText,
+            payload: stateTextPayload
+        });
+        if (this.sTempFlow) {
+            this.sTempFlow.subscribe((temperature) => {
+                const setpointFn = this.storage.get(BACnetThermostatUnitFunctions.Setpoint);
+                const setpoint = this.getUnitValue(setpointFn.unit as AnalogValueUnit)
+                if (setpoint > temperature) {
+                    modeUnit.storage.setProperty({
+                        id: BACNet.Enums.PropertyId.presentValue,
+                        payload: new BACNet.Types.BACnetUnsignedInteger(2)
+                    });
+                } else if (setpoint < temperature) {
+                    modeUnit.storage.setProperty({
+                        id: BACNet.Enums.PropertyId.presentValue,
+                        payload: new BACNet.Types.BACnetUnsignedInteger(1)
+                    });
+                }
+            })
+        }
+    }
     /**
      * getConfigWithEDE - concatenates the default unit configuration with EDE
      * configuration.
