@@ -12,6 +12,6 @@ export const ThermostatMetadata: IThermostatMetadata[] = [
     },
     {
         alias: [ BACnetThermostatUnitFunctions.Mode ],
-        config: { stateText: [ 'HEAT', 'COOL'] },
+        config: { stateText: [ 'COOL', 'HEAT' ] },
     }
 ];
