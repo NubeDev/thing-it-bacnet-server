@@ -126,6 +126,7 @@ export class ThermostatUnit extends CustomUnit {
                 } else if (temperature < setpoint) {
                     temperature += 0.1;
                 }
+                temperature = _.round(temperature, 1);
                 tempUnit.storage.setProperty({
                     id: BACNet.Enums.PropertyId.presentValue,
                     payload: new BACNet.Types.BACnetReal(temperature)
