@@ -115,7 +115,8 @@ export class ThermostatUnit extends CustomUnit {
             .subscribe(() => {
                 const setpointUnit = this.storage.get(BACnetThermostatUnitFunctions.SetpointFeedback).unit as AnalogValueUnit;
                 const setpoint = this.getUnitValue(setpointUnit);
-                if (_.isNil(setpoint)) {
+                console.log(setpoint, temperature)
+                if (_.isNil(setpoint) || temperature === setpoint) {
                     return;
                 }
 
