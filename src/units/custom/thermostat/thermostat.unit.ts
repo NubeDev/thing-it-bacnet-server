@@ -202,6 +202,7 @@ export class ThermostatUnit extends CustomUnit {
 
             return { max, min };
         }
+        return {};
 
     }
 }
