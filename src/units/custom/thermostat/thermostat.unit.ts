@@ -87,7 +87,8 @@ export class ThermostatUnit extends CustomUnit {
      */
     private genStartPresentValue (unitFn: ITemperatureFunction<AnalogValueUnit>|ISetpointFunction<AnalogValueUnit>): BACNet.Types.BACnetTypeBase {
         const config = unitFn.config;
-        const value = config.min + (config.max - config.min) / 2
+        let value = config.min + (config.max - config.min) / 2;
+        value = _.round(value, 1)
         return new BACNet.Types.BACnetReal(value);
     }
 
