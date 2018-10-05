@@ -42,7 +42,7 @@ export class CustomUnit {
 
         const newConfig = this.getConfigWithEDE(custFunc.config, edeUnit);
 
-        const newCustFunc: ICustomFunction<NativeUnit> = _.assign({}, custFunc, {
+        const newCustFunc: ICustomFunction<NativeUnit> = _.merge({}, custFunc, {
             unit: unit,
             config: newConfig,
         });
