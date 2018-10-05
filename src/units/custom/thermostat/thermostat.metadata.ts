@@ -3,7 +3,11 @@ import { IThermostatMetadata } from '../../../core/interfaces';
 
 export const ThermostatMetadata: IThermostatMetadata[] = [
     {
-        alias: [ BACnetThermostatUnitFunctions.Setpoint ],
+        alias: [ BACnetThermostatUnitFunctions.SetpointFeedback ],
+        config: { min: 18, max: 26 },
+    },
+    {
+        alias: [ BACnetThermostatUnitFunctions.SetpointModification ],
         config: { min: 18, max: 26 },
     },
     {

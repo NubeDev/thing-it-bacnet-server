@@ -9,7 +9,8 @@ export enum BACnetUnitAbbr {
 }
 
 export enum BACnetThermostatUnitFunctions {
-    Setpoint = 'setpoint',
+    SetpointFeedback = 'setpointFeedback',
+    SetpointModification = 'setpointModification',
     Temperature = 'temperature',
     Mode = 'mode'
 }
