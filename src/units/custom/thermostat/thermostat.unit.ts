@@ -121,10 +121,10 @@ export class ThermostatUnit extends CustomUnit {
                 }
 
                 if (temperature > setpoint) {
-                    temperature += 0.1;
-
-                } else if (setpoint < temperature) {
                     temperature -= 0.1;
+
+                } else if (temperature < setpoint) {
+                    temperature += 0.1;
                 }
                 tempUnit.storage.setProperty({
                     id: BACNet.Enums.PropertyId.presentValue,
