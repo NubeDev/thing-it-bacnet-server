@@ -25,7 +25,7 @@ import { BACnetThermostatUnitFunctions } from '../../../core/enums';
 import { AnalogValueUnit } from '../../native/analog/analog-value/analog-value.unit';
 import { MultiStateValueUnit } from '../../native/multi-state/multi-state-value/multi-state-value.unit';
 
-export class FunctionUnit extends CustomUnit {
+export class ThermostatUnit extends CustomUnit {
     public readonly className: string = 'FunctionUnit';
     public storage: AliasMap<IThermostatFunction<AnalogValueUnit|MultiStateValueUnit>>;
     private sTempFlow: BehaviorSubject<number>;
