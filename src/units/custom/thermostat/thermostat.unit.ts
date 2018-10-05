@@ -3,6 +3,7 @@ import { Observable, BehaviorSubject } from 'rxjs';
 
 import {
     BACnetUnitFamily,
+    BACnetUnitDataFlow
 } from '../../../core/enums';
 
 import {
@@ -12,6 +13,7 @@ import {
     IThermostatFunction,
     ISetpointFunction,
     IModeFunction,
+    UnitStorageProperty,
 } from '../../../core/interfaces';
 
 import { ThermostatMetadata } from './thermostat.metadata';
@@ -45,13 +47,14 @@ export class FunctionUnit extends CustomUnit {
      * @return {void}
      */
     public startSimulation (): void {
-        const setpointFn = this.storage.get(BACnetThermostatUnitFunctions.Setpoint) as ISetpointFunction<AnalogValueUnit>;
-        if (setpointFn.unit) {
-            this.simulateSetpoint(setpointFn)
+        const setpointFeedbackFn = this.storage.get(BACnetThermostatUnitFunctions.SetpointFeedback) as ISetpointFunction<AnalogValueUnit>;
+        const setpointModificationFn = this.storage.get(BACnetThermostatUnitFunctions.SetpointModification) as ISetpointFunction<AnalogValueUnit>;
+        if (setpointFeedbackFn.unit && setpointModificationFn.unit) {
+            this.simulateSetpoint(setpointFeedbackFn, setpointModificationFn)
         }
 
         const temperatureFn = this.storage.get(BACnetThermostatUnitFunctions.Temperature) as ITemperatureFunction<AnalogValueUnit>;
-        if (setpointFn.unit) {
+        if (temperatureFn.unit) {
             this.simulateTemperature(temperatureFn)
         }
 
@@ -109,7 +112,7 @@ export class FunctionUnit extends CustomUnit {
         let temperature = this.getUnitValue(tempUnit);
         Observable.timer(0, tempConfig.freq)
             .subscribe(() => {
-                const setpointUnit = this.storage.get(BACnetThermostatUnitFunctions.Setpoint).unit as AnalogValueUnit;
+                const setpointUnit = this.storage.get(BACnetThermostatUnitFunctions.SetpointFeedback).unit as AnalogValueUnit;
                 const setpoint = this.getUnitValue(setpointUnit);
                 if (_.isNil(setpoint)) {
                     return;
@@ -130,11 +133,15 @@ export class FunctionUnit extends CustomUnit {
             });
     }
 
-    private simulateSetpoint(unitFn: ISetpointFunction<AnalogValueUnit>): void {
-        const unit = unitFn.unit;
-        const config = unitFn.config;
-        const startPayload = this.genStartPresentValue(unitFn);
-        unit.storage.setProperty({
+    private simulateSetpoint(feedbackFn: ISetpointFunction<AnalogValueUnit>, modificationFn: ISetpointFunction<AnalogValueUnit>): void {
+        const feedbackUnit = feedbackFn.unit;
+        const modificationUnit = modificationFn.unit;
+        modificationUnit.storage.setFlowHandler(BACnetUnitDataFlow.Update, BACNet.Enums.PropertyId.presentValue, (notif: UnitStorageProperty) => {
+            modificationUnit.storage.dispatch();
+            feedbackUnit.storage.updateProperty(notif);
+        })
+        const startPayload = this.genStartPresentValue(modificationFn);
+        modificationUnit.storage.setProperty({
             id: BACNet.Enums.PropertyId.presentValue,
             payload: startPayload,
         });
@@ -150,7 +157,7 @@ export class FunctionUnit extends CustomUnit {
         });
         if (this.sTempFlow) {
             this.sTempFlow.subscribe((temperature) => {
-                const setpointFn = this.storage.get(BACnetThermostatUnitFunctions.Setpoint);
+                const setpointFn = this.storage.get(BACnetThermostatUnitFunctions.SetpointFeedback);
                 const setpoint = this.getUnitValue(setpointFn.unit as AnalogValueUnit)
                 if (setpoint > temperature) {
                     modeUnit.storage.setProperty({
@@ -176,7 +183,7 @@ export class FunctionUnit extends CustomUnit {
      */
     public getConfigWithEDE (unitConfig: ICustomFunctionConfig, edeUnit: IEDEUnit): ICustomFunctionConfig {
         let max: number, min: number, freq: number;
-        if (edeUnit.custUnitFn === BACnetThermostatUnitFunctions.Setpoint
+        if (edeUnit.custUnitFn === BACnetThermostatUnitFunctions.SetpointModification
             || edeUnit.custUnitFn === BACnetThermostatUnitFunctions.Temperature) {
 
             max = _.isNumber(edeUnit.custUnitMax) && _.isFinite(edeUnit.custUnitMax)
