@@ -14,4 +14,8 @@ export const CustomModule: AliasMap<any> = new AliasMap<any>([
         alias: [ '1', 'fn', 'func', 'function' ],
         value: FunctionUnit,
     },
+    {
+        alias: [ '2', 'th', 'thermo', 'thermostat' ],
+        value: FunctionUnit,
+    }
 ]);
