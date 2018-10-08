@@ -220,6 +220,7 @@ export class ThermostatUnit extends CustomUnit {
     public getConfigWithEDE (unitConfig: ICustomFunctionConfig, edeUnit: IEDEUnit): ICustomFunctionConfig {
         let max: number, min: number, freq: number;
         if (edeUnit.custUnitFn === BACnetThermostatUnitFunctions.SetpointModification
+            || edeUnit.custUnitFn === BACnetThermostatUnitFunctions.SetpointFeedback
             || edeUnit.custUnitFn === BACnetThermostatUnitFunctions.Temperature) {
 
             max = _.isNumber(edeUnit.custUnitMax) && _.isFinite(edeUnit.custUnitMax)
@@ -239,6 +240,5 @@ export class ThermostatUnit extends CustomUnit {
             return { max, min };
         }
         return {};
-
     }
 }
