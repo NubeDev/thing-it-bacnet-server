@@ -122,10 +122,6 @@ export class UnitStorageManager {
             unitType = BACnetUnitAbbr.Default;
         }
 
-        // Get function of the custom unit
-        const unitFn = edeUnit.custUnitFn !== ''
-            ? `${edeUnit.custUnitFn}` : BACnetUnitAbbr.Default;
-
         // Get ID of the custom unit with postfix owner abbreviation
         // U - user (manually), A - algorithm (auto)
         const unitId = _.isNumber(edeUnit.custUnitId) && _.isFinite(+edeUnit.custUnitId)
@@ -146,6 +142,10 @@ export class UnitStorageManager {
         }
 
         try {
+            // Get function of the custom unit
+            const unitFn = edeUnit.custUnitFn !== ''
+                ? `${edeUnit.custUnitFn}` : BACnetUnitAbbr.Default;
+
             unit.setUnitFn(unitFn, nativeUnit, edeUnit);
         } catch (error) {
             logger.error(`${this.className} - initCustomUnit: "${unitToken}" custom unit is not created!`);
