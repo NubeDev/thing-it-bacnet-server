@@ -14,7 +14,12 @@ import {
     UnitStorageProperty,
 } from '../../../core/interfaces';
 
-import { ThermostatMetadata } from './thermostat.metadata';
+import {
+    ThermostatMetadata,
+    SetpointFeedbackAliases,
+    SetpointModificationAliases,
+    TemperatureAliases
+} from './thermostat.metadata';
 import { CustomUnit } from '../custom.unit';
 import { AliasMap } from '../../../core/alias/alias.map';
 
@@ -222,9 +227,9 @@ export class ThermostatUnit extends CustomUnit {
      */
     public getConfigWithEDE (unitConfig: ICustomFunctionConfig, edeUnit: IEDEUnit): ICustomFunctionConfig {
         let max: number, min: number, freq: number;
-        if (edeUnit.custUnitFn === BACnetThermostatUnitFunctions.SetpointModification
-            || edeUnit.custUnitFn === BACnetThermostatUnitFunctions.SetpointFeedback
-            || edeUnit.custUnitFn === BACnetThermostatUnitFunctions.Temperature) {
+        if ( SetpointFeedbackAliases.includes(edeUnit.custUnitFn)
+            || SetpointModificationAliases.includes(edeUnit.custUnitFn)
+            || TemperatureAliases.includes(edeUnit.custUnitFn)) {
 
             max = _.isNumber(edeUnit.custUnitMax) && _.isFinite(edeUnit.custUnitMax)
                 ? edeUnit.custUnitMax : unitConfig.max;
@@ -232,7 +237,7 @@ export class ThermostatUnit extends CustomUnit {
             min = _.isNumber(edeUnit.custUnitMin) && _.isFinite(edeUnit.custUnitMin)
                 ? edeUnit.custUnitMin : unitConfig.min;
 
-            if (edeUnit.custUnitFn === BACnetThermostatUnitFunctions.Temperature) {
+            if (TemperatureAliases.includes(edeUnit.custUnitFn)) {
 
                 freq = _.isNumber(edeUnit.custUnitFreq) && _.isFinite(edeUnit.custUnitFreq)
                 ? edeUnit.custUnitFreq : unitConfig.freq;
