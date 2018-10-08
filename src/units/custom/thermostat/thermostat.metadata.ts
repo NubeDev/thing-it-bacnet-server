@@ -8,7 +8,7 @@ export const ThermostatMetadata: IThermostatMetadata[] = [
     },
     {
         alias: [ BACnetThermostatUnitFunctions.SetpointModification ],
-        config: { min: 18, max: 26 },
+        config: { min: -4, max: 4 },
     },
     {
         alias: [ BACnetThermostatUnitFunctions.Temperature],
