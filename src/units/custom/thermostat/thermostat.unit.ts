@@ -33,7 +33,7 @@ type SetpointFunction = ISetpointFunction<AnalogValueUnit>;
 type ModeFunction = IModeFunction<MultiStateValueUnit>;
 
 export class ThermostatUnit extends CustomUnit {
-    public readonly className: string = 'FunctionUnit';
+    public readonly className: string = 'ThermostatUnit';
     public storage: AliasMap<TemperatureFunction|SetpointFunction|ModeFunction>;
     private sTempFlow: BehaviorSubject<number>;
 
