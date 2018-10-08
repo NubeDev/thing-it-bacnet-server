@@ -89,10 +89,10 @@ export class ThermostatUnit extends CustomUnit {
     /**
      * genStartPresentValue - generates start value payload for "Present Value" BACnet property.
      *
-     * @param  {TemperatureFunction|SetpointFunction} unitFn - instance of a native unit
-     * @return {BACNet.Types.BACnetReal} - payload of present valye property
+     * @param  {TemperatureFunction|SetpointFunction} unitFn - unit function
+     * @return {BACNet.Types.BACnetReal} - payload of present value property
      */
-    private genStartPresentValue (unitFn: TemperatureFunction|SetpointFunction): BACNet.Types.BACnetTypeBase {
+    private genStartPresentValue (unitFn: TemperatureFunction|SetpointFunction): BACNet.Types.BACnetReal {
         const config = unitFn.config;
         let value = config.min + (config.max - config.min) / 2;
         value = _.round(value, 1)
@@ -136,7 +136,7 @@ export class ThermostatUnit extends CustomUnit {
                 tempUnit.storage.setProperty({
                     id: BACNet.Enums.PropertyId.presentValue,
                     payload: new BACNet.Types.BACnetReal(temperature)
-                })
+                });
                 this.sTempFlow.next(temperature);
 
             });
@@ -161,20 +161,24 @@ export class ThermostatUnit extends CustomUnit {
             modificationUnit.storage.dispatch();
             const setpointModificationPayload = notif.payload as BACNet.Types.BACnetReal;
             let setpointModificationValue = +setpointModificationPayload.getValue();
+
             if (setpointModificationValue > 0) {
                 setpointModificationValue = Math.min(setpointModificationValue, modificationConfig.max);
             } else {
                 setpointModificationValue = Math.max(setpointModificationValue, modificationConfig.min);
             }
+
             const currentSetpointValue = this.getUnitValue(feedbackUnit);
+
             let newSetpointValue = currentSetpointValue + setpointModificationValue;
             newSetpointValue = newSetpointValue > feedbackConfig.max ? feedbackConfig.max :
                 newSetpointValue < feedbackConfig.min ? feedbackConfig.min : newSetpointValue;
+
             feedbackUnit.storage.updateProperty({
                 id: BACNet.Enums.PropertyId.presentValue,
                 payload: new BACNet.Types.BACnetReal(newSetpointValue)
             })
-        })
+        });
         const startPayload = this.genStartPresentValue(feedbackFn);
         feedbackUnit.storage.setProperty({
             id: BACNet.Enums.PropertyId.presentValue,
