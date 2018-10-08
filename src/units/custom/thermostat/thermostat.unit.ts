@@ -147,13 +147,22 @@ export class ThermostatUnit extends CustomUnit {
      */
     private simulateSetpoint(feedbackFn: ISetpointFunction<AnalogValueUnit>, modificationFn: ISetpointFunction<AnalogValueUnit>): void {
         const feedbackUnit = feedbackFn.unit;
+        const feedbackConfig = feedbackFn.config;
         const modificationUnit = modificationFn.unit;
+        const modificationConfig = modificationFn.config;
         modificationUnit.storage.setFlowHandler(BACnetUnitDataFlow.Update, BACNet.Enums.PropertyId.presentValue, (notif: UnitStorageProperty) => {
             modificationUnit.storage.dispatch();
             const setpointModificationPayload = notif.payload as BACNet.Types.BACnetReal;
-            const setpointModificationValue = +setpointModificationPayload.getValue();
+            let setpointModificationValue = +setpointModificationPayload.getValue();
+            if (setpointModificationValue > 0) {
+                setpointModificationValue = Math.min(setpointModificationValue, modificationConfig.max);
+            } else {
+                setpointModificationValue = Math.max(setpointModificationValue, modificationConfig.min);
+            }
             const currentSetpointValue = this.getUnitValue(feedbackUnit);
-            const newSetpointValue = currentSetpointValue + setpointModificationValue;
+            let newSetpointValue = currentSetpointValue + setpointModificationValue;
+            newSetpointValue = newSetpointValue > feedbackConfig.max ? feedbackConfig.max :
+                newSetpointValue < feedbackConfig.min ? feedbackConfig.min : newSetpointValue;
             feedbackUnit.storage.updateProperty({
                 id: BACNet.Enums.PropertyId.presentValue,
                 payload: new BACNet.Types.BACnetReal(newSetpointValue)
