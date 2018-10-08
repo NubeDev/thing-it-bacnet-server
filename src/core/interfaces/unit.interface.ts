@@ -90,7 +90,7 @@ export interface ISetpointFunction <T> {
     config: ISetpointFunctionConfig;
 }
 
-export interface ITemperatureFunctionConfig extends ICustomFunctionConfig {
+export interface ITemperatureFunctionConfig extends ICustomFunctionConfigDefault {
 
 }
 
