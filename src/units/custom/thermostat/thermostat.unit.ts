@@ -115,7 +115,6 @@ export class ThermostatUnit extends CustomUnit {
             .subscribe(() => {
                 const setpointUnit = this.storage.get(BACnetThermostatUnitFunctions.SetpointFeedback).unit as AnalogValueUnit;
                 const setpoint = this.getUnitValue(setpointUnit);
-                console.log(setpoint, temperature)
                 if (_.isNil(setpoint) || temperature === setpoint) {
                     return;
                 }
@@ -141,10 +140,17 @@ export class ThermostatUnit extends CustomUnit {
         const modificationUnit = modificationFn.unit;
         modificationUnit.storage.setFlowHandler(BACnetUnitDataFlow.Update, BACNet.Enums.PropertyId.presentValue, (notif: UnitStorageProperty) => {
             modificationUnit.storage.dispatch();
-            feedbackUnit.storage.updateProperty(notif);
+            const setpointModificationPayload = notif.payload as BACNet.Types.BACnetReal;
+            const setpointModificationValue = +setpointModificationPayload.getValue();
+            const currentSetpointValue = this.getUnitValue(feedbackUnit);
+            const newSetpointValue = currentSetpointValue + setpointModificationValue;
+            feedbackUnit.storage.updateProperty({
+                id: BACNet.Enums.PropertyId.presentValue,
+                payload: new BACNet.Types.BACnetReal(newSetpointValue)
+            })
         })
-        const startPayload = this.genStartPresentValue(modificationFn);
-        modificationUnit.storage.setProperty({
+        const startPayload = this.genStartPresentValue(feedbackFn);
+        feedbackUnit.storage.setProperty({
             id: BACNet.Enums.PropertyId.presentValue,
             payload: startPayload,
         });
