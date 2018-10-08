@@ -203,18 +203,23 @@ export class ThermostatUnit extends CustomUnit {
             id: BACNet.Enums.PropertyId.stateText,
             payload: stateTextPayload
         });
+        let modePrValue = null;
         if (this.sTempFlow) {
             this.sTempFlow.subscribe((temperature) => {
                 const setpointFn = this.storage.get(BACnetThermostatUnitFunctions.SetpointFeedback);
                 const setpoint = this.getUnitValue(setpointFn.unit as AnalogValueUnit);
-                let modePrValue = null;
+                let newModePrValue = null;
                 if (setpoint > temperature) {
-                    modePrValue = 2;
+                    newModePrValue = 2;
                 } else if (setpoint < temperature) {
-                    modePrValue = 1;
+                    newModePrValue = 1;
                 } else {
                     return;
                 }
+                if (newModePrValue === modePrValue) {
+                    return;
+                }
+                modePrValue = newModePrValue;
                 modeUnit.storage.setProperty({
                     id: BACNet.Enums.PropertyId.presentValue,
                     payload: new BACNet.Types.BACnetUnsignedInteger(modePrValue)
