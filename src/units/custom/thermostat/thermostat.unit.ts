@@ -2,7 +2,6 @@ import * as _ from 'lodash';
 import { Observable, BehaviorSubject } from 'rxjs';
 
 import {
-    BACnetUnitFamily,
     BACnetUnitDataFlow
 } from '../../../core/enums';
 
@@ -10,7 +9,6 @@ import {
     IEDEUnit,
     ICustomFunctionConfig,
     ITemperatureFunction,
-    IThermostatFunction,
     ISetpointFunction,
     IModeFunction,
     UnitStorageProperty,
@@ -25,9 +23,13 @@ import { BACnetThermostatUnitFunctions } from '../../../core/enums';
 import { AnalogValueUnit } from '../../native/analog/analog-value/analog-value.unit';
 import { MultiStateValueUnit } from '../../native/multi-state/multi-state-value/multi-state-value.unit';
 
+type TemperatureFunction = ITemperatureFunction<AnalogValueUnit>;
+type SetpointFunction = ISetpointFunction<AnalogValueUnit>;
+type ModeFunction = IModeFunction<MultiStateValueUnit>;
+
 export class ThermostatUnit extends CustomUnit {
     public readonly className: string = 'FunctionUnit';
-    public storage: AliasMap<IThermostatFunction<AnalogValueUnit|MultiStateValueUnit>>;
+    public storage: AliasMap<TemperatureFunction|SetpointFunction|ModeFunction>;
     private sTempFlow: BehaviorSubject<number>;
 
     /**
@@ -47,18 +49,18 @@ export class ThermostatUnit extends CustomUnit {
      * @return {void}
      */
     public startSimulation (): void {
-        const setpointFeedbackFn = this.storage.get(BACnetThermostatUnitFunctions.SetpointFeedback) as ISetpointFunction<AnalogValueUnit>;
-        const setpointModificationFn = this.storage.get(BACnetThermostatUnitFunctions.SetpointModification) as ISetpointFunction<AnalogValueUnit>;
+        const setpointFeedbackFn = this.storage.get(BACnetThermostatUnitFunctions.SetpointFeedback) as SetpointFunction;
+        const setpointModificationFn = this.storage.get(BACnetThermostatUnitFunctions.SetpointModification) as SetpointFunction;
         if (setpointFeedbackFn.unit && setpointModificationFn.unit) {
             this.simulateSetpoint(setpointFeedbackFn, setpointModificationFn)
         }
 
-        const temperatureFn = this.storage.get(BACnetThermostatUnitFunctions.Temperature) as ITemperatureFunction<AnalogValueUnit>;
+        const temperatureFn = this.storage.get(BACnetThermostatUnitFunctions.Temperature) as TemperatureFunction;
         if (temperatureFn.unit) {
             this.simulateTemperature(temperatureFn)
         }
 
-        const modeFn = this.storage.get(BACnetThermostatUnitFunctions.Mode) as IModeFunction<MultiStateValueUnit>;
+        const modeFn = this.storage.get(BACnetThermostatUnitFunctions.Mode) as ModeFunction;
         if (modeFn.unit) {
             this.simulateMode(modeFn)
         }
@@ -82,10 +84,10 @@ export class ThermostatUnit extends CustomUnit {
     /**
      * genStartPresentValue - generates start value payload for "Present Value" BACnet property.
      *
-     * @param  {ITemperatureFunction<AnalogValueUnit>|ISetpointFunction<AnalogValueUnit>} unitFn - instance of a native unit
+     * @param  {TemperatureFunction|SetpointFunction} unitFn - instance of a native unit
      * @return {BACNet.Types.BACnetReal} - payload of present valye property
      */
-    private genStartPresentValue (unitFn: ITemperatureFunction<AnalogValueUnit>|ISetpointFunction<AnalogValueUnit>): BACNet.Types.BACnetTypeBase {
+    private genStartPresentValue (unitFn: TemperatureFunction|SetpointFunction): BACNet.Types.BACnetTypeBase {
         const config = unitFn.config;
         let value = config.min + (config.max - config.min) / 2;
         value = _.round(value, 1)
@@ -97,10 +99,10 @@ export class ThermostatUnit extends CustomUnit {
      * creates the periodic timer to update the payload of the "Present Value",
      * sets new payload in "Present Value" property.
      *
-     * @param  {ITemperatureFunction<AnalogValueUnit>} unitFn - thermostat's temperature function
+     * @param  {TemperatureFunction} unitFn - thermostat's temperature function
      * @return {void}
      */
-    private simulateTemperature (unitFn: ITemperatureFunction<AnalogValueUnit>): void {
+    private simulateTemperature (unitFn: TemperatureFunction): void {
         const tempUnit = unitFn.unit;
         const tempConfig = unitFn.config;
         const tempStartPayload = this.genStartPresentValue(unitFn);
@@ -141,11 +143,11 @@ export class ThermostatUnit extends CustomUnit {
      * based on the setpointModification unit payload,
      * sets new payload in setpointFeedback "Present Value" property.
      *
-     * @param  {ISetpointFunction<AnalogValueUnit>} feedbackFn - thermostat's setpoint Feedback function
-     * @param  {ISetpointFunction<AnalogValueUnit>} modificationFnFn - thermostat's setpoint Modification function
+     * @param  {SetpointFunction} feedbackFn - thermostat's setpoint Feedback function
+     * @param  {SetpointFunction} modificationFnFn - thermostat's setpoint Modification function
      * @return {void}
      */
-    private simulateSetpoint(feedbackFn: ISetpointFunction<AnalogValueUnit>, modificationFn: ISetpointFunction<AnalogValueUnit>): void {
+    private simulateSetpoint(feedbackFn: SetpointFunction, modificationFn: SetpointFunction): void {
         const feedbackUnit = feedbackFn.unit;
         const feedbackConfig = feedbackFn.config;
         const modificationUnit = modificationFn.unit;
@@ -176,14 +178,15 @@ export class ThermostatUnit extends CustomUnit {
     }
 
     /**
-     * simulateMode - gets new payload for mode unit "Present Value" BACnet property,
+     * simulateMode - sets "stateText" BACNet property to mode unit,
+     * gets new payload for mode unit "Present Value" BACnet property,
      * based on the difference between setpoint and temperature,
      * sets new payload in mode unit's "Present Value" property.
      *
-     * @param  {ITemperatureFunction<AnalogValueUnit>} unitFn - thermostat's temperature function
+     * @param  {ModeFunction} unitFn - thermostat's temperature function
      * @return {void}
      */
-    private simulateMode(unitFn: IModeFunction<MultiStateValueUnit>): void {
+    private simulateMode(unitFn: ModeFunction): void {
         const modeUnit = unitFn.unit;
         const modeConfig = unitFn.config;
         const stateTextPayload = modeConfig.stateText.map( text => new BACNet.Types.BACnetCharacterString(text))

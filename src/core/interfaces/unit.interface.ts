@@ -78,8 +78,6 @@ export interface IThermostatMetadata {
     config: ISetpointFunctionConfig|ITemperatureFunctionConfig|IModeFunctionConfig;
 }
 
-export type IThermostatFunction<T> = ISetpointFunction<T>|ITemperatureFunction<T>|IModeFunction<T>;
-
 export interface ISetpointFunctionConfig {
     min: number;
     max: number;
