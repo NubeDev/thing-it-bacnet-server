@@ -42,7 +42,7 @@ export class ThermostatUnit extends CustomUnit {
     }
 
     /**
-     * startSimulation - starts the simulation logic of the "function" custom unit.
+     * startSimulation - starts the simulation logic of the "thermostat" custom unit.
      *
      * @return {void}
      */
@@ -93,11 +93,11 @@ export class ThermostatUnit extends CustomUnit {
     }
 
     /**
-     * simulateTemperature - gets new payload for "Present Value" BACnet property,
+     * simulateTemperature - gets new payload for temperature unit "Present Value" BACnet property,
      * creates the periodic timer to update the payload of the "Present Value",
      * sets new payload in "Present Value" property.
      *
-     * @param  {ITemperatureFunction<AnalogValueUnit>} unit - instance of a native unit
+     * @param  {ITemperatureFunction<AnalogValueUnit>} unitFn - thermostat's temperature function
      * @return {void}
      */
     private simulateTemperature (unitFn: ITemperatureFunction<AnalogValueUnit>): void {
@@ -135,6 +135,16 @@ export class ThermostatUnit extends CustomUnit {
             });
     }
 
+    /**
+     * simulateSetpoint - generates start value of the setpoint,
+     * gets new payload for setpointFeedback unit "Present Value" BACnet property,
+     * based on the setpointModification unit payload,
+     * sets new payload in setpointFeedback "Present Value" property.
+     *
+     * @param  {ISetpointFunction<AnalogValueUnit>} feedbackFn - thermostat's setpoint Feedback function
+     * @param  {ISetpointFunction<AnalogValueUnit>} modificationFnFn - thermostat's setpoint Modification function
+     * @return {void}
+     */
     private simulateSetpoint(feedbackFn: ISetpointFunction<AnalogValueUnit>, modificationFn: ISetpointFunction<AnalogValueUnit>): void {
         const feedbackUnit = feedbackFn.unit;
         const modificationUnit = modificationFn.unit;
@@ -156,6 +166,14 @@ export class ThermostatUnit extends CustomUnit {
         });
     }
 
+    /**
+     * simulateMode - gets new payload for mode unit "Present Value" BACnet property,
+     * based on the difference between setpoint and temperature,
+     * sets new payload in mode unit's "Present Value" property.
+     *
+     * @param  {ITemperatureFunction<AnalogValueUnit>} unitFn - thermostat's temperature function
+     * @return {void}
+     */
     private simulateMode(unitFn: IModeFunction<MultiStateValueUnit>): void {
         const modeUnit = unitFn.unit;
         const modeConfig = unitFn.config;
