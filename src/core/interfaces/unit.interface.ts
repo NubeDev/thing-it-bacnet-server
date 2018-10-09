@@ -32,79 +32,105 @@ export interface IEDEUnit {
 /**
  * Custom Units
  */
+export namespace Units {
+    export namespace Custom {
+        export interface Metadata {
+            alias: string|string[];
+            config: Functional.Config|Thermostat.Temperature.Config|Thermostat.Setpoint.Config|Thermostat.Mode.Config;
+        }
 
-export interface ICustomMetadata {
-    alias: string|string[];
-    config: ICustomFunctionConfigDefault|ITemperatureFunctionConfig|ISetpointFunctionConfig|IModeFunctionConfig;
+        export interface Function <T> {
+            unit: T;
+            config: Functional.Config|Thermostat.Temperature.Config|Thermostat.Setpoint.Config|Thermostat.Mode.Config;
+        }
+
+        export interface Config {
+            // Min value
+            min?: number;
+            // Max value
+            max?: number;
+            // Frequency
+            freq?: number;
+            staeteText?: string[];
+        }
+    }
+
+    /**
+     * Function Unit
+     */
+    export namespace Functional {
+        export interface Metadata {
+            alias: string|string[];
+            config: Config;
+        }
+
+        export interface Function <T> {
+            unit: T;
+            config: Config;
+        }
+
+        export interface Config {
+            // Min value
+            min: number;
+            // Max value
+            max: number;
+            // Frequency
+            freq: number;
+        }
+    }
+
+    /**
+     * Thermostat
+     */
+    export namespace Thermostat {
+        export interface Metadata {
+            alias: string|string[];
+            config: Setpoint.Config|Temperature.Config|Mode.Config;
+        }
+
+        export namespace Setpoint {
+            export interface Config {
+                min: number;
+                max: number;
+            }
+
+            export interface Function <T> {
+                unit: T;
+                config: Config;
+            }
+        }
+
+        export namespace Temperature {
+            export interface Config extends Units.Functional.Config {
+                min: number;
+                max: number;
+                freq: number;
+            }
+
+            export interface Function <T> {
+                unit: T;
+                config: Config;
+            }
+        }
+
+        export namespace Mode {
+            export interface Config {
+                stateText: string[];
+            }
+
+            export interface Function <T> {
+                unit: T;
+                config: Config;
+            }
+        }
+    }
+
 }
 
-export interface ICustomFunction <T> {
-    unit: T;
-    config: ICustomFunctionConfigDefault|ISetpointFunctionConfig|IModeFunctionConfig|ITemperatureFunctionConfig;
-}
 
-export interface ICustomFunctionConfig {
-    // Min value
-    min?: number;
-    // Max value
-    max?: number;
-    // Frequency
-    freq?: number;
-    staeteText?: string[];
-}
-
-export interface ICustomMetadataDefault {
-    alias: string|string[];
-    config: ICustomFunctionConfigDefault;
-}
-
-export interface ICustomFunctionDefault <T> {
-    unit: T;
-    config: ICustomFunctionConfigDefault;
-}
-
-
-export interface ICustomFunctionConfigDefault {
-    // Min value
-    min: number;
-    // Max value
-    max: number;
-    // Frequency
-    freq: number;
-}
-
-export interface IThermostatMetadata {
-    alias: string|string[];
-    config: ISetpointFunctionConfig|ITemperatureFunctionConfig|IModeFunctionConfig;
-}
-
-export interface ISetpointFunctionConfig {
-    min: number;
-    max: number;
-}
-
-export interface ISetpointFunction <T> {
-    unit: T;
-    config: ISetpointFunctionConfig;
-}
-
-export interface ITemperatureFunctionConfig extends ICustomFunctionConfigDefault {
-
-}
-
-export interface ITemperatureFunction <T> {
-    unit: T;
-    config: ITemperatureFunctionConfig;
-}
-
-export interface IModeFunctionConfig {
-    stateText: string[];
-}
-
-export interface IModeFunction <T> {
-    unit: T;
-    config: IModeFunctionConfig;
-}
+/**
+ * Unit Storage
+ */
 
 export interface UnitStorageProperty {
     id: BACNet.Enums.PropertyId;

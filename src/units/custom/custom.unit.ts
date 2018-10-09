@@ -6,9 +6,7 @@ import {
 } from '../../core/errors';
 
 import {
-    ICustomFunction,
-    ICustomFunctionConfig,
-    ICustomMetadata,
+    Units,
 } from '../../core/interfaces';
 
 import { IEDEUnit } from '../../core/interfaces';
@@ -19,7 +17,7 @@ import { NativeUnit } from '../native/native.unit';
 
 export class CustomUnit {
     public readonly className: string = 'CustomUnit';
-    public storage: AliasMap<ICustomFunction<NativeUnit>>;
+    public storage: AliasMap<Units.Custom.Function<NativeUnit>>;
 
     constructor () {
     }
@@ -42,7 +40,7 @@ export class CustomUnit {
 
         const newConfig = this.getConfigWithEDE(custFunc.config, edeUnit);
 
-        const newCustFunc: ICustomFunction<NativeUnit> = _.merge({}, custFunc, {
+        const newCustFunc: Units.Custom.Function<NativeUnit> = _.merge({}, custFunc, {
             unit: unit,
             config: newConfig,
         });
@@ -83,7 +81,7 @@ export class CustomUnit {
      * @param  {ICustomMetadata} metadata - metadata object
      * @return {void}
      */
-    public addMetadata (metadata: ICustomMetadata[]): void {
+    public addMetadata (metadata: Units.Custom.Metadata[]): void {
         _.map(metadata, (metaunit) => {
             this.storage.addAlias(metaunit.alias);
 

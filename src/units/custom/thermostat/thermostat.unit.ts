@@ -7,10 +7,7 @@ import {
 
 import {
     IEDEUnit,
-    ICustomFunctionConfig,
-    ITemperatureFunction,
-    ISetpointFunction,
-    IModeFunction,
+    Units,
     UnitStorageProperty,
 } from '../../../core/interfaces';
 
@@ -28,9 +25,9 @@ import { BACnetThermostatUnitFunctions } from '../../../core/enums';
 import { AnalogValueUnit } from '../../native/analog/analog-value/analog-value.unit';
 import { MultiStateValueUnit } from '../../native/multi-state/multi-state-value/multi-state-value.unit';
 
-type TemperatureFunction = ITemperatureFunction<AnalogValueUnit>;
-type SetpointFunction = ISetpointFunction<AnalogValueUnit>;
-type ModeFunction = IModeFunction<MultiStateValueUnit>;
+type TemperatureFunction = Units.Thermostat.Temperature.Function<AnalogValueUnit>;
+type SetpointFunction = Units.Thermostat.Setpoint.Function<AnalogValueUnit>;
+type ModeFunction = Units.Thermostat.Mode.Function<MultiStateValueUnit>;
 
 export class ThermostatUnit extends CustomUnit {
     public readonly className: string = 'ThermostatUnit';
@@ -235,7 +232,7 @@ export class ThermostatUnit extends CustomUnit {
      * @param  {IEDEUnit} edeUnit - EDE configuration
      * @return {ICustomFunctionConfig} - unit configuration
      */
-    public getConfigWithEDE (unitConfig: ICustomFunctionConfig, edeUnit: IEDEUnit): ICustomFunctionConfig {
+    public getConfigWithEDE (unitConfig: Units.Custom.Config, edeUnit: IEDEUnit): Units.Custom.Config {
         let max: number, min: number, freq: number;
         if ( SetpointFeedbackAliases.includes(edeUnit.custUnitFn)
             || SetpointModificationAliases.includes(edeUnit.custUnitFn)

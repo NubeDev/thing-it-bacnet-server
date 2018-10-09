@@ -1,5 +1,5 @@
 import { BACnetThermostatUnitFunctions } from '../../../core/enums';
-import { IThermostatMetadata } from '../../../core/interfaces';
+import { Units } from '../../../core/interfaces';
 
 export const SetpointFeedbackAliases: string[] = [
     BACnetThermostatUnitFunctions.SetpointFeedback,
@@ -32,7 +32,7 @@ export const ModeAliases: string[] = [
     '3'
 ];
 
-export const ThermostatMetadata: IThermostatMetadata[] = [
+export const ThermostatMetadata: Units.Thermostat.Metadata[] = [
     {
         alias: SetpointFeedbackAliases,
         config: { min: 18, max: 26 },
