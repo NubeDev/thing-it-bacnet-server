@@ -17,7 +17,7 @@ export enum BACnetThermostatUnitFunctions {
 
 export enum BACnetLightUnitFunctions {
     LevelFeedback = 'levelFeedback',
-    LevelModification = 'setpointModification',
+    LevelModification = 'levelModification',
     StateFeedback = 'stateFeedback',
     StateModification = 'stateModification'
 }
