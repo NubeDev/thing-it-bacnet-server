@@ -27,7 +27,7 @@ import { AnalogValueUnit } from '../../native/analog/analog-value/analog-value.u
 import { MultiStateValueUnit } from '../../native/multi-state/multi-state-value/multi-state-value.unit';
 
 type LevelFunction = Units.Light.Level.Function<AnalogValueUnit>;
-type StateFunction = Units.Light.State.Function<AnalogValueUnit>;
+type StateFunction = Units.Light.State.Function<MultiStateValueUnit>;
 
 export class LightUnit extends CustomUnit {
     public readonly className: string = 'LightUnit';
