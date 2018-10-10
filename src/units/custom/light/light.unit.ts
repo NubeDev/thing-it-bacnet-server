@@ -29,7 +29,7 @@ import { MultiStateValueUnit } from '../../native/multi-state/multi-state-value/
 type LevelFunction = Units.Light.Level.Function<AnalogValueUnit>;
 type StateFunction = Units.Light.State.Function<AnalogValueUnit>;
 
-export class ThermostatUnit extends CustomUnit {
+export class LightUnit extends CustomUnit {
     public readonly className: string = 'LightUnit';
     public storage: AliasMap<LevelFunction|StateFunction>;
     private sLevelFlow: BehaviorSubject<number>;
