@@ -125,6 +125,38 @@ export namespace Units {
         }
     }
 
+    /**
+     * Light
+     */
+    export namespace Light {
+        export interface Metadata {
+            alias: string|string[];
+            config: Level.Config|State.Config;
+        }
+
+        export namespace Level {
+            export interface Config {
+                min: number;
+                max: number;
+            }
+
+            export interface Function <T> {
+                unit: T;
+                config: Config;
+            }
+        }
+
+        export namespace State {
+            export interface Config {
+                stateText: string[];
+            }
+
+            export interface Function <T> {
+                unit: T;
+                config: Config;
+            }
+        }
+    }
 }
 
 
