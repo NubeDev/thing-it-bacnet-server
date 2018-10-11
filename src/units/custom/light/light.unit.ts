@@ -93,12 +93,10 @@ export class LightUnit extends CustomUnit {
     }
 
     /**
-
-    /**
-     * simulateSetpoint - generates start value of the setpoint,
-     * gets new payload for setpointFeedback unit "Present Value" BACnet property,
-     * based on the setpointModification unit payload,
-     * sets new payload in setpointFeedback "Present Value" property.
+     * simulateLevel - generates start value of the dimmer level,
+     * gets new payload for levelFeedback unit "Present Value" BACnet property,
+     * based on the levelModification unit payload,
+     * sets new payload in levelFeedback "Present Value" property.
      *
      * @param  {LevelFunction} feedbackFn - thermostat's setpoint Feedback function
      * @param  {LevelFunction} modificationFnFn - thermostat's setpoint Modification function
@@ -132,10 +130,10 @@ export class LightUnit extends CustomUnit {
     }
 
     /**
-     * simulateMode - sets "stateText" BACNet property to mode unit,
-     * gets new payload for mode unit "Present Value" BACnet property,
-     * based on the difference between setpoint and temperature,
-     * sets new payload in mode unit's "Present Value" property.
+     * simulateState - sets "stateText" BACNet property to stateFeedback unit,
+     * gets new payload for stateFeedback unit "Present Value" BACnet property,
+     * based on stateModification unit present value & dimmerLEvel present value,
+     * sets new payload in stateModificationunit's "Present Value" property.
      *
      * @param  {ModeFunction} unitFn - thermostat's temperature function
      * @return {void}
