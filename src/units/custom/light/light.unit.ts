@@ -26,12 +26,13 @@ import { BACnetLightUnitFunctions } from '../../../core/enums';
 import { AnalogValueUnit } from '../../native/analog/analog-value/analog-value.unit';
 import { MultiStateValueUnit } from '../../native/multi-state/multi-state-value/multi-state-value.unit';
 
-type LevelFunction = Units.Light.Level.Function<AnalogValueUnit>;
+type LevelFeedbackFunction = Units.Light.Level.Feedback.Function<AnalogValueUnit>;
+type LevelModificationFunction = Units.Light.Level.Modification.Function<AnalogValueUnit>;
 type StateFunction = Units.Light.State.Function<MultiStateValueUnit>;
 
 export class LightUnit extends CustomUnit {
     public readonly className: string = 'LightUnit';
-    public storage: AliasMap<LevelFunction|StateFunction>;
+    public storage: AliasMap<LevelFeedbackFunction|LevelModificationFunction|StateFunction>;
     private sLevelFlow: BehaviorSubject<number>;
 
     /**
@@ -51,8 +52,8 @@ export class LightUnit extends CustomUnit {
      * @return {void}
      */
     public startSimulation (): void {
-        const levelFeedbackFn = this.storage.get(BACnetLightUnitFunctions.LevelFeedback) as LevelFunction;
-        const levelModificationFn = this.storage.get(BACnetLightUnitFunctions.LevelModification) as LevelFunction;
+        const levelFeedbackFn = this.storage.get(BACnetLightUnitFunctions.LevelFeedback) as LevelFeedbackFunction;
+        const levelModificationFn = this.storage.get(BACnetLightUnitFunctions.LevelModification) as LevelModificationFunction
         if (levelFeedbackFn.unit && levelModificationFn.unit) {
             this.simulateLevel(levelFeedbackFn, levelModificationFn)
         }
@@ -82,10 +83,10 @@ export class LightUnit extends CustomUnit {
     /**
      * genStartPresentValue - generates start value payload for "Present Value" BACnet property.
      *
-     * @param  {LevelFunction} unitFn - unit function
+     * @param  {LevelModificationFunction} unitFn - unit function
      * @return {BACNet.Types.BACnetReal} - payload of present value property
      */
-    private genStartPresentValue (unitFn: LevelFunction): BACNet.Types.BACnetReal {
+    private genStartPresentValue (unitFn: LevelModificationFunction): BACNet.Types.BACnetReal {
         const config = unitFn.config;
         let value = config.min + (config.max - config.min) / 2;
         value = _.round(value, 1)
@@ -102,9 +103,8 @@ export class LightUnit extends CustomUnit {
      * @param  {LevelFunction} modificationFnFn - thermostat's setpoint Modification function
      * @return {void}
      */
-    private simulateLevel(feedbackFn: LevelFunction, modificationFn: LevelFunction): void {
+    private simulateLevel(feedbackFn: LevelFeedbackFunction, modificationFn: LevelModificationFunction): void {
         const feedbackUnit = feedbackFn.unit;
-        const feedbackConfig = feedbackFn.config;
         const modificationUnit = modificationFn.unit;
         const modificationConfig = modificationFn.config;
         modificationUnit.storage.setFlowHandler(BACnetUnitDataFlow.Update, BACNet.Enums.PropertyId.presentValue, (notif: UnitStorageProperty) => {
@@ -197,8 +197,7 @@ export class LightUnit extends CustomUnit {
      */
     public getConfigWithEDE (unitConfig: Units.Custom.Config, edeUnit: IEDEUnit): Units.Custom.Config {
         let max: number, min: number, freq: number;
-        if ( LevelFeedbackAliases.includes(edeUnit.custUnitFn)
-            || LevelModificationAliases.includes(edeUnit.custUnitFn)) {
+        if ( LevelModificationAliases.includes(edeUnit.custUnitFn)) {
 
             max = _.isNumber(edeUnit.custUnitMax) && _.isFinite(edeUnit.custUnitMax)
                 ? edeUnit.custUnitMax : unitConfig.max;
