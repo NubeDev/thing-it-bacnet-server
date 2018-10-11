@@ -169,6 +169,7 @@ export class LightUnit extends CustomUnit {
             id: BACNet.Enums.PropertyId.presentValue,
             payload: startPayload,
         });
+        this.sLevelFlow = new BehaviorSubject(startPayload.value);
     }
 
     /**
