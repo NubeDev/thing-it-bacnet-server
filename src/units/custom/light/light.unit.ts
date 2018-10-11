@@ -93,47 +93,6 @@ export class LightUnit extends CustomUnit {
     }
 
     /**
-     * simulateTemperature - gets new payload for temperature unit "Present Value" BACnet property,
-     * creates the periodic timer to update the payload of the "Present Value",
-     * sets new payload in "Present Value" property.
-     *
-     * @param  {TemperatureFunction} unitFn - thermostat's temperature function
-     * @return {void}
-     */
-    private simulateTemperature (unitFn: LevelFunction): void {
-        // const tempUnit = unitFn.unit;
-        // const tempConfig = unitFn.config;
-        // const tempStartPayload = this.genStartPresentValue(unitFn);
-        // tempUnit.storage.setProperty({
-        //     id: BACNet.Enums.PropertyId.presentValue,
-        //     payload: tempStartPayload,
-        // });
-        // this.sTempFlow = new BehaviorSubject<number>(tempStartPayload.value);
-
-        // let temperature = this.getUnitValue(tempUnit);
-        // Observable.timer(0, tempConfig.freq)
-        //     .subscribe(() => {
-        //         const setpointUnit = this.storage.get(BACnetLightUnitFunctions.SetpointFeedback).unit as AnalogValueUnit;
-        //         const setpoint = this.getUnitValue(setpointUnit);
-        //         if (_.isNil(setpoint) || temperature === setpoint) {
-        //             return;
-        //         }
-
-        //         if (temperature > setpoint) {
-        //             temperature -= 0.1;
-
-        //         } else if (temperature < setpoint) {
-        //             temperature += 0.1;
-        //         }
-        //         temperature = _.round(temperature, 1);
-        //         tempUnit.storage.setProperty({
-        //             id: BACNet.Enums.PropertyId.presentValue,
-        //             payload: new BACNet.Types.BACnetReal(temperature)
-        //         });
-        //         this.sTempFlow.next(temperature);
-
-        //     });
-    }
 
     /**
      * simulateSetpoint - generates start value of the setpoint,
