@@ -15,6 +15,13 @@ export enum BACnetThermostatUnitFunctions {
     Mode = 'mode'
 }
 
+export enum BACnetLightUnitFunctions {
+    LevelFeedback = 'levelFeedback',
+    LevelModification = 'levelModification',
+    StateFeedback = 'stateFeedback',
+    StateModification = 'stateModification'
+}
+
 export enum BACnetUnitFamily {
     Native = 'native',
     Analog = 'analog',
