@@ -64,10 +64,10 @@ Implements the `BACNet thermostat` logic.
 Aliases: `2`, `th`, `thermo`, `thermostat`.
 
 Functions:
-- `setpoint-feedback` (aliases: `0`, `setpointFeedback`, `setpoint-feedback`, `setpointFb`, `setpoint-fb`): implements the logic of thermostat's `SetpointFeedback` object of `Analog Value` type. Returns the value of the current thermostat setpoint
-- `setpoint-modification` (aliases: `1`, `setpointModification`, `setpoint-modification`, `setpointMod`, `setpoint-mod`): implements the logic of thermostat's `SetpointModification` object of `Analog Value` type. When its own `Present Value` has been changed, increases/decreases the `Present Value` property of `setpoint-feedback` object on its own `Present Vlaue` property value.
-- `temperature` (aliases: `2`, `temperature`): implements the logic of thermostat's `Temperature` object of `Analog Value` type. Returns the simulated value of the area's tempreture. When setpoint is set, changes the temperature Object's `Present Value` property by 0,1 until it fit the setpoint value.
-- `mode` (aliases: `3`, `mode`): implements the logic of thermostat's `Mode` object of `MultiState Value` type. Represents the mode of the thermostats with two possible states: `HEAT`(when the temperature increases and sepoint > temperature) or `COOL`(when the temperature decreases and sepoint < temperature).
+- `setpoint-feedback` (aliases: `0`, `setpointFeedback`, `setpoint-feedback`, `setpointFb`, `setpoint-fb`): implements the logic of thermostat's `setpointFeedbackObject` of `Analog Value` type. Returns the value of the current thermostat setpoint
+- `setpoint-modification` (aliases: `1`, `setpointModification`, `setpoint-modification`, `setpointMod`, `setpoint-mod`): implements the logic of thermostat's `setpointModificationObject` of `Analog Value` type. When its own `Present Value` has been changed, increases/decreases the `Present Value` property of `setpoint-feedback` object on its own `Present Vlaue` property value.
+- `temperature` (aliases: `2`, `temperature`): implements the logic of thermostat's `temperatureObject` of `Analog Value` type. Returns the simulated value of the area's tempreture. When setpoint is set, changes the temperature Object's `Present Value` property by 0,1 until it fit the setpoint value.
+- `mode` (aliases: `3`, `mode`): implements the logic of thermostat's `modeObject` of `MultiState Value` type. Represents the mode of the thermostats with two possible states: `HEAT`(when the temperature increases and sepoint > temperature) or `COOL`(when the temperature decreases and sepoint < temperature).
 
 # EDE file
 
