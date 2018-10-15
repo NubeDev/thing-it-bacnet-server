@@ -152,3 +152,14 @@ State texts file should have a specific set of columns. Decreasing or changing a
 
 Specify the number of `state-text-reference` in the corresponding column of the EDE file. The row from state texts file with the same `#Reference number` will be used for that unit (usually MultiState or Binary).
 
+# Port mappings
+
+If you run multiple `bacnet-server` instances (using `start-docker-server`) to interact with several TIN devices, you should specify the `portMapings` to assign which port should be used for every container to send its messages to dedicated TIN device. Example `portMappings` configuration:  
+`module.exports = {`  
+ `   'YOUr_CONTAINER_1': port1,`  
+ `   'YOUr_CONTAINER_2': port2,`  
+`    'YOUr_CONTAINER_3': port3,`  
+... etc.   
+`}`,  
+where `YOUR_CONTAINER_X` - string key, equal to the name of EDE file that was used to create container, `portX` - number that represents the port to use for this container's messages.  
+Port mapings configuration should be located in `/thing-it-bacnet-server/addons/docker/docker.proxy.config.ts`
