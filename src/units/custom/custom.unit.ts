@@ -6,9 +6,7 @@ import {
 } from '../../core/errors';
 
 import {
-    ICustomFunction,
-    ICustomFunctionConfig,
-    ICustomMetadata,
+    Units,
 } from '../../core/interfaces';
 
 import { IEDEUnit } from '../../core/interfaces';
@@ -19,7 +17,7 @@ import { NativeUnit } from '../native/native.unit';
 
 export class CustomUnit {
     public readonly className: string = 'CustomUnit';
-    public storage: AliasMap<ICustomFunction<NativeUnit>>;
+    public storage: AliasMap<Units.Custom.Function<NativeUnit>>;
 
     constructor () {
     }
@@ -42,7 +40,7 @@ export class CustomUnit {
 
         const newConfig = this.getConfigWithEDE(custFunc.config, edeUnit);
 
-        const newCustFunc: ICustomFunction<NativeUnit> = _.assign({}, custFunc, {
+        const newCustFunc: Units.Custom.Function<NativeUnit> = _.merge({}, custFunc, {
             unit: unit,
             config: newConfig,
         });
@@ -71,21 +69,10 @@ export class CustomUnit {
      * getConfigWithEDE - concatenates the default unit configuration with EDE
      * configuration.
      *
-     * @param  {ICustomFunctionConfig} unitConfig - default unit configuration
-     * @param  {IEDEUnit} edeUnit - EDE configuration
-     * @return {ICustomFunctionConfig} - unit configuration
+     * @return {void} - unit configuration
      */
-    public getConfigWithEDE (unitConfig: ICustomFunctionConfig, edeUnit: IEDEUnit): ICustomFunctionConfig {
-        let max: number = _.isNumber(edeUnit.custUnitMax) && _.isFinite(edeUnit.custUnitMax)
-            ? edeUnit.custUnitMax : unitConfig.max;
+    public getConfigWithEDE (unitConfig, edeUnit): void {
 
-        let min: number = _.isNumber(edeUnit.custUnitMin) && _.isFinite(edeUnit.custUnitMin)
-            ? edeUnit.custUnitMin : unitConfig.min;
-
-        let freq: number = _.isNumber(edeUnit.custUnitFreq) && _.isFinite(edeUnit.custUnitFreq)
-            ? edeUnit.custUnitFreq : unitConfig.freq;
-
-        return { min, max, freq };
     }
 
     /**
@@ -94,7 +81,7 @@ export class CustomUnit {
      * @param  {ICustomMetadata} metadata - metadata object
      * @return {void}
      */
-    public addMetadata (metadata: ICustomMetadata[]): void {
+    public addMetadata (metadata: Units.Custom.Metadata[]): void {
         _.map(metadata, (metaunit) => {
             this.storage.addAlias(metaunit.alias);
 

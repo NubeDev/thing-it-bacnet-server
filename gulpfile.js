@@ -1,5 +1,4 @@
 const gulp = require('gulp');
-const runSequence = require('run-sequence');
 const ts = require('gulp-typescript');
 const tslint = require('gulp-tslint');
 const mocha = require('gulp-mocha');
@@ -22,16 +21,16 @@ gulp.task('clean:test', () => {
         .pipe(clean({ force: true }));
 });
 
-gulp.task('build:code', ['clean:code'], () => {
+gulp.task('build:code', gulp.series( 'clean:code', function buildCode() {
     return tsProject.src()
         .pipe(tsProject())
         .js.pipe(gulp.dest(folderApp));
-});
-gulp.task('build:test', ['clean:test'], () => {
+}));
+gulp.task('build:test', gulp.series( 'clean:test', function buildTest() {
     return tsTest.src()
         .pipe(tsTest())
         .js.pipe(gulp.dest(folderTests));
-});
+}));
 
 gulp.task('start:test:unit', () => {
     return gulp.src([ `${folderTests}/**/*.spec.js`, `!${folderTests}/thing-it-tests/**/*.spec.js` ])
@@ -61,36 +60,47 @@ gulp.task('tslint:code', () =>
         .pipe(tslint.report())
 );
 
-gulp.task('watch:test:unit', [ 'tslint:test', 'build:test' ], () => {
-    runSequence('start:test:unit');
-    gulp.watch([ `${folderSrc}/**/*.ts` ], () => {
-        runSequence('tslint:test', 'build:test', 'start:test:unit');
-    });
-});
-gulp.task('watch:test:mock', [ 'tslint:test', 'build:test' ], () => {
-    runSequence('start:test:mock');
-    gulp.watch([ `${folderSrc}/**/*.ts` ], () => {
-        runSequence('tslint:test', 'build:test', 'start:test:mock');
-    });
-});
+gulp.task('watch:test:unit', gulp.series( 
+    'tslint:test',
+    'build:test' ,
+    'start:test:unit',
+    function watchTestUnit() {
+        gulp.watch([ `${folderSrc}/**/*.ts` ], gulp.series('tslint:test', 'build:test', 'start:test:unit'));
+    })
+);
 
-gulp.task('watch:build:test', [ 'tslint:test', 'build:test' ], () => {
-    gulp.watch([ `${folderSrc}/**/*.ts` ], () => {
-        runSequence('tslint:test', 'build:test');
-    });
-});
+gulp.task('watch:test:mock', gulp.series(
+    'tslint:test',
+    'build:test',
+    'start:test:mock',
+    function watchTestMock() {
+        gulp.watch([ `${folderSrc}/**/*.ts` ], gulp.series('tslint:test', 'build:test', 'start:test:mock'));
+    })
+);
 
-gulp.task('watch:build:code', [ 'tslint:code', 'build:code' ], () => {
-    gulp.start('start');
-    gulp.watch([ `${folderSrc}/**/*.ts`, '!./node_modules/**/*', `!${folderSrc}/**/*.spec.ts` ], () => {
-        runSequence('tslint:code', 'build:code', 'start');
-    });
-});
+gulp.task('watch:build:test', gulp.series( 
+    'tslint:test',
+    'build:test' ,
+    function watchBuildTest() {
+        gulp.watch([ `${folderSrc}/**/*.ts` ], gulp.series('tslint:test', 'build:test'));
+    })
+);
 
 let spawn = require('child_process').spawn;
 let node;
 
 gulp.task('start', () => {
     if (node) node.kill();
-    node = spawn('node', [`${folderApp}/index.js`], { stdio: 'inherit' });
+    node = spawn('node', [`${folderApp}/index.js`, `--filePath=/home/geass/GitHub/thing-it-bacnet-server/test_data/example.csv`], { stdio: 'inherit' });
 });
+
+gulp.task('watch:build:code', gulp.series(
+    'tslint:code',
+    'build:code',
+    'start',
+    function watchBuildCode() {
+        gulp.watch([ `${folderSrc}/**/*.ts`, '!./node_modules/**/*', `!${folderSrc}/**/*.spec.ts` ], gulp.series('tslint:code', 'build:code', 'start'));
+    })
+);
+
+

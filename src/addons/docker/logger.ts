@@ -27,6 +27,10 @@ export class Logger {
         this._logger.info(`[${this.label}]: ${message}`)
     }
 
+    warn( message: string) {
+        this._logger.warn(`[${this.label}]: ${message}`)
+    }
+
     debug(message: string) {
         this._logger.debug(`[${this.label}]: ${message}`)
     }

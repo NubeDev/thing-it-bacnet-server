@@ -10,7 +10,7 @@ import {
     UnitStorageProperty
 } from '../../core/interfaces';
 
-import { IEDEUnit } from '../../core/interfaces';
+import { IEDEUnit, IStateTextsUnit } from '../../core/interfaces';
 
 import { NativeMetadata } from './native.metadata';
 import { UnitStorage } from '../unit.storage';
@@ -35,7 +35,7 @@ export class NativeUnit {
      * @param  {IEDEUnit} edeUnit - property ID
      * @return {void}
      */
-    public initUnit (edeUnit: IEDEUnit): void {
+    public initUnit (edeUnit: IEDEUnit, stateTextUnits?: IStateTextsUnit[]): void {
         // Create and init unit storage
         this.storage = new UnitStorage();
         this.storage.initStorage();

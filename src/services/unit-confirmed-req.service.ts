@@ -6,7 +6,6 @@ import { InputSocket, OutputSocket, ServiceSocket } from '../core/sockets';
 
 import { UnitStorageManager } from '../managers/unit-storage.manager';
 import { SubscriptionManager } from '../managers/subscription.manager';
-
 import * as BACNet from 'tid-bacnet-logic';
 
 export class UnitConfirmedReqService {
@@ -98,15 +97,26 @@ export class UnitConfirmedReqService {
         const devObjIdProp = device.storage.getProperty(BACNet.Enums.PropertyId.objectIdentifier);
         const devObjId = devObjIdProp.payload as BACNet.Types.BACnetObjectId;
 
+        let expirationMoment;
+        if (lifetime.value > 0) {
+            expirationMoment = Date.now() + lifetime.value;
+        }
+
         let COVSubscription = unitStorage
             .subscribeToUnit(unitObjId)
             .subscribe((reportedProps) => {
-                const msgCovNotification = BACNet.Services.UnconfirmedReqService.covNotification({
+                const COVNotification: BACNet.Interfaces.UnconfirmedRequest.Write.COVNotification = {
                     subProcessId: subProcessId,
                     devId: devObjId,
                     objId: unitObjId,
                     listOfValues: reportedProps,
-                });
+                };
+                if (expirationMoment) {
+                    const timeRemaining = expirationMoment - Date.now();
+                    COVNotification.timeRemaining = new BACNet.Types.BACnetUnsignedInteger(timeRemaining);
+                }
+                const msgCovNotification = BACNet.Services.UnconfirmedReqService.covNotification(COVNotification);
+
                 outputSoc.send(msgCovNotification, `Unconfirmed Request - covNotification`);
             });
         const subId = this.getSubId(unitObjId, subProcessId);
