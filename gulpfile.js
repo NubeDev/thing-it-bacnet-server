@@ -1,5 +1,4 @@
 const gulp = require('gulp');
-const runSequence = require('run-sequence');
 const ts = require('gulp-typescript');
 const tslint = require('gulp-tslint');
 const mocha = require('gulp-mocha');
@@ -61,30 +60,17 @@ gulp.task('tslint:code', () =>
         .pipe(tslint.report())
 );
 
-gulp.task('watch:test:unit', gulp.series(  'tslint:test', 'build:test' , () => {
-    runSequence('start:test:unit');
-    gulp.watch([ `${folderSrc}/**/*.ts` ], () => {
-        runSequence('tslint:test', 'build:test', 'start:test:unit');
-    });
+gulp.task('watch:test:unit', gulp.series(  'tslint:test', 'build:test' , 'start:test:unit', () => {
+
+    gulp.watch([ `${folderSrc}/**/*.ts` ], gulp.series('tslint:test', 'build:test', 'start:test:unit'));
 }));
-gulp.task('watch:test:mock', gulp.series(  'tslint:test', 'build:test' , () => {
-    runSequence('start:test:mock');
-    gulp.watch([ `${folderSrc}/**/*.ts` ], () => {
-        runSequence('tslint:test', 'build:test', 'start:test:mock');
-    });
+gulp.task('watch:test:mock', gulp.series(  'tslint:test', 'build:test', 'start:test:mock', () => {
+
+    gulp.watch([ `${folderSrc}/**/*.ts` ], gulp.series('tslint:test', 'build:test', 'start:test:mock'));
 }));
 
 gulp.task('watch:build:test', gulp.series(  'tslint:test', 'build:test' , () => {
-    gulp.watch([ `${folderSrc}/**/*.ts` ], () => {
-        runSequence('tslint:test', 'build:test');
-    });
-}));
-
-gulp.task('watch:build:code', gulp.series(  'tslint:code', 'build:code' , () => {
-    gulp.start('start');
-    gulp.watch([ `${folderSrc}/**/*.ts`, '!./node_modules/**/*', `!${folderSrc}/**/*.spec.ts` ], () => {
-        runSequence('tslint:code', 'build:code', 'start');
-    });
+    gulp.watch([ `${folderSrc}/**/*.ts` ], gulp.series('tslint:test', 'build:test'));
 }));
 
 let spawn = require('child_process').spawn;
@@ -94,3 +80,10 @@ gulp.task('start', () => {
     if (node) node.kill();
     node = spawn('node', [`${folderApp}/index.js`], { stdio: 'inherit' });
 });
+
+gulp.task('watch:build:code', gulp.series(  'tslint:code', 'build:code', 'start', () => {
+
+    gulp.watch([ `${folderSrc}/**/*.ts`, '!./node_modules/**/*', `!${folderSrc}/**/*.spec.ts` ], gulp.series('tslint:code', 'build:code', 'start'));
+}));
+
+
