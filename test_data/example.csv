@@ -1,0 +1,12 @@
+,,,,,,,,,,,,,,,,,,,,,
+Project_Name,,,,,,,,,,,,,,,,,,,,,
+VERSION_OF_REFERENCEFILE,,,,,,,,,,,,,,,,,,,,,
+TIMESTAMP_OF_LAST_CHANGE,15.10.18,,,,,,,,,,,,,,,,,,,,
+AUTHOR_OF_LAST_CHANGE,,,,,,,,,,,,,,,,,,,,,
+VERSION_OF_LAYOUT,1.0.0.3,,,,,,,,,,,,,,,,,,,,
+# mandatory,mandatory,mandatory,mandatory,mandatory,optional,optional,optional,optional,optional,optional,optional,optional,optional,optional,optional,optional,optional,optional,optional,optional,optional
+# keyname,device obj.-instance,object-name,object-type,object-instance,description,present-value-default,min-present-value,max-present-value,commandable,supports COV,hi-limit,low-limit,state-text-reference,unit-code,vendor-specific-address,cust.-unit-type,cust.-unit-id,cust.-unit-fn,cust.-min.-value,cust.-max.-value,cust.-freq
+OBJECT_DEVICE:35,35,Test_device,8,35,,,,,,,,,,,,,,,,,
+OBJECT_BINARY_VALUE:1,35,Test_binary_value,5,1,,,,,,,,,,,,1,,0,0,1,5000
+OBJECT_ANALOG_VALUE:2,35,Test_analog_value,2,2,,50,400,900,,,,,,0,,1,,1,400,900,5000
+OBJECT_MULTISTATE_VALUE:19,35,Test_multistate_value,3,3,,,,,,,,,,,,1,,0,1,2,5000
