@@ -91,7 +91,7 @@ let node;
 
 gulp.task('start', () => {
     if (node) node.kill();
-    node = spawn('node', [`${folderApp}/index.js`], { stdio: 'inherit' });
+    node = spawn('node', [`${folderApp}/index.js`, `--filePath=/home/geass/GitHub/thing-it-bacnet-server/test_data/example.csv`], { stdio: 'inherit' });
 });
 
 gulp.task('watch:build:code', gulp.series(
