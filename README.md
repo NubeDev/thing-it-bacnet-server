@@ -127,3 +127,28 @@ Application processes next optional EDE columns:
 ### File references
 
 Currently, application is unable to process additional file references inside the main EDE file. Entries with object type 10 will be processed as `default` native units
+
+# State texts file
+
+## Restrictions
+
+State texts file name should consist of three parts:
+- the same name  EDE file have (without `.csv` extension)
+- separator ( `-` or `_` )
+- one of possible suffix aliases: `states`, `state-texts`, `States`, `State-Texts`, `StateTexts`.
+
+State texts file should have a specific set of columns. Decreasing or changing an order in the list of columns provided below will cause errors and incorrect reading of state texts data.
+
+1. `#Reference number`,
+2. `Text 1 or Inactive-Text`,
+3. `Text 2 or Active-Text`,
+4. `Text 3`,
+5. `Text4`,
+6. `Text 4`,
+7. `Text 5`,  
+... etc (you can specify as many state texts as you want).  
+
+## Usage
+
+Specify the number of `state-text-reference` in the corresponding column of the EDE file. The row from state texts file with the same `#Reference number` will be used for that unit (usually MultiState or Binary).
+
