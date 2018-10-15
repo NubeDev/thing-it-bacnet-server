@@ -7,8 +7,6 @@ export const SetpointFeedbackAliases: string[] = [
     'setpoint-feedback',
     'setpointFb',
     'setpoint-fb',
-    'feedback',
-    'fb'
 ];
 
 export const SetpointModificationAliases: string[] = [
@@ -17,8 +15,6 @@ export const SetpointModificationAliases: string[] = [
     'setpoint-modification',
     'setpointMod',
     'setpoint-mod',
-    'modification',
-    'modif'
 ];
 
 export const TemperatureAliases: string[] = [
