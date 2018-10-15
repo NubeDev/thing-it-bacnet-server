@@ -99,8 +99,8 @@ export class LightUnit extends CustomUnit {
      * based on the levelModification unit payload,
      * sets new payload in levelFeedback "Present Value" property.
      *
-     * @param  {LevelFunction} feedbackFn - thermostat's setpoint Feedback function
-     * @param  {LevelFunction} modificationFnFn - thermostat's setpoint Modification function
+     * @param  {LevelFeedbackFunction} feedbackFn - thermostat's setpoint Feedback function
+     * @param  {LevelModificationFunction} modificationFnFn - thermostat's setpoint Modification function
      * @return {void}
      */
     private simulateLevel(feedbackFn: LevelFeedbackFunction, modificationFn: LevelModificationFunction): void {
@@ -112,8 +112,13 @@ export class LightUnit extends CustomUnit {
             const levelModificationPayload = notif.payload as BACNet.Types.BACnetReal;
             let levelModificationValue = +levelModificationPayload.getValue();
 
-            levelModificationValue = levelModificationValue > modificationConfig.max ? modificationConfig.max :
-            levelModificationValue < modificationConfig.min ? modificationConfig.min : levelModificationValue;
+            if (levelModificationValue > modificationConfig.max) {
+                levelModificationValue =  modificationConfig.max;
+            }
+
+            if (levelModificationValue < modificationConfig.min) {
+                levelModificationValue =  modificationConfig.min;
+            }
 
             feedbackUnit.storage.updateProperty({
                 id: BACNet.Enums.PropertyId.presentValue,
@@ -135,7 +140,8 @@ export class LightUnit extends CustomUnit {
      * based on stateModification unit present value & dimmerLEvel present value,
      * sets new payload in stateModificationunit's "Present Value" property.
      *
-     * @param  {ModeFunction} unitFn - thermostat's temperature function
+     * @param {StateFunction} feedbackFn - light's state feedback function
+     * @param {StateFunction} modificationFn - light's state modification function
      * @return {void}
      */
     private simulateState(feedbackFn: StateFunction, modificationFn: StateFunction): void {
@@ -162,13 +168,17 @@ export class LightUnit extends CustomUnit {
             }
         });
         let statePresentValue = 1;
+
+        // setting the start value of state feedback unit
         feedbackUnit.storage.updateProperty({
             id: BACNet.Enums.PropertyId.presentValue,
             payload: new BACNet.Types.BACnetUnsignedInteger(statePresentValue),
         });
+
         if (this.sLevelFlow) {
             this.sLevelFlow.subscribe((level) => {
                 let newStatePrValue = null;
+
                 if (level > 0) {
                     newStatePrValue = 1;
                 } else if (level === 0 ) {
@@ -196,7 +206,7 @@ export class LightUnit extends CustomUnit {
      * @return {ICustomFunctionConfig} - unit configuration
      */
     public getConfigWithEDE (unitConfig: Units.Custom.Config, edeUnit: IEDEUnit): Units.Custom.Config {
-        let max: number, min: number, freq: number;
+        let max: number, min: number;
         if ( LevelModificationAliases.includes(edeUnit.custUnitFn)) {
 
             max = _.isNumber(edeUnit.custUnitMax) && _.isFinite(edeUnit.custUnitMax)
