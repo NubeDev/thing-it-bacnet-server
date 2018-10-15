@@ -9,4 +9,4 @@ VERSION_OF_LAYOUT,1.0.0.3,,,,,,,,,,,,,,,,,,,,
 OBJECT_DEVICE:35,35,Test_device,8,35,,,,,,,,,,,,,,,,,
 OBJECT_BINARY_VALUE:1,35,Test_binary_value,5,1,,,,,,,,,,,,1,,0,0,1,5000
 OBJECT_ANALOG_VALUE:2,35,Test_analog_value,2,2,,50,400,900,,,,,,0,,1,,1,400,900,5000
-OBJECT_MULTISTATE_VALUE:19,35,Test_multistate_value,3,3,,,,,,,,,,,,1,,0,1,2,5000
+OBJECT_MULTISTATE_VALUE:19,35,Test_multistate_value,19,3,,,,,,,,,1,,,1,,0,1,2,5000

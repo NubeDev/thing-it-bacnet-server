@@ -1,0 +1,4 @@
+# State Text Reference,,,,,,,
+#Reference Number,Text 1 or Inactive-Text,Text 2 or Active-Text,Text 3,Text 4,Text 5,...,Text n
+1,INACTIVE,ACTIVE,,,,,
+2,NO CONTROL,CONTROL,,,,,
