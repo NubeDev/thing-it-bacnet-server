@@ -26,7 +26,7 @@ export class ProxyUDPServer {
         let outputPortDefault: number = null;
         if (_.isEmpty(portMappings)) {
             this.logger.warn('portMappings are not specified! Using --outputPort value');
-            if (outputPortDefault) {
+            if (outputPort) {
                 outputPortDefault = outputPort;
                 this.logger.warn(`All messages will be sent to outputPort ${outputAddr}:${outputPort}`)
             } else {
