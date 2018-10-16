@@ -100,7 +100,7 @@ export class LightUnit extends CustomUnit {
      * sets new payload in levelFeedback "Present Value" property.
      *
      * @param  {LevelFeedbackFunction} feedbackFn - thermostat's setpoint Feedback function
-     * @param  {LevelModificationFunction} modificationFnFn - thermostat's setpoint Modification function
+     * @param  {LevelModificationFunction} modificationFn - thermostat's setpoint Modification function
      * @return {void}
      */
     private simulateLevel(feedbackFn: LevelFeedbackFunction, modificationFn: LevelModificationFunction): void {
