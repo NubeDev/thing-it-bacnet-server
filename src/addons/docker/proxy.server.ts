@@ -26,7 +26,7 @@ export class ProxyUDPServer {
         let outputPortDefault: number = null;
         if (_.isEmpty(portMappings)) {
             this.logger.warn('portMappings are not specified! Using --outputPort value');
-            if (outputPortDefault) {
+            if (outputPort) {
                 outputPortDefault = outputPort;
                 this.logger.warn(`All messages will be sent to outputPort ${outputAddr}:${outputPort}`)
             } else {
@@ -63,8 +63,8 @@ export class ProxyUDPServer {
             this.udpSocket.close()
         });
         this.udpSocket.on('listening', () => {
-            const address = this.udpSocket.address() as AddressInfo;
-            this.logger.info(`listening ${address.address}:${address.port}`);
+            const socketInfo = this.udpSocket.address() as AddressInfo;
+            this.logger.info(`listening ${socketInfo.address}:${socketInfo.port}`);
         });
         this.udpSocket.bind(this.port);
         this.logger.info('Successfully started')

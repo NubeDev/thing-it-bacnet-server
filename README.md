@@ -34,7 +34,7 @@ with wrapping each bacnet-server instance with docker container
 
 Application implements two types of units:
 - `native` units - implements simulation logic to change properties of the `BACnet Object`s by the algorithms of the `BACnet` protocol.
-- `custom` units - implements simulation logic of `custom` devices. Eg: `noop`, `function`, `termostat`, `jalousie` etc.
+- `custom` units - implements simulation logic of `custom` devices. Eg: `noop`, `function`, `thermostat`, `light` etc.
 
 ## Custom units
 
@@ -155,7 +155,7 @@ Specify the number of `state-text-reference` in the corresponding column of the 
 # Port mappings
 
 If you run multiple `bacnet-server` instances (using `start-docker-server`) to interact with several TIN devices, you should specify the `portMapings` to assign which port should be used for every container to send its messages to dedicated TIN device. Example `portMappings` configuration:  
-`module.exports = {`  
+`export const portMappings = {`  
  `   'YOUr_CONTAINER_1': port1,`  
  `   'YOUr_CONTAINER_2': port2,`  
 `    'YOUr_CONTAINER_3': port3,`  
