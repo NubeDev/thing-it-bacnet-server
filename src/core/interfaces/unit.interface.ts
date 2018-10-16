@@ -56,7 +56,7 @@ export namespace Units {
     }
 
     /**
-     * Function Unit
+     * Functional Unit
      */
     export namespace Functional {
         export interface Metadata {
@@ -79,9 +79,6 @@ export namespace Units {
         }
     }
 
-    /**
-     * Thermostat
-     */
     export namespace Thermostat {
         export interface Metadata {
             alias: string|string[];
@@ -125,9 +122,6 @@ export namespace Units {
         }
     }
 
-    /**
-     * Light
-     */
     export namespace Light {
         export interface Metadata {
             alias: string|string[];
@@ -166,6 +160,48 @@ export namespace Units {
             }
 
             export interface Function <T> {
+                unit: T;
+                config: Config;
+            }
+        }
+    }
+
+    export namespace Jalousie {
+
+        export interface Metadata {
+            alias: string|string[];
+            config: Position.Config|Rotation.Config|Action.Config;
+        }
+
+        export namespace Position {
+            export interface Config {
+                max: number;
+                min: number;
+            }
+
+            export interface Function<T> {
+                unit: T;
+                config: Config;
+            }
+        }
+
+        export namespace Rotation {
+            export interface Config extends Position.Config {
+
+            }
+
+            export interface Function<T> {
+                unit: T;
+                config: Config;
+            }
+        }
+
+        export namespace Action {
+            export interface Config {
+                stateText: string[];
+            }
+
+            export interface Function<T> {
                 unit: T;
                 config: Config;
             }
