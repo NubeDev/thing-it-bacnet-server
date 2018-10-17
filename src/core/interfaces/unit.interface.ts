@@ -36,12 +36,12 @@ export namespace Units {
     export namespace Custom {
         export interface Metadata {
             alias: string|string[];
-            config: Functional.Config|Thermostat.Temperature.Config|Thermostat.Setpoint.Config|Thermostat.Mode.Config;
+            config: Config;
         }
 
         export interface Function <T> {
             unit: T;
-            config: Functional.Config|Thermostat.Temperature.Config|Thermostat.Setpoint.Config|Thermostat.Mode.Config;
+            config: Config;
         }
 
         export interface Config {
@@ -51,7 +51,7 @@ export namespace Units {
             max?: number;
             // Frequency
             freq?: number;
-            staeteText?: string[];
+            stateText?: string[];
         }
     }
 
