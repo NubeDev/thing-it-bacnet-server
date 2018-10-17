@@ -26,13 +26,15 @@ import { BACnetJalousieUnitFunctions } from '../../../core/enums';
 import { AnalogValueUnit } from '../../native/analog/analog-value/analog-value.unit';
 import { MultiStateValueUnit } from '../../native/multi-state/multi-state-value/multi-state-value.unit';
 
-type PositionFunction = Units.Jalousie.Position.Function<AnalogValueUnit>;
-type RotationFunction = Units.Jalousie.Rotation.Function<AnalogValueUnit>;
+type PositionFeedbackFunction = Units.Jalousie.Position.Feedback.Function<AnalogValueUnit>;
+type PositionModificationFunction = Units.Jalousie.Position.Modification.Function<AnalogValueUnit>;
+type RotationFeedbackFunction = Units.Jalousie.Rotation.Feedback.Function<AnalogValueUnit>;
+type RotationModificationFunction = Units.Jalousie.Rotation.Modification.Function<AnalogValueUnit>;
 type ActionFunction = Units.Jalousie.Action.Function<MultiStateValueUnit>;
 
 export class JalousieUnit extends CustomUnit {
     public readonly className: string = 'JalousieUnit';
-    public storage: AliasMap<PositionFunction|RotationFunction|ActionFunction>;
+    public storage: AliasMap<PositionFeedbackFunction|PositionModificationFunction|RotationFeedbackFunction|RotationModificationFunction|ActionFunction>;
     private sPositionFlow: BehaviorSubject<number>;
 
     /**
@@ -52,14 +54,14 @@ export class JalousieUnit extends CustomUnit {
      * @return {void}
      */
     public startSimulation (): void {
-        const positionFeedbackFn = this.storage.get(BACnetJalousieUnitFunctions.PositionFeedback) as PositionFunction;
-        const positionModificationFn = this.storage.get(BACnetJalousieUnitFunctions.PositionModification) as PositionFunction
+        const positionFeedbackFn = this.storage.get(BACnetJalousieUnitFunctions.PositionFeedback) as PositionFeedbackFunction;
+        const positionModificationFn = this.storage.get(BACnetJalousieUnitFunctions.PositionModification) as PositionModificationFunction
         if (positionFeedbackFn.unit && positionModificationFn.unit) {
             this.simulatePosition(positionFeedbackFn, positionModificationFn)
         }
 
-        const rotationFeedbackFn = this.storage.get(BACnetJalousieUnitFunctions.RotationFeedback) as RotationFunction;
-        const rotationModificationFn = this.storage.get(BACnetJalousieUnitFunctions.RotationModification) as RotationFunction;
+        const rotationFeedbackFn = this.storage.get(BACnetJalousieUnitFunctions.RotationFeedback) as RotationFeedbackFunction;
+        const rotationModificationFn = this.storage.get(BACnetJalousieUnitFunctions.RotationModification) as RotationModificationFunction;
         if (rotationFeedbackFn.unit && rotationModificationFn.unit) {
             this.simulateRotation(rotationFeedbackFn, rotationModificationFn)
         }
@@ -83,10 +85,10 @@ export class JalousieUnit extends CustomUnit {
     /**
      * genStartPresentValue - generates start value payload for "Present Value" BACnet property.
      *
-     * @param  {PositionModificationFunction} unitFn - unit function
+     * @param  {PositionModificationFunction|RotationModificationFunction} unitFn - unit function
      * @return {BACNet.Types.BACnetReal} - payload of present value property
      */
-    private genStartPresentValue (unitFn: PositionFunction|RotationFunction): BACNet.Types.BACnetReal {
+    private genStartPresentValue (unitFn: PositionModificationFunction|RotationModificationFunction): BACNet.Types.BACnetReal {
         const config = unitFn.config;
         let value = config.min + (config.max - config.min) / 2;
         value = _.round(value, 1)
@@ -103,7 +105,7 @@ export class JalousieUnit extends CustomUnit {
      * @param  {PositionFunction} modificationFn - thermostat's setpoint Modification function
      * @return {void}
      */
-    private simulatePosition(feedbackFn: PositionFunction, modificationFn: PositionFunction): void {
+    private simulatePosition(feedbackFn: PositionFeedbackFunction, modificationFn: PositionModificationFunction): void {
         // const feedbackUnit = feedbackFn.unit;
         // const modificationUnit = modificationFn.unit;
         // const modificationConfig = modificationFn.config;
@@ -145,7 +147,7 @@ export class JalousieUnit extends CustomUnit {
      * @param {RotationFunction} modificationFn - light's state modification function
      * @return {void}
      */
-    private simulateRotation(feedbackFn: RotationFunction, modificationFn: RotationFunction): void {
+    private simulateRotation(feedbackFn: RotationFeedbackFunction, modificationFn: RotationModificationFunction): void {
         // const feedbackUnit = feedbackFn.unit;
         // const feedbackConfig = feedbackFn.config;
         // const modificationUnit = modificationFn.unit;
