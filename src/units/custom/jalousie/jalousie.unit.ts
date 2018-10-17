@@ -113,40 +113,35 @@ export class JalousieUnit extends CustomUnit {
      * based on the levelModification unit payload,
      * sets new payload in levelFeedback "Present Value" property.
      *
-     * @param  {PositionFunction} feedbackFn - thermostat's setpoint Feedback function
-     * @param  {PositionFunction} modificationFn - thermostat's setpoint Modification function
+     * @param  {PositionFeedbackFunction} feedbackFn - thermostat's setpoint Feedback function
+     * @param  {PositionModificationFunction} modificationFn - thermostat's setpoint Modification function
      * @return {void}
      */
     private simulatePosition(feedbackFn: PositionFeedbackFunction, modificationFn: PositionModificationFunction): void {
-        // const feedbackUnit = feedbackFn.unit;
-        // const modificationUnit = modificationFn.unit;
-        // const modificationConfig = modificationFn.config;
-        // modificationUnit.storage.setFlowHandler(BACnetUnitDataFlow.Update, BACNet.Enums.PropertyId.presentValue, (notif: UnitStorageProperty) => {
-        //     modificationUnit.storage.dispatch();
-        //     const levelModificationPayload = notif.payload as BACNet.Types.BACnetReal;
-        //     let levelModificationValue = +levelModificationPayload.getValue();
+        const feedbackUnit = feedbackFn.unit;
+        const modificationUnit = modificationFn.unit;
+        const modificationConfig = modificationFn.config;
+        modificationUnit.storage.setFlowHandler(BACnetUnitDataFlow.Update, BACNet.Enums.PropertyId.presentValue, (notif: UnitStorageProperty) => {
+            modificationUnit.storage.dispatch();
+            const posModificationPayload = notif.payload as BACNet.Types.BACnetReal;
+            let posModificationValue = +posModificationPayload.getValue();
 
-        //     if (levelModificationValue > modificationConfig.max) {
-        //         levelModificationValue =  modificationConfig.max;
-        //     }
+            if (posModificationValue > modificationConfig.max) {
+                posModificationValue =  modificationConfig.max;
+            }
 
-        //     if (levelModificationValue < modificationConfig.min) {
-        //         levelModificationValue =  modificationConfig.min;
-        //     }
+            if (posModificationValue < modificationConfig.min) {
+                posModificationValue =  modificationConfig.min;
+            }
 
-        //     feedbackUnit.storage.updateProperty({
-        //         id: BACNet.Enums.PropertyId.presentValue,
-        //         payload: new BACNet.Types.BACnetReal(levelModificationValue)
-        //     });
-        //     this.sPositionFlow.next(levelModificationValue)
-        // });
-        // const startPayload = this.genStartPresentValue(feedbackFn);
-        // feedbackUnit.storage.setProperty({
-        //     id: BACNet.Enums.PropertyId.presentValue,
-        //     payload: startPayload,
-        // });
-        // this.sPositionFlow = new BehaviorSubject(startPayload.value);
-        throw new Error('Not implemented yet!');
+            this.stateModification.position = posModificationValue;
+        });
+
+        const startPayload = this.genStartPresentValue(modificationFn);
+        feedbackUnit.storage.setProperty({
+            id: BACNet.Enums.PropertyId.presentValue,
+            payload: startPayload,
+        });
     }
 
     /**
@@ -160,6 +155,32 @@ export class JalousieUnit extends CustomUnit {
      * @return {void}
      */
     private simulateRotation(feedbackFn: RotationFeedbackFunction, modificationFn: RotationModificationFunction): void {
+        const feedbackUnit = feedbackFn.unit;
+        const modificationUnit = modificationFn.unit;
+        const modificationConfig = modificationFn.config;
+        modificationUnit.storage.setFlowHandler(BACnetUnitDataFlow.Update, BACNet.Enums.PropertyId.presentValue, (notif: UnitStorageProperty) => {
+            modificationUnit.storage.dispatch();
+            const rotModificationPayload = notif.payload as BACNet.Types.BACnetReal;
+            let rotModificationValue = +rotModificationPayload.getValue();
+
+            if (rotModificationValue > modificationConfig.max) {
+                rotModificationValue =  modificationConfig.max;
+            }
+
+            if (rotModificationValue < modificationConfig.min) {
+                rotModificationValue =  modificationConfig.min;
+            }
+
+            this.stateModification.rotation = rotModificationValue;
+        });
+
+        const startPayload = this.genStartPresentValue(modificationFn);
+        feedbackUnit.storage.setProperty({
+            id: BACNet.Enums.PropertyId.presentValue,
+            payload: startPayload,
+        });
+    }
+
         // const feedbackUnit = feedbackFn.unit;
         // const feedbackConfig = feedbackFn.config;
         // const modificationUnit = modificationFn.unit;
