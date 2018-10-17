@@ -42,19 +42,19 @@ export const ActionAliases: string[] = [
 export const JalousieMetadata: Units.Jalousie.Metadata[] = [
     {
         alias: PositionFeedbackAliases,
-        config: { min: 0, max: 100 },
+        config: {},
     },
     {
         alias: PositionModificationAliases,
-        config: { min: 0, max: 100 },
+        config: { min: 0, max: 100, freq: 1000 },
     },
     {
         alias: RotationFeedbackAliases,
-        config: { min: 0, max: 90 },
+        config: {},
     },
     {
         alias: RotationModificationAliases,
-        config: { min: 0, max: 90 },
+        config: { min: 0, max: 90, freq: 50 },
     },
     {
         alias: ActionAliases,
