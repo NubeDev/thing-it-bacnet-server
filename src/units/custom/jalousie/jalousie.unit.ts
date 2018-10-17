@@ -181,6 +181,7 @@ export class JalousieUnit extends CustomUnit {
         });
     }
 
+    private simulateAction(actionFn: ActionFunction) {
         // const feedbackUnit = feedbackFn.unit;
         // const feedbackConfig = feedbackFn.config;
         // const modificationUnit = modificationFn.unit;
@@ -232,7 +233,6 @@ export class JalousieUnit extends CustomUnit {
         //         });
         //     })
         // }
-        throw new Error('Not implemented yet!');
     }
     /**
      * getConfigWithEDE - concatenates the default unit configuration with EDE
