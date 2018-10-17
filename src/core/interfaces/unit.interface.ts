@@ -170,7 +170,7 @@ export namespace Units {
 
         export interface Metadata {
             alias: string|string[];
-            config: Position.Modification.Config|Position.Feedback.Config|Rotation.Config|Action.Config;
+            config: Position.Modification.Config|Position.Feedback.Config|Rotation.Feedback.Config|Rotation.Modification.Config|Action.Config;
         }
 
         export namespace Position {
