@@ -170,29 +170,56 @@ export namespace Units {
 
         export interface Metadata {
             alias: string|string[];
-            config: Position.Config|Rotation.Config|Action.Config;
+            config: Position.Modification.Config|Position.Feedback.Config|Rotation.Config|Action.Config;
         }
 
         export namespace Position {
-            export interface Config {
-                max: number;
-                min: number;
+            export namespace Modification {
+                export interface Config {
+                    max: number;
+                    min: number;
+                    freq: number;
+                }
+
+                export interface Function<T> {
+                    unit: T;
+                    config: Config;
+                }
             }
 
-            export interface Function<T> {
-                unit: T;
-                config: Config;
+            export namespace Feedback {
+                export interface Config {
+
+                }
+
+                export interface Function<T> {
+                    unit: T;
+                    config: Config;
+                }
             }
         }
 
         export namespace Rotation {
-            export interface Config extends Position.Config {
+            export namespace Modification {
+                export interface Config extends Position.Modification.Config {
 
+                }
+
+                export interface Function<T> {
+                    unit: T;
+                    config: Config;
+                }
             }
 
-            export interface Function<T> {
-                unit: T;
-                config: Config;
+            export namespace Feedback {
+                export interface Config {
+
+                }
+
+                export interface Function<T> {
+                    unit: T;
+                    config: Config;
+                }
             }
         }
 
