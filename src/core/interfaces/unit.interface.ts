@@ -168,6 +168,11 @@ export namespace Units {
 
     export namespace Jalousie {
 
+        export interface State {
+            position: number;
+            rotation: number;
+        }
+
         export interface Metadata {
             alias: string|string[];
             config: Position.Modification.Config|Position.Feedback.Config|Rotation.Feedback.Config|Rotation.Modification.Config|Action.Config;
