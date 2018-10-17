@@ -1,5 +1,5 @@
 import * as _ from 'lodash';
-import { Observable, BehaviorSubject } from 'rxjs';
+import { Observable, Subscription } from 'rxjs';
 
 import {
     BACnetUnitDataFlow
@@ -35,7 +35,8 @@ type ActionFunction = Units.Jalousie.Action.Function<MultiStateValueUnit>;
 export class JalousieUnit extends CustomUnit {
     public readonly className: string = 'JalousieUnit';
     public storage: AliasMap<PositionFeedbackFunction|PositionModificationFunction|RotationFeedbackFunction|RotationModificationFunction|ActionFunction>;
-    private sPositionFlow: BehaviorSubject<number>;
+    private physicalState: Units.Jalousie.State = null;
+    private stateModification: Units.Jalousie.State = null;
 
     /**
      * initUnit - inits the custom unit.
@@ -64,6 +65,17 @@ export class JalousieUnit extends CustomUnit {
         const rotationModificationFn = this.storage.get(BACnetJalousieUnitFunctions.RotationModification) as RotationModificationFunction;
         if (rotationFeedbackFn.unit && rotationModificationFn.unit) {
             this.simulateRotation(rotationFeedbackFn, rotationModificationFn)
+        }
+
+        if (positionFeedbackFn.unit && rotationFeedbackFn.unit) {
+            const position = this.getUnitValue(positionFeedbackFn.unit);
+            const rotation = this.getUnitValue(rotationFeedbackFn.unit);
+            this.physicalState = { position, rotation };
+        }
+
+        const actionFn = this.storage.get(BACnetJalousieUnitFunctions.Action) as ActionFunction;
+        if (actionFn.unit) {
+            this.simulateAction(actionFn);
         }
     }
 
