@@ -1,6 +1,8 @@
 import * as _ from 'lodash';
 import { Observable, Subscription } from 'rxjs';
 
+import * as Bluebird from 'bluebird';
+
 import {
     BACnetUnitDataFlow
 } from '../../../core/enums';
@@ -35,6 +37,8 @@ type ActionFunction = Units.Jalousie.Action.Function<MultiStateValueUnit>;
 export class JalousieUnit extends CustomUnit {
     public readonly className: string = 'JalousieUnit';
     public storage: AliasMap<PositionFeedbackFunction|PositionModificationFunction|RotationFeedbackFunction|RotationModificationFunction|ActionFunction>;
+    private positionModificationTimer: Subscription;
+    private rotationModificationTimer: Subscription;
     private physicalState: Units.Jalousie.State = null;
     private stateModification: Units.Jalousie.State = null;
 
@@ -75,7 +79,7 @@ export class JalousieUnit extends CustomUnit {
 
         const actionFn = this.storage.get(BACnetJalousieUnitFunctions.Action) as ActionFunction;
         if (actionFn.unit) {
-            this.simulateAction(actionFn);
+            this.simulateAction(actionFn, positionModificationFn.config, rotationModificationFn.config);
         }
     }
 
@@ -181,58 +185,109 @@ export class JalousieUnit extends CustomUnit {
         });
     }
 
-    private simulateAction(actionFn: ActionFunction) {
-        // const feedbackUnit = feedbackFn.unit;
-        // const feedbackConfig = feedbackFn.config;
-        // const modificationUnit = modificationFn.unit;
-        // const modificationConfig = modificationFn.config;
-        // const stateTextPayload = feedbackConfig.stateText.map( text => new BACNet.Types.BACnetCharacterString(text));
-        // feedbackUnit.storage.updateProperty({
-        //     id: BACNet.Enums.PropertyId.stateText,
-        //     payload: stateTextPayload
-        // });
+    private simulateAction(actionFn: ActionFunction, posModConf: Units.Jalousie.Position.Modification.Config, rotModConf: Units.Jalousie.Rotation.Modification.Config) {
+        const actionUnit = actionFn.unit;
+        const actionConfig = actionFn.config;
+        const stateTextPayload = actionConfig.stateText.map( text => new BACNet.Types.BACnetCharacterString(text));
+        actionUnit.storage.updateProperty({
+            id: BACNet.Enums.PropertyId.stateText,
+            payload: stateTextPayload
+        });
 
-        // modificationUnit.storage.setFlowHandler(BACnetUnitDataFlow.Update, BACNet.Enums.PropertyId.presentValue, (notif: UnitStorageProperty) => {
-        //     modificationUnit.storage.dispatch();
-        //     const statePayload = notif.payload as BACNet.Types.BACnetReal;
-        //     let statePrValue = +statePayload.getValue();
+        actionUnit.storage.setFlowHandler(BACnetUnitDataFlow.Set, BACNet.Enums.PropertyId.presentValue, (notif: UnitStorageProperty) => {
+            const actionPayload = notif.payload as BACNet.Types.BACnetReal;
+            let actionValue = +actionPayload.getValue();
 
-        //     if (statePrValue > 0 && statePrValue <= modificationConfig.stateText.length) {
-        //         feedbackUnit.storage.updateProperty({
-        //             id: BACNet.Enums.PropertyId.presentValue,
-        //             payload: new BACNet.Types.BACnetReal(statePrValue)
-        //         })
-        //     }
-        // });
-        // let statePresentValue = 1;
+            if (actionValue > 0 && actionValue <= actionConfig.stateText.length) {
+                actionUnit.storage.updateProperty(notif)
+            }
+        });
 
-        // // setting the start value of state feedback unit
-        // feedbackUnit.storage.updateProperty({
-        //     id: BACNet.Enums.PropertyId.presentValue,
-        //     payload: new BACNet.Types.BACnetUnsignedInteger(statePresentValue),
-        // });
+        // setting the start value of action unit
+        let currentActionValue = 2;
+        actionUnit.storage.updateProperty({
+            id: BACNet.Enums.PropertyId.presentValue,
+            payload: new BACNet.Types.BACnetUnsignedInteger(currentActionValue),
+        });
 
-        // if (this.sPositionFlow) {
-        //     this.sPositionFlow.subscribe((level) => {
-        //         let newRotationPrValue = null;
+        actionUnit.storage.setFlowHandler(BACnetUnitDataFlow.Update, BACNet.Enums.PropertyId.presentValue, (notif: UnitStorageProperty) => {
+            actionUnit.storage.dispatch();
+            const actionPayload = notif.payload as BACNet.Types.BACnetReal;
+            const actionValue = +actionPayload.getValue();
+            if (currentActionValue === 1) {
+                this.stopMotion();
+                this.reportStateModification();
+            }
+            if (actionValue === 1) {
+                const modification = _.clone(this.stateModification);
+                this.adjustRotation(modification.rotation, rotModConf.freq)
+                    .then(() => {
+                        return this.moveJalousie(modification.position, posModConf.freq);
+                    })
+                    .then(() => {
+                        this.stopMotion();
+                        this.reportStateModification();
+                    });
+                currentActionValue = 1;
+            } else {
+                this.stopMotion();
+                this.reportStateModification();
+            }
 
-        //         if (level > 0) {
-        //             newRotationPrValue = 1;
-        //         } else if (level === 0 ) {
-        //             newRotationPrValue = 2;
-        //         } else {
-        //             return;
-        //         }
-        //         if (newRotationPrValue === statePresentValue) {
-        //             return;
-        //         }
-        //         statePresentValue = newRotationPrValue;
-        //         feedbackUnit.storage.updateProperty({
-        //             id: BACNet.Enums.PropertyId.presentValue,
-        //             payload: new BACNet.Types.BACnetUnsignedInteger(statePresentValue)
-        //         });
-        //     })
-        // }
+        });
+    }
+
+    private adjustRotation(targetRotation: number, changefreq: number): Bluebird<void> {
+        return new Bluebird(function(resolve, reject) {
+            this.rotationModificationTimer = Observable.timer(0, changefreq).subscribe(() => {
+                if (this.physicalState.rotation > targetRotation) {
+                    this.physicalState.rotation -= 1;
+                } else if (this.physicalState.rotation < targetRotation) {
+                    this.physicalState.rotation += 1;
+                } else {
+                    resolve();
+                }
+            });
+        })
+    }
+
+    private moveJalousie(targetPosition: number, changefreq: number): Bluebird<void> {
+        return new Bluebird(function(resolve, reject) {
+            this.positionModificationTimer = Observable.timer(0, changefreq).subscribe(() => {
+                if (this.physicalState.position > targetPosition) {
+                    this.physicalState.position -= 1;
+                } else if (this.physicalState.rotation < targetPosition) {
+                    this.physicalState.position += 1;
+                } else {
+                    resolve();
+                }
+            });
+        })
+    }
+
+    private stopMotion() {
+        if (this.positionModificationTimer) {
+            this.positionModificationTimer.unsubscribe();
+            this.positionModificationTimer = null;
+        }
+        if (this.rotationModificationTimer) {
+            this.rotationModificationTimer.unsubscribe();
+            this.rotationModificationTimer = null;
+        }
+    }
+
+    private reportStateModification() {
+        const posFeedbackUnit = this.storage.get(BACnetJalousieUnitFunctions.PositionFeedback).unit;
+        posFeedbackUnit.storage.updateProperty({
+            id: BACNet.Enums.PropertyId.presentValue,
+            payload: new BACNet.Types.BACnetReal(this.physicalState.position)
+        });
+
+        const rotFeedbackUnit = this.storage.get(BACnetJalousieUnitFunctions.PositionFeedback).unit;
+        rotFeedbackUnit.storage.updateProperty({
+            id: BACNet.Enums.PropertyId.presentValue,
+            payload: new BACNet.Types.BACnetReal(this.physicalState.rotation)
+        });
     }
     /**
      * getConfigWithEDE - concatenates the default unit configuration with EDE
