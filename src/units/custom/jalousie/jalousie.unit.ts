@@ -306,7 +306,7 @@ export class JalousieUnit extends CustomUnit {
             payload: new BACNet.Types.BACnetReal(this.physicalState.position)
         });
 
-        const rotFeedbackUnit = this.storage.get(BACnetJalousieUnitFunctions.PositionFeedback).unit;
+        const rotFeedbackUnit = this.storage.get(BACnetJalousieUnitFunctions.RotationFeedback).unit;
         rotFeedbackUnit.storage.updateProperty({
             id: BACNet.Enums.PropertyId.presentValue,
             payload: new BACNet.Types.BACnetReal(this.physicalState.rotation)
