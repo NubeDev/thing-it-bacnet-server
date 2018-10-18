@@ -109,6 +109,7 @@ export class JalousieUnit extends CustomUnit {
                     })
                     .then(() => {
                         this.stopMotion();
+                        this.currentActionValue = 2;
                         this.reportStateModification();
                     });
         })
