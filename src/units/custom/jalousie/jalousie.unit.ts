@@ -214,10 +214,14 @@ export class JalousieUnit extends CustomUnit {
             actionUnit.storage.dispatch();
             const actionPayload = notif.payload as BACNet.Types.BACnetReal;
             const actionValue = +actionPayload.getValue();
+
+            // if jalousie is moving, stop ang report its state
             if (currentActionValue === 1) {
                 this.stopMotion();
                 this.reportStateModification();
             }
+
+            // if action === 'MOVE', apply state modification
             if (actionValue === 1) {
                 const modification = _.clone(this.stateModification);
                 this.adjustRotation(modification.rotation, rotModConf.freq)
@@ -229,11 +233,7 @@ export class JalousieUnit extends CustomUnit {
                         this.reportStateModification();
                     });
                 currentActionValue = 1;
-            } else {
-                this.stopMotion();
-                this.reportStateModification();
             }
-
         });
     }
 
