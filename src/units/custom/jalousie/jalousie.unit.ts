@@ -281,7 +281,7 @@ export class JalousieUnit extends CustomUnit {
             this.positionModificationTimer = Observable.timer(0, changefreq).subscribe(() => {
                 if (this.physicalState.position > targetPosition) {
                     this.physicalState.position -= 1;
-                } else if (this.physicalState.rotation < targetPosition) {
+                } else if (this.physicalState.position < targetPosition) {
                     this.physicalState.position += 1;
                 } else {
                     resolve();
