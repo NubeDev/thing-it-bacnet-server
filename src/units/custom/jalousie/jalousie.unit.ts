@@ -1,5 +1,6 @@
 import * as _ from 'lodash';
-import { Observable, Subscription } from 'rxjs';
+import { Observable, Subscription, Subject } from 'rxjs';
+import { zip } from 'rxjs/observable/zip';
 
 import * as Bluebird from 'bluebird';
 
@@ -41,6 +42,10 @@ export class JalousieUnit extends CustomUnit {
     private rotationModificationTimer: Subscription;
     private physicalState: Units.Jalousie.State = null;
     private stateModification: Units.Jalousie.State = null;
+    private sPosModFlow = new Subject<number>(); // Position Modification Flow
+    private sRotModFlow = new Subject<number>(); // Rotation Modification Flow
+    private sActionMoveFlow = new Subject(); // Move action flow
+    private sStateModificationFlow: Observable<Units.Jalousie.State>;
 
     /**
      * initUnit - inits the custom unit.
@@ -79,9 +84,36 @@ export class JalousieUnit extends CustomUnit {
 
         const actionFn = this.storage.get(BACnetJalousieUnitFunctions.Action) as ActionFunction;
         if (actionFn.unit) {
-            this.simulateAction(actionFn, positionModificationFn.config, rotationModificationFn.config);
+            this.simulateAction(actionFn);
         }
+
+        this.initStateModificationWatchStream(positionModificationFn.config, rotationModificationFn.config);
     }
+
+    private initStateModificationWatchStream(posModConf: Units.Jalousie.Position.Modification.Config, rotModConf: Units.Jalousie.Rotation.Modification.Config) {
+
+        // start jalousie state modification only if all three values are emited (position, rotation, action move)
+        this.sStateModificationFlow = zip(
+            this.sPosModFlow,
+            this.sRotModFlow,
+            this.sActionMoveFlow
+        )
+        .map(([position, rotation]) => {
+            return { position, rotation }
+        });
+        this.sStateModificationFlow.subscribe((state) => {
+
+                this.adjustRotation(state.rotation, rotModConf.freq)
+                    .then(() => {
+                        return this.moveJalousie(state.position, posModConf.freq);
+                    })
+                    .then(() => {
+                        this.stopMotion();
+                        this.reportStateModification();
+                    });
+        })
+    }
+
 
     /**
      * getUnitValue - gets value of the AnalogValueUnit.
@@ -138,11 +170,11 @@ export class JalousieUnit extends CustomUnit {
                 posModificationValue =  modificationConfig.min;
             }
 
-            this.stateModification.position = posModificationValue;
+            this.sPosModFlow.next(posModificationValue);
         });
 
         const startPayload = this.genStartPresentValue(modificationFn);
-        feedbackUnit.storage.setProperty({
+        feedbackUnit.storage.updateProperty({
             id: BACNet.Enums.PropertyId.presentValue,
             payload: startPayload,
         });
@@ -175,17 +207,17 @@ export class JalousieUnit extends CustomUnit {
                 rotModificationValue =  modificationConfig.min;
             }
 
-            this.stateModification.rotation = rotModificationValue;
+            this.sRotModFlow.next(rotModificationValue);
         });
 
         const startPayload = this.genStartPresentValue(modificationFn);
-        feedbackUnit.storage.setProperty({
+        feedbackUnit.storage.updateProperty({
             id: BACNet.Enums.PropertyId.presentValue,
             payload: startPayload,
         });
     }
 
-    private simulateAction(actionFn: ActionFunction, posModConf: Units.Jalousie.Position.Modification.Config, rotModConf: Units.Jalousie.Rotation.Modification.Config) {
+    private simulateAction(actionFn: ActionFunction) {
         const actionUnit = actionFn.unit;
         const actionConfig = actionFn.config;
         const stateTextPayload = actionConfig.stateText.map( text => new BACNet.Types.BACnetCharacterString(text));
@@ -221,17 +253,9 @@ export class JalousieUnit extends CustomUnit {
                 this.reportStateModification();
             }
 
-            // if action === 'MOVE', apply state modification
+            // if action === 'MOVE', emit action value to action move flow
             if (actionValue === 1) {
-                const modification = _.clone(this.stateModification);
-                this.adjustRotation(modification.rotation, rotModConf.freq)
-                    .then(() => {
-                        return this.moveJalousie(modification.position, posModConf.freq);
-                    })
-                    .then(() => {
-                        this.stopMotion();
-                        this.reportStateModification();
-                    });
+                this.sActionMoveFlow.next(actionValue);
             }
             currentActionValue = actionValue;
         });
