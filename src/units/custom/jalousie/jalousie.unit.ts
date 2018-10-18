@@ -46,6 +46,7 @@ export class JalousieUnit extends CustomUnit {
     private sRotModFlow = new Subject<number>(); // Rotation Modification Flow
     private sActionMoveFlow = new Subject(); // Move action flow
     private sStateModificationFlow: Observable<Units.Jalousie.State>;
+    private currentActionValue: number;
 
     /**
      * initUnit - inits the custom unit.
@@ -230,15 +231,15 @@ export class JalousieUnit extends CustomUnit {
             let actionValue = +actionPayload.getValue();
 
             if (actionValue > 0 && actionValue <= actionConfig.stateText.length) {
-                actionUnit.storage.updateProperty(notif)
+                actionUnit.storage.updateProperty(notif);
             }
         });
 
+        this.currentActionValue = 2;
         // setting the start value of action unit
-        let currentActionValue = 2;
         actionUnit.storage.updateProperty({
             id: BACNet.Enums.PropertyId.presentValue,
-            payload: new BACNet.Types.BACnetUnsignedInteger(currentActionValue),
+            payload: new BACNet.Types.BACnetUnsignedInteger(2),
         });
 
         actionUnit.storage.setFlowHandler(BACnetUnitDataFlow.Update, BACNet.Enums.PropertyId.presentValue, (notif: UnitStorageProperty) => {
@@ -247,7 +248,7 @@ export class JalousieUnit extends CustomUnit {
             const actionValue = +actionPayload.getValue();
 
             // if jalousie is moving, stop anyway ang report its state
-            if (currentActionValue === 1) {
+            if (this.currentActionValue === 1) {
                 this.stopMotion();
                 this.reportStateModification();
             }
@@ -256,7 +257,7 @@ export class JalousieUnit extends CustomUnit {
             if (actionValue === 1) {
                 this.sActionMoveFlow.next(actionValue);
             }
-            currentActionValue = actionValue;
+            this.currentActionValue = actionValue;
         });
     }
 
