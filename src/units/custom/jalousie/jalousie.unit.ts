@@ -102,7 +102,6 @@ export class JalousieUnit extends CustomUnit {
             return { position, rotation }
         });
         this.sStateModificationFlow.subscribe((state) => {
-
                 this.adjustRotation(state.rotation, rotModConf.freq)
                     .then(() => {
                         return this.moveJalousie(state.position, posModConf.freq);
@@ -262,7 +261,7 @@ export class JalousieUnit extends CustomUnit {
     }
 
     private adjustRotation(targetRotation: number, changefreq: number): Bluebird<void> {
-        return new Bluebird(function(resolve, reject) {
+        return new Bluebird((resolve, reject) => {
             this.rotationModificationTimer = Observable.timer(0, changefreq).subscribe(() => {
                 if (this.physicalState.rotation > targetRotation) {
                     this.physicalState.rotation -= 1;
@@ -276,7 +275,7 @@ export class JalousieUnit extends CustomUnit {
     }
 
     private moveJalousie(targetPosition: number, changefreq: number): Bluebird<void> {
-        return new Bluebird(function(resolve, reject) {
+        return new Bluebird((resolve, reject) => {
             this.positionModificationTimer = Observable.timer(0, changefreq).subscribe(() => {
                 if (this.physicalState.position > targetPosition) {
                     this.physicalState.position -= 1;
