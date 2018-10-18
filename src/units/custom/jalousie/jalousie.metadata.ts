@@ -54,7 +54,7 @@ export const JalousieMetadata: Units.Jalousie.Metadata[] = [
     },
     {
         alias: RotationModificationAliases,
-        config: { min: 0, max: 90, freq: 50 },
+        config: { min: 0, max: 90, freq: 30 },
     },
     {
         alias: ActionAliases,
