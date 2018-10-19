@@ -41,7 +41,6 @@ export class JalousieUnit extends CustomUnit {
     private positionModificationTimer: Subscription;
     private rotationModificationTimer: Subscription;
     private physicalState: Units.Jalousie.State = null;
-    private stateModification: Units.Jalousie.State = null;
     private sPosModFlow = new Subject<number>(); // Position Modification Flow
     private sRotModFlow = new Subject<number>(); // Rotation Modification Flow
     private sActionMoveFlow = new Subject(); // Move action flow
