@@ -90,6 +90,14 @@ export class JalousieUnit extends CustomUnit {
         this.initStateModificationWatchStream(positionModificationFn.config, rotationModificationFn.config);
     }
 
+    /**
+     * initStateModificationWatchStream - creatas a flow whicn emits target jalousie state only when position, rotation and action move value are received,
+     * inits jalousie movement, stops modification timer and reports jalousie state when movement has end
+     *
+     * @param  {Units.Jalousie.Position.Modification.Config} posModConf - config of the position modification function
+     * @param  {Units.Jalousie.Rotation.Modification.Config} rotModConf - config of the rotation modification function
+     * @return {void}
+     */
     private initStateModificationWatchStream(posModConf: Units.Jalousie.Position.Modification.Config, rotModConf: Units.Jalousie.Rotation.Modification.Config) {
 
         // start jalousie state modification only if all three values are emited (position, rotation, action move)
