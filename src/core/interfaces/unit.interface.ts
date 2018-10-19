@@ -36,12 +36,12 @@ export namespace Units {
     export namespace Custom {
         export interface Metadata {
             alias: string|string[];
-            config: Functional.Config|Thermostat.Temperature.Config|Thermostat.Setpoint.Config|Thermostat.Mode.Config;
+            config: Config;
         }
 
         export interface Function <T> {
             unit: T;
-            config: Functional.Config|Thermostat.Temperature.Config|Thermostat.Setpoint.Config|Thermostat.Mode.Config;
+            config: Config;
         }
 
         export interface Config {
@@ -51,12 +51,12 @@ export namespace Units {
             max?: number;
             // Frequency
             freq?: number;
-            staeteText?: string[];
+            stateText?: string[];
         }
     }
 
     /**
-     * Function Unit
+     * Functional Unit
      */
     export namespace Functional {
         export interface Metadata {
@@ -79,9 +79,6 @@ export namespace Units {
         }
     }
 
-    /**
-     * Thermostat
-     */
     export namespace Thermostat {
         export interface Metadata {
             alias: string|string[];
@@ -125,9 +122,6 @@ export namespace Units {
         }
     }
 
-    /**
-     * Light
-     */
     export namespace Light {
         export interface Metadata {
             alias: string|string[];
@@ -166,6 +160,80 @@ export namespace Units {
             }
 
             export interface Function <T> {
+                unit: T;
+                config: Config;
+            }
+        }
+    }
+
+    export namespace Jalousie {
+
+        export interface State {
+            position: number;
+            rotation: number;
+        }
+
+        export interface Metadata {
+            alias: string|string[];
+            config: Position.Modification.Config|Position.Feedback.Config|Rotation.Feedback.Config|Rotation.Modification.Config|Action.Config;
+        }
+
+        export namespace Position {
+            export namespace Modification {
+                export interface Config {
+                    max: number;
+                    min: number;
+                    freq: number;
+                }
+
+                export interface Function<T> {
+                    unit: T;
+                    config: Config;
+                }
+            }
+
+            export namespace Feedback {
+                export interface Config {
+
+                }
+
+                export interface Function<T> {
+                    unit: T;
+                    config: Config;
+                }
+            }
+        }
+
+        export namespace Rotation {
+            export namespace Modification {
+                export interface Config extends Position.Modification.Config {
+
+                }
+
+                export interface Function<T> {
+                    unit: T;
+                    config: Config;
+                }
+            }
+
+            export namespace Feedback {
+                export interface Config {
+
+                }
+
+                export interface Function<T> {
+                    unit: T;
+                    config: Config;
+                }
+            }
+        }
+
+        export namespace Action {
+            export interface Config {
+                stateText: string[];
+            }
+
+            export interface Function<T> {
                 unit: T;
                 config: Config;
             }

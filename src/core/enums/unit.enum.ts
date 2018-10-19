@@ -22,6 +22,14 @@ export enum BACnetLightUnitFunctions {
     StateModification = 'stateModification'
 }
 
+export enum BACnetJalousieUnitFunctions {
+    PositionFeedback = 'positionFeedback',
+    PositionModification = 'positionModification',
+    RotationFeedback = 'rotationFeedback',
+    RotationModification = 'rotationModification',
+    Action = 'action'
+}
+
 export enum BACnetUnitFamily {
     Native = 'native',
     Analog = 'analog',
