@@ -28,6 +28,7 @@ import * as BACNet from 'tid-bacnet-logic';
 import { BACnetJalousieUnitFunctions } from '../../../core/enums';
 import { AnalogValueUnit } from '../../native/analog/analog-value/analog-value.unit';
 import { MultiStateValueUnit } from '../../native/multi-state/multi-state-value/multi-state-value.unit';
+import { logger } from '../../../core/utils';
 
 type PositionFeedbackFunction = Units.Jalousie.Position.Feedback.Function<AnalogValueUnit>;
 type PositionModificationFunction = Units.Jalousie.Position.Modification.Function<AnalogValueUnit>;
@@ -110,15 +111,17 @@ export class JalousieUnit extends CustomUnit {
             return { position, rotation }
         });
         this.sStateModificationFlow.subscribe((state) => {
-                this.adjustRotation(state.rotation, rotModConf.freq)
-                    .then(() => {
-                        return this.moveJalousie(state.position, posModConf.freq);
-                    })
-                    .then(() => {
-                        this.stopMotion();
-                        this.currentActionValue = 2;
-                        this.reportStateModification();
-                    });
+            logger.debug(`Start jalousie state modification. Target state: ${state}`);
+            this.adjustRotation(state.rotation, rotModConf.freq)
+                .then(() => {
+                    return this.moveJalousie(state.position, posModConf.freq);
+                })
+                .then(() => {
+                    this.stopMotion();
+                    logger.debug(`End jalousie state modification. Achived state: ${this.physicalState}`);
+                    this.currentActionValue = 2;
+                    this.reportStateModification();
+                });
         })
     }
 
@@ -285,12 +288,16 @@ export class JalousieUnit extends CustomUnit {
      */
     private adjustRotation(targetRotation: number, changefreq: number): Bluebird<void> {
         return new Bluebird((resolve, reject) => {
+            logger.debug(`Start jalousie rotation adjustment`);
             this.rotationModificationTimer = Observable.timer(0, changefreq).subscribe(() => {
                 if (this.physicalState.rotation > targetRotation) {
                     this.physicalState.rotation -= 1;
                 } else if (this.physicalState.rotation < targetRotation) {
                     this.physicalState.rotation += 1;
-                } else {
+                }
+                logger.debug(`Intermediate state: ${this.physicalState}`);
+                if (this.physicalState.rotation === targetRotation) {
+                    logger.debug(`End jalousie rotation adjustment`);
                     resolve();
                 }
             });
@@ -306,12 +313,16 @@ export class JalousieUnit extends CustomUnit {
      */
     private moveJalousie(targetPosition: number, changefreq: number): Bluebird<void> {
         return new Bluebird((resolve, reject) => {
+            logger.debug(`Start jalousie movement`)
             this.positionModificationTimer = Observable.timer(0, changefreq).subscribe(() => {
                 if (this.physicalState.position > targetPosition) {
                     this.physicalState.position -= 1;
                 } else if (this.physicalState.position < targetPosition) {
                     this.physicalState.position += 1;
-                } else {
+                }
+                logger.debug(`Intermediate state: ${this.physicalState}`);
+                if (this.physicalState.position === targetPosition) {
+                    logger.debug(`End jalousie movement`);
                     resolve();
                 }
             });
@@ -341,6 +352,7 @@ export class JalousieUnit extends CustomUnit {
      * @return {void}
      */
     private reportStateModification() {
+        logger.debug(`Report jalousie stat to feedback units: ${this.physicalState}`)
         const posFeedbackUnit = this.storage.get(BACnetJalousieUnitFunctions.PositionFeedback).unit;
         posFeedbackUnit.storage.updateProperty({
             id: BACNet.Enums.PropertyId.presentValue,
