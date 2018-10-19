@@ -118,7 +118,7 @@ export class JalousieUnit extends CustomUnit {
                 })
                 .then(() => {
                     this.stopMotion();
-                    logger.debug(`End jalousie state modification. Achived state: ${this.physicalState}`);
+                    logger.debug(`End jalousie state modification. Achived state: ${JSON.stringify(this.physicalState)}`);
                     this.currentActionValue = 2;
                     this.reportStateModification();
                 });
@@ -295,7 +295,7 @@ export class JalousieUnit extends CustomUnit {
                 } else if (this.physicalState.rotation < targetRotation) {
                     this.physicalState.rotation += 1;
                 }
-                logger.debug(`Intermediate state: ${this.physicalState}`);
+                logger.debug(`Intermediate state: ${JSON.stringify(this.physicalState)}`);
                 if (this.physicalState.rotation === targetRotation) {
                     logger.debug(`End jalousie rotation adjustment`);
                     this.rotationModificationTimer.unsubscribe();
@@ -321,7 +321,7 @@ export class JalousieUnit extends CustomUnit {
                 } else if (this.physicalState.position < targetPosition) {
                     this.physicalState.position += 1;
                 }
-                logger.debug(`Intermediate state: ${this.physicalState}`);
+                logger.debug(`Intermediate state: ${JSON.stringify(this.physicalState)}`);
                 if (this.physicalState.position === targetPosition) {
                     logger.debug(`End jalousie movement`);
                     this.positionModificationTimer.unsubscribe();
@@ -354,7 +354,7 @@ export class JalousieUnit extends CustomUnit {
      * @return {void}
      */
     private reportStateModification() {
-        logger.debug(`Report jalousie stat to feedback units: ${this.physicalState}`)
+        logger.debug(`Report jalousie stat to feedback units: ${JSON.stringify(this.physicalState)}`)
         const posFeedbackUnit = this.storage.get(BACnetJalousieUnitFunctions.PositionFeedback).unit;
         posFeedbackUnit.storage.updateProperty({
             id: BACNet.Enums.PropertyId.presentValue,
