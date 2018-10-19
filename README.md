@@ -81,6 +81,21 @@ Functions:
 - `state-feedback` (aliases: `2`, `stateFeedback`, `state-feedback`, `stateFb`, `state-fb`): implements the logic of light's `lightActiveFeedbackObject` of `MultiState Value` type. Return the state of the light, represented by two possible state values: `ON` or `OFF`.
 - `state-modification` (aliases: `3`, `stateModification`, `state-modification`, `state-mod`, `stateMod`): implements the logic of light's `lightActiveModificationObject` of `MultiState Value` type. Allows to modify light's state (on or off). When the value has been set to its own `Present Value`, modifies the `state-feedback object`'s `Present Value` accordingly.
 
+
+### Jalousie
+
+Implements the `BACNet jalousie` logic.
+
+Aliases: `4`, `jal`, `jalousie`.
+
+Functions:
+- `position-feedback` (aliases: `0`, `positionFeedback`, `position-feedback`, `posFb`, `pos-fb`): implements the logic of jalousie's `positionFeedbackObject` of `Analog Value` type. Returns the value of the jalousie position.
+- `position-modification` (aliases: `1`, `positionModification`, `pos-modification`, `posMod`, `pos-mod`): implements the logic of jalousie's `positionModificationObject` of `Analog Value` type. When its own `Present Value` has been changed, sends it to the jalousie physical state simulation logic.
+- `rotation-feedback` (aliases: `2`, `rotationFeedback`, `rotation-feedback`, `rotFb`, `rot-fb`): implements the logic of jalousie's `rotationFeedbackObject` of `Analog Value` type. Return the value of the jalousie rotation.
+- `rotation-modification` (aliases: `3`, `rotationModification`, `rotation-modification`, `rot-mod`, `rotMod`): implements the logic of jalousie's `rotationModificationObject` of `Analog Value` type. When its own `Present Value` has been changed, sends it to the jalousie physical state simulation logic.
+- `action` (aliases: `4`, `action`, `act`): implements the logic of jalousie's `actionObject` of `MultiState Value` type. Represents the action state of the jalousie (`'STOP'` or `'MOVE'`). When `'MOVE'` value, position value & rotation value are received, inits the jalousie physical state modification logic.
+
+
 # EDE file
 
 ## Restrictions

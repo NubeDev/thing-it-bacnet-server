@@ -4,7 +4,8 @@ import { CustomUnit } from './custom.unit';
 
 import { FunctionalUnit } from './function/functional.unit';
 import { ThermostatUnit } from './thermostat/thermostat.unit';
-import { LightUnit } from './light/light.unit'
+import { LightUnit } from './light/light.unit';
+import { JalousieUnit } from './jalousie/jalousie.unit'
 import { NoopUnit } from './noop/noop.unit';
 
 export const CustomModule: AliasMap<any> = new AliasMap<any>([
@@ -23,5 +24,9 @@ export const CustomModule: AliasMap<any> = new AliasMap<any>([
     {
         alias: [ '3', 'light' ],
         value: LightUnit,
+    },
+    {
+        alias: [ '4', 'jal', 'jalousie' ],
+        value: JalousieUnit,
     }
 ]);
