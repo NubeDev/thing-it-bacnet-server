@@ -144,13 +144,12 @@ export class JalousieUnit extends CustomUnit {
     }
 
     /**
-     * simulatePosition - generates start value of the dimmer level,
-     * gets new payload for levelFeedback unit "Present Value" BACnet property,
-     * based on the levelModification unit payload,
-     * sets new payload in levelFeedback "Present Value" property.
+     * simulatePosition - generates start value of the jalousie position,
+     * checks received modification for min-max conditions,
+     * sends value to position modification flow.
      *
-     * @param  {PositionFeedbackFunction} feedbackFn - thermostat's setpoint Feedback function
-     * @param  {PositionModificationFunction} modificationFn - thermostat's setpoint Modification function
+     * @param  {PositionFeedbackFunction} feedbackFn - jalousie position Feedback function
+     * @param  {PositionModificationFunction} modificationFn - jalousie position Modification function
      * @return {void}
      */
     private simulatePosition(feedbackFn: PositionFeedbackFunction, modificationFn: PositionModificationFunction): void {
@@ -181,10 +180,9 @@ export class JalousieUnit extends CustomUnit {
     }
 
     /**
-     * simulateRotation - sets "stateText" BACNet property to stateFeedback unit,
-     * gets new payload for stateFeedback unit "Present Value" BACnet property,
-     * based on stateModification unit present value & dimmerLEvel present value,
-     * sets new payload in stateModificationunit's "Present Value" property.
+     * simulateRotation - generates start value of the jalousie rotation,
+     * checks received modification for min-max conditions,
+     * sends value to rotation modification flow.
      *
      * @param {RotationFunction} feedbackFn - light's state feedback function
      * @param {RotationFunction} modificationFn - light's state modification function
@@ -217,6 +215,15 @@ export class JalousieUnit extends CustomUnit {
         });
     }
 
+    /**
+     * simulateAction - generates start value of the jalousie action state,
+     * sets the pyload of action object's "stateText" property
+     * validates received modification, stops jalousie if it is moving,
+     * sends acton 'MOVE' value to action move flow, sets currentActionValue property.
+     *
+     * @param {ActionFunction} actionFn - action function of the jalousie
+     * @return {void}
+     */
     private simulateAction(actionFn: ActionFunction) {
         const actionUnit = actionFn.unit;
         const actionConfig = actionFn.config;
@@ -261,6 +268,13 @@ export class JalousieUnit extends CustomUnit {
         });
     }
 
+    /**
+     * adjustRotation - starts a timer to change simulated physical rotation value,
+     * which stops when target rotation will be achived.
+     *
+     * @param {number} targetRotation - the value of rotation that should be achived
+     * @return {Bluebird<void>}
+     */
     private adjustRotation(targetRotation: number, changefreq: number): Bluebird<void> {
         return new Bluebird((resolve, reject) => {
             this.rotationModificationTimer = Observable.timer(0, changefreq).subscribe(() => {
@@ -275,6 +289,13 @@ export class JalousieUnit extends CustomUnit {
         })
     }
 
+    /**
+     * moveJalousie - starts a timer to change simulated physical position value,
+     * which stops when target position will be achived.
+     *
+     * @param {number} targetPosition - the value of position that should be achived
+     * @return {Bluebird<void>}
+     */
     private moveJalousie(targetPosition: number, changefreq: number): Bluebird<void> {
         return new Bluebird((resolve, reject) => {
             this.positionModificationTimer = Observable.timer(0, changefreq).subscribe(() => {
@@ -289,6 +310,11 @@ export class JalousieUnit extends CustomUnit {
         })
     }
 
+    /**
+     * stopMotion - unsubscribes & destroys position modification & rotation modification timers,
+     *
+     * @return {void}
+     */
     private stopMotion() {
         if (this.positionModificationTimer) {
             this.positionModificationTimer.unsubscribe();
@@ -300,6 +326,12 @@ export class JalousieUnit extends CustomUnit {
         }
     }
 
+    /**
+     * reportStateModification - gets position & rotation modification units,
+     * saves achived "physical" state to them
+     *
+     * @return {void}
+     */
     private reportStateModification() {
         const posFeedbackUnit = this.storage.get(BACnetJalousieUnitFunctions.PositionFeedback).unit;
         posFeedbackUnit.storage.updateProperty({
@@ -313,6 +345,7 @@ export class JalousieUnit extends CustomUnit {
             payload: new BACNet.Types.BACnetReal(this.physicalState.rotation)
         });
     }
+
     /**
      * getConfigWithEDE - concatenates the default unit configuration with EDE
      * configuration.
