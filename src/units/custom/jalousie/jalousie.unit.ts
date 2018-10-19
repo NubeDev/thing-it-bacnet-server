@@ -1,6 +1,5 @@
 import * as _ from 'lodash';
 import { Observable, Subscription, Subject } from 'rxjs';
-import { zip } from 'rxjs/observable/zip';
 
 import * as Bluebird from 'bluebird';
 
@@ -102,7 +101,7 @@ export class JalousieUnit extends CustomUnit {
     private initStateModificationWatchStream(posModConf: Units.Jalousie.Position.Modification.Config, rotModConf: Units.Jalousie.Rotation.Modification.Config) {
 
         // start jalousie state modification only if all three values are emited (position, rotation, action move)
-        this.sStateModificationFlow = zip(
+        this.sStateModificationFlow = Observable.zip(
             this.sPosModFlow,
             this.sRotModFlow,
             this.sActionMoveFlow
