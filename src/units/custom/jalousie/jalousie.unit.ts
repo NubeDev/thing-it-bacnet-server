@@ -110,7 +110,7 @@ export class JalousieUnit extends CustomUnit {
             return { position, rotation }
         });
         this.sStateModificationFlow.subscribe((state) => {
-            logger.debug(`Start jalousie state modification. Target state: ${state}`);
+            logger.debug(`Start jalousie state modification. Target state: ${JSON.stringify(state)}`);
             this.adjustRotation(state.rotation, rotModConf.freq)
                 .then(() => {
                     return this.moveJalousie(state.position, posModConf.freq);
