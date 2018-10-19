@@ -298,6 +298,7 @@ export class JalousieUnit extends CustomUnit {
                 logger.debug(`Intermediate state: ${this.physicalState}`);
                 if (this.physicalState.rotation === targetRotation) {
                     logger.debug(`End jalousie rotation adjustment`);
+                    this.rotationModificationTimer.unsubscribe();
                     resolve();
                 }
             });
@@ -323,6 +324,7 @@ export class JalousieUnit extends CustomUnit {
                 logger.debug(`Intermediate state: ${this.physicalState}`);
                 if (this.physicalState.position === targetPosition) {
                     logger.debug(`End jalousie movement`);
+                    this.positionModificationTimer.unsubscribe();
                     resolve();
                 }
             });
