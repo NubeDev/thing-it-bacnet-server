@@ -137,7 +137,7 @@ export class ThermostatUnit extends CustomUnit {
         this.tempModificationTimer = Observable.timer(0, tempConfig.freq)
             .subscribe(() => {
                 const setpoint = this.getUnitValue(setpointUnit);
-                if (_.isNil(setpoint) || temperature === setpoint) {
+                if (_.isNil(setpoint)) {
                     return;
                 }
 
