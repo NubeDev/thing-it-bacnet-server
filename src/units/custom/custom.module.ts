@@ -2,7 +2,7 @@ import { AliasMap } from '../../core/alias/alias.map';
 import { BACnetUnitAbbr } from '../../core/enums';
 import { CustomUnit } from './custom.unit';
 
-import { FunctionalUnit } from './function/functional.unit';
+import { FunctionalUnit } from './functional/functional.unit';
 import { ThermostatUnit } from './thermostat/thermostat.unit';
 import { LightUnit } from './light/light.unit';
 import { JalousieUnit } from './jalousie/jalousie.unit'
