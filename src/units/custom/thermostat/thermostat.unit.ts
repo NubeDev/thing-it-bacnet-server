@@ -1,5 +1,5 @@
 import * as _ from 'lodash';
-import { Observable, BehaviorSubject } from 'rxjs';
+import { Observable, BehaviorSubject, Subscription } from 'rxjs';
 
 import {
     BACnetUnitDataFlow
@@ -33,6 +33,7 @@ export class ThermostatUnit extends CustomUnit {
     public readonly className: string = 'ThermostatUnit';
     public storage: AliasMap<TemperatureFunction|SetpointFunction|ModeFunction>;
     private sTempFlow: BehaviorSubject<number>;
+    private tempModificationTimer: Subscription;
 
     /**
      * initUnit - inits the custom unit.
@@ -98,8 +99,8 @@ export class ThermostatUnit extends CustomUnit {
 
     /**
      * simulateTemperature - gets new payload for temperature unit "Present Value" BACnet property,
-     * creates the periodic timer to update the payload of the "Present Value",
-     * sets new payload in "Present Value" property.
+     * sets start payload in "Present Value" property,
+     * inits temperature change
      *
      * @param  {TemperatureFunction} unitFn - thermostat's temperature function
      * @return {void}
@@ -114,12 +115,29 @@ export class ThermostatUnit extends CustomUnit {
         });
         this.sTempFlow = new BehaviorSubject<number>(tempStartPayload.value);
 
+        this.initTemperatureChange();
+    }
+
+    /**
+     * initTemperatureChange - creates the periodic timer watch setpoint and temperature values,
+     * compares setpoint with temperature to increase/decrease temperature if needed,
+     * sets new payload in temperature unit's "Present Value" property,
+     * stops the timer if setpoint is achived
+     *
+     * @return {void}
+     */
+    private initTemperatureChange() {
+
+        const tempFn = this.storage.get(BACnetThermostatUnitFunctions.Temperature) as TemperatureFunction;
+        const tempUnit = tempFn.unit  as AnalogValueUnit;
+        const tempConfig = tempFn.config;
+        const setpointUnit = this.storage.get(BACnetThermostatUnitFunctions.SetpointFeedback).unit as AnalogValueUnit;
+
         let temperature = this.getUnitValue(tempUnit);
-        Observable.timer(0, tempConfig.freq)
+        this.tempModificationTimer = Observable.timer(0, tempConfig.freq)
             .subscribe(() => {
-                const setpointUnit = this.storage.get(BACnetThermostatUnitFunctions.SetpointFeedback).unit as AnalogValueUnit;
                 const setpoint = this.getUnitValue(setpointUnit);
-                if (_.isNil(setpoint) || temperature === setpoint) {
+                if (_.isNil(setpoint)) {
                     return;
                 }
 
@@ -128,6 +146,10 @@ export class ThermostatUnit extends CustomUnit {
 
                 } else if (temperature < setpoint) {
                     temperature += 0.1;
+                } else {
+                    this.tempModificationTimer.unsubscribe();
+                    this.tempModificationTimer = null;
+                    return;
                 }
                 temperature = _.round(temperature, 1);
                 tempUnit.storage.setProperty({
@@ -143,7 +165,8 @@ export class ThermostatUnit extends CustomUnit {
      * simulateSetpoint - generates start value of the setpoint,
      * gets new payload for setpointFeedback unit "Present Value" BACnet property,
      * based on the setpointModification unit payload,
-     * sets new payload in setpointFeedback "Present Value" property.
+     * sets new payload in setpointFeedback "Present Value" property,
+     * inits temperature change.
      *
      * @param  {SetpointFunction} feedbackFn - thermostat's setpoint Feedback function
      * @param  {SetpointFunction} modificationFnFn - thermostat's setpoint Modification function
@@ -154,8 +177,7 @@ export class ThermostatUnit extends CustomUnit {
         const feedbackConfig = feedbackFn.config;
         const modificationUnit = modificationFn.unit;
         const modificationConfig = modificationFn.config;
-        modificationUnit.storage.setFlowHandler(BACnetUnitDataFlow.Update, BACNet.Enums.PropertyId.presentValue, (notif: UnitStorageProperty) => {
-            modificationUnit.storage.dispatch();
+        modificationUnit.storage.setFlowHandler(BACnetUnitDataFlow.Set, BACNet.Enums.PropertyId.presentValue, (notif: UnitStorageProperty) => {
             const setpointModificationPayload = notif.payload as BACNet.Types.BACnetReal;
             let setpointModificationValue = +setpointModificationPayload.getValue();
 
@@ -164,17 +186,32 @@ export class ThermostatUnit extends CustomUnit {
             } else {
                 setpointModificationValue = Math.max(setpointModificationValue, modificationConfig.min);
             }
+            modificationUnit.storage.updateProperty({
+                id: BACNet.Enums.PropertyId.presentValue,
+                payload: new BACNet.Types.BACnetReal(setpointModificationValue)
+            })
+        });
+
+        modificationUnit.storage.setFlowHandler(BACnetUnitDataFlow.Update, BACNet.Enums.PropertyId.presentValue, (notif: UnitStorageProperty) => {
+            modificationUnit.storage.dispatch();
+            const setpointModificationPayload = notif.payload as BACNet.Types.BACnetReal;
+            let setpointModificationValue = +setpointModificationPayload.getValue();
 
             const currentSetpointValue = this.getUnitValue(feedbackUnit);
 
             let newSetpointValue = currentSetpointValue + setpointModificationValue;
-            newSetpointValue = newSetpointValue > feedbackConfig.max ? feedbackConfig.max :
-                newSetpointValue < feedbackConfig.min ? feedbackConfig.min : newSetpointValue;
+            if (newSetpointValue > feedbackConfig.max) {
+                newSetpointValue = feedbackConfig.max
+            }
+            if (newSetpointValue < feedbackConfig.min) {
+                newSetpointValue = feedbackConfig.min
+            }
 
             feedbackUnit.storage.updateProperty({
                 id: BACNet.Enums.PropertyId.presentValue,
                 payload: new BACNet.Types.BACnetReal(newSetpointValue)
-            })
+            });
+            this.initTemperatureChange();
         });
         const startPayload = this.genStartPresentValue(feedbackFn);
         feedbackUnit.storage.setProperty({
