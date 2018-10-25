@@ -99,8 +99,8 @@ export class ThermostatUnit extends CustomUnit {
 
     /**
      * simulateTemperature - gets new payload for temperature unit "Present Value" BACnet property,
-     * creates the periodic timer to update the payload of the "Present Value",
-     * sets new payload in "Present Value" property.
+     * sets start payload in "Present Value" property,
+     * inits temperature change
      *
      * @param  {TemperatureFunction} unitFn - thermostat's temperature function
      * @return {void}
@@ -119,10 +119,10 @@ export class ThermostatUnit extends CustomUnit {
     }
 
     /**
-     * simulateMode - sets "stateText" BACNet property to mode unit,
-     * gets new payload for mode unit "Present Value" BACnet property,
-     * based on the difference between setpoint and temperature,
-     * sets new payload in mode unit's "Present Value" property.
+     * initTemperatureChange - creates the periodic timer watch setpoint and temperature values,
+     * compares setpoint with temperature to increase/decrease temperature if needed,
+     * sets new payload in temperature unit's "Present Value" property,
+     * stops the timer if setpoint is achived
      *
      * @return {void}
      */
