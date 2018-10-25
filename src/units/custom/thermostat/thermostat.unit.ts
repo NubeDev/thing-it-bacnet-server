@@ -165,7 +165,8 @@ export class ThermostatUnit extends CustomUnit {
      * simulateSetpoint - generates start value of the setpoint,
      * gets new payload for setpointFeedback unit "Present Value" BACnet property,
      * based on the setpointModification unit payload,
-     * sets new payload in setpointFeedback "Present Value" property.
+     * sets new payload in setpointFeedback "Present Value" property,
+     * inits temperature change.
      *
      * @param  {SetpointFunction} feedbackFn - thermostat's setpoint Feedback function
      * @param  {SetpointFunction} modificationFnFn - thermostat's setpoint Modification function
