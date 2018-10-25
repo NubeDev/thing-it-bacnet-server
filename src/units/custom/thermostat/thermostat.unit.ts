@@ -1,5 +1,5 @@
 import * as _ from 'lodash';
-import { Observable, BehaviorSubject } from 'rxjs';
+import { Observable, BehaviorSubject, Subscription } from 'rxjs';
 
 import {
     BACnetUnitDataFlow
@@ -33,6 +33,7 @@ export class ThermostatUnit extends CustomUnit {
     public readonly className: string = 'ThermostatUnit';
     public storage: AliasMap<TemperatureFunction|SetpointFunction|ModeFunction>;
     private sTempFlow: BehaviorSubject<number>;
+    private tempModificationTimer: Subscription;
 
     /**
      * initUnit - inits the custom unit.
@@ -114,10 +115,27 @@ export class ThermostatUnit extends CustomUnit {
         });
         this.sTempFlow = new BehaviorSubject<number>(tempStartPayload.value);
 
+        this.initTemperatureChange();
+    }
+
+    /**
+     * simulateMode - sets "stateText" BACNet property to mode unit,
+     * gets new payload for mode unit "Present Value" BACnet property,
+     * based on the difference between setpoint and temperature,
+     * sets new payload in mode unit's "Present Value" property.
+     *
+     * @return {void}
+     */
+    private initTemperatureChange() {
+
+        const tempFn = this.storage.get(BACnetThermostatUnitFunctions.Temperature) as TemperatureFunction;
+        const tempUnit = tempFn.unit  as AnalogValueUnit;
+        const tempConfig = tempFn.config;
+        const setpointUnit = this.storage.get(BACnetThermostatUnitFunctions.SetpointFeedback).unit as AnalogValueUnit;
+
         let temperature = this.getUnitValue(tempUnit);
-        Observable.timer(0, tempConfig.freq)
+        this.tempModificationTimer = Observable.timer(0, tempConfig.freq)
             .subscribe(() => {
-                const setpointUnit = this.storage.get(BACnetThermostatUnitFunctions.SetpointFeedback).unit as AnalogValueUnit;
                 const setpoint = this.getUnitValue(setpointUnit);
                 if (_.isNil(setpoint) || temperature === setpoint) {
                     return;
@@ -128,6 +146,9 @@ export class ThermostatUnit extends CustomUnit {
 
                 } else if (temperature < setpoint) {
                     temperature += 0.1;
+                } else {
+                    this.tempModificationTimer.unsubscribe();
+                    this.tempModificationTimer = null;
                 }
                 temperature = _.round(temperature, 1);
                 tempUnit.storage.setProperty({
