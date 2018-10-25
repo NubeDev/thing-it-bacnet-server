@@ -176,8 +176,7 @@ export class ThermostatUnit extends CustomUnit {
         const feedbackConfig = feedbackFn.config;
         const modificationUnit = modificationFn.unit;
         const modificationConfig = modificationFn.config;
-        modificationUnit.storage.setFlowHandler(BACnetUnitDataFlow.Update, BACNet.Enums.PropertyId.presentValue, (notif: UnitStorageProperty) => {
-            modificationUnit.storage.dispatch();
+        modificationUnit.storage.setFlowHandler(BACnetUnitDataFlow.Set, BACNet.Enums.PropertyId.presentValue, (notif: UnitStorageProperty) => {
             const setpointModificationPayload = notif.payload as BACNet.Types.BACnetReal;
             let setpointModificationValue = +setpointModificationPayload.getValue();
 
@@ -186,17 +185,32 @@ export class ThermostatUnit extends CustomUnit {
             } else {
                 setpointModificationValue = Math.max(setpointModificationValue, modificationConfig.min);
             }
+            modificationUnit.storage.updateProperty({
+                id: BACNet.Enums.PropertyId.presentValue,
+                payload: new BACNet.Types.BACnetReal(setpointModificationValue)
+            })
+        });
+
+        modificationUnit.storage.setFlowHandler(BACnetUnitDataFlow.Update, BACNet.Enums.PropertyId.presentValue, (notif: UnitStorageProperty) => {
+            modificationUnit.storage.dispatch();
+            const setpointModificationPayload = notif.payload as BACNet.Types.BACnetReal;
+            let setpointModificationValue = +setpointModificationPayload.getValue();
 
             const currentSetpointValue = this.getUnitValue(feedbackUnit);
 
             let newSetpointValue = currentSetpointValue + setpointModificationValue;
-            newSetpointValue = newSetpointValue > feedbackConfig.max ? feedbackConfig.max :
-                newSetpointValue < feedbackConfig.min ? feedbackConfig.min : newSetpointValue;
+            if (newSetpointValue > feedbackConfig.max) {
+                newSetpointValue = feedbackConfig.max
+            }
+            if (newSetpointValue < feedbackConfig.min) {
+                newSetpointValue = feedbackConfig.min
+            }
 
             feedbackUnit.storage.updateProperty({
                 id: BACNet.Enums.PropertyId.presentValue,
                 payload: new BACNet.Types.BACnetReal(newSetpointValue)
-            })
+            });
+            this.initTemperatureChange();
         });
         const startPayload = this.genStartPresentValue(feedbackFn);
         feedbackUnit.storage.setProperty({
