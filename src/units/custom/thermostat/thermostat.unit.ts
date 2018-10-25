@@ -149,6 +149,7 @@ export class ThermostatUnit extends CustomUnit {
                 } else {
                     this.tempModificationTimer.unsubscribe();
                     this.tempModificationTimer = null;
+                    return;
                 }
                 temperature = _.round(temperature, 1);
                 tempUnit.storage.setProperty({
