@@ -107,7 +107,6 @@ export class ThermostatUnit extends CustomUnit {
      */
     private simulateTemperature (unitFn: TemperatureFunction): void {
         const tempUnit = unitFn.unit;
-        const tempConfig = unitFn.config;
         const tempStartPayload = this.genStartPresentValue(unitFn);
         tempUnit.storage.setProperty({
             id: BACNet.Enums.PropertyId.presentValue,
@@ -134,6 +133,9 @@ export class ThermostatUnit extends CustomUnit {
         const setpointUnit = this.storage.get(BACnetThermostatUnitFunctions.SetpointFeedback).unit as AnalogValueUnit;
 
         let temperature = this.getUnitValue(tempUnit);
+        if (this.tempModificationTimer && this.tempModificationTimer.unsubscribe) {
+            this.tempModificationTimer.unsubscribe();
+        }
         this.tempModificationTimer = Observable.timer(0, tempConfig.freq)
             .subscribe(() => {
                 const setpoint = this.getUnitValue(setpointUnit);
@@ -147,8 +149,10 @@ export class ThermostatUnit extends CustomUnit {
                 } else if (temperature < setpoint) {
                     temperature += 0.1;
                 } else {
-                    this.tempModificationTimer.unsubscribe();
-                    this.tempModificationTimer = null;
+                    if (this.tempModificationTimer && this.tempModificationTimer.unsubscribe) {
+                        this.tempModificationTimer.unsubscribe();
+                        this.tempModificationTimer = null;
+                    }
                     return;
                 }
                 temperature = _.round(temperature, 1);
