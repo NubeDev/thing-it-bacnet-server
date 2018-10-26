@@ -166,8 +166,8 @@ export class JalousieUnit extends CustomUnit {
         const feedbackUnit = feedbackFn.unit;
         const modificationUnit = modificationFn.unit;
         const modificationConfig = modificationFn.config;
-        modificationUnit.storage.setFlowHandler(BACnetUnitDataFlow.Update, BACNet.Enums.PropertyId.presentValue, (notif: UnitStorageProperty) => {
-            modificationUnit.storage.dispatch();
+
+        modificationUnit.storage.setFlowHandler(BACnetUnitDataFlow.Set, BACNet.Enums.PropertyId.presentValue, (notif: UnitStorageProperty) => {
             const posModificationPayload = notif.payload as BACNet.Types.BACnetReal;
             let posModificationValue = +posModificationPayload.getValue();
 
@@ -178,6 +178,15 @@ export class JalousieUnit extends CustomUnit {
             if (posModificationValue < modificationConfig.min) {
                 posModificationValue =  modificationConfig.min;
             }
+            modificationUnit.storage.updateProperty({
+                id: BACNet.Enums.PropertyId.presentValue,
+                payload: new BACNet.Types.BACnetReal(posModificationValue)
+            });
+        });
+        modificationUnit.storage.setFlowHandler(BACnetUnitDataFlow.Update, BACNet.Enums.PropertyId.presentValue, (notif: UnitStorageProperty) => {
+            modificationUnit.storage.dispatch();
+            const posModificationPayload = notif.payload as BACNet.Types.BACnetReal;
+            let posModificationValue = +posModificationPayload.getValue();
 
             this.sPosModFlow.next(posModificationValue);
         });
@@ -202,8 +211,7 @@ export class JalousieUnit extends CustomUnit {
         const feedbackUnit = feedbackFn.unit;
         const modificationUnit = modificationFn.unit;
         const modificationConfig = modificationFn.config;
-        modificationUnit.storage.setFlowHandler(BACnetUnitDataFlow.Update, BACNet.Enums.PropertyId.presentValue, (notif: UnitStorageProperty) => {
-            modificationUnit.storage.dispatch();
+        modificationUnit.storage.setFlowHandler(BACnetUnitDataFlow.Set, BACNet.Enums.PropertyId.presentValue, (notif: UnitStorageProperty) => {
             const rotModificationPayload = notif.payload as BACNet.Types.BACnetReal;
             let rotModificationValue = +rotModificationPayload.getValue();
 
@@ -214,6 +222,16 @@ export class JalousieUnit extends CustomUnit {
             if (rotModificationValue < modificationConfig.min) {
                 rotModificationValue =  modificationConfig.min;
             }
+
+            modificationUnit.storage.updateProperty({
+                id: BACNet.Enums.PropertyId.presentValue,
+                payload: new BACNet.Types.BACnetReal(rotModificationValue)
+            });
+        });
+        modificationUnit.storage.setFlowHandler(BACnetUnitDataFlow.Update, BACNet.Enums.PropertyId.presentValue, (notif: UnitStorageProperty) => {
+            modificationUnit.storage.dispatch();
+            const rotModificationPayload = notif.payload as BACNet.Types.BACnetReal;
+            let rotModificationValue = +rotModificationPayload.getValue();
 
             this.sRotModFlow.next(rotModificationValue);
         });
