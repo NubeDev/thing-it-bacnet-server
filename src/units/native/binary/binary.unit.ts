@@ -15,6 +15,7 @@ import {
 
 import {
     IEDEUnit,
+    IStateTextsUnit
 } from '../../../core/interfaces';
 
 import { BinaryMetadata } from './binary.metadata';
@@ -28,11 +29,26 @@ export class BinaryUnit extends NativeUnit {
     public readonly className: string = 'BinaryUnit';
     public readonly family: string = BACnetUnitFamily.Binary;
 
-    public initUnit (edeUnit: IEDEUnit) {
+    public initUnit (edeUnit: IEDEUnit, stateTextUnits: IStateTextsUnit[]) {
         super.initUnit(edeUnit);
 
         StatusFlagsMiddleUnit.createAndBind(this.storage);
         this.storage.addUnitStorage(BinaryMetadata);
+
+        if (!_.isNil(stateTextUnits) && !_.isNil(edeUnit.stateTextRef)) {
+            const stateTextUnit = stateTextUnits.find((unit) => unit.referenceNumber === edeUnit.stateTextRef);
+            if (!_.isNil(stateTextUnit)) {
+                this.storage.updateProperty({
+                    id: BACNet.Enums.PropertyId.inactiveText,
+                    payload: new BACNet.Types.BACnetCharacterString(stateTextUnit.inactiveText)
+                });
+
+                this.storage.updateProperty({
+                    id: BACNet.Enums.PropertyId.activeText,
+                    payload: new BACNet.Types.BACnetCharacterString(stateTextUnit.activeText)
+                });
+            }
+        }
     }
 
     /**
