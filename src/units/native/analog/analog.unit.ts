@@ -33,42 +33,26 @@ export class AnalogUnit extends NativeUnit {
         this.storage.addUnitStorage(AnalogMetadata);
 
         if (!_.isNil(edeUnit.unitCode)) {
-            this.storage.setProperty({
+            this.storage.updateProperty({
                 id: BACNet.Enums.PropertyId.units,
                 payload: new BACNet.Types.BACnetEnumerated(edeUnit.unitCode),
             });
         }
 
         if (!_.isNil(edeUnit.minPresentValue)) {
-            this.storage.setProperty({
+            this.storage.updateProperty({
                 id: BACNet.Enums.PropertyId.minPresValue,
                 payload: new BACNet.Types.BACnetReal(edeUnit.minPresentValue),
             });
         }
 
         if (!_.isNil(edeUnit.maxPresentValue)) {
-            this.storage.setProperty({
+            this.storage.updateProperty({
                 id: BACNet.Enums.PropertyId.maxPresValue,
                 payload: new BACNet.Types.BACnetReal(edeUnit.maxPresentValue),
             });
         }
 
-    }
-
-    /**
-     * sjHandler - handles the changes of properties.
-     *
-     * @param  {UnitStorageProperty} notif - notification object
-     * @return {void}
-     */
-    public sjHandler (): void {
-        super.sjHandler();
-
-        this.storage.setFlowHandler(BACnetUnitDataFlow.Set,
-            [ BACNet.Enums.PropertyId.maxPresValue, BACNet.Enums.PropertyId.minPresValue,
-                BACNet.Enums.PropertyId.units ], (notif) => {
-            this.storage.updateProperty(notif);
-        });
     }
 
     /**

@@ -1,8 +1,8 @@
 import { BACnetUnitAbbr} from '../../../core/enums';
 
-import { ICustomMetadata } from '../../../core/interfaces';
+import { Units } from '../../../core/interfaces';
 
-export const FunctionMetadata: ICustomMetadata[] = [
+export const FunctionalMetadata: Units.Functional.Metadata[] = [
     {
         alias: [ BACnetUnitAbbr.Default, '0', 'unif', 'uniform', 'uniformDistribution' ],
         config: { min: 0, max: 1, freq: 1000 },

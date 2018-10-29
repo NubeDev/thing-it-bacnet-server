@@ -2,6 +2,7 @@ import * as dgram from 'dgram';
 import { AddressInfo } from 'net';
 import * as DEFAULTS from './defaults';
 import { Logger } from './logger';
+import * as _ from 'lodash';
 import { ApiError } from '../../core/errors';
 import { ContainersInfo } from './containers.manager/containers.info.interface';
 import { InputSocket } from '../../core/sockets';
@@ -23,6 +24,17 @@ export class ProxyUDPServer {
      */
     start(containersInfo: ContainersInfo[]) {
         this.logger.info('Starting proxy UDP Server...');
+        let outputPortDefault: number = null;
+        if (_.isEmpty(portMappings)) {
+            this.logger.warn('portMappings are not specified! Using --outputPort value');
+            if (outputPort) {
+                outputPortDefault = outputPort;
+                this.logger.warn(`All messages will be sent to outputPort ${outputAddr}:${outputPort}`)
+            } else {
+                this.logger.warn(`Output port is not specified! all messages will be sent to 47808`);
+                outputPortDefault = 47808;
+            }
+        }
         this.udpSocket.on('message', (msg, rinfo) => {
 
             if ((rinfo.port >= DEFAULTS.DOCKER_CONTAINERS_FIRST_PORT) && (rinfo.port < DEFAULTS.DOCKER_CONTAINERS_FIRST_PORT + 1000)
@@ -77,8 +89,8 @@ export class ProxyUDPServer {
             this.udpSocket.close()
         });
         this.udpSocket.on('listening', () => {
-            const address = this.udpSocket.address() as AddressInfo;
-            this.logger.info(`listening ${address.address}:${address.port}`);
+            const socketInfo = this.udpSocket.address() as AddressInfo;
+            this.logger.info(`listening ${socketInfo.address}:${socketInfo.port}`);
         });
         this.udpSocket.bind(this.port);
         this.logger.info('Successfully started')

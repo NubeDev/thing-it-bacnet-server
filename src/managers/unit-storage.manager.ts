@@ -2,7 +2,7 @@ import * as _ from 'lodash';
 import * as Bluebird from 'bluebird';
 import { Observable } from 'rxjs';
 
-import { IEDEUnit } from '../core/interfaces';
+import { IEDEUnit, IStateTextsUnit } from '../core/interfaces';
 
 import { UnitStorageProperty } from '../core/interfaces';
 
@@ -42,13 +42,13 @@ export class UnitStorageManager {
      * @param  {IEDEUnit[]} edeUnits - EDE configuration of units
      * @return {void}
      */
-    public initUnits (edeUnits: IEDEUnit[]): void {
+    public initUnits (edeUnits: IEDEUnit[], stateTextUnits?: IStateTextsUnit[]): void {
         if (!edeUnits.length) {
             throw new ApiError('UnitStorageManager - initUnits: Unit array is empty!');
         }
 
         _.map(edeUnits, (edeUnit) => {
-            const nativeUnit = this.initNativeUnit(edeUnit);
+            const nativeUnit = this.initNativeUnit(edeUnit, stateTextUnits);
             this.initCustomUnit(nativeUnit, edeUnit);
         });
 
@@ -68,7 +68,7 @@ export class UnitStorageManager {
      * @param  {IEDEUnit} edeUnit - EDE unit configuration
      * @return {NativeUnit} - instance of the native unit
      */
-    private initNativeUnit (edeUnit: IEDEUnit): NativeUnit {
+    private initNativeUnit (edeUnit: IEDEUnit, stateTextUnits?: IStateTextsUnit[]): NativeUnit {
         // Get name of the native unit
         let unitType = BACNet.Enums.ObjectType[edeUnit.objType];
 
@@ -91,7 +91,7 @@ export class UnitStorageManager {
         try {
             let UnitClass = NativeModule.get(unitType);
             unit = new UnitClass();
-            unit.initUnit(edeUnit);
+            unit.initUnit(edeUnit, stateTextUnits);
 
             this.nativeUnits.set(unitToken, unit);
         } catch (error) {
@@ -122,10 +122,6 @@ export class UnitStorageManager {
             unitType = BACnetUnitAbbr.Default;
         }
 
-        // Get function of the custom unit
-        const unitFn = edeUnit.custUnitFn !== ''
-            ? `${edeUnit.custUnitFn}` : BACnetUnitAbbr.Default;
-
         // Get ID of the custom unit with postfix owner abbreviation
         // U - user (manually), A - algorithm (auto)
         const unitId = _.isNumber(edeUnit.custUnitId) && _.isFinite(+edeUnit.custUnitId)
@@ -146,6 +142,10 @@ export class UnitStorageManager {
         }
 
         try {
+            // Get function of the custom unit
+            const unitFn = edeUnit.custUnitFn !== ''
+                ? `${edeUnit.custUnitFn}` : BACnetUnitAbbr.Default;
+
             unit.setUnitFn(unitFn, nativeUnit, edeUnit);
         } catch (error) {
             logger.error(`${this.className} - initCustomUnit: "${unitToken}" custom unit is not created!`);
