@@ -6,7 +6,7 @@ import * as _ from 'lodash';
 import { ApiError } from '../../core/errors';
 import { ContainersInfo } from './containers.manager/containers.info.interface';
 import { InputSocket } from '../../core/sockets';
-import { Enums } from 'tid-bacnet-logic';
+import * as BACNet from 'tid-bacnet-logic';
 
 export class ProxyUDPServer {
     private udpSocket: dgram.Socket;
@@ -24,38 +24,41 @@ export class ProxyUDPServer {
      */
     start(containersInfo: ContainersInfo[]) {
         this.logger.info('Starting proxy UDP Server...');
-        let outputPortDefault: number = null;
-        if (_.isEmpty(portMappings)) {
-            this.logger.warn('portMappings are not specified! Using --outputPort value');
-            if (outputPort) {
-                outputPortDefault = outputPort;
-                this.logger.warn(`All messages will be sent to outputPort ${outputAddr}:${outputPort}`)
-            } else {
-                this.logger.warn(`Output port is not specified! all messages will be sent to 47808`);
-                outputPortDefault = 47808;
-            }
-        }
+
         this.udpSocket.on('message', (msg, rinfo) => {
 
             if ((rinfo.port >= DEFAULTS.DOCKER_CONTAINERS_FIRST_PORT) && (rinfo.port < DEFAULTS.DOCKER_CONTAINERS_FIRST_PORT + 1000)
                 && (rinfo.address === DEFAULTS.DOCKER_CONTAINERS_ADDR)) {
                 const containerInfo = containersInfo.find((info) => info.port === rinfo.port);
                 let resp, bacnetMsg, output: AddressInfo;
+
                 try {
                     resp = JSON.parse(msg.toString());
                     bacnetMsg = Buffer.from(resp.msg, 'hex');
                     output = resp.rinfo;
                     this.logger.info(`got: ${bacnetMsg.toString('hex')} from  ${containerInfo.name} running on ${rinfo.address}:${rinfo.port}`);
-                    this.logger.info(`sending ${bacnetMsg.toString('hex')} to remote thing-it-bacnet-device running on ${output.address}:${output.port}`);
+                    let inputSoc: InputSocket = null;
 
-                    if (!containerInfo.remoteTINOutput) {
-                        const inputSoc: InputSocket = new InputSocket(bacnetMsg);
-                        if (inputSoc.apdu.serviceChoice !== Enums.UnconfirmedServiceChoice.iAm) {
-                            this.logger.info(`binding ${containerInfo.name} to the remote TIN: ${output}`)
-                            containerInfo.remoteTINOutput = output;
+                    if (!containerInfo.deviceId) {
+                        inputSoc = new InputSocket(bacnetMsg);
+                        if (inputSoc.apdu.serviceChoice === BACNet.Enums.UnconfirmedServiceChoice.iAm) {
+                            const serviceMessage = inputSoc.apdu.service as BACNet.Interfaces.UnconfirmedRequest.Service.IAm;
+                            if (!containerInfo.deviceId) {
+                            containerInfo.deviceId = serviceMessage.objId.getValue();
+                            }
                         }
                     }
 
+                    if (!containerInfo.remoteTINOutput) {
+                        inputSoc = inputSoc ? inputSoc : new InputSocket(bacnetMsg);
+                        if (inputSoc.apdu.serviceChoice !== BACNet.Enums.UnconfirmedServiceChoice.iAm) {
+                            this.logger.info(`binding ${containerInfo.name} to the remote TIN: ${output}`);
+                            containerInfo.remoteTINOutput = output;
+                        }
+
+                    }
+
+                    this.logger.info(`sending ${bacnetMsg.toString('hex')} to remote thing-it-bacnet-device running on ${output.address}:${output.port}`);
                     this.udpSocket.send(bacnetMsg, output.port, output.address);
 
                 } catch (error) {
@@ -77,6 +80,20 @@ export class ProxyUDPServer {
                 if (bindedContainerInfo) {
                     this.udpSocket.send(message, bindedContainerInfo.port, DEFAULTS.DOCKER_CONTAINERS_ADDR);
                 } else {
+                    const inputSoc: InputSocket = new InputSocket(msg);
+                    if (inputSoc.apdu.serviceChoice === BACNet.Enums.ConfirmedServiceChoice.ReadProperty) {
+                        const serviceMessage = inputSoc.apdu.service as BACNet.Interfaces.ConfirmedRequest.Service.ReadProperty;
+                        const objId = serviceMessage.objId
+                        if (objId.value.type === BACNet.Enums.ObjectType.Device) {
+                            const targetContainer = containersInfo.find(container => objId.isEqual(container.deviceId));
+                            if (targetContainer) {
+                                this.logger.info(`binding ${targetContainer.name} to the remote TIN: ${output}`);
+                                targetContainer.remoteTINOutput = _.clone(rinfo);
+                                this.udpSocket.send(message, targetContainer.port, DEFAULTS.DOCKER_CONTAINERS_ADDR);
+                                return;
+                            }
+                        }
+                    }
                     for (let container of containersInfo) {
                         this.udpSocket.send(message, container.port, DEFAULTS.DOCKER_CONTAINERS_ADDR);
                     }
