@@ -2,8 +2,6 @@ import * as dgram from 'dgram';
 import { AddressInfo } from 'net';
 import * as DEFAULTS from './defaults';
 import { Logger } from './logger';
-import * as _ from 'lodash';
-import { ApiError } from '../../core/errors';
 import { ContainersInfo } from './containers.manager/containers.info.interface';
 import { InputSocket } from '../../core/sockets';
 import * as BACNet from 'tid-bacnet-logic';
@@ -55,7 +53,6 @@ export class ProxyUDPServer {
                             this.logger.info(`binding ${containerInfo.name} to the remote TIN: ${output.address}:${output.port}`);
                             containerInfo.remoteTINOutput = output;
                         }
-
                     }
 
                     this.logger.info(`sending ${bacnetMsg.toString('hex')} to remote thing-it-bacnet-device running on ${output.address}:${output.port}`);
@@ -77,10 +74,12 @@ export class ProxyUDPServer {
                     }
                     return false;
                 });
+
                 if (bindedContainerInfo) {
                     this.udpSocket.send(message, bindedContainerInfo.port, DEFAULTS.DOCKER_CONTAINERS_ADDR);
                 } else {
                     const inputSoc: InputSocket = new InputSocket(msg);
+                    // If remote TIN address info is missing, try to match deviceId from request with containersInfo deviceId's
                     if (inputSoc.apdu.serviceChoice === BACNet.Enums.ConfirmedServiceChoice.ReadProperty) {
                         const serviceMessage = inputSoc.apdu.service as BACNet.Interfaces.ConfirmedRequest.Service.ReadProperty;
                         const objId = serviceMessage.objId
@@ -88,12 +87,13 @@ export class ProxyUDPServer {
                             const targetContainer = containersInfo.find(container => objId.isEqual(container.deviceId));
                             if (targetContainer) {
                                 this.logger.info(`binding ${targetContainer.name} to the remote TIN: ${rinfo.address}:${rinfo.port}`);
-                                targetContainer.remoteTINOutput = _.clone(rinfo);
+                                targetContainer.remoteTINOutput = rinfo;
                                 this.udpSocket.send(message, targetContainer.port, DEFAULTS.DOCKER_CONTAINERS_ADDR);
                                 return;
                             }
                         }
                     }
+                    // If matching container is not found, send message to all containers
                     for (let container of containersInfo) {
                         this.udpSocket.send(message, container.port, DEFAULTS.DOCKER_CONTAINERS_ADDR);
                     }
