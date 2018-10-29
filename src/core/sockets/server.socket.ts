@@ -60,6 +60,7 @@ export class Server {
 
         this.sock.on('message', (msg: Buffer, rinfo: dgram.RemoteInfo) => {
             let bacnetMsg;
+            // Generate Response instance
             const outputSoc = this.genOutputSocket({
                 port: rinfo.port, address: rinfo.address,
             });
@@ -77,10 +78,7 @@ export class Server {
 
             } else {
                 bacnetMsg = msg;
-
             }
-
-
 
             // Generate Request instance
             const inputSoc = new InputSocket(bacnetMsg);
