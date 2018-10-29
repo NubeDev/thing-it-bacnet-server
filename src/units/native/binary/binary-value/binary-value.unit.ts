@@ -12,7 +12,7 @@ import {
     UnitStorageProperty,
 } from '../../../../core/interfaces';
 
-import { IEDEUnit } from '../../../../core/interfaces';
+import { IEDEUnit, IStateTextsUnit } from '../../../../core/interfaces';
 
 import { BinaryValueMetadata } from './binary-value.metadata';
 
@@ -24,8 +24,8 @@ import * as BACNet from 'tid-bacnet-logic';
 export class BinaryValueUnit extends BinaryUnit {
     public readonly className: string = 'BinaryValueUnit';
 
-    public initUnit (edeUnit: IEDEUnit) {
-        super.initUnit(edeUnit);
+    public initUnit (edeUnit: IEDEUnit, stateTextUnits: IStateTextsUnit[]) {
+        super.initUnit(edeUnit, stateTextUnits);
 
         CommandableMiddleUnit.createAndBind(this.storage);
         this.storage.addUnitStorage(BinaryValueMetadata);
