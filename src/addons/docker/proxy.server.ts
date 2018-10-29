@@ -52,7 +52,7 @@ export class ProxyUDPServer {
                     if (!containerInfo.remoteTINOutput) {
                         inputSoc = inputSoc ? inputSoc : new InputSocket(bacnetMsg);
                         if (inputSoc.apdu.serviceChoice !== BACNet.Enums.UnconfirmedServiceChoice.iAm) {
-                            this.logger.info(`binding ${containerInfo.name} to the remote TIN: ${output}`);
+                            this.logger.info(`binding ${containerInfo.name} to the remote TIN: ${output.address}:${output.port}`);
                             containerInfo.remoteTINOutput = output;
                         }
 
@@ -87,7 +87,7 @@ export class ProxyUDPServer {
                         if (objId.value.type === BACNet.Enums.ObjectType.Device) {
                             const targetContainer = containersInfo.find(container => objId.isEqual(container.deviceId));
                             if (targetContainer) {
-                                this.logger.info(`binding ${targetContainer.name} to the remote TIN: ${output}`);
+                                this.logger.info(`binding ${targetContainer.name} to the remote TIN: ${rinfo.address}:${rinfo.port}`);
                                 targetContainer.remoteTINOutput = _.clone(rinfo);
                                 this.udpSocket.send(message, targetContainer.port, DEFAULTS.DOCKER_CONTAINERS_ADDR);
                                 return;
