@@ -60,30 +60,27 @@ export class Server {
 
         this.sock.on('message', (msg: Buffer, rinfo: dgram.RemoteInfo) => {
             let bacnetMsg;
-            let outputSoc;
+            const outputSoc = this.genOutputSocket({
+                port: rinfo.port, address: rinfo.address,
+            });
 
             if (this.serverConfig.dockerized) {
 
                 try {
                     const parsedMsg = JSON.parse(msg.toString());
                     bacnetMsg = Buffer.from(parsedMsg.msg, 'hex');
-                    outputSoc = this.genOutputSocket({
-                        port: rinfo.port, address: rinfo.address,
-                    }, parsedMsg.rinfo);
+                    outputSoc.rinfoOriginal = parsedMsg.rinfo;
                 } catch (error) {
                     logger.error('Unable to treat message as JSON, trying to parse as bacnet message...');
                     bacnetMsg = msg;
-                    outputSoc = this.genOutputSocket({
-                        port: rinfo.port, address: rinfo.address,
-                    });
                 }
 
             } else {
                 bacnetMsg = msg;
-                outputSoc = this.genOutputSocket({
-                    port: rinfo.port, address: rinfo.address,
-                });
+
             }
+
+
 
             // Generate Request instance
             const inputSoc = new InputSocket(bacnetMsg);
@@ -116,8 +113,8 @@ export class Server {
      * @param  {IBACnetAddressInfo} rinfo - object with endpoint address and port
      * @return {OutputSocket}
      */
-    public genOutputSocket (rinfo: IBACnetAddressInfo, rinfoOriginal?: IBACnetAddressInfo): OutputSocket {
-        return new OutputSocket(this.sock, rinfo, this.reqFlow, rinfoOriginal);
+    public genOutputSocket (rinfo: IBACnetAddressInfo): OutputSocket {
+        return new OutputSocket(this.sock, rinfo, this.reqFlow);
     }
 
     public registerService (serviceName: string, service: any) {

@@ -10,11 +10,11 @@ import { IBACnetAddressInfo, ISequenceFlow } from '../interfaces';
 
 export class OutputSocket {
     public readonly className: string = 'OutputSocket';
+    public rinfoOriginal: IBACnetAddressInfo = null;
 
     constructor (private app: dgram.Socket,
         private rinfo: IBACnetAddressInfo,
-        private reqFlow: Subject<ISequenceFlow>,
-        private rinfoOriginal?: IBACnetAddressInfo) {
+        private reqFlow: Subject<ISequenceFlow>) {
     }
 
     /**
