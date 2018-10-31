@@ -23,6 +23,7 @@ export interface IBACnetConfig {
 export interface IServerConfig {
     port: number;
     outputSequence: ISequenceConfig;
+    dockerized?: boolean;
 }
 
 /* Sequence Manager Config */

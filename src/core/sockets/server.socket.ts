@@ -59,12 +59,29 @@ export class Server {
         });
 
         this.sock.on('message', (msg: Buffer, rinfo: dgram.RemoteInfo) => {
-            // Generate Request instance
-            const inputSoc = new InputSocket(msg);
+            let bacnetMsg;
             // Generate Response instance
             const outputSoc = this.genOutputSocket({
                 port: rinfo.port, address: rinfo.address,
             });
+
+            if (this.serverConfig.dockerized) {
+
+                try {
+                    const parsedMsg = JSON.parse(msg.toString());
+                    bacnetMsg = Buffer.from(parsedMsg.msg, 'hex');
+                    outputSoc.rinfoOriginal = parsedMsg.rinfo;
+                } catch (error) {
+                    logger.error('Unable to treat message as JSON, trying to parse as bacnet message...');
+                    bacnetMsg = msg;
+                }
+
+            } else {
+                bacnetMsg = msg;
+            }
+
+            // Generate Request instance
+            const inputSoc = new InputSocket(bacnetMsg);
             // Handle request
             try {
                 this.mainRouter(inputSoc, outputSoc, this.serviceSocket);
