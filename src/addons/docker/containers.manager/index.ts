@@ -2,6 +2,7 @@ import { Container } from './container';
 import * as Bluebird from 'bluebird';
 import { Logger } from '../logger';
 import { ContainersInfo } from './containers.info.interface';
+import { exec } from 'child_process';
 
 export class ContainersManager {
     private containers: Container[] = [];
@@ -34,23 +35,29 @@ export class ContainersManager {
         this.containers.forEach((container) => {
             container.process.kill('SIGKILL');
         });
-        return Bluebird.map(this.containers, (container) => {
-            this.logger.info(`Stopping docker container ${container.name}... `);
+        const containersNames = this.containers.map(container => container.name).join(' ');
 
-            return new Bluebird((resolve, reject) => {
-                container.stop((error, stdout, stderr) => {
-                    if (error) {
-                        this.logger.error(`Unable to execute stop command for ${container.name}: ${error}`)
-                    }
-                    if (stderr) {
-                        this.logger.error(`An error occured while stoping ${container.name}: ${stderr}`);
-                    }
-                    if (stdout) {
-                        this.logger.info(`Docker container ${stdout} has successfully stopped`);
-                    }
-                    resolve();
-                  });
-            });
-        }, { concurrency: 1});
+        return new Bluebird((resolve, reject) => {
+            exec(`docker stop ${containersNames}`, (error, stdout, stderr) => {
+                if (error) {
+                    this.logger.error(`Unable to execute stop command for runninr containers:
+                    ${error}`);
+                }
+                if (stderr) {
+                    this.logger.error(`An error occured while stoping containers:
+                    ${stderr}`);
+                }
+                if (stdout) {
+                    this.logger.info(`Docker containers ${stdout} has successfully stopped`);
+                }
+                resolve();
+              })
+        })
+        .then(() => {
+            this.containers.forEach((container) => {
+                container.fileLog.destroy();
+                container.fileErrorsLog.destroy();
+            })
+        });
     }
 }
