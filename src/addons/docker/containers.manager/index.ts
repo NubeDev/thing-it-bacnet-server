@@ -40,7 +40,7 @@ export class ContainersManager {
         return new Bluebird((resolve, reject) => {
             exec(`docker stop ${containersNames}`, (error, stdout, stderr) => {
                 if (error) {
-                    this.logger.error(`Unable to execute stop command for runninr containers:
+                    this.logger.error(`Unable to execute stop command for running containers:
                     ${error}`);
                 }
                 if (stderr) {
@@ -48,7 +48,9 @@ export class ContainersManager {
                     ${stderr}`);
                 }
                 if (stdout) {
-                    this.logger.info(`Docker containers ${stdout} has successfully stopped`);
+                    this.logger.info(`Docker containers
+                    ${stdout}
+                    has been successfully stopped`);
                 }
                 resolve();
               })
