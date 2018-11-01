@@ -13,14 +13,14 @@ const LoggerConfig = {
             maxFiles: 1,
             timestamp: true,
             colorize: false,
+            level: 'info',
             options: { flags: 'w' },
         }),
     ]
 };
-winston.configure(LoggerConfig);
 
 export class Logger {
-    private _logger = winston
+    private _logger = new winston.Logger(LoggerConfig);
     constructor (public label: string) { }
 
     info( message: string) {
