@@ -10,6 +10,7 @@ import { IBACnetAddressInfo, ISequenceFlow } from '../interfaces';
 
 export class OutputSocket {
     public readonly className: string = 'OutputSocket';
+    public rinfoOriginal: IBACnetAddressInfo = null;
 
     constructor (private app: dgram.Socket,
         private rinfo: IBACnetAddressInfo,
@@ -23,12 +24,19 @@ export class OutputSocket {
      * @param  {string} reqMethodName - name of the BACnet service
      * @return {Bluebird<any>}
      */
-    private _send (msg: Buffer, reqMethodName: string): Bluebird<any> {
+    private _send (buf: Buffer, reqMethodName: string): Bluebird<any> {
         const ucAddress = this.rinfo.address;
         const ucPort = this.rinfo.port;
 
-        this.logSendMethods(ucAddress, ucPort, msg, 'send', reqMethodName);
+        this.logSendMethods(ucAddress, ucPort, buf, 'send', reqMethodName);
         return new Bluebird((resolve, reject) => {
+            let msg: Buffer|string = buf;
+            if (this.rinfoOriginal) {
+                msg = JSON.stringify({
+                    rinfo: this.rinfoOriginal,
+                    msg: buf.toString('hex')
+                })
+            }
             this.app.send(msg, 0, msg.length, ucPort, ucAddress, (error, data) => {
                 if (error) {
                     return reject(error);

@@ -10,9 +10,7 @@ export class Service {
     private proxyServer: ProxyUDPServer;
     public logger: Logger = new Logger('Docker Service')
     constructor(
-        private port: number = DEFAULTS.THIS_PORT,
-        private outputAddr: string,
-        private outputPort: number = DEFAULTS.OUTPUT_PORT,
+        private port: number = DEFAULTS.PORT,
         private portsStart: number = DEFAULTS.DOCKER_CONTAINERS_FIRST_PORT
     ) { }
 
@@ -34,7 +32,7 @@ export class Service {
         })
         .then(() => {
             this.proxyServer = new ProxyUDPServer(this.port);
-            this.proxyServer.start(this.outputAddr, this.outputPort, this.containersManager.containersInfo);
+            this.proxyServer.start(this.containersManager.containersInfo);
             this.logger.info('successfully started');
         })
     }

@@ -107,8 +107,8 @@ export class LightUnit extends CustomUnit {
         const feedbackUnit = feedbackFn.unit;
         const modificationUnit = modificationFn.unit;
         const modificationConfig = modificationFn.config;
-        modificationUnit.storage.setFlowHandler(BACnetUnitDataFlow.Update, BACNet.Enums.PropertyId.presentValue, (notif: UnitStorageProperty) => {
-            modificationUnit.storage.dispatch();
+
+        modificationUnit.storage.setFlowHandler(BACnetUnitDataFlow.Set, BACNet.Enums.PropertyId.presentValue, (notif: UnitStorageProperty) => {
             const levelModificationPayload = notif.payload as BACNet.Types.BACnetReal;
             let levelModificationValue = +levelModificationPayload.getValue();
 
@@ -120,6 +120,17 @@ export class LightUnit extends CustomUnit {
                 levelModificationValue =  modificationConfig.min;
             }
 
+            modificationUnit.storage.updateProperty({
+                id: BACNet.Enums.PropertyId.presentValue,
+                payload: new BACNet.Types.BACnetReal(levelModificationValue)
+            });
+        });
+
+        modificationUnit.storage.setFlowHandler(BACnetUnitDataFlow.Update, BACNet.Enums.PropertyId.presentValue, (notif: UnitStorageProperty) => {
+            modificationUnit.storage.dispatch();
+            const levelModificationPayload = notif.payload as BACNet.Types.BACnetReal;
+            let levelModificationValue = +levelModificationPayload.getValue();
+
             feedbackUnit.storage.updateProperty({
                 id: BACNet.Enums.PropertyId.presentValue,
                 payload: new BACNet.Types.BACnetReal(levelModificationValue)
@@ -127,7 +138,7 @@ export class LightUnit extends CustomUnit {
             this.sLevelFlow.next(levelModificationValue)
         });
         const startPayload = this.genStartPresentValue(feedbackFn);
-        feedbackUnit.storage.setProperty({
+        feedbackUnit.storage.updateProperty({
             id: BACNet.Enums.PropertyId.presentValue,
             payload: startPayload,
         });
@@ -155,17 +166,27 @@ export class LightUnit extends CustomUnit {
             payload: stateTextPayload
         });
 
+        modificationUnit.storage.setFlowHandler(BACnetUnitDataFlow.Set, BACNet.Enums.PropertyId.presentValue, (notif: UnitStorageProperty) => {
+            const statePayload = notif.payload as BACNet.Types.BACnetReal;
+            let statePrValue = +statePayload.getValue();
+
+            if (statePrValue > 0 && statePrValue <= modificationConfig.stateText.length) {
+                modificationUnit.storage.updateProperty({
+                    id: BACNet.Enums.PropertyId.presentValue,
+                    payload: new BACNet.Types.BACnetReal(statePrValue)
+                })
+            }
+        });
+
         modificationUnit.storage.setFlowHandler(BACnetUnitDataFlow.Update, BACNet.Enums.PropertyId.presentValue, (notif: UnitStorageProperty) => {
             modificationUnit.storage.dispatch();
             const statePayload = notif.payload as BACNet.Types.BACnetReal;
             let statePrValue = +statePayload.getValue();
 
-            if (statePrValue > 0 && statePrValue <= modificationConfig.stateText.length) {
-                feedbackUnit.storage.updateProperty({
-                    id: BACNet.Enums.PropertyId.presentValue,
-                    payload: new BACNet.Types.BACnetReal(statePrValue)
-                })
-            }
+            feedbackUnit.storage.updateProperty({
+                id: BACNet.Enums.PropertyId.presentValue,
+                payload: new BACNet.Types.BACnetReal(statePrValue)
+            });
         });
         let statePresentValue = 1;
 
