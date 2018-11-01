@@ -58,7 +58,7 @@ export class ProxyUDPServer {
                         }
                     }
 
-                    this.logger.info(`sending ${bacnetMsg.toString('hex')} to remote thing-it-bacnet-device running on ${output.address}:${output.port}`);
+                    this.logger.info(`sending ${bacnetMsg.toString('hex')} to remote thing-it-device-bacnet running on ${output.address}:${output.port}`);
                     this.udpSocket.send(bacnetMsg, output.port, output.address);
 
                 } catch (error) {
@@ -66,7 +66,7 @@ export class ProxyUDPServer {
                 }
 
             } else {
-                this.logger.info(`got: ${msg.toString('hex')} from remote thing-it-bacnet-device running on ${rinfo.address}:${rinfo.port}`);
+                this.logger.info(`got: ${msg.toString('hex')} from remote thing-it-device-bacnet running on ${rinfo.address}:${rinfo.port}`);
                 const message = JSON.stringify({
                     msg: msg.toString('hex'),
                     rinfo: rinfo
