@@ -18,7 +18,7 @@ export class ProxyUDPServer {
     /**
      *start - start listening messages from thing-it-bacnet-device and forward them to docker containers ports
      *
-     * @param {Map<number, any>} containersInfo - info of docker containers with simulaed ede-files
+     * @param {ContainersInfo[]} containersInfo - info of docker containers with simulaed ede-files
      */
     start(containersInfo: ContainersInfo[]) {
         this.logger.info('Starting proxy UDP Server...');
@@ -47,15 +47,18 @@ export class ProxyUDPServer {
                         }
                     }
 
+                    // TODO: Delete this when bacnet-server will be able to send bacnet error messages and tin-device-bacnet will be able to process them
                     if (!containerInfo.remoteTINOutput) {
-                        inputSoc = inputSoc ? inputSoc : new InputSocket(bacnetMsg);
+                        if (!inputSoc) {
+                            inputSoc = new InputSocket(bacnetMsg);
+                        }
                         if (inputSoc.apdu.serviceChoice !== BACNet.Enums.UnconfirmedServiceChoice.iAm) {
                             this.logger.info(`binding ${containerInfo.name} to the remote TIN: ${output.address}:${output.port}`);
                             containerInfo.remoteTINOutput = output;
                         }
                     }
 
-                    this.logger.info(`sending ${bacnetMsg.toString('hex')} to remote thing-it-bacnet-device running on ${output.address}:${output.port}`);
+                    this.logger.info(`sending ${bacnetMsg.toString('hex')} to remote thing-it-device-bacnet running on ${output.address}:${output.port}`);
                     this.udpSocket.send(bacnetMsg, output.port, output.address);
 
                 } catch (error) {
@@ -63,7 +66,7 @@ export class ProxyUDPServer {
                 }
 
             } else {
-                this.logger.info(`got: ${msg.toString('hex')} from remote thing-it-bacnet-device running on ${rinfo.address}:${rinfo.port}`);
+                this.logger.info(`got: ${msg.toString('hex')} from remote thing-it-device-bacnet running on ${rinfo.address}:${rinfo.port}`);
                 const message = JSON.stringify({
                     msg: msg.toString('hex'),
                     rinfo: rinfo
