@@ -1,10 +1,16 @@
-import { spawn, exec, ChildProcess } from 'child_process';
 import * as stream from 'stream';
 import * as colors from 'colors';
 import * as fs from 'fs';
+import * as Dockerode from 'dockerode';
+const docker = new Dockerode({
+    socketPath: '/var/run/docker.sock',
+    Promise: require('bluebird')
+});
 
 export class Container {
-    public process: ChildProcess;
+    public stdout  = new stream.PassThrough();
+    public stderr  = new stream.PassThrough();
+    public container: Dockerode.Container;
     public fileLog: stream.Writable;
     public fileErrorsLog: stream.Writable;
 
@@ -15,41 +21,68 @@ export class Container {
     /**
      * start runs docker container with specified options
      */
-    start(): void {
-        this.process = spawn( 'docker', [
-            'run',
-            '-i',
-            '--rm',
-            '--name', `${this.name}`,
-            '-v', `${this.edeDir}:/edefiles`,
-            '-p', `${this.port}:47808/udp`,
-            '-e', `FILE=${this.name}.csv`,
-            'bacnet-server'
-        ]);
-        this.startLogging();
+    public start(): void {
+        this.initLogging();
+        docker.createContainer(
+            {
+                Image: 'bacnet-server',
+                name: this.name,
+                Cmd: [ /*'node', './dist/index', '--filePath /edefiles/$FILE', '--dockerized'*/ ],
+                Tty: false,
+                Env: [`FILE=${this.name}.csv`],
+                Volumes: {
+                    '/edefiles': {}
+                },
+                ExposedPorts: {
+                    '47808/udp': {}
+                },
+                AttachStdout: true,
+                AttachStderr: true,
+                AttachStdin: true,
+                HostConfig: {
+                    Binds: [`${this.edeDir}:/edefiles`],
+                    PortBindings: {
+                        '47808/udp': [{ HostPort: `${this.port}`}]
+                    },
+                AutoRemove: true
+                },
+            }
+        ).then((container: Dockerode.Container) => {
+            this.container = container;
+            container.start();
+            return container.attach({ stream: true, stdout: true, stderr: true })
+        })
+        .then((containerStream) => {
+            this.container.modem.demuxStream(containerStream, this.stdout, this.stderr);
+        })
+    }
+
+    private logCallback(data: string): void {
+        console.log(colors.yellow(`${this.name}:`), ` ${data}`)
+    }
+
+    private errorLogCallback = (data: string) => {
+        console.log(colors.yellow(`${this.name}:`) + ` ${data}`);
+        if (data.includes('error')) {
+            this.fileErrorsLog.write(data)
+        } else {
+            this.fileLog.write(data);
+        }
     }
 
     /**
-     * logContainer - creates file Streams for writing container common and errors log,
-     * adds event listener to container child processes to log output into console
+     * initLogging - creates file streams for writing container common and errors log,
+     * adds event listener to container's stdout and stderr streams to log output into console
      *
      */
-    startLogging(): void {
+    initLogging(): void {
         this.fileLog = fs.createWriteStream(`./logs/${this.name}.container.log`);
-        this.process.stdout.pipe(this.fileLog);
-        this.process.stdout.on('data', (data) => {
-            console.log(colors.yellow(`${this.name}:`), ` ${data}`)
-        });
+        this.stdout.pipe(this.fileLog);
+
+        this.stdout.on('data', this.logCallback);
 
         this.fileErrorsLog = fs.createWriteStream(`./logs/${this.name}.container.errors.log`);
-        this.process.stderr.on('data', (data: string) => {
-            console.log(colors.yellow(`${this.name}:`) + ` ${data}`);
-            if (data.includes('error')) {
-                this.fileErrorsLog.write(data)
-            } else {
-                this.fileLog.write(data);
-            }
-        });
+        this.stderr.on('data', this.errorLogCallback);
     }
 
     /**
@@ -58,11 +91,13 @@ export class Container {
      *
      * @param {Function} callback - callback to process exec output
      */
-    stop(callback: Function): void {
-        exec(`docker stop ${this.name}`, (error, stdout, stderr) => {
-            callback(error, stdout, stderr);
-        });
-        this.fileLog.destroy();
-        this.fileErrorsLog.destroy();
+    stop(): Promise<void> {
+        this.stdout.removeListener('data', this.logCallback);
+        this.stderr.removeListener('data', this.errorLogCallback);
+        return this.container.stop()
+            .then(() => {
+                this.fileLog.destroy();
+                this.fileErrorsLog.destroy();
+            });
     }
 }
