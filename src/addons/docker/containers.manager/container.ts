@@ -78,7 +78,6 @@ export class Container {
     initLogging(): void {
         this.fileLog = fs.createWriteStream(`./logs/${this.name}.container.log`);
         this.stdout.pipe(this.fileLog);
-
         this.stdout.on('data', this.logCallback);
 
         this.fileErrorsLog = fs.createWriteStream(`./logs/${this.name}.container.errors.log`);

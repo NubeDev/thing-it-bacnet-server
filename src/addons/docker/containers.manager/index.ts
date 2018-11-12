@@ -37,6 +37,9 @@ export class ContainersManager {
                 .then(() => {
                     this.logger.info(`Docker container '${container.name}' has been successfully stopped`)
                 })
-        });
+        })
+        .catch((error) => {
+            this.logger.error(`Problem while stopping containers: ${error}`)
+        })
     }
 }
