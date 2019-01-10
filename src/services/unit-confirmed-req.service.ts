@@ -40,6 +40,22 @@ export class UnitConfirmedReqService {
         const unitStorage: UnitStorageManager = serviceSocket.getService('unitStorage');
         const unitProp = unitStorage.getUnitProperty(unitObjId, propIdValue);
 
+        const index = apduService.prop.index;
+        if (!_.isNil(index)) {
+            const propArr = unitProp.values;
+            const indexValue = index.getValue();
+            if (indexValue === 0) {
+                unitProp.index = index;
+                unitProp.values = [new BACNet.Types.BACnetUnsignedInteger(propArr.length)];
+            } else {
+                const value = propArr[indexValue - 1];
+                if (value) {
+                    unitProp.index = index;
+                    unitProp.values = [value];
+                }
+            }
+        }
+
         const msgReadProperty = BACNet.Services.ComplexACKService.readProperty({
             invokeId: invokeId,
             objId: unitObjId,
