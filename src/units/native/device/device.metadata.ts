@@ -26,4 +26,8 @@ export const DeviceMetadata: UnitStorageProperty[] = [
         id: BACNet.Enums.PropertyId.applicationSoftwareVersion,
         payload: new BACNet.Types.BACnetCharacterString('V1.0.0'),
     },
+    {
+        id: BACNet.Enums.PropertyId.objectList,
+        payload: [],
+    }
 ];

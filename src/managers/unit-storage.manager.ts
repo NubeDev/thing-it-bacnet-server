@@ -59,6 +59,16 @@ export class UnitStorageManager {
         const deviceToken = this.getUnitToken(BACNet.Enums.ObjectType.Device, edeUnits[0].deviceInst);
         const device = this.nativeUnits.get(deviceToken);
         this.device = device;
+
+        const objectList = [];
+        this.nativeUnits.forEach((unit) => {
+            const objId = unit.storage.getProperty(BACNet.Enums.PropertyId.objectIdentifier).payload as BACNet.Types.BACnetObjectId;
+            objectList.push(objId);
+        });
+        device.storage.updateProperty({
+            id: BACNet.Enums.PropertyId.objectList,
+            payload: objectList
+        });
     }
 
     /**
